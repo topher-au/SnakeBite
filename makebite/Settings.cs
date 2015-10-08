@@ -115,7 +115,7 @@ namespace SnakeBite
 
             if (File.Exists(Filename)) File.Delete(Filename);
 
-            XmlSerializer x = new XmlSerializer(typeof(Settings), new[] { typeof(Settings) });
+            XmlSerializer x = new XmlSerializer(typeof(ModEntry), new[] { typeof(ModEntry) });
             StreamWriter s = new StreamWriter(Filename);
             x.Serialize(s, this);
             s.Close();

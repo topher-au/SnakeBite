@@ -34,5 +34,17 @@ namespace SnakeBite.Properties {
                 this["InstallPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string DatHash {
+            get {
+                return ((string)(this["DatHash"]));
+            }
+            set {
+                this["DatHash"] = value;
+            }
+        }
     }
 }

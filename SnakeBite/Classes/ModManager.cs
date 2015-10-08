@@ -14,11 +14,18 @@ namespace SnakeBite
 {
     internal static class ModManager
     {
-
+        
         internal static string GameArchiveDir { get { return Properties.Settings.Default.InstallPath + "\\master\\0\\01";  } }
         internal static string GameArchivePath { get { return Properties.Settings.Default.InstallPath + "\\master\\0\\01.dat"; } }
         internal static string GameArchiveXmlPath { get { return Properties.Settings.Default.InstallPath + "\\master\\0\\01.dat.xml"; } }
 
+        internal static List<ModEntry> GetInstalledMods()
+        {
+            Settings settingsXml = new Settings();
+            settingsXml.LoadSettings();
+
+            return settingsXml.ModEntries;
+        }
         // Checks the saved InstallPath variable for the existence of MGSVTPP.exe
         internal static bool ValidInstallPath
         {
@@ -31,6 +38,7 @@ namespace SnakeBite
                     {
                         return true;
                     }
+                    
                 }
                 return false;
             }
@@ -75,6 +83,7 @@ namespace SnakeBite
             GzsTool.GzsTool.Run(GameArchivePath);
         }
 
+        // gets information about the existing 01.dat archive
         internal static GameData BuildGameData()
         {
             if (Directory.Exists(GameArchiveDir)) Directory.Delete(GameArchiveDir, true);
@@ -92,6 +101,9 @@ namespace SnakeBite
             }
 
             buildData.GameFpkEntries = BuildFpkList(GameArchiveDir);
+
+            Directory.Delete(GameArchiveDir, true);
+            File.Delete(GameArchiveXmlPath);
 
             return buildData;
         }
@@ -138,9 +150,35 @@ namespace SnakeBite
             return BuildFpkList;
         }
 
+        internal static string GetAssetDir(string Path)
+        {
+            string bsPath = DoBackSlashes(Path);
+            return bsPath.Substring(bsPath.LastIndexOf("/Assets"));
+        }
+
+        internal static string DoBackSlashes(string str)
+        {
+            string DoBackSlashes = str.Replace("\\", "/");
+            return DoBackSlashes;
+        }
+
+        internal static string DoForwardSlashes(string str)
+        {
+            string DoForwardSlashes = str.Replace("/", "\\");
+            return DoForwardSlashes;
+        }
+
         internal static string GetFileExtension(string FilePath)
         {
             return FilePath.Substring(FilePath.LastIndexOf(".") + 1).ToLower();
+        }
+
+        // validates 01.dat MD5 against previous hash
+        internal static bool CheckDatHash()
+        {
+            string md5old = Properties.Settings.Default.DatHash;
+            if(HashFile(GameArchivePath) != md5old) return false;
+            return true;
         }
 
         internal static string HashFile(string Filename)
@@ -161,5 +199,232 @@ namespace SnakeBite
 
             return hashBuilder.ToString();
         }
+
+        public static bool InstallMod(string ModFile)
+        {
+            if (!ModManager.ValidInstallPath) return false; // no valid install specified
+
+            if (!File.Exists(GameArchivePath)) return false; 
+
+            // extract existing DAT file
+            GzsTool.GzsTool.Run(GameArchivePath);
+
+            // import existing DAT xml
+            QarFile qarXml = new QarFile();
+            qarXml.LoadFromFile(GameArchiveXmlPath);
+
+            // extract mod files to temp folder
+            if (Directory.Exists("_temp")) Directory.Delete("_temp", true);
+            FastZip unzipper = new FastZip();
+            unzipper.ExtractZip(ModFile, "_temp", "(.*?)");
+
+            // load mod metadata
+            ModEntry modMetadata = new ModEntry();
+            modMetadata.ReadFromFile("_temp\\metadata.xml");
+            File.Delete("_temp\\metadata.xml");
+
+            // check for fpk merges
+            List<ModFpkEntry> installedFpkFiles = new List<ModFpkEntry>();
+            foreach (QarEntry gzsQar in qarXml.QarEntries)
+            {
+                string qarExt = gzsQar.FilePath.Substring(gzsQar.FilePath.LastIndexOf(".") + 1).ToLower();
+                if (qarExt == "fpk" || qarExt == "fpkd")
+                {
+                    // extract FPK and add files to list
+                    string fpkFile = GameArchiveDir + "\\" + gzsQar.FilePath;
+                    string fpkDir = fpkFile.Replace(".", "_");
+                    GzsTool.GzsTool.Run(fpkFile);
+
+                    List<string> fpkFiles = Directory.GetFiles(fpkDir, "*.*", SearchOption.AllDirectories).ToList();
+                    foreach (string file in fpkFiles)
+                    {
+                        string fpkFilePath = file.Substring(file.LastIndexOf("Assets\\"));
+                        fpkFilePath = "/" + fpkFilePath.Replace("\\", "/");
+
+                        string fpkPath = fpkFile.Substring(fpkFile.LastIndexOf("Assets\\"));
+                        fpkPath = "/" + fpkPath.Replace("\\", "/");
+
+                        installedFpkFiles.Add(new ModFpkEntry() { FilePath = fpkFilePath, FpkFile = fpkPath });
+                    }
+                }
+            }
+
+            // compare lists and build merge fpk list
+            List<string> mergeFpks = new List<string>();
+            foreach (ModFpkEntry installedFpk in installedFpkFiles)
+            {
+                foreach (ModEntry mod in GetInstalledMods())
+                {
+                    if (mod.ModFpkEntries.Find(entry => entry.FpkFile == installedFpk.FpkFile) != null) // if the mod has an fpk that should be merged with an installed fpk
+                    {
+                        if (!mergeFpks.Contains(installedFpk.FpkFile))
+                        {
+                            mergeFpks.Add(installedFpk.FpkFile);
+                        }
+                    }
+                }
+            }
+
+            if (mergeFpks.Count > 0)
+            {
+                // merge fpks
+                foreach (string fpkFile in mergeFpks)
+                {
+
+                    string fpkPath = DoForwardSlashes(fpkFile);
+                    string gameFpkPath = GameArchiveDir + fpkPath;
+                    string gameFpkDir = GameArchiveDir + "\\master\\0\\01\\" + fpkPath.Replace(".", "_");
+                    string modFpkPath = "_temp\\" + fpkPath;
+                    string modFpkDir = "_temp\\" + fpkPath.Replace(".", "_");
+
+                    GzsTool.GzsTool.Run(gameFpkPath);
+                    GzsTool.GzsTool.Run(modFpkPath);
+
+                    // load existing xml data
+                    FpkFile fpkXml = new FpkFile();
+                    fpkXml.LoadFromFile(gameFpkPath + ".xml");
+
+                    // generate list of files to move and add to xml
+                    List<string> filesToMove = new List<string>();
+                    foreach (ModFpkEntry file in modMetadata.ModFpkEntries.FindAll(entry => entry.FpkFile == fpkFile))
+                    {
+                        filesToMove.Add(file.FilePath.Replace("/", "\\"));
+                        if (fpkXml.FpkEntries.Count(entry => entry.FilePath == file.FilePath) == 0)
+                        {
+                            // insert new fpk entries as required
+                            fpkXml.FpkEntries.Add(new FpkEntry() { FilePath = fpkFile });
+                        }
+                    }
+
+                    // create directories and move files
+                    foreach (string file in filesToMove)
+                    {
+                        string fileDir = (gameFpkDir + file).Substring(0, (gameFpkDir + file).LastIndexOf("\\"));
+                        if (!Directory.Exists(fileDir))
+                        {
+                            Directory.CreateDirectory(fileDir);
+                        }
+                        File.Copy(modFpkDir + file, gameFpkDir + file, true);
+                    }
+
+                    fpkXml.WriteToFile(gameFpkPath + ".xml");
+                    GzsTool.GzsTool.Run(gameFpkPath + ".xml");
+                }
+            }
+
+            // copy files for new DAT
+            foreach (ModQarEntry modQarFile in modMetadata.ModQarEntries)
+            {
+                string fileName = "/" + modQarFile.FilePath.Replace("\\", "/");
+                string fileDir = (GameArchiveDir + modQarFile.FilePath.Replace("/","\\")).Substring(0, (GameArchiveDir  + modQarFile.FilePath).LastIndexOf("/"));
+
+                // if file is not already in QAR, add it
+                if (qarXml.QarEntries.Count(entry => entry.FilePath == modQarFile.FilePath) == 0)
+                {
+                    qarXml.QarEntries.Add(new QarEntry() { FilePath = modQarFile.FilePath, Compressed = modQarFile.Compressed, Hash = modQarFile.Hash });
+                }
+
+                // copy all files that weren't merged FPKS
+                if (!mergeFpks.Contains(fileName))
+                {
+                    if (!Directory.Exists(fileDir))
+                    {
+                        Directory.CreateDirectory(fileDir);
+                    }
+                    File.Copy("_temp\\" + modQarFile.FilePath.Replace("/","\\"), ModManager.GameArchiveDir + modQarFile.FilePath.Replace("/", "\\"), true);
+
+                }
+
+            }
+
+            // build XML for new DAT
+            qarXml.WriteToFile(GameArchiveXmlPath);
+
+            // build new DAT
+            GzsTool.GzsTool.Run(GameArchiveXmlPath);
+
+            // remove temp files
+            Directory.Delete("_temp", true);
+            Directory.Delete(GameArchiveDir, true);
+            File.Delete(GameArchiveXmlPath);
+
+            return true;
+        }
+
+        public static bool UninstallMod(ModEntry mod)
+        {
+            // extract 01.dat
+            if (!ModManager.ValidInstallPath) return false; // no valid install specified
+
+            if (!File.Exists(GameArchivePath)) return false;
+
+            GzsTool.GzsTool.Run(GameArchivePath);
+
+
+            // load xml data
+            QarFile datXml = new QarFile();
+            datXml.LoadFromFile(GameArchiveXmlPath);
+
+            // check for fpks
+            List<string> modFpks = new List<string>();
+            foreach(ModFpkEntry modFpkFile in mod.ModFpkEntries)
+            {
+                if(datXml.QarEntries.Count(entry => DoBackSlashes(entry.FilePath) == DoBackSlashes(modFpkFile.FpkFile.Substring(1))) > 0 && !modFpks.Contains(DoForwardSlashes(modFpkFile.FpkFile)))
+                {
+                    modFpks.Add(DoForwardSlashes(modFpkFile.FpkFile));
+                }
+            }
+
+            // do the fpks thing
+            // unpack fpk
+            foreach(string fpkFile in modFpks)
+            {
+                // check if fpk file exists in game data
+                if(File.Exists(GameArchiveDir + fpkFile))
+                {
+                    // extract fpk
+                    GzsTool.GzsTool.Run(GameArchiveDir + fpkFile);
+
+                    string fpkDir = GameArchiveDir + fpkFile.Replace(".", "_");
+                    FpkFile fpkXml = new FpkFile();
+                    fpkXml.LoadFromFile(GameArchiveDir + fpkFile + ".xml");
+
+                    // check if any files left in fpk
+                    List<FpkEntry> fpkFiles = fpkXml.FpkEntries.ToList();
+                    foreach(FpkEntry fpkSubFile in fpkXml.FpkEntries)
+                    {
+                        fpkFiles.RemoveAll(entry => entry.FilePath == fpkSubFile.FilePath);
+                    }
+
+                    // if not, remove it
+                    if(fpkFiles.Count == 0)
+                    {
+                        // delete fpk from dat XML
+                        datXml.QarEntries.RemoveAll(entry => entry.FilePath == DoForwardSlashes(fpkFile.Substring(1)));
+                    }
+                }
+            }
+
+            // remove mod files from xml
+            foreach(ModQarEntry modQEntry in mod.ModQarEntries)
+            {
+                // delete files, fpks that were de-merged will be ignored
+                if(!modFpks.Contains(modQEntry.FilePath))
+                {
+                    datXml.QarEntries.RemoveAll(entry => entry.FilePath == DoForwardSlashes(modQEntry.FilePath));
+                }
+            }
+
+            // rebuild 01.dat
+            datXml.WriteToFile(GameArchiveXmlPath);
+
+            GzsTool.GzsTool.Run(GameArchiveXmlPath);
+
+            return true;
+        }
+
     }
+
+
+
 }

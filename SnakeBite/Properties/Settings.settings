@@ -1,9 +1,12 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SnakeBite2.Properties" GeneratedClassName="Settings">
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="SnakeBite.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
     <Setting Name="InstallPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Program Files (x86)\Steam\SteamApps\Common\MGS_TPP</Value>
+    </Setting>
+    <Setting Name="DatHash" Type="System.String" Scope="User">
+      <Value Profile="(Default)" />
     </Setting>
   </Settings>
 </SettingsFile>

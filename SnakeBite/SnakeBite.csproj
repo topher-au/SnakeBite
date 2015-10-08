@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>snake2.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\snake2.ico</ApplicationIcon>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="CityHash">
@@ -56,6 +56,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\StructuralEqualityComparer.cs" />
     <Compile Include="formMain.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -64,28 +65,37 @@
     </Compile>
     <Compile Include="Classes\GzsTool.cs" />
     <Compile Include="Classes\Settings.cs" />
+    <Compile Include="formProgress.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="formProgress.Designer.cs">
+      <DependentUpon>formProgress.cs</DependentUpon>
+    </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Classes\ModManager.cs" />
+    <Compile Include="Classes\Hashing.cs" />
     <EmbeddedResource Include="formMain.resx">
       <DependentUpon>formMain.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="formProgress.resx">
+      <DependentUpon>formProgress.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Resources.resx</DependentUpon>
-      <DesignTime>True</DesignTime>
-    </Compile>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
@@ -96,7 +106,10 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="snake2.ico" />
+    <Resource Include="Resources\snake2.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\loading-spiral.gif" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

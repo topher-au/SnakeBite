@@ -42,11 +42,11 @@
             this.buttonUninstallMod = new System.Windows.Forms.Button();
             this.listInstalledMods = new System.Windows.Forms.ListBox();
             this.tabSettings = new System.Windows.Forms.TabPage();
+            this.buttonBuildGameDB = new System.Windows.Forms.Button();
+            this.checkConflicts = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.buttonFindMGSV = new System.Windows.Forms.Button();
             this.textInstallPath = new System.Windows.Forms.TextBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
-            this.buttonBuildGameDB = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tabInstalledMods.SuspendLayout();
             this.groupModInfo.SuspendLayout();
@@ -105,11 +105,11 @@
             // 
             // button1
             // 
-            this.button1.Location = new System.Drawing.Point(88, 323);
+            this.button1.Location = new System.Drawing.Point(10, 311);
             this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
+            this.button1.Size = new System.Drawing.Size(197, 23);
             this.button1.TabIndex = 7;
-            this.button1.Text = "button1";
+            this.button1.Text = "THE TEST BUTTON";
             this.button1.UseVisualStyleBackColor = true;
             this.button1.Click += new System.EventHandler(this.button1_Click);
             // 
@@ -195,7 +195,7 @@
             // tabSettings
             // 
             this.tabSettings.Controls.Add(this.buttonBuildGameDB);
-            this.tabSettings.Controls.Add(this.checkBox1);
+            this.tabSettings.Controls.Add(this.checkConflicts);
             this.tabSettings.Controls.Add(this.groupBox1);
             this.tabSettings.Location = new System.Drawing.Point(4, 24);
             this.tabSettings.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -205,6 +205,27 @@
             this.tabSettings.TabIndex = 1;
             this.tabSettings.Text = "Settings";
             this.tabSettings.UseVisualStyleBackColor = true;
+            // 
+            // buttonBuildGameDB
+            // 
+            this.buttonBuildGameDB.Location = new System.Drawing.Point(287, 65);
+            this.buttonBuildGameDB.Name = "buttonBuildGameDB";
+            this.buttonBuildGameDB.Size = new System.Drawing.Size(143, 23);
+            this.buttonBuildGameDB.TabIndex = 2;
+            this.buttonBuildGameDB.Text = "Rebuild Database";
+            this.buttonBuildGameDB.UseVisualStyleBackColor = true;
+            this.buttonBuildGameDB.Click += new System.EventHandler(this.buttonBuildGameDB_Click);
+            // 
+            // checkConflicts
+            // 
+            this.checkConflicts.AutoSize = true;
+            this.checkConflicts.Location = new System.Drawing.Point(12, 68);
+            this.checkConflicts.Name = "checkConflicts";
+            this.checkConflicts.Size = new System.Drawing.Size(158, 19);
+            this.checkConflicts.TabIndex = 1;
+            this.checkConflicts.Text = "Disable conflict checking";
+            this.checkConflicts.UseVisualStyleBackColor = true;
+            this.checkConflicts.CheckedChanged += new System.EventHandler(this.checkConflicts_CheckedChanged);
             // 
             // groupBox1
             // 
@@ -234,25 +255,6 @@
             this.textInstallPath.ReadOnly = true;
             this.textInstallPath.Size = new System.Drawing.Size(387, 23);
             this.textInstallPath.TabIndex = 1;
-            // 
-            // checkBox1
-            // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(12, 68);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(110, 19);
-            this.checkBox1.TabIndex = 1;
-            this.checkBox1.Text = "Disable conflict ";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            // 
-            // buttonBuildGameDB
-            // 
-            this.buttonBuildGameDB.Location = new System.Drawing.Point(287, 65);
-            this.buttonBuildGameDB.Name = "buttonBuildGameDB";
-            this.buttonBuildGameDB.Size = new System.Drawing.Size(143, 23);
-            this.buttonBuildGameDB.TabIndex = 2;
-            this.buttonBuildGameDB.Text = "Rebuild Database";
-            this.buttonBuildGameDB.UseVisualStyleBackColor = true;
             // 
             // formMain
             // 
@@ -300,7 +302,7 @@
         private System.Windows.Forms.TextBox textInstallPath;
         private System.Windows.Forms.Button button1;
         private System.Windows.Forms.Button buttonBuildGameDB;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox checkConflicts;
     }
 }
 
