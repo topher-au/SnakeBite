@@ -131,7 +131,7 @@ namespace SnakeBite
                 GzsTool.GzsTool.Run(fpkFile); // unpack fpk
                 FpkFile gzsFpkXml = new FpkFile();
                 gzsFpkXml.LoadFromFile(fpkFile + ".xml");
-                string fpkFileName = fpkFile.Substring(fpkFile.LastIndexOf("\\Assets\\")).Replace("\\","/"); // name of fpk for fpk list
+                string fpkFileName = fpkFile.Substring(GameArchiveDir.Length).Replace("\\","/"); // name of fpk for fpk list
 
                 foreach (FpkEntry fpkFileEntry in gzsFpkXml.FpkEntries)
                 {
@@ -238,10 +238,10 @@ namespace SnakeBite
                     List<string> fpkFiles = Directory.GetFiles(fpkDir, "*.*", SearchOption.AllDirectories).ToList();
                     foreach (string file in fpkFiles)
                     {
-                        string fpkFilePath = file.Substring(file.LastIndexOf("Assets\\"));
-                        fpkFilePath = "/" + fpkFilePath.Replace("\\", "/");
+                        string fpkFilePath = fpkFile.Substring(GameArchiveDir.Length);
+                        fpkFilePath =  fpkFilePath.Replace("\\", "/");
 
-                        string fpkPath = fpkFile.Substring(fpkFile.LastIndexOf("Assets\\"));
+                        string fpkPath = file.Substring(file.LastIndexOf("Assets\\"));
                         fpkPath = "/" + fpkPath.Replace("\\", "/");
 
                         installedFpkFiles.Add(new ModFpkEntry() { FilePath = fpkFilePath, FpkFile = fpkPath });
@@ -321,7 +321,7 @@ namespace SnakeBite
                 // if file is not already in QAR, add it
                 if (qarXml.QarEntries.Count(entry => entry.FilePath == modQarFile.FilePath) == 0)
                 {
-                    qarXml.QarEntries.Add(new QarEntry() { FilePath = modQarFile.FilePath, Compressed = modQarFile.Compressed, Hash = modQarFile.Hash });
+                        qarXml.QarEntries.Add(new QarEntry() { FilePath = modQarFile.FilePath, Compressed = modQarFile.Compressed, Hash=modQarFile.Hash });  
                 }
 
                 // copy all files that weren't merged FPKS
@@ -369,9 +369,9 @@ namespace SnakeBite
             List<string> modFpks = new List<string>();
             foreach(ModFpkEntry modFpkFile in mod.ModFpkEntries)
             {
-                if(datXml.QarEntries.Count(entry => DoBackSlashes(entry.FilePath) == DoBackSlashes(modFpkFile.FpkFile.Substring(1))) > 0 && !modFpks.Contains(DoForwardSlashes(modFpkFile.FpkFile)))
+                if(datXml.QarEntries.Count(entry => entry.FilePath == modFpkFile.FpkFile) > 0 && !modFpks.Contains(modFpkFile.FpkFile))
                 {
-                    modFpks.Add(DoForwardSlashes(modFpkFile.FpkFile));
+                    modFpks.Add(modFpkFile.FpkFile);
                 }
             }
 
@@ -380,12 +380,12 @@ namespace SnakeBite
             foreach(string fpkFile in modFpks)
             {
                 // check if fpk file exists in game data
-                if(File.Exists(GameArchiveDir + fpkFile))
+                if(File.Exists(GameArchiveDir + fpkFile.Replace("/","\\")))
                 {
                     // extract fpk
-                    GzsTool.GzsTool.Run(GameArchiveDir + fpkFile);
+                    GzsTool.GzsTool.Run(GameArchiveDir + fpkFile.Replace("/", "\\"));
 
-                    string fpkDir = GameArchiveDir + fpkFile.Replace(".", "_");
+                    string fpkDir = GameArchiveDir + fpkFile.Replace(".", "_").Replace("/", "\\");
                     FpkFile fpkXml = new FpkFile();
                     fpkXml.LoadFromFile(GameArchiveDir + fpkFile + ".xml");
 
@@ -400,7 +400,7 @@ namespace SnakeBite
                     if(fpkFiles.Count == 0)
                     {
                         // delete fpk from dat XML
-                        datXml.QarEntries.RemoveAll(entry => entry.FilePath == DoForwardSlashes(fpkFile.Substring(1)));
+                        datXml.QarEntries.RemoveAll(entry => entry.FilePath == fpkFile);
                     }
                 }
             }
@@ -411,7 +411,7 @@ namespace SnakeBite
                 // delete files, fpks that were de-merged will be ignored
                 if(!modFpks.Contains(modQEntry.FilePath))
                 {
-                    datXml.QarEntries.RemoveAll(entry => entry.FilePath == DoForwardSlashes(modQEntry.FilePath));
+                    datXml.QarEntries.RemoveAll(entry => entry.FilePath == modQEntry.FilePath);
                 }
             }
 

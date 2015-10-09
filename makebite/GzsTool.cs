@@ -4,6 +4,8 @@ using System.IO;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
+using GzsTool.Utility;
+using System;
 
 namespace SnakeBite.GzsTool
 {
@@ -68,6 +70,27 @@ namespace SnakeBite.GzsTool
 
         public void WriteToFile(string Filename)
         {
+            foreach(QarEntry qarFile in QarEntries)
+            {
+                // regenerate hash for file
+                if(qarFile.FilePath.Substring(1).Contains("/"))
+                {
+                    // generate normal hash
+                    string fileName = "/" + qarFile.FilePath.Replace("\\","/");
+                    ulong hash = Hashing.HashFileNameWithExtension(fileName);
+                    qarFile.Hash = hash;
+                } else {
+                    // generate extension only hash
+                    string fileName = "/" + qarFile.FilePath.Replace("\\", "/");
+                    ulong hash = Hashing.HashFileNameExtensionOnly(fileName);
+                    qarFile.Hash = hash;
+                }
+                string ext = qarFile.FilePath.Substring(qarFile.FilePath.LastIndexOf(".")+1);
+                if (ext == "fpk" || ext == "fpkd")
+                {
+                    qarFile.Compressed = true;
+                }
+            }
             XmlSerializer x = new XmlSerializer(typeof(ArchiveFile), new[] { typeof(QarFile) });
             StreamWriter s = new StreamWriter(Filename);
             x.Serialize(s, this);

@@ -72,31 +72,46 @@ namespace SnakeBite.GzsTool
         {
             foreach(QarEntry qarFile in QarEntries)
             {
-                if(qarFile.FilePath.Contains("Assets"))
+                // regenerate hash for file
+                if(qarFile.FilePath.Substring(1).Contains("/"))
                 {
                     // generate normal hash
-                    string fileName = "/" + qarFile.FilePath.Replace("\\","/");
-                    string fileNoExt = fileName.Substring(0, fileName.IndexOf("."));
-                    string fileExt = fileName.Substring(fileName.IndexOf(".")+1);
-                    ulong extHash = Hashing.HashFileName(fileExt, false) & 0x1FFF;
-                    ulong fileHash = Hashing.HashFileName(fileNoExt) & 0xFFFFFFFFFFFF;
-
-                    byte[] hash = new byte[9];
-
-                    byte[] extBytes = BitConverter.GetBytes(extHash);
-                    byte[] fileBytes = BitConverter.GetBytes(fileHash);
-
-                    ulong outHash = BitConverter.ToUInt64(hash, 0);
-
-                } else
-                {
+                    string fileName = DenormalPath(qarFile.FilePath);
+                    ulong hash = Hashing.HashFileNameWithExtension(fileName);
+                    qarFile.Hash = hash;
+                } else {
                     // generate extension only hash
+                    string fileName = DenormalPath(qarFile.FilePath);
+                    ulong hash = Hashing.HashFileNameExtensionOnly(fileName);
+                    qarFile.Hash = hash;
+                }
+                string ext = qarFile.FilePath.Substring(qarFile.FilePath.LastIndexOf(".")+1);
+                if (ext == "fpk" || ext == "fpkd")
+                {
+                    qarFile.Compressed = true;
                 }
             }
             XmlSerializer x = new XmlSerializer(typeof(ArchiveFile), new[] { typeof(QarFile) });
             StreamWriter s = new StreamWriter(Filename);
             x.Serialize(s, this);
             s.Close();
+        }
+
+        public string DenormalPath (string filePath)
+        {
+            if(filePath.Substring(0,1) == "/")
+            {
+                return filePath.Replace("\\", "/");
+            } else
+            {
+                return "/" + filePath.Replace("\\", "/");
+            }
+            
+        }
+
+        public string NormalPath (string filePath)
+        {
+            return filePath.Replace("/", "\\").TrimStart('\\');
         }
     }
 

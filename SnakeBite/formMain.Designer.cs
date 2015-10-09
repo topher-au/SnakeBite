@@ -35,7 +35,7 @@
             this.button1 = new System.Windows.Forms.Button();
             this.panel1 = new System.Windows.Forms.Panel();
             this.labelModWebsite = new System.Windows.Forms.LinkLabel();
-            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.textDescription = new System.Windows.Forms.TextBox();
             this.labelModVersion = new System.Windows.Forms.Label();
             this.labelModAuthor = new System.Windows.Forms.Label();
             this.labelModName = new System.Windows.Forms.Label();
@@ -116,7 +116,7 @@
             // panel1
             // 
             this.panel1.Controls.Add(this.labelModWebsite);
-            this.panel1.Controls.Add(this.textBox1);
+            this.panel1.Controls.Add(this.textDescription);
             this.panel1.Controls.Add(this.labelModVersion);
             this.panel1.Controls.Add(this.labelModAuthor);
             this.panel1.Controls.Add(this.labelModName);
@@ -135,14 +135,15 @@
             this.labelModWebsite.TabStop = true;
             this.labelModWebsite.Text = "http://mod.website.com/path/to/mod.html";
             // 
-            // textBox1
+            // textDescription
             // 
-            this.textBox1.Location = new System.Drawing.Point(0, 76);
-            this.textBox1.Multiline = true;
-            this.textBox1.Name = "textBox1";
-            this.textBox1.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textBox1.Size = new System.Drawing.Size(282, 213);
-            this.textBox1.TabIndex = 8;
+            this.textDescription.Enabled = false;
+            this.textDescription.Location = new System.Drawing.Point(0, 76);
+            this.textDescription.Multiline = true;
+            this.textDescription.Name = "textDescription";
+            this.textDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textDescription.Size = new System.Drawing.Size(282, 213);
+            this.textDescription.TabIndex = 8;
             // 
             // labelModVersion
             // 
@@ -293,7 +294,7 @@
         private System.Windows.Forms.Button buttonUninstallMod;
         private System.Windows.Forms.Panel panel1;
         private System.Windows.Forms.LinkLabel labelModWebsite;
-        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.TextBox textDescription;
         private System.Windows.Forms.Label labelModVersion;
         private System.Windows.Forms.Label labelModAuthor;
         private System.Windows.Forms.Label labelModName;

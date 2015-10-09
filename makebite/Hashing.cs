@@ -255,10 +255,7 @@ namespace GzsTool.Utility
                 var extension = extensions.Single();
                 typeId = extension.Key;
             }
-            ulong hash = 0;
-            
-                hash = ulong.Parse(hashablePart.Replace("/",""), System.Globalization.NumberStyles.HexNumber);
-            
+            ulong hash = ulong.Parse(hashablePart, System.Globalization.NumberStyles.HexNumber);
             hash = (typeId << 51) | hash;
             return hash;
         }

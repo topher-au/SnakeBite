@@ -64,14 +64,6 @@ namespace makebite
             // write xml
             makeQar.WriteToFile("_temp\\makebite.dat.xml");
 
-            // create DAT file then decode for xml
-            GzsTool.Run("_temp\\makebite.dat.xml");
-            GzsTool.Run("_temp\\makebite.dat");
-
-            // load new xml
-            QarFile newQar = new QarFile();
-            newQar.LoadFromFile("_temp\\makebite.dat.xml");
-
             // create metadata
             ModEntry modMetadata = new ModEntry();
             modMetadata.Name = textModName.Text;
@@ -83,7 +75,7 @@ namespace makebite
             modMetadata.ModFpkEntries = new List<ModFpkEntry>();
 
             // create file data
-            foreach(QarEntry newQarEntry in newQar.QarEntries)
+            foreach(QarEntry newQarEntry in makeQar.QarEntries)
             {
                 modMetadata.ModQarEntries.Add(new ModQarEntry() { FilePath = "/" + newQarEntry.FilePath.Replace("\\","/"), Compressed = newQarEntry.Compressed, Hash = newQarEntry.Hash });
                 string fileExt = newQarEntry.FilePath.Substring(newQarEntry.FilePath.LastIndexOf(".")+1).ToLower();
@@ -92,7 +84,7 @@ namespace makebite
                     newQarEntry.Compressed = true;
                     // decompress fpk files and create metadata
                     string fpkDir = "_temp\\makebite\\" + newQarEntry.FilePath.Replace(".", "_");
-                    GzsTool.Run("_temp\\makebite\\" + newQarEntry.FilePath);
+                    SnakeBite.GzsTool.GzsTool.Run("_temp\\makebite\\" + newQarEntry.FilePath);
                     foreach(string fpkSubFile in Directory.GetFiles(fpkDir,"*.*",SearchOption.AllDirectories))
                     {
                         modMetadata.ModFpkEntries.Add(new ModFpkEntry() {
@@ -100,7 +92,8 @@ namespace makebite
                             FpkFile = "/" + newQarEntry.FilePath.Replace("\\", "/") }
                         );
                     }
-
+                    Directory.Delete(fpkDir, true);
+                    File.Delete("_temp\\makebite\\" + newQarEntry.FilePath + ".xml");
                 }
             }
 
@@ -108,8 +101,9 @@ namespace makebite
 
             // compress to file
             FastZip zipper = new FastZip();
-            zipper.CreateZip("_temp\\mod.mgsv", "_temp\\makebite", true, "(.*?)");
+            zipper.CreateZip(textModName.Text +".mgsv", "_temp\\makebite", true, "(.*?)");
 
+            Directory.Delete("_temp", true);
 
             MessageBox.Show("Done");
         }

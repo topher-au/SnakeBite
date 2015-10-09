@@ -169,6 +169,9 @@ namespace SnakeBite
                 return;
             }
 
+            DialogResult confirmInstall = MessageBox.Show(String.Format("You are about to install {0}, continue?", modMetadata.Name), "SnakeBite", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            if (confirmInstall == DialogResult.No) return;
+
             showProgressWindow(String.Format("Installing {0}, please wait...", modMetadata.Name));
 
             // Install mod to 01.dat
@@ -191,7 +194,12 @@ namespace SnakeBite
         {
             if (listInstalledMods.SelectedIndex >= 0)
             {
-                labelModName.Text = objSettings.ModEntries[listInstalledMods.SelectedIndex].Name;
+                ModEntry selectedMod = objSettings.ModEntries[listInstalledMods.SelectedIndex];
+                labelModName.Text = selectedMod.Name;
+                labelModVersion.Text = selectedMod.Version;
+                labelModAuthor.Text = selectedMod.Author;
+                labelModWebsite.Text = selectedMod.Website;
+                textDescription.Text = selectedMod.Description;
             }
         }
 

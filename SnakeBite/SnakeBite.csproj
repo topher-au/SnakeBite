@@ -56,7 +56,6 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\StructuralEqualityComparer.cs" />
     <Compile Include="formMain.cs">
       <SubType>Form</SubType>
     </Compile>
