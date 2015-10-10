@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace GzsTool.Utility
 {
@@ -188,7 +187,7 @@ namespace GzsTool.Utility
             ulong maskedHash = CityHash.CityHash.CityHash64WithSeeds(text, seed0, seed1) & 0x3FFFFFFFFFFFF;
             return assetFlag ? maskedHash : maskedHash | 0x4000000000000;
         }
-        
+
         public static ulong HashFileNameLegacy(string text, bool removeExtension = true)
         {
             if (removeExtension)
@@ -244,7 +243,7 @@ namespace GzsTool.Utility
             }
             else
             {
-                hashablePart = filePath.Substring(1, extensionIndex-1);
+                hashablePart = filePath.Substring(1, extensionIndex - 1);
                 extensionPart = filePath.Substring(extensionIndex + 1, filePath.Length - extensionIndex - 1);
             }
 
@@ -263,7 +262,7 @@ namespace GzsTool.Utility
         public static string NormalizeFilePath(string filePath)
         {
             return filePath.Replace("/", "\\").TrimStart('\\');
-        } 
+        }
 
         public static string DenormalizeFilePath(string filePath)
         {
@@ -283,7 +282,7 @@ namespace GzsTool.Utility
             if (!HashNameDictionary.TryGetValue(pathHash, out filePath))
             {
                 filePath = pathHash.ToString("x");
-                foundFileName = false; 
+                foundFileName = false;
             }
 
             fileName += filePath;
@@ -298,7 +297,7 @@ namespace GzsTool.Utility
                 fileName += ".";
             }
             fileName += fileExtension;
-            
+
             DebugCompareHash(foundFileName, hash, fileName);
 
             return foundFileName;

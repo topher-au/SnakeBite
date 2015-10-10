@@ -7,7 +7,6 @@ namespace SnakeBite
     [XmlType("Settings")]
     public class Settings
     {
-
         [XmlElement("GameData")]
         public GameData GameData { get; set; } = new GameData();
 
@@ -104,7 +103,7 @@ namespace SnakeBite
             Version = loaded.Version;
             Author = loaded.Author;
             Website = loaded.Website;
-            Description = loaded.Description.Replace("\n","\r\n");
+            Description = loaded.Description.Replace("\n", "\r\n");
 
             ModQarEntries = loaded.ModQarEntries;
             ModFpkEntries = loaded.ModFpkEntries;

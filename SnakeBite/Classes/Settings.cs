@@ -7,7 +7,6 @@ namespace SnakeBite
     [XmlType("Settings")]
     public class Settings
     {
-
         [XmlElement("GameData")]
         public GameData GameData { get; set; } = new GameData();
 
@@ -41,13 +40,13 @@ namespace SnakeBite
             XmlSerializer x = new XmlSerializer(typeof(Settings));
             StreamReader s = new StreamReader("settings.xml");
             Settings loaded = (Settings)x.Deserialize(s);
+            s.Close();
             GameData = loaded.GameData;
             ModEntries = loaded.ModEntries;
-            foreach(ModEntry mod in ModEntries)
+            foreach (ModEntry mod in ModEntries)
             {
-                mod.Description = mod.Description.Replace("\n","\r\n");
+                mod.Description = mod.Description.Replace("\n", "\r\n");
             }
-            s.Close();
             return true;
         }
     }
@@ -111,7 +110,7 @@ namespace SnakeBite
             Version = loaded.Version;
             Author = loaded.Author;
             Website = loaded.Website;
-            Description = loaded.Description.Replace("\n","\r\n");
+            Description = loaded.Description.Replace("\n", "\r\n");
 
             ModQarEntries = loaded.ModQarEntries;
             ModFpkEntries = loaded.ModFpkEntries;
@@ -153,5 +152,18 @@ namespace SnakeBite
 
         [XmlAttribute("FilePath")]
         public string FilePath { get; set; }
+    }
+
+    public static class Tools
+    {
+        public static string ToWinPath(string Path)
+        {
+            return "\\" + Path.Replace("/", "\\").TrimStart('\\');
+        }
+
+        public static string ToQarPath(string Path)
+        {
+            return "/" + Path.Replace("\\", "/").TrimStart('/');
+        }
     }
 }

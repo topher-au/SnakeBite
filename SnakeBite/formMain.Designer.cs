@@ -48,12 +48,18 @@
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.buttonFindMGSV = new System.Windows.Forms.Button();
             this.textInstallPath = new System.Windows.Forms.TextBox();
+            this.buttonLaunch = new System.Windows.Forms.Button();
+            this.groupAbout = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.labelVersion = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabInstalledMods.SuspendLayout();
             this.groupModInfo.SuspendLayout();
             this.panelModDetails.SuspendLayout();
             this.tabSettings.SuspendLayout();
             this.groupBox1.SuspendLayout();
+            this.groupAbout.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl
@@ -183,6 +189,7 @@
             this.labelModAuthor.Size = new System.Drawing.Size(60, 15);
             this.labelModAuthor.TabIndex = 6;
             this.labelModAuthor.Text = "by Author";
+            this.labelModAuthor.Click += new System.EventHandler(this.labelModAuthor_Click);
             // 
             // labelModName
             // 
@@ -196,6 +203,8 @@
             // 
             // tabSettings
             // 
+            this.tabSettings.Controls.Add(this.labelVersion);
+            this.tabSettings.Controls.Add(this.groupAbout);
             this.tabSettings.Controls.Add(this.buttonBuildGameDB);
             this.tabSettings.Controls.Add(this.checkConflicts);
             this.tabSettings.Controls.Add(this.groupBox1);
@@ -221,7 +230,7 @@
             // checkConflicts
             // 
             this.checkConflicts.AutoSize = true;
-            this.checkConflicts.Location = new System.Drawing.Point(6, 67);
+            this.checkConflicts.Location = new System.Drawing.Point(12, 67);
             this.checkConflicts.Name = "checkConflicts";
             this.checkConflicts.Size = new System.Drawing.Size(158, 19);
             this.checkConflicts.TabIndex = 1;
@@ -258,11 +267,64 @@
             this.textInstallPath.Size = new System.Drawing.Size(522, 23);
             this.textInstallPath.TabIndex = 1;
             // 
+            // buttonLaunch
+            // 
+            this.buttonLaunch.Location = new System.Drawing.Point(476, 8);
+            this.buttonLaunch.Name = "buttonLaunch";
+            this.buttonLaunch.Size = new System.Drawing.Size(123, 23);
+            this.buttonLaunch.TabIndex = 3;
+            this.buttonLaunch.Text = "Launch MGSV";
+            this.buttonLaunch.UseVisualStyleBackColor = true;
+            this.buttonLaunch.Click += new System.EventHandler(this.buttonLaunch_Click);
+            // 
+            // groupAbout
+            // 
+            this.groupAbout.Controls.Add(this.linkLabel1);
+            this.groupAbout.Controls.Add(this.label1);
+            this.groupAbout.Location = new System.Drawing.Point(121, 176);
+            this.groupAbout.Name = "groupAbout";
+            this.groupAbout.Size = new System.Drawing.Size(339, 133);
+            this.groupAbout.TabIndex = 3;
+            this.groupAbout.TabStop = false;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 19);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(325, 105);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Thankyou for using SnakeBite!\r\n\r\nLatest version available here:\r\n\r\n\r\nSpecial than" +
+    "ks to Atvaark for GzsTool and emoose and many\r\nmore for all their hard work!";
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.linkLabel1.Location = new System.Drawing.Point(24, 70);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(299, 15);
+            this.linkLabel1.TabIndex = 1;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "https://www.github.com/topher-au/SnakeBite/releases";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            // 
+            // labelVersion
+            // 
+            this.labelVersion.AutoSize = true;
+            this.labelVersion.Location = new System.Drawing.Point(3, 391);
+            this.labelVersion.Name = "labelVersion";
+            this.labelVersion.Size = new System.Drawing.Size(51, 15);
+            this.labelVersion.TabIndex = 2;
+            this.labelVersion.Text = "version1";
+            this.labelVersion.Click += new System.EventHandler(this.label2_Click);
+            // 
             // formMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(612, 467);
+            this.Controls.Add(this.buttonLaunch);
             this.Controls.Add(this.tabControl);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -283,6 +345,8 @@
             this.tabSettings.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
+            this.groupAbout.ResumeLayout(false);
+            this.groupAbout.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -308,6 +372,11 @@
         private System.Windows.Forms.Button buttonBuildGameDB;
         private System.Windows.Forms.CheckBox checkConflicts;
         private System.Windows.Forms.Label labelNoMods;
+        private System.Windows.Forms.Button buttonLaunch;
+        private System.Windows.Forms.GroupBox groupAbout;
+        private System.Windows.Forms.LinkLabel linkLabel1;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Label labelVersion;
     }
 }
 

@@ -1,11 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using GzsTool.Utility;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
-using GzsTool.Utility;
-using System;
 
 namespace SnakeBite.GzsTool
 {
@@ -70,21 +69,23 @@ namespace SnakeBite.GzsTool
 
         public void WriteToFile(string Filename)
         {
-            foreach(QarEntry qarFile in QarEntries)
+            foreach (QarEntry qarFile in QarEntries)
             {
                 // regenerate hash for file
                 string filePath = qarFile.FilePath.Replace("\\", "/");
-                if(filePath.Substring(1).Contains("/"))
+                if (filePath.Substring(1).Contains("/"))
                 {
                     // generate normal hash
                     ulong hash = Hashing.HashFileNameWithExtension(filePath);
                     qarFile.Hash = hash;
-                } else {
+                }
+                else
+                {
                     // generate extension only hash
                     ulong hash = Hashing.HashFileNameExtensionOnly(filePath);
                     qarFile.Hash = hash;
                 }
-                string ext = qarFile.FilePath.Substring(qarFile.FilePath.LastIndexOf(".")+1);
+                string ext = qarFile.FilePath.Substring(qarFile.FilePath.LastIndexOf(".") + 1);
                 if (ext == "fpk" || ext == "fpkd")
                 {
                     qarFile.Compressed = true;

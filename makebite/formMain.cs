@@ -1,17 +1,11 @@
-﻿using System.IO;
+﻿using GzsTool.Utility;
+using ICSharpCode.SharpZipLib.Zip;
+using SnakeBite;
+using SnakeBite.GzsTool;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.IO;
 using System.Windows.Forms;
-using SnakeBite.GzsTool;
-using SnakeBite;
-using ICSharpCode.SharpZipLib.Zip;
-using GzsTool.Utility;
 
 namespace makebite
 {
@@ -34,8 +28,9 @@ namespace makebite
 
             string modPath = selectPath.SelectedPath;
             textModPath.Text = modPath;
-            foreach (string modFile in Directory.GetFiles(modPath, "*.*", SearchOption.AllDirectories)) {
-                listModFiles.Items.Add(modFile.Substring(modPath.Length).Replace("\\","/"));
+            foreach (string modFile in Directory.GetFiles(modPath, "*.*", SearchOption.AllDirectories))
+            {
+                listModFiles.Items.Add(modFile.Substring(modPath.Length).Replace("\\", "/"));
             }
         }
 
@@ -64,7 +59,7 @@ namespace makebite
                 subDir = subDir.Substring(modPath.Length);
                 if (!Directory.Exists("_temp\\makebite" + subDir)) Directory.CreateDirectory("_temp\\makebite" + subDir); // create file structure
                 File.Copy(modFile, "_temp\\makebite" + modFile.Substring(modPath.Length), true);
-                makeQar.QarEntries.Add(new QarEntry() { FilePath = modFile.Substring(modPath.Length+1) }); // add to xml
+                makeQar.QarEntries.Add(new QarEntry() { FilePath = modFile.Substring(modPath.Length + 1) }); // add to xml
             }
 
             // write xml
@@ -81,21 +76,23 @@ namespace makebite
             modMetadata.ModFpkEntries = new List<ModFpkEntry>();
 
             // create file data
-            foreach(QarEntry newQarEntry in makeQar.QarEntries)
+            foreach (QarEntry newQarEntry in makeQar.QarEntries)
             {
                 modMetadata.ModQarEntries.Add(new ModQarEntry() { FilePath = Hashing.DenormalizeFilePath(newQarEntry.FilePath), Compressed = newQarEntry.Compressed, Hash = newQarEntry.Hash });
-                string fileExt = newQarEntry.FilePath.Substring(newQarEntry.FilePath.LastIndexOf(".")+1).ToLower();
-                if (fileExt == "fpk" || fileExt == "fpkd" )
+                string fileExt = newQarEntry.FilePath.Substring(newQarEntry.FilePath.LastIndexOf(".") + 1).ToLower();
+                if (fileExt == "fpk" || fileExt == "fpkd")
                 {
                     newQarEntry.Compressed = true;
                     // decompress fpk files and create metadata
                     string fpkDir = "_temp\\makebite\\" + newQarEntry.FilePath.Replace(".", "_");
                     SnakeBite.GzsTool.GzsTool.Run("_temp\\makebite\\" + newQarEntry.FilePath);
-                    foreach(string fpkSubFile in Directory.GetFiles(fpkDir,"*.*",SearchOption.AllDirectories))
+                    foreach (string fpkSubFile in Directory.GetFiles(fpkDir, "*.*", SearchOption.AllDirectories))
                     {
-                        modMetadata.ModFpkEntries.Add(new ModFpkEntry() {
-                            FilePath = fpkSubFile.Substring(fpkSubFile.LastIndexOf("\\Assets")).Replace("\\","/"),
-                            FpkFile = "/" + newQarEntry.FilePath.Replace("\\", "/") }
+                        modMetadata.ModFpkEntries.Add(new ModFpkEntry()
+                        {
+                            FilePath = fpkSubFile.Substring(fpkSubFile.LastIndexOf("\\Assets")).Replace("\\", "/"),
+                            FpkFile = "/" + newQarEntry.FilePath.Replace("\\", "/")
+                        }
                         );
                     }
                     Directory.Delete(fpkDir, true);
@@ -144,7 +141,7 @@ namespace makebite
             textModVersion.Text = modMetaData.Version;
             textModAuthor.Text = modMetaData.Author;
             textModWebsite.Text = modMetaData.Website;
-            textModDescription.Text = modMetaData.Description.Replace("\n","\r\n");
+            textModDescription.Text = modMetaData.Description.Replace("\n", "\r\n");
         }
     }
 }
