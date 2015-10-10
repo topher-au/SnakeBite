@@ -11,6 +11,7 @@ using System.Windows.Forms;
 using SnakeBite.GzsTool;
 using SnakeBite;
 using ICSharpCode.SharpZipLib.Zip;
+using GzsTool.Utility;
 
 namespace makebite
 {
@@ -40,6 +41,11 @@ namespace makebite
 
         private void buttonBuild_Click(object sender, EventArgs e)
         {
+            SaveFileDialog saveMod = new SaveFileDialog();
+            saveMod.Filter = "MGSV Mod|*.mgsv";
+            DialogResult saveResult = saveMod.ShowDialog();
+            if (saveResult != DialogResult.OK) return;
+
             string modPath = textModPath.Text;
             // delete existing temp directory
             if (Directory.Exists("_temp")) Directory.Delete("_temp", true);
@@ -77,7 +83,7 @@ namespace makebite
             // create file data
             foreach(QarEntry newQarEntry in makeQar.QarEntries)
             {
-                modMetadata.ModQarEntries.Add(new ModQarEntry() { FilePath = "/" + newQarEntry.FilePath.Replace("\\","/"), Compressed = newQarEntry.Compressed, Hash = newQarEntry.Hash });
+                modMetadata.ModQarEntries.Add(new ModQarEntry() { FilePath = Hashing.DenormalizeFilePath(newQarEntry.FilePath), Compressed = newQarEntry.Compressed, Hash = newQarEntry.Hash });
                 string fileExt = newQarEntry.FilePath.Substring(newQarEntry.FilePath.LastIndexOf(".")+1).ToLower();
                 if (fileExt == "fpk" || fileExt == "fpkd" )
                 {
@@ -101,11 +107,44 @@ namespace makebite
 
             // compress to file
             FastZip zipper = new FastZip();
-            zipper.CreateZip(textModName.Text +".mgsv", "_temp\\makebite", true, "(.*?)");
+            zipper.CreateZip(saveMod.FileName, "_temp\\makebite", true, "(.*?)");
 
             Directory.Delete("_temp", true);
 
             MessageBox.Show("Done");
+        }
+
+        private void buttonMetaSave_Click(object sender, EventArgs e)
+        {
+            SaveFileDialog SaveMeta = new SaveFileDialog();
+            SaveMeta.Filter = "Metadata XML|*.xml";
+            DialogResult SaveResult = SaveMeta.ShowDialog();
+            if (SaveResult != DialogResult.OK) return;
+
+            ModEntry modMetaData = new ModEntry();
+            modMetaData.Name = textModName.Text;
+            modMetaData.Author = textModAuthor.Text;
+            modMetaData.Version = textModVersion.Text;
+            modMetaData.Website = textModWebsite.Text;
+            modMetaData.Description = textModDescription.Text;
+            modMetaData.SaveToFile(SaveMeta.FileName);
+        }
+
+        private void buttonMetaLoad_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog LoadMeta = new OpenFileDialog();
+            LoadMeta.Filter = "Metadata XML|*.xml";
+            DialogResult LoadResult = LoadMeta.ShowDialog();
+            if (LoadResult != DialogResult.OK) return;
+
+            ModEntry modMetaData = new ModEntry();
+            modMetaData.ReadFromFile(LoadMeta.FileName);
+
+            textModName.Text = modMetaData.Name;
+            textModVersion.Text = modMetaData.Version;
+            textModAuthor.Text = modMetaData.Author;
+            textModWebsite.Text = modMetaData.Website;
+            textModDescription.Text = modMetaData.Description.Replace("\n","\r\n");
         }
     }
 }

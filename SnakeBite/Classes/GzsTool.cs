@@ -73,16 +73,15 @@ namespace SnakeBite.GzsTool
             foreach(QarEntry qarFile in QarEntries)
             {
                 // regenerate hash for file
-                if(qarFile.FilePath.Substring(1).Contains("/"))
+                string filePath = qarFile.FilePath.Replace("\\", "/");
+                if(filePath.Substring(1).Contains("/"))
                 {
                     // generate normal hash
-                    string fileName = DenormalPath(qarFile.FilePath);
-                    ulong hash = Hashing.HashFileNameWithExtension(fileName);
+                    ulong hash = Hashing.HashFileNameWithExtension(filePath);
                     qarFile.Hash = hash;
                 } else {
                     // generate extension only hash
-                    string fileName = DenormalPath(qarFile.FilePath);
-                    ulong hash = Hashing.HashFileNameExtensionOnly(fileName);
+                    ulong hash = Hashing.HashFileNameExtensionOnly(filePath);
                     qarFile.Hash = hash;
                 }
                 string ext = qarFile.FilePath.Substring(qarFile.FilePath.LastIndexOf(".")+1);
@@ -95,23 +94,6 @@ namespace SnakeBite.GzsTool
             StreamWriter s = new StreamWriter(Filename);
             x.Serialize(s, this);
             s.Close();
-        }
-
-        public string DenormalPath (string filePath)
-        {
-            if(filePath.Substring(0,1) == "/")
-            {
-                return filePath.Replace("\\", "/");
-            } else
-            {
-                return "/" + filePath.Replace("\\", "/");
-            }
-            
-        }
-
-        public string NormalPath (string filePath)
-        {
-            return filePath.Replace("/", "\\").TrimStart('\\');
         }
     }
 

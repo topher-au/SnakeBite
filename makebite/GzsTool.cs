@@ -73,16 +73,15 @@ namespace SnakeBite.GzsTool
             foreach(QarEntry qarFile in QarEntries)
             {
                 // regenerate hash for file
-                if(qarFile.FilePath.Substring(1).Contains("/"))
+                string filePath = qarFile.FilePath.Replace("\\", "/");
+                if(filePath.Substring(1).Contains("/"))
                 {
                     // generate normal hash
-                    string fileName = "/" + qarFile.FilePath.Replace("\\","/");
-                    ulong hash = Hashing.HashFileNameWithExtension(fileName);
+                    ulong hash = Hashing.HashFileNameWithExtension(filePath);
                     qarFile.Hash = hash;
                 } else {
                     // generate extension only hash
-                    string fileName = "/" + qarFile.FilePath.Replace("\\", "/");
-                    ulong hash = Hashing.HashFileNameExtensionOnly(fileName);
+                    ulong hash = Hashing.HashFileNameExtensionOnly(filePath);
                     qarFile.Hash = hash;
                 }
                 string ext = qarFile.FilePath.Substring(qarFile.FilePath.LastIndexOf(".")+1);

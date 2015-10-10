@@ -43,6 +43,10 @@ namespace SnakeBite
             Settings loaded = (Settings)x.Deserialize(s);
             GameData = loaded.GameData;
             ModEntries = loaded.ModEntries;
+            foreach(ModEntry mod in ModEntries)
+            {
+                mod.Description = mod.Description.Replace("\n","\r\n");
+            }
             s.Close();
             return true;
         }
@@ -56,6 +60,9 @@ namespace SnakeBite
             GameQarEntries = new List<ModQarEntry>();
             GameFpkEntries = new List<ModFpkEntry>();
         }
+
+        [XmlAttribute("DatHash")]
+        public string DatHash { get; set; }
 
         [XmlArray("QarEntries")]
         public List<ModQarEntry> GameQarEntries { get; set; }
@@ -96,12 +103,15 @@ namespace SnakeBite
 
             XmlSerializer x = new XmlSerializer(typeof(ModEntry));
             StreamReader s = new StreamReader(Filename);
-            ModEntry loaded = (ModEntry)x.Deserialize(s);
+            System.Xml.XmlReader xr = System.Xml.XmlReader.Create(s);
+
+            ModEntry loaded = (ModEntry)x.Deserialize(xr);
 
             Name = loaded.Name;
             Version = loaded.Version;
             Author = loaded.Author;
             Website = loaded.Website;
+            Description = loaded.Description.Replace("\n","\r\n");
 
             ModQarEntries = loaded.ModQarEntries;
             ModFpkEntries = loaded.ModFpkEntries;
@@ -115,7 +125,7 @@ namespace SnakeBite
 
             if (File.Exists(Filename)) File.Delete(Filename);
 
-            XmlSerializer x = new XmlSerializer(typeof(Settings), new[] { typeof(Settings) });
+            XmlSerializer x = new XmlSerializer(typeof(ModEntry), new[] { typeof(ModEntry) });
             StreamWriter s = new StreamWriter(Filename);
             x.Serialize(s, this);
             s.Close();

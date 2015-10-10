@@ -255,22 +255,19 @@ namespace GzsTool.Utility
                 var extension = extensions.Single();
                 typeId = extension.Key;
             }
-            ulong hash = 0;
-            
-                hash = ulong.Parse(hashablePart.Replace("/",""), System.Globalization.NumberStyles.HexNumber);
-            
+            ulong hash = ulong.Parse(hashablePart, System.Globalization.NumberStyles.HexNumber);
             hash = (typeId << 51) | hash;
             return hash;
         }
 
-        internal static string NormalizeFilePath(string filePath)
+        public static string NormalizeFilePath(string filePath)
         {
             return filePath.Replace("/", "\\").TrimStart('\\');
-        }
+        } 
 
-        private static string DenormalizeFilePath(string filePath)
+        public static string DenormalizeFilePath(string filePath)
         {
-            return filePath.Replace("\\", "/");
+            return "/" + filePath.Replace("\\", "/").TrimStart('/');
         }
 
         internal static bool TryGetFileNameFromHash(ulong hash, out string fileName)

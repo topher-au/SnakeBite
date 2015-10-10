@@ -68,7 +68,7 @@
             this.Name = "formProgress";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Processing";
-            this.Load += new System.EventHandler(this.formProgress_Load);
+            this.VisibleChanged += new System.EventHandler(this.formProgress_VisibleChanged);
             ((System.ComponentModel.ISupportInitialize)(this.pictureSpiral)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();

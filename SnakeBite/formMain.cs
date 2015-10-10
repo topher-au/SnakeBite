@@ -43,18 +43,14 @@ namespace SnakeBite
             // hash 01.dat and check against last known hash
             // if hash doesn't match, prompt user to regen game file database
             string datHash = ModManager.HashFile(ModManager.GameArchivePath);
-            if(datHash != Properties.Settings.Default.DatHash)
+            if(datHash != objSettings.GameData.DatHash)
             {
                 MessageBox.Show("Game data modified outside of SnakeBite. Game cache must be rebuilt and previously installed mods will no longer appear.",
                                 "Game data hash mismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 buttonBuildGameDB_Click(null, null);
-                Properties.Settings.Default.DatHash = ModManager.HashFile(ModManager.GameArchivePath);
-                Properties.Settings.Default.Save();
+                objSettings.GameData.DatHash = ModManager.HashFile(ModManager.GameArchivePath);
+                objSettings.SaveSettings();
             }
-
-            
-
-
 
         }
 
@@ -70,22 +66,35 @@ namespace SnakeBite
             }
 
             listInstalledMods.Items.Clear();
-            foreach (ModEntry mod in objSettings.ModEntries)
-            {
-                listInstalledMods.Items.Add(mod.Name);
-            }
 
-            if (resetSelection)
+            if(objSettings.ModEntries.Count > 0)
             {
-                if (listInstalledMods.Items.Count > 0)
+                panelModDetails.Visible = true;
+                labelNoMods.Visible = false;
+                foreach (ModEntry mod in objSettings.ModEntries)
                 {
-                    listInstalledMods.SelectedIndex = 0;
-                } else
-                {
-                    listInstalledMods.SelectedIndex = -1;
+                    listInstalledMods.Items.Add(mod.Name);
                 }
 
+                if (resetSelection)
+                {
+                    if (listInstalledMods.Items.Count > 0)
+                    {
+                        listInstalledMods.SelectedIndex = 0;
+                    }
+                    else
+                    {
+                        listInstalledMods.SelectedIndex = -1;
+                    }
+
+                }
+            } else
+            {
+                panelModDetails.Visible = false;
+                labelNoMods.Visible = true;
             }
+
+            
         }
 
         private void buttonUninstallMod_Click(object sender, EventArgs e)
@@ -93,7 +102,7 @@ namespace SnakeBite
             // Get selected mod
             ModEntry mod = objSettings.ModEntries[listInstalledMods.SelectedIndex];
 
-            showProgressWindow(String.Format("Please wait while {0} is uninstalled...", mod.Name));
+            showProgressWindow(String.Format("Uninstalling {0}...", mod.Name));
 
             // Uninstall mod
             ModManager.UninstallMod(mod);
@@ -178,8 +187,8 @@ namespace SnakeBite
             ModManager.InstallMod(openModFile.FileName);
 
             // Update DAT hash
-            Properties.Settings.Default.DatHash = ModManager.HashFile(ModManager.GameArchivePath);
-            Properties.Settings.Default.Save();
+            objSettings.GameData.DatHash = ModManager.HashFile(ModManager.GameArchivePath);
+            objSettings.SaveSettings();
 
             // Install mod to game database
             objSettings.ModEntries.Add(modMetadata);
@@ -192,12 +201,14 @@ namespace SnakeBite
 
         private void listInstalledMods_SelectedIndexChanged(object sender, EventArgs e)
         {
+            // populate details pane
             if (listInstalledMods.SelectedIndex >= 0)
             {
                 ModEntry selectedMod = objSettings.ModEntries[listInstalledMods.SelectedIndex];
                 labelModName.Text = selectedMod.Name;
                 labelModVersion.Text = selectedMod.Version;
-                labelModAuthor.Text = selectedMod.Author;
+                labelModAuthor.Text = "by " + selectedMod.Author;
+                labelModAuthor.Left = labelModVersion.Left + labelModVersion.Width + 8;
                 labelModWebsite.Text = selectedMod.Website;
                 textDescription.Text = selectedMod.Description;
             }
@@ -215,11 +226,6 @@ namespace SnakeBite
             textInstallPath.Text = filePath;
             Properties.Settings.Default.InstallPath = filePath;
             Properties.Settings.Default.Save();
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            ulong test = Hashing.HashFileExtension("fpk");
         }
 
         private void showProgressWindow(string Text = "Processing...")

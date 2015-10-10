@@ -96,12 +96,15 @@ namespace SnakeBite
 
             XmlSerializer x = new XmlSerializer(typeof(ModEntry));
             StreamReader s = new StreamReader(Filename);
-            ModEntry loaded = (ModEntry)x.Deserialize(s);
+            System.Xml.XmlReader xr = System.Xml.XmlReader.Create(s);
+
+            ModEntry loaded = (ModEntry)x.Deserialize(xr);
 
             Name = loaded.Name;
             Version = loaded.Version;
             Author = loaded.Author;
             Website = loaded.Website;
+            Description = loaded.Description.Replace("\n","\r\n");
 
             ModQarEntries = loaded.ModQarEntries;
             ModFpkEntries = loaded.ModFpkEntries;

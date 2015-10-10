@@ -260,14 +260,14 @@ namespace GzsTool.Utility
             return hash;
         }
 
-        internal static string NormalizeFilePath(string filePath)
+        public static string NormalizeFilePath(string filePath)
         {
             return filePath.Replace("/", "\\").TrimStart('\\');
-        }
+        } 
 
-        private static string DenormalizeFilePath(string filePath)
+        public static string DenormalizeFilePath(string filePath)
         {
-            return filePath.Replace("\\", "/");
+            return "/" + filePath.Replace("\\", "/").TrimStart('/');
         }
 
         internal static bool TryGetFileNameFromHash(ulong hash, out string fileName)
