@@ -24,6 +24,10 @@ namespace SnakeBite
 
             XmlSerializer x = new XmlSerializer(typeof(Settings), new[] { typeof(Settings) });
             StreamWriter s = new StreamWriter("settings.xml");
+            foreach (ModEntry mod in ModEntries)
+            {
+                mod.Description = mod.Description.Replace("\r\n", "\n");
+            }
             x.Serialize(s, this);
             s.Close();
         }
@@ -40,9 +44,13 @@ namespace SnakeBite
             XmlSerializer x = new XmlSerializer(typeof(Settings));
             StreamReader s = new StreamReader("settings.xml");
             Settings loaded = (Settings)x.Deserialize(s);
+            s.Close();
             GameData = loaded.GameData;
             ModEntries = loaded.ModEntries;
-            s.Close();
+            foreach (ModEntry mod in ModEntries)
+            {
+                mod.Description = mod.Description.Replace("\n", "\r\n");
+            }
             return true;
         }
     }
@@ -55,6 +63,9 @@ namespace SnakeBite
             GameQarEntries = new List<ModQarEntry>();
             GameFpkEntries = new List<ModFpkEntry>();
         }
+
+        [XmlAttribute("DatHash")]
+        public string DatHash { get; set; }
 
         [XmlArray("QarEntries")]
         public List<ModQarEntry> GameQarEntries { get; set; }
@@ -145,5 +156,18 @@ namespace SnakeBite
 
         [XmlAttribute("FilePath")]
         public string FilePath { get; set; }
+    }
+
+    public static class Tools
+    {
+        public static string ToWinPath(string Path)
+        {
+            return "\\" + Path.Replace("/", "\\").TrimStart('\\');
+        }
+
+        public static string ToQarPath(string Path)
+        {
+            return "/" + Path.Replace("\\", "/").TrimStart('/');
+        }
     }
 }

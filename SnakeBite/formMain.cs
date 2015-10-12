@@ -20,6 +20,7 @@ namespace SnakeBite
         private void formMain_Load(object sender, EventArgs e)
         {
             labelVersion.Text = Application.ProductVersion;
+            bool firstRun = false;
             // check if user has specified valid install path
             if (!ModManager.ValidInstallPath)
             {
@@ -29,6 +30,8 @@ namespace SnakeBite
                 buttonFindMGSV_Click(null, null);
                 if (!ModManager.ValidInstallPath)
                     Application.Exit();
+
+                firstRun = true;
             }
 
             // Refresh mod list
@@ -41,8 +44,9 @@ namespace SnakeBite
             // check hash for dat file, if changed, rebuild database
             if (!ModManager.CheckDatHash())
             {
-                MessageBox.Show("Game data modified outside of SnakeBite. SnakeBite will now attempt to recache game data",
-                                "Game data hash mismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                if(!firstRun)
+                    MessageBox.Show("Game data modified outside of SnakeBite. SnakeBite will now attempt to recache game data",
+                                    "Game data hash mismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 buttonBuildGameDB_Click(null, null);
             }
         }
@@ -217,7 +221,7 @@ namespace SnakeBite
                 labelModName.Text = selectedMod.Name;
                 labelModVersion.Text = selectedMod.Version;
                 labelModAuthor.Text = "by " + selectedMod.Author;
-                labelModAuthor.Left = labelModVersion.Left + labelModVersion.Width + 8;
+                labelModAuthor.Left = labelModName.Left + labelModName.Width + 4;
                 labelModWebsite.Text = selectedMod.Website;
                 textDescription.Text = selectedMod.Description;
             }
@@ -303,6 +307,58 @@ namespace SnakeBite
         private void label2_Click(object sender, EventArgs e)
         {
 
+        }
+
+        private void buttonCreateBackup_Click(object sender, EventArgs e)
+        {
+            if (Directory.Exists("_backup")) Directory.Delete("_backup", true);
+            Directory.CreateDirectory("_backup");
+
+            // prompt user for backup filename
+            SaveFileDialog saveBackup = new SaveFileDialog();
+            saveBackup.Filter = "SnakeBite Backup|*.sbb";
+            DialogResult saveResult = saveBackup.ShowDialog();
+            if (saveResult != DialogResult.OK) return;
+
+            // copy current settings
+            objSettings.SaveSettings();
+            File.Copy("settings.xml", "_backup\\settings.xml");
+
+            // copy current 01.dat
+            File.Copy(ModManager.GameArchivePath, "_backup\\01.dat");
+
+            // compress to backup
+            FastZip zipper = new FastZip();
+            zipper.CreateZip(saveBackup.FileName, "_backup", true, "(.*?)");
+
+            Directory.Delete("_backup", true);
+
+            MessageBox.Show("Backup complete.", "SnakeBite", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void buttonRestoreBackup_Click(object sender, EventArgs e)
+        {
+            if (Directory.Exists("_backup")) Directory.Delete("_backup", true);
+
+            OpenFileDialog openBackup = new OpenFileDialog();
+            openBackup.Filter = "SnakeBite Backup|*.sbb";
+            DialogResult openResult = openBackup.ShowDialog();
+            if (openResult != DialogResult.OK) return;
+
+            FastZip unzipper = new FastZip();
+            unzipper.ExtractZip(openBackup.FileName, "_backup","(.*?)");
+
+            File.Copy("_backup\\01.dat", ModManager.GameArchivePath, true);
+            File.Copy("_backup\\settings.xml", "settings.xml", true);
+
+            Directory.Delete("_backup", true);
+
+            objSettings.LoadSettings();
+            LoadInstalledMods(true);
+
+            this.tabControl.SelectedIndex = 0;
+
+            MessageBox.Show("Backup successfully restored!","SnakeBite",MessageBoxButtons.OK,MessageBoxIcon.Information);
         }
     }
 }

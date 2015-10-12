@@ -43,23 +43,29 @@
             this.labelModAuthor = new System.Windows.Forms.Label();
             this.labelModName = new System.Windows.Forms.Label();
             this.tabSettings = new System.Windows.Forms.TabPage();
+            this.labelVersion = new System.Windows.Forms.Label();
+            this.groupAbout = new System.Windows.Forms.GroupBox();
+            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.label1 = new System.Windows.Forms.Label();
             this.buttonBuildGameDB = new System.Windows.Forms.Button();
             this.checkConflicts = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.buttonFindMGSV = new System.Windows.Forms.Button();
             this.textInstallPath = new System.Windows.Forms.TextBox();
             this.buttonLaunch = new System.Windows.Forms.Button();
-            this.groupAbout = new System.Windows.Forms.GroupBox();
-            this.label1 = new System.Windows.Forms.Label();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.labelVersion = new System.Windows.Forms.Label();
+            this.groupBackup = new System.Windows.Forms.GroupBox();
+            this.buttonCreateBackup = new System.Windows.Forms.Button();
+            this.buttonRestoreBackup = new System.Windows.Forms.Button();
+            this.label2 = new System.Windows.Forms.Label();
+            this.label3 = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabInstalledMods.SuspendLayout();
             this.groupModInfo.SuspendLayout();
             this.panelModDetails.SuspendLayout();
             this.tabSettings.SuspendLayout();
-            this.groupBox1.SuspendLayout();
             this.groupAbout.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.groupBackup.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl
@@ -77,7 +83,6 @@
             // 
             this.tabInstalledMods.Controls.Add(this.buttonInstallMod);
             this.tabInstalledMods.Controls.Add(this.listInstalledMods);
-            this.tabInstalledMods.Controls.Add(this.labelNoMods);
             this.tabInstalledMods.Controls.Add(this.groupModInfo);
             this.tabInstalledMods.Location = new System.Drawing.Point(4, 24);
             this.tabInstalledMods.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -113,7 +118,7 @@
             // 
             this.labelNoMods.AutoSize = true;
             this.labelNoMods.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelNoMods.Location = new System.Drawing.Point(293, 171);
+            this.labelNoMods.Location = new System.Drawing.Point(90, 183);
             this.labelNoMods.Name = "labelNoMods";
             this.labelNoMods.Size = new System.Drawing.Size(192, 30);
             this.labelNoMods.TabIndex = 2;
@@ -134,6 +139,7 @@
             // 
             this.panelModDetails.Controls.Add(this.labelModWebsite);
             this.panelModDetails.Controls.Add(this.buttonUninstallMod);
+            this.panelModDetails.Controls.Add(this.labelNoMods);
             this.panelModDetails.Controls.Add(this.textDescription);
             this.panelModDetails.Controls.Add(this.labelModVersion);
             this.panelModDetails.Controls.Add(this.labelModAuthor);
@@ -146,7 +152,7 @@
             // labelModWebsite
             // 
             this.labelModWebsite.AutoSize = true;
-            this.labelModWebsite.Location = new System.Drawing.Point(5, 48);
+            this.labelModWebsite.Location = new System.Drawing.Point(5, 32);
             this.labelModWebsite.Name = "labelModWebsite";
             this.labelModWebsite.Size = new System.Drawing.Size(240, 15);
             this.labelModWebsite.TabIndex = 9;
@@ -165,17 +171,17 @@
             // 
             // textDescription
             // 
-            this.textDescription.Location = new System.Drawing.Point(0, 76);
+            this.textDescription.Location = new System.Drawing.Point(8, 61);
             this.textDescription.Multiline = true;
             this.textDescription.Name = "textDescription";
             this.textDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textDescription.Size = new System.Drawing.Size(352, 273);
+            this.textDescription.Size = new System.Drawing.Size(343, 288);
             this.textDescription.TabIndex = 8;
             // 
             // labelModVersion
             // 
             this.labelModVersion.AutoSize = true;
-            this.labelModVersion.Location = new System.Drawing.Point(5, 33);
+            this.labelModVersion.Location = new System.Drawing.Point(5, 359);
             this.labelModVersion.Name = "labelModVersion";
             this.labelModVersion.Size = new System.Drawing.Size(37, 15);
             this.labelModVersion.TabIndex = 7;
@@ -184,9 +190,10 @@
             // labelModAuthor
             // 
             this.labelModAuthor.AutoSize = true;
-            this.labelModAuthor.Location = new System.Drawing.Point(48, 33);
+            this.labelModAuthor.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelModAuthor.Location = new System.Drawing.Point(154, 15);
             this.labelModAuthor.Name = "labelModAuthor";
-            this.labelModAuthor.Size = new System.Drawing.Size(60, 15);
+            this.labelModAuthor.Size = new System.Drawing.Size(59, 15);
             this.labelModAuthor.TabIndex = 6;
             this.labelModAuthor.Text = "by Author";
             this.labelModAuthor.Click += new System.EventHandler(this.labelModAuthor_Click);
@@ -203,6 +210,7 @@
             // 
             // tabSettings
             // 
+            this.tabSettings.Controls.Add(this.groupBackup);
             this.tabSettings.Controls.Add(this.labelVersion);
             this.tabSettings.Controls.Add(this.groupAbout);
             this.tabSettings.Controls.Add(this.buttonBuildGameDB);
@@ -217,9 +225,51 @@
             this.tabSettings.Text = "Settings";
             this.tabSettings.UseVisualStyleBackColor = true;
             // 
+            // labelVersion
+            // 
+            this.labelVersion.AutoSize = true;
+            this.labelVersion.Location = new System.Drawing.Point(3, 391);
+            this.labelVersion.Name = "labelVersion";
+            this.labelVersion.Size = new System.Drawing.Size(51, 15);
+            this.labelVersion.TabIndex = 2;
+            this.labelVersion.Text = "version1";
+            this.labelVersion.Click += new System.EventHandler(this.label2_Click);
+            // 
+            // groupAbout
+            // 
+            this.groupAbout.Controls.Add(this.linkLabel1);
+            this.groupAbout.Controls.Add(this.label1);
+            this.groupAbout.Location = new System.Drawing.Point(232, 270);
+            this.groupAbout.Name = "groupAbout";
+            this.groupAbout.Size = new System.Drawing.Size(339, 133);
+            this.groupAbout.TabIndex = 3;
+            this.groupAbout.TabStop = false;
+            // 
+            // linkLabel1
+            // 
+            this.linkLabel1.AutoSize = true;
+            this.linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.linkLabel1.Location = new System.Drawing.Point(24, 70);
+            this.linkLabel1.Name = "linkLabel1";
+            this.linkLabel1.Size = new System.Drawing.Size(299, 15);
+            this.linkLabel1.TabIndex = 1;
+            this.linkLabel1.TabStop = true;
+            this.linkLabel1.Text = "https://www.github.com/topher-au/SnakeBite/releases";
+            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(6, 19);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(325, 105);
+            this.label1.TabIndex = 0;
+            this.label1.Text = "Thankyou for using SnakeBite!\r\n\r\nLatest version available here:\r\n\r\n\r\nSpecial than" +
+    "ks to Atvaark for GzsTool and emoose and many\r\nmore for all their hard work!";
+            // 
             // buttonBuildGameDB
             // 
-            this.buttonBuildGameDB.Location = new System.Drawing.Point(422, 64);
+            this.buttonBuildGameDB.Location = new System.Drawing.Point(12, 65);
             this.buttonBuildGameDB.Name = "buttonBuildGameDB";
             this.buttonBuildGameDB.Size = new System.Drawing.Size(143, 23);
             this.buttonBuildGameDB.TabIndex = 2;
@@ -230,7 +280,7 @@
             // checkConflicts
             // 
             this.checkConflicts.AutoSize = true;
-            this.checkConflicts.Location = new System.Drawing.Point(12, 67);
+            this.checkConflicts.Location = new System.Drawing.Point(12, 94);
             this.checkConflicts.Name = "checkConflicts";
             this.checkConflicts.Size = new System.Drawing.Size(158, 19);
             this.checkConflicts.TabIndex = 1;
@@ -277,47 +327,56 @@
             this.buttonLaunch.UseVisualStyleBackColor = true;
             this.buttonLaunch.Click += new System.EventHandler(this.buttonLaunch_Click);
             // 
-            // groupAbout
+            // groupBackup
             // 
-            this.groupAbout.Controls.Add(this.linkLabel1);
-            this.groupAbout.Controls.Add(this.label1);
-            this.groupAbout.Location = new System.Drawing.Point(121, 176);
-            this.groupAbout.Name = "groupAbout";
-            this.groupAbout.Size = new System.Drawing.Size(339, 133);
-            this.groupAbout.TabIndex = 3;
-            this.groupAbout.TabStop = false;
+            this.groupBackup.Controls.Add(this.label3);
+            this.groupBackup.Controls.Add(this.label2);
+            this.groupBackup.Controls.Add(this.buttonRestoreBackup);
+            this.groupBackup.Controls.Add(this.buttonCreateBackup);
+            this.groupBackup.Location = new System.Drawing.Point(277, 65);
+            this.groupBackup.Name = "groupBackup";
+            this.groupBackup.Size = new System.Drawing.Size(294, 155);
+            this.groupBackup.TabIndex = 4;
+            this.groupBackup.TabStop = false;
+            this.groupBackup.Text = "Backup Game Files";
             // 
-            // label1
+            // buttonCreateBackup
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 19);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(325, 105);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Thankyou for using SnakeBite!\r\n\r\nLatest version available here:\r\n\r\n\r\nSpecial than" +
-    "ks to Atvaark for GzsTool and emoose and many\r\nmore for all their hard work!";
+            this.buttonCreateBackup.Location = new System.Drawing.Point(6, 22);
+            this.buttonCreateBackup.Name = "buttonCreateBackup";
+            this.buttonCreateBackup.Size = new System.Drawing.Size(80, 60);
+            this.buttonCreateBackup.TabIndex = 0;
+            this.buttonCreateBackup.Text = "Backup";
+            this.buttonCreateBackup.UseVisualStyleBackColor = true;
+            this.buttonCreateBackup.Click += new System.EventHandler(this.buttonCreateBackup_Click);
             // 
-            // linkLabel1
+            // buttonRestoreBackup
             // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.linkLabel1.Location = new System.Drawing.Point(24, 70);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(299, 15);
-            this.linkLabel1.TabIndex = 1;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "https://www.github.com/topher-au/SnakeBite/releases";
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            this.buttonRestoreBackup.Location = new System.Drawing.Point(6, 88);
+            this.buttonRestoreBackup.Name = "buttonRestoreBackup";
+            this.buttonRestoreBackup.Size = new System.Drawing.Size(80, 60);
+            this.buttonRestoreBackup.TabIndex = 1;
+            this.buttonRestoreBackup.Text = "Restore";
+            this.buttonRestoreBackup.UseVisualStyleBackColor = true;
+            this.buttonRestoreBackup.Click += new System.EventHandler(this.buttonRestoreBackup_Click);
             // 
-            // labelVersion
+            // label2
             // 
-            this.labelVersion.AutoSize = true;
-            this.labelVersion.Location = new System.Drawing.Point(3, 391);
-            this.labelVersion.Name = "labelVersion";
-            this.labelVersion.Size = new System.Drawing.Size(51, 15);
-            this.labelVersion.TabIndex = 2;
-            this.labelVersion.Text = "version1";
-            this.labelVersion.Click += new System.EventHandler(this.label2_Click);
+            this.label2.Location = new System.Drawing.Point(92, 22);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(196, 60);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Backup 01.dat and any installed mods for restoration in case something breaks. Yo" +
+    "u can also swap between mod configurations.";
+            // 
+            // label3
+            // 
+            this.label3.Location = new System.Drawing.Point(92, 88);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(196, 60);
+            this.label3.TabIndex = 3;
+            this.label3.Text = "Restore a backup archive, immediately overwriting any installed mods or other cha" +
+    "nges to 01.dat.";
             // 
             // formMain
             // 
@@ -337,16 +396,16 @@
             this.Load += new System.EventHandler(this.formMain_Load);
             this.tabControl.ResumeLayout(false);
             this.tabInstalledMods.ResumeLayout(false);
-            this.tabInstalledMods.PerformLayout();
             this.groupModInfo.ResumeLayout(false);
             this.panelModDetails.ResumeLayout(false);
             this.panelModDetails.PerformLayout();
             this.tabSettings.ResumeLayout(false);
             this.tabSettings.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
             this.groupAbout.ResumeLayout(false);
             this.groupAbout.PerformLayout();
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.groupBackup.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -377,6 +436,11 @@
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label labelVersion;
+        private System.Windows.Forms.GroupBox groupBackup;
+        private System.Windows.Forms.Button buttonRestoreBackup;
+        private System.Windows.Forms.Button buttonCreateBackup;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.Label label2;
     }
 }
 

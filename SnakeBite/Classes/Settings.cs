@@ -24,6 +24,10 @@ namespace SnakeBite
 
             XmlSerializer x = new XmlSerializer(typeof(Settings), new[] { typeof(Settings) });
             StreamWriter s = new StreamWriter("settings.xml");
+            foreach (ModEntry mod in ModEntries)
+            {
+                mod.Description = mod.Description.Replace("\r\n", "\n");
+            }
             x.Serialize(s, this);
             s.Close();
         }
