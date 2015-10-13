@@ -192,6 +192,7 @@
             this.listModFiles.Name = "listModFiles";
             this.listModFiles.Size = new System.Drawing.Size(408, 304);
             this.listModFiles.TabIndex = 9;
+            this.listModFiles.SelectedIndexChanged += new System.EventHandler(this.listModFiles_SelectedIndexChanged);
             // 
             // buttonSelectPath
             // 
@@ -234,6 +235,7 @@
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
             this.Name = "formMain";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MakeBite";
             this.groupModInfo.ResumeLayout(false);
             this.groupModInfo.PerformLayout();

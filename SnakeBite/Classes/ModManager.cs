@@ -356,8 +356,8 @@ namespace SnakeBite
 
         internal static void DeleteGameArchive()
         {
-            File.Delete(GameArchiveXmlPath);
-            Directory.Delete(GameArchiveDir, true);
+            if(File.Exists(GameArchiveXmlPath)) File.Delete(GameArchiveXmlPath);
+            if(Directory.Exists(GameArchiveDir)) Directory.Delete(GameArchiveDir, true);
         }
 
         internal static void ExtractGameArchive()

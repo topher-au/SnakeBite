@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
+using FolderSelect;
 
 namespace makebite
 {
@@ -18,19 +19,18 @@ namespace makebite
 
         private void buttonSelectPath_Click(object sender, EventArgs e)
         {
-            // user selects path and files are added to listbox
-            FolderBrowserDialog selectPath = new FolderBrowserDialog();
-            DialogResult selectResult = selectPath.ShowDialog();
+            FolderSelectDialog fsd = new FolderSelectDialog();
 
-            if (selectResult != DialogResult.OK) return;
+            if (fsd.ShowDialog() != true) return;
 
             listModFiles.Items.Clear();
 
-            string modPath = selectPath.SelectedPath;
+            string modPath = fsd.FileName;
             textModPath.Text = modPath;
             foreach (string modFile in Directory.GetFiles(modPath, "*.*", SearchOption.AllDirectories))
             {
-                listModFiles.Items.Add(modFile.Substring(modPath.Length).Replace("\\", "/"));
+                string filePath = modFile.Substring(modPath.Length).Replace("\\", "/");
+                if(Hashing.ValidFileExtension(filePath)) listModFiles.Items.Add(filePath);
             }
         }
 
@@ -55,6 +55,7 @@ namespace makebite
             // do files
             foreach (string modFile in Directory.GetFiles(modPath, "*.*", SearchOption.AllDirectories))
             {
+                if (!Hashing.ValidFileExtension(modFile.Substring(modPath.Length))) continue;
                 string subDir = modFile.Substring(0, modFile.LastIndexOf("\\")); // the subdirectory for XML output
                 subDir = subDir.Substring(modPath.Length);
                 if (!Directory.Exists("_temp\\makebite" + subDir)) Directory.CreateDirectory("_temp\\makebite" + subDir); // create file structure
@@ -142,6 +143,11 @@ namespace makebite
             textModAuthor.Text = modMetaData.Author;
             textModWebsite.Text = modMetaData.Website;
             textModDescription.Text = modMetaData.Description.Replace("\n", "\r\n");
+        }
+
+        private void listModFiles_SelectedIndexChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }

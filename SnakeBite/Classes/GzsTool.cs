@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
+using System;
 using System.Xml.Serialization;
 
 namespace SnakeBite.GzsTool
@@ -17,12 +18,19 @@ namespace SnakeBite.GzsTool
             gzsProcess.StartInfo.UseShellExecute = false;
             gzsProcess.StartInfo.CreateNoWindow = true;
             gzsProcess.StartInfo.FileName = "GzsTool.exe";
-            gzsProcess.StartInfo.Arguments = args;
+            gzsProcess.StartInfo.Arguments = "\"" + args + "\"";
+            gzsProcess.StartInfo.RedirectStandardError = true;
             gzsProcess.Start();
 
             if (wait)
             {
                 while (!gzsProcess.HasExited) { Application.DoEvents(); }
+            }
+
+            if(gzsProcess.ExitCode != 0)
+            {
+                string gzsError = gzsProcess.StandardError.ReadToEnd();
+                MessageBox.Show(String.Format("Error running GzsTool!\n\n{0}", gzsError));
             }
         }
     }
