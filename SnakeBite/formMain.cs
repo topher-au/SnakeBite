@@ -19,6 +19,12 @@ namespace SnakeBite
 
         private void formMain_Load(object sender, EventArgs e)
         {
+            // check for old settings location, move to new
+            if(File.Exists("settings.xml"))
+            {
+                File.Move("settings.xml", ModManager.GameDir + "\\sbmods.xml");
+            }
+
             labelVersion.Text = Application.ProductVersion;
             bool firstRun = false;
             // check if user has specified valid install path
@@ -45,15 +51,66 @@ namespace SnakeBite
             if (!ModManager.CheckDatHash())
             {
                 if(!firstRun)
-                    MessageBox.Show("Game data modified outside of SnakeBite. SnakeBite will now attempt to recache game data",
+                    MessageBox.Show("Game data modified outside of SnakeBite. SnakeBite will now attempt to recache game data.",
                                     "Game data hash mismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 buttonBuildGameDB_Click(null, null);
             }
+
+            // process cmd line args
+            string[] args = Environment.GetCommandLineArgs();
+            if(args.Count() > 1)
+            {
+                switch (args[1])
+                {
+                    case "-i":
+                        {
+                            showProgressWindow("Installing...");
+                            string installPath = args[2];
+                            // Install mod to 01.dat
+                            FastZip unzipper = new FastZip();
+                            unzipper.ExtractZip(installPath, ".", "metadata.xml");
+                            ModEntry modMeta = new ModEntry();
+                            modMeta.ReadFromFile("metadata.xml");
+                            File.Delete("metadata.xml");
+
+                            ModManager.InstallMod(installPath);
+
+                            objSettings.ModEntries.Add(modMeta);
+                            objSettings.SaveSettings();
+
+                            LoadInstalledMods();
+                            listInstalledMods.SelectedIndex = listInstalledMods.Items.Count - 1;
+                            hideProgressWindow();
+                            break;
+                        }
+
+                    case "-u":
+                        {
+                            ModEntry mod = objSettings.ModEntries.FirstOrDefault(entry => entry.Name == args[2]);
+                            if (mod == null) return;
+                            showProgressWindow("Uninstalling...");
+                            ModManager.UninstallMod(mod);
+                            objSettings.ModEntries.Remove(mod);
+                            objSettings.SaveSettings();
+
+                            LoadInstalledMods();
+                            listInstalledMods.SelectedIndex = listInstalledMods.Items.Count - 1;
+                            hideProgressWindow();
+                            break;
+                        }
+
+                    default:
+                        {
+                            break;
+                        }
+                }
+            }
+            
         }
 
         private void LoadInstalledMods(bool resetSelection = false)
         {
-            if (File.Exists("settings.xml"))
+            if (File.Exists(ModManager.GameDir + "\\sbmods.xml"))
             {
                 objSettings.LoadSettings();
             }
@@ -131,8 +188,30 @@ namespace SnakeBite
             modMetadata.ReadFromFile("metadata.xml");
             File.Delete("metadata.xml"); // delete temp metadata
 
-            if(!checkConflicts.Checked)
+            if (!checkConflicts.Checked)
             {
+                // check version conflicts
+                int SBVersion = ModManager.GetSBVersion();
+                int MGSVersion = ModManager.GetMGSVersion();
+
+                int modSBVersion = Convert.ToInt32(modMetadata.SBVersion);
+                int modMGSVersion = Convert.ToInt32(modMetadata.MGSVersion);
+
+                // Check if mod requires SB update
+                if (modSBVersion > SBVersion)
+                {
+                    MessageBox.Show(String.Format("{0} requires a newer version of SnakeBite. Please follow the link on the Settings page to get the latest version.", modMetadata.Name), "Update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
+                // Check MGS version compatibility
+                if (MGSVersion != modMGSVersion && modMGSVersion != 0)
+                {
+                    if (MGSVersion > modMGSVersion) MessageBox.Show(String.Format("{0} requires MGSV version {1}, but your installation is version {2}. Please update {0} and try again.", modMetadata.Name, modMGSVersion, MGSVersion), "Update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (MGSVersion < modMGSVersion) MessageBox.Show(String.Format("{0} requires MGSV version {1}, but your installation is version {2}. Please update MGSV and try again.", modMetadata.Name, modMGSVersion, MGSVersion), "Update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
                 // search installed mods for conflicts
                 List<string> conflictingMods = new List<string>();
 
@@ -322,7 +401,7 @@ namespace SnakeBite
 
             // copy current settings
             objSettings.SaveSettings();
-            File.Copy("settings.xml", "_backup\\settings.xml");
+            File.Copy(ModManager.GameDir + "\\sbmods.xml", "_backup\\sbmods.xml");
 
             // copy current 01.dat
             File.Copy(ModManager.GameArchivePath, "_backup\\01.dat");
@@ -349,7 +428,7 @@ namespace SnakeBite
             unzipper.ExtractZip(openBackup.FileName, "_backup","(.*?)");
 
             File.Copy("_backup\\01.dat", ModManager.GameArchivePath, true);
-            File.Copy("_backup\\settings.xml", "settings.xml", true);
+            File.Copy("_backup\\sbmods.xml", ModManager.GameDir + "\\sbmods.xml", true);
 
             Directory.Delete("_backup", true);
 

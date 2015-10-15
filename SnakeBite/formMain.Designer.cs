@@ -37,11 +37,11 @@
             this.panelModDetails = new System.Windows.Forms.Panel();
             this.labelModWebsite = new System.Windows.Forms.LinkLabel();
             this.buttonUninstallMod = new System.Windows.Forms.Button();
-            this.labelNoMods = new System.Windows.Forms.Label();
             this.textDescription = new System.Windows.Forms.TextBox();
             this.labelModVersion = new System.Windows.Forms.Label();
             this.labelModAuthor = new System.Windows.Forms.Label();
             this.labelModName = new System.Windows.Forms.Label();
+            this.labelNoMods = new System.Windows.Forms.Label();
             this.tabSettings = new System.Windows.Forms.TabPage();
             this.groupBackup = new System.Windows.Forms.GroupBox();
             this.label3 = new System.Windows.Forms.Label();
@@ -117,6 +117,7 @@
             // groupModInfo
             // 
             this.groupModInfo.Controls.Add(this.panelModDetails);
+            this.groupModInfo.Controls.Add(this.labelNoMods);
             this.groupModInfo.Location = new System.Drawing.Point(200, 0);
             this.groupModInfo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.groupModInfo.Name = "groupModInfo";
@@ -129,7 +130,6 @@
             // 
             this.panelModDetails.Controls.Add(this.labelModWebsite);
             this.panelModDetails.Controls.Add(this.buttonUninstallMod);
-            this.panelModDetails.Controls.Add(this.labelNoMods);
             this.panelModDetails.Controls.Add(this.textDescription);
             this.panelModDetails.Controls.Add(this.labelModVersion);
             this.panelModDetails.Controls.Add(this.labelModAuthor);
@@ -158,16 +158,6 @@
             this.buttonUninstallMod.Text = "Uninstall";
             this.buttonUninstallMod.UseVisualStyleBackColor = true;
             this.buttonUninstallMod.Click += new System.EventHandler(this.buttonUninstallMod_Click);
-            // 
-            // labelNoMods
-            // 
-            this.labelNoMods.AutoSize = true;
-            this.labelNoMods.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelNoMods.Location = new System.Drawing.Point(90, 183);
-            this.labelNoMods.Name = "labelNoMods";
-            this.labelNoMods.Size = new System.Drawing.Size(192, 30);
-            this.labelNoMods.TabIndex = 2;
-            this.labelNoMods.Text = "No mods installed";
             // 
             // textDescription
             // 
@@ -207,6 +197,16 @@
             this.labelModName.Size = new System.Drawing.Size(145, 25);
             this.labelModName.TabIndex = 5;
             this.labelModName.Text = "Mod Title Here";
+            // 
+            // labelNoMods
+            // 
+            this.labelNoMods.AutoSize = true;
+            this.labelNoMods.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelNoMods.Location = new System.Drawing.Point(95, 178);
+            this.labelNoMods.Name = "labelNoMods";
+            this.labelNoMods.Size = new System.Drawing.Size(192, 30);
+            this.labelNoMods.TabIndex = 2;
+            this.labelNoMods.Text = "No mods installed";
             // 
             // tabSettings
             // 
@@ -397,6 +397,7 @@
             this.tabControl.ResumeLayout(false);
             this.tabInstalledMods.ResumeLayout(false);
             this.groupModInfo.ResumeLayout(false);
+            this.groupModInfo.PerformLayout();
             this.panelModDetails.ResumeLayout(false);
             this.panelModDetails.PerformLayout();
             this.tabSettings.ResumeLayout(false);

@@ -30,7 +30,7 @@ namespace makebite
             foreach (string modFile in Directory.GetFiles(modPath, "*.*", SearchOption.AllDirectories))
             {
                 string filePath = modFile.Substring(modPath.Length).Replace("\\", "/");
-                if(Hashing.ValidFileExtension(filePath)) listModFiles.Items.Add(filePath);
+                if(Hashing.ValidFileExtension(filePath) && filePath != "/metadata.xml") listModFiles.Items.Add(filePath);
             }
 
             Properties.Settings.Default.LastModDir = modPath;
@@ -44,75 +44,18 @@ namespace makebite
             DialogResult saveResult = saveMod.ShowDialog();
             if (saveResult != DialogResult.OK) return;
 
-            string modPath = textModPath.Text;
-            // delete existing temp directory
-            if (Directory.Exists("_temp")) Directory.Delete("_temp", true);
+            string modPath = saveMod.FileName;
+            ModEntry modMetaData = new ModEntry();
+            modMetaData.Name = textModName.Text;
+            modMetaData.Author = textModAuthor.Text;
+            modMetaData.Version = textModVersion.Text;
+            modMetaData.MGSVersion = comboForVersion.Text;
+            modMetaData.Website = textModWebsite.Text;
+            modMetaData.Description = textModDescription.Text;
+            modMetaData.SaveToFile(textModPath.Text + "\\metadata.xml");
 
-            // create new temp fs and QAR file XML
-            Directory.CreateDirectory("_temp\\makebite");
-            QarFile makeQar = new QarFile();
-            makeQar.Flags = 3150048;
-            makeQar.Name = "makebite.dat";
-            makeQar.QarEntries = new List<QarEntry>();
-
-            // do files
-            foreach (string modFile in Directory.GetFiles(modPath, "*.*", SearchOption.AllDirectories))
-            {
-                if (!Hashing.ValidFileExtension(modFile.Substring(modPath.Length))) continue;
-                string subDir = modFile.Substring(0, modFile.LastIndexOf("\\")); // the subdirectory for XML output
-                subDir = subDir.Substring(modPath.Length);
-                if (!Directory.Exists("_temp\\makebite" + subDir)) Directory.CreateDirectory("_temp\\makebite" + subDir); // create file structure
-                File.Copy(modFile, "_temp\\makebite" + modFile.Substring(modPath.Length), true);
-                makeQar.QarEntries.Add(new QarEntry() { FilePath = modFile.Substring(modPath.Length + 1) }); // add to xml
-            }
-
-            // write xml
-            makeQar.WriteToFile("_temp\\makebite.dat.xml");
-
-            // create metadata
-            ModEntry modMetadata = new ModEntry();
-            modMetadata.Name = textModName.Text;
-            modMetadata.Version = textModVersion.Text;
-            modMetadata.Author = textModAuthor.Text;
-            modMetadata.Website = textModWebsite.Text;
-            modMetadata.Description = textModDescription.Text;
-            modMetadata.ModQarEntries = new List<ModQarEntry>();
-            modMetadata.ModFpkEntries = new List<ModFpkEntry>();
-
-            // create file data
-            foreach (QarEntry newQarEntry in makeQar.QarEntries)
-            {
-                modMetadata.ModQarEntries.Add(new ModQarEntry() { FilePath = Hashing.DenormalizeFilePath(newQarEntry.FilePath), Compressed = newQarEntry.Compressed, Hash = newQarEntry.Hash });
-                string fileExt = newQarEntry.FilePath.Substring(newQarEntry.FilePath.LastIndexOf(".") + 1).ToLower();
-                if (fileExt == "fpk" || fileExt == "fpkd")
-                {
-                    newQarEntry.Compressed = true;
-                    // decompress fpk files and create metadata
-                    string fpkDir = "_temp\\makebite\\" + newQarEntry.FilePath.Replace(".", "_");
-                    SnakeBite.GzsTool.GzsTool.Run("_temp\\makebite\\" + newQarEntry.FilePath);
-                    foreach (string fpkSubFile in Directory.GetFiles(fpkDir, "*.*", SearchOption.AllDirectories))
-                    {
-                        modMetadata.ModFpkEntries.Add(new ModFpkEntry()
-                        {
-                            FilePath = fpkSubFile.Substring(fpkSubFile.LastIndexOf("\\Assets")).Replace("\\", "/"),
-                            FpkFile = "/" + newQarEntry.FilePath.Replace("\\", "/")
-                        }
-                        );
-                    }
-                    Directory.Delete(fpkDir, true);
-                    File.Delete("_temp\\makebite\\" + newQarEntry.FilePath + ".xml");
-                }
-            }
-
-            modMetadata.SaveToFile("_temp\\makebite\\metadata.xml");
-
-            // compress to file
-            FastZip zipper = new FastZip();
-            zipper.CreateZip(saveMod.FileName, "_temp\\makebite", true, "(.*?)");
-
-            Directory.Delete("_temp", true);
-
-            MessageBox.Show("Done");
+            Build.BuildArchive(textModPath.Text, modMetaData, modPath);
+            MessageBox.Show("Build successful.", "MakeBite", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void buttonMetaSave_Click(object sender, EventArgs e)
@@ -162,28 +105,28 @@ namespace makebite
 
         }
 
-        private void button1_Click(object sender, EventArgs e)
-        {
-            Build.BuildFpk(textModPath.Text);
-            return;
-            string msgboxtext = String.Empty;
-            foreach (string folder in Build.ListQarFiles(textModPath.Text)) {
-                msgboxtext += folder + "\n";
-            }
-            MessageBox.Show(msgboxtext);
-        }
-
         private void formMain_Load(object sender, EventArgs e)
         {
             comboForVersion.SelectedIndex = comboForVersion.Items.Count - 1;
             string modPath = Properties.Settings.Default.LastModDir;
             if (Directory.Exists(modPath))
             {
+                if(File.Exists(modPath + "\\metadata.xml"))
+                {
+                    ModEntry modMetaData = new ModEntry();
+                    modMetaData.ReadFromFile(modPath + "\\metadata.xml");
+
+                    textModName.Text = modMetaData.Name;
+                    textModVersion.Text = modMetaData.Version;
+                    textModAuthor.Text = modMetaData.Author;
+                    textModWebsite.Text = modMetaData.Website;
+                    textModDescription.Text = modMetaData.Description.Replace("\n", "\r\n");
+                }
                 textModPath.Text = modPath;
                 foreach (string modFile in Directory.GetFiles(modPath, "*.*", SearchOption.AllDirectories))
                 {
                     string filePath = modFile.Substring(modPath.Length).Replace("\\", "/");
-                    if (Hashing.ValidFileExtension(filePath)) listModFiles.Items.Add(filePath);
+                    if (Hashing.ValidFileExtension(filePath) && filePath != "/metadata.xml") listModFiles.Items.Add(filePath);
                 }
             } else
             {

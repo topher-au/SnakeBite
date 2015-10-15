@@ -1,6 +1,9 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
+using System.Security.Cryptography;
+using System.Text;
+using makebite;
 
 namespace SnakeBite
 {
@@ -12,47 +15,6 @@ namespace SnakeBite
 
         [XmlArray("Mods")]
         public List<ModEntry> ModEntries { get; set; } = new List<ModEntry>();
-
-        public void SaveSettings()
-        {
-            // Write settings to XML
-
-            if (File.Exists("settings.xml"))
-            {
-                File.Delete("settings.xml");
-            }
-
-            XmlSerializer x = new XmlSerializer(typeof(Settings), new[] { typeof(Settings) });
-            StreamWriter s = new StreamWriter("settings.xml");
-            foreach (ModEntry mod in ModEntries)
-            {
-                mod.Description = mod.Description.Replace("\r\n", "\n");
-            }
-            x.Serialize(s, this);
-            s.Close();
-        }
-
-        public bool LoadSettings()
-        {
-            // Load settings from XML
-
-            if (!File.Exists("settings.xml"))
-            {
-                return false;
-            }
-
-            XmlSerializer x = new XmlSerializer(typeof(Settings));
-            StreamReader s = new StreamReader("settings.xml");
-            Settings loaded = (Settings)x.Deserialize(s);
-            s.Close();
-            GameData = loaded.GameData;
-            ModEntries = loaded.ModEntries;
-            foreach (ModEntry mod in ModEntries)
-            {
-                mod.Description = mod.Description.Replace("\n", "\r\n");
-            }
-            return true;
-        }
     }
 
     [XmlType("GameData")]
@@ -86,6 +48,9 @@ namespace SnakeBite
         [XmlAttribute("MGSVersion")]
         public string MGSVersion { get; set; }
 
+        [XmlAttribute("SBVersion")]
+        public string SBVersion { get; set; }
+
         [XmlAttribute("Author")]
         public string Author { get; set; }
 
@@ -116,9 +81,10 @@ namespace SnakeBite
             Name = loaded.Name;
             Version = loaded.Version;
             MGSVersion = loaded.MGSVersion;
+            SBVersion = loaded.SBVersion;
             Author = loaded.Author;
             Website = loaded.Website;
-            Description = loaded.Description.Replace("\n", "\r\n");
+            Description = loaded.Description;//.Replace("\n", "\r\n");
 
             ModQarEntries = loaded.ModQarEntries;
             ModFpkEntries = loaded.ModFpkEntries;
@@ -150,6 +116,9 @@ namespace SnakeBite
 
         [XmlAttribute("Compressed")]
         public bool Compressed { get; set; }
+
+        [XmlAttribute("ContentHash")]
+        public string ContentHash { get; set; }
     }
 
     [XmlType("FpkEntry")]
@@ -160,6 +129,9 @@ namespace SnakeBite
 
         [XmlAttribute("FilePath")]
         public string FilePath { get; set; }
+
+        [XmlAttribute("ContentHash")]
+        public string ContentHash { get; set; }
     }
 
     public static class Tools
@@ -172,6 +144,25 @@ namespace SnakeBite
         public static string ToQarPath(string Path)
         {
             return "/" + Path.Replace("\\", "/").TrimStart('/');
+        }
+
+        internal static string HashFile(string Filename)
+        {
+            byte[] hashBytes;
+            using (var hashMD5 = MD5.Create())
+            {
+                using (var stream = File.OpenRead(Filename))
+                {
+                    hashBytes = hashMD5.ComputeHash(stream);
+                }
+            }
+
+            StringBuilder hashBuilder = new StringBuilder(hashBytes.Length * 2);
+
+            for (int i = 0; i < hashBytes.Length; i++)
+                hashBuilder.Append(hashBytes[i].ToString("X2"));
+
+            return hashBuilder.ToString();
         }
     }
 }

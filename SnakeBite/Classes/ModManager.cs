@@ -7,11 +7,13 @@ using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 using SnakeBite;
+using System.Diagnostics;
 
 namespace SnakeBite
 {
     internal static class ModManager
     {
+        internal static string GameDir { get { return Properties.Settings.Default.InstallPath; } }
         internal static string GameArchiveDir { get { return Properties.Settings.Default.InstallPath + "\\master\\0\\01"; } }
         internal static string GameArchivePath { get { return Properties.Settings.Default.InstallPath + "\\master\\0\\01.dat"; } }
         internal static string GameArchiveXmlPath { get { return Properties.Settings.Default.InstallPath + "\\master\\0\\01.dat.xml"; } }
@@ -31,6 +33,19 @@ namespace SnakeBite
                 }
                 return false;
             }
+        }
+
+        internal static int GetSBVersion()
+        {
+            string assemblyVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            return Convert.ToInt32(assemblyVersion.Replace(".", ""));
+        }
+
+        internal static int GetMGSVersion()
+        {
+            var versionInfo = FileVersionInfo.GetVersionInfo(Properties.Settings.Default.InstallPath + "\\mgsvtpp.exe");
+            string version = versionInfo.ProductVersion; // Will typically return "1.0.0" in your case
+            return Convert.ToInt32(version.Replace(".", ""));
         }
 
         public static bool InstallMod(string ModFile)
@@ -298,7 +313,7 @@ namespace SnakeBite
         // validates 01.dat MD5 against previous hash
         internal static bool CheckDatHash()
         {
-            string datHash = HashFile(GameArchivePath);
+            string datHash = Tools.HashFile(GameArchivePath);
             Settings oSet = new Settings();
             oSet.LoadSettings();
             string hashOld = oSet.GameData.DatHash;
@@ -309,7 +324,7 @@ namespace SnakeBite
         internal static void UpdateDatHash()
         {
             // updates dat file hash
-            string datHash = HashFile(GameArchivePath);
+            string datHash = Tools.HashFile(GameArchivePath);
             Settings oSet = new Settings();
             oSet.LoadSettings();
             oSet.GameData.DatHash = datHash;
@@ -332,18 +347,19 @@ namespace SnakeBite
             // recurse through all installed mods
             foreach (ModEntry mod in oSet.ModEntries)
             {
-                List<string> remQar = new List<string>();
-                foreach (ModQarEntry modQarFile in mod.ModQarEntries)
+                List<string> remQar = new List<string>(); // list of files to remove
+                foreach (ModQarEntry modQarFile in mod.ModQarEntries) // check all mod files
                 {
                     if (!File.Exists(GameArchiveDir + Tools.ToWinPath(modQarFile.FilePath)))
                     {
+                        // if the file doesn't exist, it will be removed
                         remQar.Add(modQarFile.FilePath);
                     }
                 }
                 foreach (string remFile in remQar)
                 {
-                    mod.ModQarEntries.RemoveAll(entry => entry.FilePath == remFile);
-                    mod.ModFpkEntries.RemoveAll(entry => entry.FpkFile == remFile);
+                    mod.ModQarEntries.RemoveAll(entry => entry.FilePath == remFile); // remove files from db
+                    mod.ModFpkEntries.RemoveAll(entry => entry.FpkFile == remFile); // fpks from db
                 }
             }
 
@@ -378,24 +394,7 @@ namespace SnakeBite
 
             return settingsXml.ModEntries;
         }
-        internal static string HashFile(string Filename)
-        {
-            byte[] hashBytes;
-            using (var hashMD5 = MD5.Create())
-            {
-                using (var stream = File.OpenRead(Filename))
-                {
-                    hashBytes = hashMD5.ComputeHash(stream);
-                }
-            }
 
-            StringBuilder hashBuilder = new StringBuilder(hashBytes.Length * 2);
-
-            for (int i = 0; i < hashBytes.Length; i++)
-                hashBuilder.Append(hashBytes[i].ToString("X2"));
-
-            return hashBuilder.ToString();
-        }
 
         // gets information about the existing 01.dat archive
         internal static GameData RebuildGameData()

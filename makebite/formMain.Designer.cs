@@ -29,6 +29,8 @@
         private void InitializeComponent()
         {
             this.groupModInfo = new System.Windows.Forms.GroupBox();
+            this.comboForVersion = new System.Windows.Forms.ComboBox();
+            this.labelForVersion = new System.Windows.Forms.Label();
             this.buttonMetaLoad = new System.Windows.Forms.Button();
             this.buttonMetaSave = new System.Windows.Forms.Button();
             this.textModWebsite = new System.Windows.Forms.TextBox();
@@ -42,14 +44,11 @@
             this.labelModAuthor = new System.Windows.Forms.Label();
             this.labelModName = new System.Windows.Forms.Label();
             this.groupFiles = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.listModFiles = new System.Windows.Forms.ListBox();
             this.buttonSelectPath = new System.Windows.Forms.Button();
             this.textModPath = new System.Windows.Forms.TextBox();
             this.buttonBuild = new System.Windows.Forms.Button();
-            this.button1 = new System.Windows.Forms.Button();
-            this.labelForVersion = new System.Windows.Forms.Label();
-            this.comboForVersion = new System.Windows.Forms.ComboBox();
-            this.label1 = new System.Windows.Forms.Label();
             this.groupModInfo.SuspendLayout();
             this.groupFiles.SuspendLayout();
             this.SuspendLayout();
@@ -72,14 +71,35 @@
             this.groupModInfo.Controls.Add(this.labelModName);
             this.groupModInfo.Location = new System.Drawing.Point(14, 14);
             this.groupModInfo.Name = "groupModInfo";
-            this.groupModInfo.Size = new System.Drawing.Size(275, 405);
+            this.groupModInfo.Size = new System.Drawing.Size(437, 483);
             this.groupModInfo.TabIndex = 1;
             this.groupModInfo.TabStop = false;
             this.groupModInfo.Text = "Mod Information";
             // 
+            // comboForVersion
+            // 
+            this.comboForVersion.FormattingEnabled = true;
+            this.comboForVersion.Items.AddRange(new object[] {
+            "1000",
+            "1020",
+            "1040"});
+            this.comboForVersion.Location = new System.Drawing.Point(381, 56);
+            this.comboForVersion.Name = "comboForVersion";
+            this.comboForVersion.Size = new System.Drawing.Size(50, 23);
+            this.comboForVersion.TabIndex = 8;
+            // 
+            // labelForVersion
+            // 
+            this.labelForVersion.AutoSize = true;
+            this.labelForVersion.Location = new System.Drawing.Point(295, 59);
+            this.labelForVersion.Name = "labelForVersion";
+            this.labelForVersion.Size = new System.Drawing.Size(80, 15);
+            this.labelForVersion.TabIndex = 7;
+            this.labelForVersion.Text = "MGSV Version";
+            // 
             // buttonMetaLoad
             // 
-            this.buttonMetaLoad.Location = new System.Drawing.Point(23, 367);
+            this.buttonMetaLoad.Location = new System.Drawing.Point(275, 451);
             this.buttonMetaLoad.Name = "buttonMetaLoad";
             this.buttonMetaLoad.Size = new System.Drawing.Size(75, 23);
             this.buttonMetaLoad.TabIndex = 6;
@@ -89,7 +109,7 @@
             // 
             // buttonMetaSave
             // 
-            this.buttonMetaSave.Location = new System.Drawing.Point(174, 367);
+            this.buttonMetaSave.Location = new System.Drawing.Point(356, 451);
             this.buttonMetaSave.Name = "buttonMetaSave";
             this.buttonMetaSave.Size = new System.Drawing.Size(75, 23);
             this.buttonMetaSave.TabIndex = 5;
@@ -99,36 +119,36 @@
             // 
             // textModWebsite
             // 
-            this.textModWebsite.Location = new System.Drawing.Point(99, 117);
+            this.textModWebsite.Location = new System.Drawing.Point(99, 85);
             this.textModWebsite.Name = "textModWebsite";
-            this.textModWebsite.Size = new System.Drawing.Size(150, 23);
+            this.textModWebsite.Size = new System.Drawing.Size(332, 23);
             this.textModWebsite.TabIndex = 3;
             // 
             // textModAuthor
             // 
-            this.textModAuthor.Location = new System.Drawing.Point(99, 87);
+            this.textModAuthor.Location = new System.Drawing.Point(99, 56);
             this.textModAuthor.Name = "textModAuthor";
-            this.textModAuthor.Size = new System.Drawing.Size(150, 23);
+            this.textModAuthor.Size = new System.Drawing.Size(190, 23);
             this.textModAuthor.TabIndex = 2;
             // 
             // textModVersion
             // 
-            this.textModVersion.Location = new System.Drawing.Point(99, 57);
+            this.textModVersion.Location = new System.Drawing.Point(381, 27);
             this.textModVersion.Name = "textModVersion";
-            this.textModVersion.Size = new System.Drawing.Size(39, 23);
+            this.textModVersion.Size = new System.Drawing.Size(50, 23);
             this.textModVersion.TabIndex = 1;
             // 
             // textModName
             // 
             this.textModName.Location = new System.Drawing.Point(99, 27);
             this.textModName.Name = "textModName";
-            this.textModName.Size = new System.Drawing.Size(150, 23);
+            this.textModName.Size = new System.Drawing.Size(225, 23);
             this.textModName.TabIndex = 0;
             // 
             // labelModDescription
             // 
             this.labelModDescription.AutoSize = true;
-            this.labelModDescription.Location = new System.Drawing.Point(20, 147);
+            this.labelModDescription.Location = new System.Drawing.Point(20, 117);
             this.labelModDescription.Name = "labelModDescription";
             this.labelModDescription.Size = new System.Drawing.Size(67, 15);
             this.labelModDescription.TabIndex = 5;
@@ -136,16 +156,17 @@
             // 
             // textModDescription
             // 
-            this.textModDescription.Location = new System.Drawing.Point(23, 165);
+            this.textModDescription.Location = new System.Drawing.Point(23, 135);
             this.textModDescription.Multiline = true;
             this.textModDescription.Name = "textModDescription";
-            this.textModDescription.Size = new System.Drawing.Size(226, 196);
+            this.textModDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textModDescription.Size = new System.Drawing.Size(408, 310);
             this.textModDescription.TabIndex = 4;
             // 
             // labelModWebsite
             // 
             this.labelModWebsite.AutoSize = true;
-            this.labelModWebsite.Location = new System.Drawing.Point(20, 120);
+            this.labelModWebsite.Location = new System.Drawing.Point(20, 88);
             this.labelModWebsite.Name = "labelModWebsite";
             this.labelModWebsite.Size = new System.Drawing.Size(49, 15);
             this.labelModWebsite.TabIndex = 3;
@@ -154,7 +175,7 @@
             // labelModVersion
             // 
             this.labelModVersion.AutoSize = true;
-            this.labelModVersion.Location = new System.Drawing.Point(20, 60);
+            this.labelModVersion.Location = new System.Drawing.Point(330, 30);
             this.labelModVersion.Name = "labelModVersion";
             this.labelModVersion.Size = new System.Drawing.Size(45, 15);
             this.labelModVersion.TabIndex = 2;
@@ -163,7 +184,7 @@
             // labelModAuthor
             // 
             this.labelModAuthor.AutoSize = true;
-            this.labelModAuthor.Location = new System.Drawing.Point(20, 90);
+            this.labelModAuthor.Location = new System.Drawing.Point(20, 59);
             this.labelModAuthor.Name = "labelModAuthor";
             this.labelModAuthor.Size = new System.Drawing.Size(44, 15);
             this.labelModAuthor.TabIndex = 1;
@@ -180,16 +201,27 @@
             // 
             // groupFiles
             // 
+            this.groupFiles.Controls.Add(this.buttonBuild);
             this.groupFiles.Controls.Add(this.label1);
             this.groupFiles.Controls.Add(this.listModFiles);
             this.groupFiles.Controls.Add(this.buttonSelectPath);
             this.groupFiles.Controls.Add(this.textModPath);
-            this.groupFiles.Location = new System.Drawing.Point(295, 14);
+            this.groupFiles.Location = new System.Drawing.Point(457, 14);
             this.groupFiles.Name = "groupFiles";
-            this.groupFiles.Size = new System.Drawing.Size(440, 376);
+            this.groupFiles.Size = new System.Drawing.Size(621, 483);
             this.groupFiles.TabIndex = 2;
             this.groupFiles.TabStop = false;
             this.groupFiles.Text = "Mod Files";
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.Color.Red;
+            this.label1.Location = new System.Drawing.Point(150, 48);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(337, 15);
+            this.label1.TabIndex = 10;
+            this.label1.Text = "Any unpacked FPK or FPKD folders will overwrite existing FPKs!";
             // 
             // listModFiles
             // 
@@ -197,13 +229,13 @@
             this.listModFiles.ItemHeight = 15;
             this.listModFiles.Location = new System.Drawing.Point(15, 66);
             this.listModFiles.Name = "listModFiles";
-            this.listModFiles.Size = new System.Drawing.Size(408, 304);
+            this.listModFiles.Size = new System.Drawing.Size(600, 379);
             this.listModFiles.TabIndex = 9;
             this.listModFiles.SelectedIndexChanged += new System.EventHandler(this.listModFiles_SelectedIndexChanged);
             // 
             // buttonSelectPath
             // 
-            this.buttonSelectPath.Location = new System.Drawing.Point(392, 22);
+            this.buttonSelectPath.Location = new System.Drawing.Point(584, 22);
             this.buttonSelectPath.Name = "buttonSelectPath";
             this.buttonSelectPath.Size = new System.Drawing.Size(31, 23);
             this.buttonSelectPath.TabIndex = 8;
@@ -216,13 +248,13 @@
             this.textModPath.Enabled = false;
             this.textModPath.Location = new System.Drawing.Point(15, 22);
             this.textModPath.Name = "textModPath";
-            this.textModPath.Size = new System.Drawing.Size(371, 23);
+            this.textModPath.Size = new System.Drawing.Size(563, 23);
             this.textModPath.TabIndex = 7;
             this.textModPath.Text = "Please select a directory containing your mod files";
             // 
             // buttonBuild
             // 
-            this.buttonBuild.Location = new System.Drawing.Point(601, 396);
+            this.buttonBuild.Location = new System.Drawing.Point(481, 454);
             this.buttonBuild.Name = "buttonBuild";
             this.buttonBuild.Size = new System.Drawing.Size(134, 23);
             this.buttonBuild.TabIndex = 10;
@@ -230,55 +262,11 @@
             this.buttonBuild.UseVisualStyleBackColor = true;
             this.buttonBuild.Click += new System.EventHandler(this.buttonBuild_Click);
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(310, 396);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(271, 23);
-            this.button1.TabIndex = 11;
-            this.button1.Text = "TEST BUTTON DO NOT PRESS";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
-            // labelForVersion
-            // 
-            this.labelForVersion.AutoSize = true;
-            this.labelForVersion.Location = new System.Drawing.Point(139, 61);
-            this.labelForVersion.Name = "labelForVersion";
-            this.labelForVersion.Size = new System.Drawing.Size(57, 15);
-            this.labelForVersion.TabIndex = 7;
-            this.labelForVersion.Text = "for MGSV";
-            // 
-            // comboForVersion
-            // 
-            this.comboForVersion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.comboForVersion.FormattingEnabled = true;
-            this.comboForVersion.Items.AddRange(new object[] {
-            "1.00",
-            "1.02",
-            "1.04"});
-            this.comboForVersion.Location = new System.Drawing.Point(199, 56);
-            this.comboForVersion.Name = "comboForVersion";
-            this.comboForVersion.Size = new System.Drawing.Size(50, 23);
-            this.comboForVersion.TabIndex = 8;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.ForeColor = System.Drawing.Color.Red;
-            this.label1.Location = new System.Drawing.Point(58, 48);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(328, 15);
-            this.label1.TabIndex = 10;
-            this.label1.Text = "Ensure all FPK and FPKD files are unpacked with GzsTool first!";
-            // 
             // formMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(749, 428);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.buttonBuild);
+            this.ClientSize = new System.Drawing.Size(1090, 510);
             this.Controls.Add(this.groupFiles);
             this.Controls.Add(this.groupModInfo);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -316,7 +304,6 @@
         private System.Windows.Forms.Button buttonBuild;
         private System.Windows.Forms.Button buttonMetaLoad;
         private System.Windows.Forms.Button buttonMetaSave;
-        private System.Windows.Forms.Button button1;
         private System.Windows.Forms.ComboBox comboForVersion;
         private System.Windows.Forms.Label labelForVersion;
         private System.Windows.Forms.Label label1;
