@@ -1,10 +1,10 @@
 ﻿using GzsTool.Utility;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Windows.Forms;
 using System.Xml;
-using System;
 using System.Xml.Serialization;
 
 namespace SnakeBite.GzsTool
@@ -27,7 +27,7 @@ namespace SnakeBite.GzsTool
                 while (!gzsProcess.HasExited) { Application.DoEvents(); }
             }
 
-            if(gzsProcess.ExitCode != 0)
+            if (gzsProcess.ExitCode != 0)
             {
                 string gzsError = gzsProcess.StandardError.ReadToEnd();
                 MessageBox.Show(String.Format("Error running GzsTool!\n\n{0}", gzsError));
@@ -57,6 +57,7 @@ namespace SnakeBite.GzsTool
 
         [XmlAttribute("FpkType")]
         public string FpkType { get; set; }
+
         public void LoadFromFile(string Filename)
         {
             // Deserialize object from GzsTool XML data

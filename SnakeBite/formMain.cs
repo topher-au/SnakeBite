@@ -1,4 +1,5 @@
-﻿using ICSharpCode.SharpZipLib.Zip;
+﻿using SnakeBite.Classes;
+using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -19,15 +20,11 @@ namespace SnakeBite
 
         private void formMain_Load(object sender, EventArgs e)
         {
-            // check for old settings location, move to new
-            if(File.Exists("settings.xml"))
-            {
-                File.Move("settings.xml", ModManager.GameDir + "\\sbmods.xml");
-            }
-
             labelVersion.Text = Application.ProductVersion;
-            bool firstRun = false;
-            // check if user has specified valid install path
+
+            bool resetPath = false;
+
+            // Verify the saved MGSV install directory
             if (!ModManager.ValidInstallPath)
             {
                 MessageBox.Show("Please locate your MGSV installation to continue. If this is your first time running SnakeBite, it is recommended that you reset your MGSV installation before continuing.", "SnakeBite", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
@@ -35,67 +32,53 @@ namespace SnakeBite
                 tabControl.SelectedIndex = 1;
                 buttonFindMGSV_Click(null, null);
                 if (!ModManager.ValidInstallPath)
-                    Application.Exit();
+                    Application.Exit(); // Force user to specify valid installation directory
 
-                firstRun = true;
+                resetPath = true;
             }
 
-            // Refresh mod list
-            LoadInstalledMods(true);
-
+            // Set installation path textbox
             textInstallPath.Text = Properties.Settings.Default.InstallPath;
 
+            // Check if we need to migrate the old settings.xml to new location
+            if (File.Exists("settings.xml"))
+            {
+                File.Move("settings.xml", ModManager.GameDir + "\\sbmods.xml");
+            }
+
+            // Load settings and update installed mod list
+            RefreshInstalledMods(true);
+
+            // Show form before continuing
             this.Show();
 
             // check hash for dat file, if changed, rebuild database
             if (!ModManager.CheckDatHash())
             {
-                if(!firstRun)
+                if (!resetPath)
                     MessageBox.Show("Game data modified outside of SnakeBite. SnakeBite will now attempt to recache game data.",
                                     "Game data hash mismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 buttonBuildGameDB_Click(null, null);
             }
 
-            // process cmd line args
+            // Process command line arguments
+
             string[] args = Environment.GetCommandLineArgs();
-            if(args.Count() > 1)
+            if (args.Count() > 1)
             {
                 switch (args[1])
                 {
                     case "-i":
                         {
-                            showProgressWindow("Installing...");
-                            string installPath = args[2];
-                            // Install mod to 01.dat
-                            FastZip unzipper = new FastZip();
-                            unzipper.ExtractZip(installPath, ".", "metadata.xml");
-                            ModEntry modMeta = new ModEntry();
-                            modMeta.ReadFromFile("metadata.xml");
-                            File.Delete("metadata.xml");
-
-                            ModManager.InstallMod(installPath);
-
-                            objSettings.ModEntries.Add(modMeta);
-                            objSettings.SaveSettings();
-
-                            LoadInstalledMods();
-                            listInstalledMods.SelectedIndex = listInstalledMods.Items.Count - 1;
-                            hideProgressWindow();
+                            ProcessInstallMod(args[2], true); // install mod ignoring conflicts
                             break;
                         }
 
                     case "-u":
                         {
-                            ModEntry mod = objSettings.ModEntries.FirstOrDefault(entry => entry.Name == args[2]);
+                            ModEntry mod = objSettings.ModEntries.FirstOrDefault(entry => entry.Name == args[2]); // find matching mod name
                             if (mod == null) return;
-                            showProgressWindow("Uninstalling...");
-                            ModManager.UninstallMod(mod);
-                            objSettings.ModEntries.Remove(mod);
-                            objSettings.SaveSettings();
-
-                            LoadInstalledMods();
-                            listInstalledMods.SelectedIndex = listInstalledMods.Items.Count - 1;
-                            hideProgressWindow();
+                            ProcessUninstallMod(mod); // uninstall mod
                             break;
                         }
 
@@ -105,10 +88,9 @@ namespace SnakeBite
                         }
                 }
             }
-            
         }
 
-        private void LoadInstalledMods(bool resetSelection = false)
+        private void RefreshInstalledMods(bool resetSelection = false)
         {
             if (File.Exists(ModManager.GameDir + "\\sbmods.xml"))
             {
@@ -151,13 +133,17 @@ namespace SnakeBite
 
         private void buttonUninstallMod_Click(object sender, EventArgs e)
         {
-            if(!(listInstalledMods.SelectedIndex >= 0)) return;
-            
+            if (!(listInstalledMods.SelectedIndex >= 0)) return;
+
             // Get selected mod
             ModEntry mod = objSettings.ModEntries[listInstalledMods.SelectedIndex];
             if (!(MessageBox.Show(String.Format("{0} will be uninstalled.", mod.Name), "SnakeBite", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)) return;
 
+            ProcessUninstallMod(mod);
+        }
 
+        private void ProcessUninstallMod(ModEntry mod)
+        {
             showProgressWindow(String.Format("Please wait while {0} is uninstalled...", mod.Name));
 
             // Remove from mod database
@@ -168,7 +154,7 @@ namespace SnakeBite
             ModManager.UninstallMod(mod);
 
             // Update installed mod list
-            LoadInstalledMods(true);
+            RefreshInstalledMods(true);
             hideProgressWindow();
         }
 
@@ -180,15 +166,20 @@ namespace SnakeBite
             DialogResult ofdResult = openModFile.ShowDialog();
             if (ofdResult != DialogResult.OK) return;
 
+            ProcessInstallMod(openModFile.FileName);
+        }
+
+        private void ProcessInstallMod(string ModFile, bool ignoreConflicts = false)
+        {
             // extract metadata and load
             FastZip unzipper = new FastZip();
-            unzipper.ExtractZip(openModFile.FileName, ".", "metadata.xml");
+            unzipper.ExtractZip(ModFile, ".", "metadata.xml");
 
             ModEntry modMetadata = new ModEntry();
             modMetadata.ReadFromFile("metadata.xml");
             File.Delete("metadata.xml"); // delete temp metadata
 
-            if (!checkConflicts.Checked)
+            if (!checkConflicts.Checked && !ignoreConflicts)
             {
                 // check version conflicts
                 int SBVersion = ModManager.GetSBVersion();
@@ -277,15 +268,14 @@ namespace SnakeBite
 
             showProgressWindow(String.Format("Installing {0}, please wait...", modMetadata.Name));
 
-
             // Install mod to game database
             objSettings.ModEntries.Add(modMetadata);
             objSettings.SaveSettings();
 
             // Install mod to 01.dat
-            ModManager.InstallMod(openModFile.FileName);
+            ModManager.InstallMod(ModFile);
 
-            LoadInstalledMods();
+            RefreshInstalledMods();
             listInstalledMods.SelectedIndex = listInstalledMods.Items.Count - 1;
 
             hideProgressWindow();
@@ -318,13 +308,13 @@ namespace SnakeBite
             Properties.Settings.Default.InstallPath = filePath;
             Properties.Settings.Default.Save();
 
-            if(!ModManager.CheckDatHash())
+            if (!ModManager.CheckDatHash())
             {
                 MessageBox.Show("Game data appears to have changed. Database will be rebuilt.", "SnakeBite", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 buttonBuildGameDB_Click(null, null);
             }
 
-            LoadInstalledMods();
+            RefreshInstalledMods();
         }
 
         private void showProgressWindow(string Text = "Processing...")
@@ -353,18 +343,18 @@ namespace SnakeBite
 
             showProgressWindow("Rebuilding game data cache...");
 
-            objSettings.GameData = ModManager.RebuildGameData();
+            objSettings.GameData = ModManager.RebuildGameData(true);
             objSettings.SaveSettings();
 
             ModManager.CleanupModSettings();
 
             ModManager.UpdateDatHash();
 
-            LoadInstalledMods(true);
+            RefreshInstalledMods(true);
 
             hideProgressWindow();
 
-            if(sender!=null) tabControl.SelectedIndex = 0;
+            if (sender != null) tabControl.SelectedIndex = 0;
         }
 
         private void checkConflicts_CheckedChanged(object sender, EventArgs e)
@@ -377,7 +367,6 @@ namespace SnakeBite
 
         private void labelModAuthor_Click(object sender, EventArgs e)
         {
-
         }
 
         private void buttonLaunch_Click(object sender, EventArgs e)
@@ -393,7 +382,6 @@ namespace SnakeBite
 
         private void label2_Click(object sender, EventArgs e)
         {
-
         }
 
         private void buttonCreateBackup_Click(object sender, EventArgs e)
@@ -433,7 +421,7 @@ namespace SnakeBite
             if (openResult != DialogResult.OK) return;
 
             FastZip unzipper = new FastZip();
-            unzipper.ExtractZip(openBackup.FileName, "_backup","(.*?)");
+            unzipper.ExtractZip(openBackup.FileName, "_backup", "(.*?)");
 
             File.Copy("_backup\\01.dat", ModManager.GameArchivePath, true);
             File.Copy("_backup\\sbmods.xml", ModManager.GameDir + "\\sbmods.xml", true);
@@ -441,11 +429,11 @@ namespace SnakeBite
             Directory.Delete("_backup", true);
 
             objSettings.LoadSettings();
-            LoadInstalledMods(true);
+            RefreshInstalledMods(true);
 
             this.tabControl.SelectedIndex = 0;
 
-            MessageBox.Show("Backup successfully restored!","SnakeBite",MessageBoxButtons.OK,MessageBoxIcon.Information);
+            MessageBox.Show("Backup successfully restored!", "SnakeBite", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
     }
 }

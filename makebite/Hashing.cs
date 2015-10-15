@@ -159,7 +159,7 @@ namespace GzsTool.Utility
 
         public static bool ValidFileExtension(string filePath)
         {
-            string fExt = filePath.Substring(filePath.IndexOf(".")+1);
+            string fExt = filePath.Substring(filePath.IndexOf(".") + 1);
             if (FileExtensions.Contains(fExt)) return true;
             return false;
         }

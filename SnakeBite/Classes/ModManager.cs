@@ -2,12 +2,10 @@
 using SnakeBite.GzsTool;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
-using System.Text;
-using SnakeBite;
-using System.Diagnostics;
+using SnakeBite.Classes;
 
 namespace SnakeBite
 {
@@ -17,6 +15,7 @@ namespace SnakeBite
         internal static string GameArchiveDir { get { return Properties.Settings.Default.InstallPath + "\\master\\0\\01"; } }
         internal static string GameArchivePath { get { return Properties.Settings.Default.InstallPath + "\\master\\0\\01.dat"; } }
         internal static string GameArchiveXmlPath { get { return Properties.Settings.Default.InstallPath + "\\master\\0\\01.dat.xml"; } }
+        private static BackupManager backupMan = new BackupManager();
 
         // Checks the saved InstallPath variable for the existence of MGSVTPP.exe
         internal static bool ValidInstallPath
@@ -302,9 +301,6 @@ namespace SnakeBite
                 {
                     BuildFpkList.Add(new ModFpkEntry() { FilePath = fpkFileEntry.FilePath, FpkFile = fpkFileName });
                 }
-
-                File.Delete(fpkFile + ".xml");
-                Directory.Delete(fpkFile.Replace(".", "_"), true);
             }
 
             return BuildFpkList;
@@ -372,8 +368,8 @@ namespace SnakeBite
 
         internal static void DeleteGameArchive()
         {
-            if(File.Exists(GameArchiveXmlPath)) File.Delete(GameArchiveXmlPath);
-            if(Directory.Exists(GameArchiveDir)) Directory.Delete(GameArchiveDir, true);
+            if (File.Exists(GameArchiveXmlPath)) File.Delete(GameArchiveXmlPath);
+            if (Directory.Exists(GameArchiveDir)) Directory.Delete(GameArchiveDir, true);
         }
 
         internal static void ExtractGameArchive()
@@ -395,9 +391,8 @@ namespace SnakeBite
             return settingsXml.ModEntries;
         }
 
-
         // gets information about the existing 01.dat archive
-        internal static GameData RebuildGameData()
+        internal static GameData RebuildGameData(bool copyBackup = false)
         {
             if (Directory.Exists(GameArchiveDir)) Directory.Delete(GameArchiveDir, true);
             ExtractGameArchive();
@@ -435,8 +430,22 @@ namespace SnakeBite
                 }
             }
 
-            Directory.Delete(GameArchiveDir, true);
-            File.Delete(GameArchiveXmlPath);
+            if(copyBackup)
+            {
+                foreach (ModFpkEntry fpkEntry in buildData.GameFpkEntries)
+                {
+                    string fpkDir = Tools.ToWinPath(fpkEntry.FpkFile.Replace(".", "_"));
+                    backupMan.AddFile(GameArchiveDir + fpkDir + Tools.ToWinPath(fpkEntry.FilePath), fpkEntry.FilePath, fpkEntry.FpkFile);
+                }
+
+                foreach (ModQarEntry qarEntry in buildData.GameQarEntries)
+                {
+                    backupMan.AddFile(GameArchiveDir + Tools.ToWinPath(qarEntry.FilePath), Tools.ToQarPath(qarEntry.FilePath));
+                }
+                backupMan.Save();
+            }
+
+            DeleteGameArchive();
 
             return buildData;
         }

@@ -1,9 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Xml.Serialization;
 using System.Security.Cryptography;
 using System.Text;
-using makebite;
+using System.Xml.Serialization;
 
 namespace SnakeBite
 {
