@@ -317,6 +317,14 @@ namespace SnakeBite
             textInstallPath.Text = filePath;
             Properties.Settings.Default.InstallPath = filePath;
             Properties.Settings.Default.Save();
+
+            if(!ModManager.CheckDatHash())
+            {
+                MessageBox.Show("Game data appears to have changed. Database will be rebuilt.", "SnakeBite", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                buttonBuildGameDB_Click(null, null);
+            }
+
+            LoadInstalledMods();
         }
 
         private void showProgressWindow(string Text = "Processing...")
