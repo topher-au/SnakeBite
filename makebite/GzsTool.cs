@@ -142,7 +142,7 @@ namespace SnakeBite.GzsTool
 
         public void WriteToFile(string Filename)
         {
-            XmlSerializer x = new XmlSerializer(typeof(FpkFile), new[] { typeof(ArchiveFile) });
+            XmlSerializer x = new XmlSerializer(typeof(ArchiveFile), new[] { typeof(FpkFile) });
             StreamWriter s = new StreamWriter(Filename);
             x.Serialize(s, this);
             s.Close();

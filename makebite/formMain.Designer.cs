@@ -46,12 +46,18 @@
             this.buttonSelectPath = new System.Windows.Forms.Button();
             this.textModPath = new System.Windows.Forms.TextBox();
             this.buttonBuild = new System.Windows.Forms.Button();
+            this.button1 = new System.Windows.Forms.Button();
+            this.labelForVersion = new System.Windows.Forms.Label();
+            this.comboForVersion = new System.Windows.Forms.ComboBox();
+            this.label1 = new System.Windows.Forms.Label();
             this.groupModInfo.SuspendLayout();
             this.groupFiles.SuspendLayout();
             this.SuspendLayout();
             // 
             // groupModInfo
             // 
+            this.groupModInfo.Controls.Add(this.comboForVersion);
+            this.groupModInfo.Controls.Add(this.labelForVersion);
             this.groupModInfo.Controls.Add(this.buttonMetaLoad);
             this.groupModInfo.Controls.Add(this.buttonMetaSave);
             this.groupModInfo.Controls.Add(this.textModWebsite);
@@ -109,7 +115,7 @@
             // 
             this.textModVersion.Location = new System.Drawing.Point(99, 57);
             this.textModVersion.Name = "textModVersion";
-            this.textModVersion.Size = new System.Drawing.Size(150, 23);
+            this.textModVersion.Size = new System.Drawing.Size(39, 23);
             this.textModVersion.TabIndex = 1;
             // 
             // textModName
@@ -174,6 +180,7 @@
             // 
             // groupFiles
             // 
+            this.groupFiles.Controls.Add(this.label1);
             this.groupFiles.Controls.Add(this.listModFiles);
             this.groupFiles.Controls.Add(this.buttonSelectPath);
             this.groupFiles.Controls.Add(this.textModPath);
@@ -188,7 +195,7 @@
             // 
             this.listModFiles.FormattingEnabled = true;
             this.listModFiles.ItemHeight = 15;
-            this.listModFiles.Location = new System.Drawing.Point(15, 57);
+            this.listModFiles.Location = new System.Drawing.Point(15, 66);
             this.listModFiles.Name = "listModFiles";
             this.listModFiles.Size = new System.Drawing.Size(408, 304);
             this.listModFiles.TabIndex = 9;
@@ -223,11 +230,54 @@
             this.buttonBuild.UseVisualStyleBackColor = true;
             this.buttonBuild.Click += new System.EventHandler(this.buttonBuild_Click);
             // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(310, 396);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(271, 23);
+            this.button1.TabIndex = 11;
+            this.button1.Text = "TEST BUTTON DO NOT PRESS";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
+            // labelForVersion
+            // 
+            this.labelForVersion.AutoSize = true;
+            this.labelForVersion.Location = new System.Drawing.Point(139, 61);
+            this.labelForVersion.Name = "labelForVersion";
+            this.labelForVersion.Size = new System.Drawing.Size(57, 15);
+            this.labelForVersion.TabIndex = 7;
+            this.labelForVersion.Text = "for MGSV";
+            // 
+            // comboForVersion
+            // 
+            this.comboForVersion.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.comboForVersion.FormattingEnabled = true;
+            this.comboForVersion.Items.AddRange(new object[] {
+            "1.00",
+            "1.02",
+            "1.04"});
+            this.comboForVersion.Location = new System.Drawing.Point(199, 56);
+            this.comboForVersion.Name = "comboForVersion";
+            this.comboForVersion.Size = new System.Drawing.Size(50, 23);
+            this.comboForVersion.TabIndex = 8;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.ForeColor = System.Drawing.Color.Red;
+            this.label1.Location = new System.Drawing.Point(58, 48);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(328, 15);
+            this.label1.TabIndex = 10;
+            this.label1.Text = "Ensure all FPK and FPKD files are unpacked with GzsTool first!";
+            // 
             // formMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(749, 428);
+            this.Controls.Add(this.button1);
             this.Controls.Add(this.buttonBuild);
             this.Controls.Add(this.groupFiles);
             this.Controls.Add(this.groupModInfo);
@@ -237,6 +287,7 @@
             this.Name = "formMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "MakeBite";
+            this.Load += new System.EventHandler(this.formMain_Load);
             this.groupModInfo.ResumeLayout(false);
             this.groupModInfo.PerformLayout();
             this.groupFiles.ResumeLayout(false);
@@ -265,6 +316,10 @@
         private System.Windows.Forms.Button buttonBuild;
         private System.Windows.Forms.Button buttonMetaLoad;
         private System.Windows.Forms.Button buttonMetaSave;
+        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.ComboBox comboForVersion;
+        private System.Windows.Forms.Label labelForVersion;
+        private System.Windows.Forms.Label label1;
     }
 }
 

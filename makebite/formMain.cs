@@ -32,6 +32,9 @@ namespace makebite
                 string filePath = modFile.Substring(modPath.Length).Replace("\\", "/");
                 if(Hashing.ValidFileExtension(filePath)) listModFiles.Items.Add(filePath);
             }
+
+            Properties.Settings.Default.LastModDir = modPath;
+            Properties.Settings.Default.Save();
         }
 
         private void buttonBuild_Click(object sender, EventArgs e)
@@ -123,6 +126,7 @@ namespace makebite
             modMetaData.Name = textModName.Text;
             modMetaData.Author = textModAuthor.Text;
             modMetaData.Version = textModVersion.Text;
+            modMetaData.MGSVersion = comboForVersion.Text;
             modMetaData.Website = textModWebsite.Text;
             modMetaData.Description = textModDescription.Text;
             modMetaData.SaveToFile(SaveMeta.FileName);
@@ -143,11 +147,49 @@ namespace makebite
             textModAuthor.Text = modMetaData.Author;
             textModWebsite.Text = modMetaData.Website;
             textModDescription.Text = modMetaData.Description.Replace("\n", "\r\n");
+            foreach(string li in comboForVersion.Items)
+            {
+                if(modMetaData.MGSVersion == li)
+                {
+                    comboForVersion.SelectedIndex = comboForVersion.Items.IndexOf(li);
+                    break;
+                }
+            }
         }
 
         private void listModFiles_SelectedIndexChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            Build.BuildFpk(textModPath.Text);
+            return;
+            string msgboxtext = String.Empty;
+            foreach (string folder in Build.ListQarFiles(textModPath.Text)) {
+                msgboxtext += folder + "\n";
+            }
+            MessageBox.Show(msgboxtext);
+        }
+
+        private void formMain_Load(object sender, EventArgs e)
+        {
+            comboForVersion.SelectedIndex = comboForVersion.Items.Count - 1;
+            string modPath = Properties.Settings.Default.LastModDir;
+            if (Directory.Exists(modPath))
+            {
+                textModPath.Text = modPath;
+                foreach (string modFile in Directory.GetFiles(modPath, "*.*", SearchOption.AllDirectories))
+                {
+                    string filePath = modFile.Substring(modPath.Length).Replace("\\", "/");
+                    if (Hashing.ValidFileExtension(filePath)) listModFiles.Items.Add(filePath);
+                }
+            } else
+            {
+                Properties.Settings.Default.LastModDir = String.Empty;
+                Properties.Settings.Default.Save();
+            }
         }
     }
 }

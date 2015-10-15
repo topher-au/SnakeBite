@@ -33,16 +33,21 @@
             this.tabInstalledMods = new System.Windows.Forms.TabPage();
             this.buttonInstallMod = new System.Windows.Forms.Button();
             this.listInstalledMods = new System.Windows.Forms.ListBox();
-            this.labelNoMods = new System.Windows.Forms.Label();
             this.groupModInfo = new System.Windows.Forms.GroupBox();
             this.panelModDetails = new System.Windows.Forms.Panel();
             this.labelModWebsite = new System.Windows.Forms.LinkLabel();
             this.buttonUninstallMod = new System.Windows.Forms.Button();
+            this.labelNoMods = new System.Windows.Forms.Label();
             this.textDescription = new System.Windows.Forms.TextBox();
             this.labelModVersion = new System.Windows.Forms.Label();
             this.labelModAuthor = new System.Windows.Forms.Label();
             this.labelModName = new System.Windows.Forms.Label();
             this.tabSettings = new System.Windows.Forms.TabPage();
+            this.groupBackup = new System.Windows.Forms.GroupBox();
+            this.label3 = new System.Windows.Forms.Label();
+            this.label2 = new System.Windows.Forms.Label();
+            this.buttonRestoreBackup = new System.Windows.Forms.Button();
+            this.buttonCreateBackup = new System.Windows.Forms.Button();
             this.labelVersion = new System.Windows.Forms.Label();
             this.groupAbout = new System.Windows.Forms.GroupBox();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
@@ -53,19 +58,14 @@
             this.buttonFindMGSV = new System.Windows.Forms.Button();
             this.textInstallPath = new System.Windows.Forms.TextBox();
             this.buttonLaunch = new System.Windows.Forms.Button();
-            this.groupBackup = new System.Windows.Forms.GroupBox();
-            this.buttonCreateBackup = new System.Windows.Forms.Button();
-            this.buttonRestoreBackup = new System.Windows.Forms.Button();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label3 = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabInstalledMods.SuspendLayout();
             this.groupModInfo.SuspendLayout();
             this.panelModDetails.SuspendLayout();
             this.tabSettings.SuspendLayout();
+            this.groupBackup.SuspendLayout();
             this.groupAbout.SuspendLayout();
             this.groupBox1.SuspendLayout();
-            this.groupBackup.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl
@@ -114,16 +114,6 @@
             this.listInstalledMods.TabIndex = 0;
             this.listInstalledMods.SelectedIndexChanged += new System.EventHandler(this.listInstalledMods_SelectedIndexChanged);
             // 
-            // labelNoMods
-            // 
-            this.labelNoMods.AutoSize = true;
-            this.labelNoMods.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelNoMods.Location = new System.Drawing.Point(90, 183);
-            this.labelNoMods.Name = "labelNoMods";
-            this.labelNoMods.Size = new System.Drawing.Size(192, 30);
-            this.labelNoMods.TabIndex = 2;
-            this.labelNoMods.Text = "No mods installed";
-            // 
             // groupModInfo
             // 
             this.groupModInfo.Controls.Add(this.panelModDetails);
@@ -168,6 +158,16 @@
             this.buttonUninstallMod.Text = "Uninstall";
             this.buttonUninstallMod.UseVisualStyleBackColor = true;
             this.buttonUninstallMod.Click += new System.EventHandler(this.buttonUninstallMod_Click);
+            // 
+            // labelNoMods
+            // 
+            this.labelNoMods.AutoSize = true;
+            this.labelNoMods.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelNoMods.Location = new System.Drawing.Point(90, 183);
+            this.labelNoMods.Name = "labelNoMods";
+            this.labelNoMods.Size = new System.Drawing.Size(192, 30);
+            this.labelNoMods.TabIndex = 2;
+            this.labelNoMods.Text = "No mods installed";
             // 
             // textDescription
             // 
@@ -224,6 +224,57 @@
             this.tabSettings.TabIndex = 1;
             this.tabSettings.Text = "Settings";
             this.tabSettings.UseVisualStyleBackColor = true;
+            // 
+            // groupBackup
+            // 
+            this.groupBackup.Controls.Add(this.label3);
+            this.groupBackup.Controls.Add(this.label2);
+            this.groupBackup.Controls.Add(this.buttonRestoreBackup);
+            this.groupBackup.Controls.Add(this.buttonCreateBackup);
+            this.groupBackup.Location = new System.Drawing.Point(277, 65);
+            this.groupBackup.Name = "groupBackup";
+            this.groupBackup.Size = new System.Drawing.Size(294, 155);
+            this.groupBackup.TabIndex = 4;
+            this.groupBackup.TabStop = false;
+            this.groupBackup.Text = "Backup Game Files";
+            // 
+            // label3
+            // 
+            this.label3.Location = new System.Drawing.Point(92, 88);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(196, 60);
+            this.label3.TabIndex = 3;
+            this.label3.Text = "Restore a backup archive, immediately overwriting any installed mods or other cha" +
+    "nges to 01.dat.";
+            // 
+            // label2
+            // 
+            this.label2.Location = new System.Drawing.Point(92, 22);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(196, 60);
+            this.label2.TabIndex = 2;
+            this.label2.Text = "Backup 01.dat and any installed mods for restoration in case something breaks. Yo" +
+    "u can also swap between mod configurations.";
+            // 
+            // buttonRestoreBackup
+            // 
+            this.buttonRestoreBackup.Location = new System.Drawing.Point(6, 88);
+            this.buttonRestoreBackup.Name = "buttonRestoreBackup";
+            this.buttonRestoreBackup.Size = new System.Drawing.Size(80, 60);
+            this.buttonRestoreBackup.TabIndex = 1;
+            this.buttonRestoreBackup.Text = "Restore";
+            this.buttonRestoreBackup.UseVisualStyleBackColor = true;
+            this.buttonRestoreBackup.Click += new System.EventHandler(this.buttonRestoreBackup_Click);
+            // 
+            // buttonCreateBackup
+            // 
+            this.buttonCreateBackup.Location = new System.Drawing.Point(6, 22);
+            this.buttonCreateBackup.Name = "buttonCreateBackup";
+            this.buttonCreateBackup.Size = new System.Drawing.Size(80, 60);
+            this.buttonCreateBackup.TabIndex = 0;
+            this.buttonCreateBackup.Text = "Backup";
+            this.buttonCreateBackup.UseVisualStyleBackColor = true;
+            this.buttonCreateBackup.Click += new System.EventHandler(this.buttonCreateBackup_Click);
             // 
             // labelVersion
             // 
@@ -327,57 +378,6 @@
             this.buttonLaunch.UseVisualStyleBackColor = true;
             this.buttonLaunch.Click += new System.EventHandler(this.buttonLaunch_Click);
             // 
-            // groupBackup
-            // 
-            this.groupBackup.Controls.Add(this.label3);
-            this.groupBackup.Controls.Add(this.label2);
-            this.groupBackup.Controls.Add(this.buttonRestoreBackup);
-            this.groupBackup.Controls.Add(this.buttonCreateBackup);
-            this.groupBackup.Location = new System.Drawing.Point(277, 65);
-            this.groupBackup.Name = "groupBackup";
-            this.groupBackup.Size = new System.Drawing.Size(294, 155);
-            this.groupBackup.TabIndex = 4;
-            this.groupBackup.TabStop = false;
-            this.groupBackup.Text = "Backup Game Files";
-            // 
-            // buttonCreateBackup
-            // 
-            this.buttonCreateBackup.Location = new System.Drawing.Point(6, 22);
-            this.buttonCreateBackup.Name = "buttonCreateBackup";
-            this.buttonCreateBackup.Size = new System.Drawing.Size(80, 60);
-            this.buttonCreateBackup.TabIndex = 0;
-            this.buttonCreateBackup.Text = "Backup";
-            this.buttonCreateBackup.UseVisualStyleBackColor = true;
-            this.buttonCreateBackup.Click += new System.EventHandler(this.buttonCreateBackup_Click);
-            // 
-            // buttonRestoreBackup
-            // 
-            this.buttonRestoreBackup.Location = new System.Drawing.Point(6, 88);
-            this.buttonRestoreBackup.Name = "buttonRestoreBackup";
-            this.buttonRestoreBackup.Size = new System.Drawing.Size(80, 60);
-            this.buttonRestoreBackup.TabIndex = 1;
-            this.buttonRestoreBackup.Text = "Restore";
-            this.buttonRestoreBackup.UseVisualStyleBackColor = true;
-            this.buttonRestoreBackup.Click += new System.EventHandler(this.buttonRestoreBackup_Click);
-            // 
-            // label2
-            // 
-            this.label2.Location = new System.Drawing.Point(92, 22);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(196, 60);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Backup 01.dat and any installed mods for restoration in case something breaks. Yo" +
-    "u can also swap between mod configurations.";
-            // 
-            // label3
-            // 
-            this.label3.Location = new System.Drawing.Point(92, 88);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(196, 60);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "Restore a backup archive, immediately overwriting any installed mods or other cha" +
-    "nges to 01.dat.";
-            // 
             // formMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -401,11 +401,11 @@
             this.panelModDetails.PerformLayout();
             this.tabSettings.ResumeLayout(false);
             this.tabSettings.PerformLayout();
+            this.groupBackup.ResumeLayout(false);
             this.groupAbout.ResumeLayout(false);
             this.groupAbout.PerformLayout();
             this.groupBox1.ResumeLayout(false);
             this.groupBox1.PerformLayout();
-            this.groupBackup.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }

@@ -83,6 +83,9 @@ namespace SnakeBite
         [XmlAttribute("Version")]
         public string Version { get; set; }
 
+        [XmlAttribute("MGSVersion")]
+        public string MGSVersion { get; set; }
+
         [XmlAttribute("Author")]
         public string Author { get; set; }
 
@@ -112,6 +115,7 @@ namespace SnakeBite
 
             Name = loaded.Name;
             Version = loaded.Version;
+            MGSVersion = loaded.MGSVersion;
             Author = loaded.Author;
             Website = loaded.Website;
             Description = loaded.Description.Replace("\n", "\r\n");
