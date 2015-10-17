@@ -56,7 +56,7 @@
             this.labelGithub = new System.Windows.Forms.LinkLabel();
             this.labelThanks = new System.Windows.Forms.Label();
             this.checkConflicts = new System.Windows.Forms.CheckBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.groupMGSVDir = new System.Windows.Forms.GroupBox();
             this.buttonFindMGSV = new System.Windows.Forms.Button();
             this.textInstallPath = new System.Windows.Forms.TextBox();
             this.buttonLaunch = new System.Windows.Forms.Button();
@@ -68,7 +68,7 @@
             this.groupTools.SuspendLayout();
             this.groupBackup.SuspendLayout();
             this.groupAbout.SuspendLayout();
-            this.groupBox1.SuspendLayout();
+            this.groupMGSVDir.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl
@@ -218,7 +218,7 @@
             this.tabSettings.Controls.Add(this.labelVersion);
             this.tabSettings.Controls.Add(this.groupAbout);
             this.tabSettings.Controls.Add(this.checkConflicts);
-            this.tabSettings.Controls.Add(this.groupBox1);
+            this.tabSettings.Controls.Add(this.groupMGSVDir);
             this.tabSettings.Location = new System.Drawing.Point(4, 24);
             this.tabSettings.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabSettings.Name = "tabSettings";
@@ -317,7 +317,6 @@
             this.labelVersion.Size = new System.Drawing.Size(51, 15);
             this.labelVersion.TabIndex = 2;
             this.labelVersion.Text = "version1";
-            this.labelVersion.Click += new System.EventHandler(this.label2_Click);
             // 
             // groupAbout
             // 
@@ -339,7 +338,7 @@
             this.labelGithub.TabIndex = 1;
             this.labelGithub.TabStop = true;
             this.labelGithub.Text = "https://www.github.com/topher-au/SnakeBite/releases";
-            this.labelGithub.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            this.labelGithub.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkGithub_LinkClicked);
             // 
             // labelThanks
             // 
@@ -362,16 +361,16 @@
             this.checkConflicts.UseVisualStyleBackColor = true;
             this.checkConflicts.CheckedChanged += new System.EventHandler(this.checkConflicts_CheckedChanged);
             // 
-            // groupBox1
+            // groupMGSVDir
             // 
-            this.groupBox1.Controls.Add(this.buttonFindMGSV);
-            this.groupBox1.Controls.Add(this.textInstallPath);
-            this.groupBox1.Location = new System.Drawing.Point(6, 7);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(565, 52);
-            this.groupBox1.TabIndex = 0;
-            this.groupBox1.TabStop = false;
-            this.groupBox1.Text = "MGSV Installation";
+            this.groupMGSVDir.Controls.Add(this.buttonFindMGSV);
+            this.groupMGSVDir.Controls.Add(this.textInstallPath);
+            this.groupMGSVDir.Location = new System.Drawing.Point(6, 7);
+            this.groupMGSVDir.Name = "groupMGSVDir";
+            this.groupMGSVDir.Size = new System.Drawing.Size(565, 52);
+            this.groupMGSVDir.TabIndex = 0;
+            this.groupMGSVDir.TabStop = false;
+            this.groupMGSVDir.Text = "MGSV Installation";
             // 
             // buttonFindMGSV
             // 
@@ -429,8 +428,8 @@
             this.groupBackup.ResumeLayout(false);
             this.groupAbout.ResumeLayout(false);
             this.groupAbout.PerformLayout();
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
+            this.groupMGSVDir.ResumeLayout(false);
+            this.groupMGSVDir.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -450,7 +449,7 @@
         private System.Windows.Forms.Label labelModVersion;
         private System.Windows.Forms.Label labelModAuthor;
         private System.Windows.Forms.Label labelModName;
-        private System.Windows.Forms.GroupBox groupBox1;
+        private System.Windows.Forms.GroupBox groupMGSVDir;
         private System.Windows.Forms.Button buttonFindMGSV;
         private System.Windows.Forms.TextBox textInstallPath;
         private System.Windows.Forms.Button buttonBuildGameDB;

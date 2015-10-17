@@ -1,11 +1,6 @@
-﻿using ICSharpCode.SharpZipLib.Zip;
+﻿using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SnakeBite.Classes
 {
@@ -15,10 +10,11 @@ namespace SnakeBite.Classes
 
         public BackupManager()
         {
-            if(File.Exists("backup\backup.xml"))
+            if (File.Exists("backup\backup.xml"))
             {
                 Load();
-            } else
+            }
+            else
             {
                 backupData.BackupFiles = new List<BackupFile>();
             }
@@ -34,10 +30,10 @@ namespace SnakeBite.Classes
 
         public void Save()
         {
-            foreach(BackupFile bFile in backupData.BackupFiles)
+            foreach (BackupFile backupFile in backupData.BackupFiles)
             {
                 // clean up missing backup files
-                if (!File.Exists(bFile.BackupPath)) backupData.BackupFiles.Remove(bFile);
+                if (!File.Exists(backupFile.BackupPath)) backupData.BackupFiles.Remove(backupFile);
             }
             XmlSerializer x = new XmlSerializer(typeof(BackupArchive));
             StreamWriter s = new StreamWriter("backup\\backup.xml");
@@ -47,10 +43,10 @@ namespace SnakeBite.Classes
 
         public void AddFile(string PathOnDisk, string FilePath, string FpkFile = "")
         {
-            string DestPath = "backup" + PathOnDisk.Substring(ModManager.GameArchiveDir.Length);
+            string DestPath = "backup" + PathOnDisk.Substring(ModManager.ExtractedDatDir.Length);
             string DestDir = DestPath.Substring(0, DestPath.LastIndexOf("\\"));
             // if no backup exists, create one
-            if(!File.Exists(DestPath))
+            if (!File.Exists(DestPath))
             {
                 if (!Directory.Exists(DestDir)) Directory.CreateDirectory(DestDir);
                 File.Copy(PathOnDisk, DestPath);
@@ -60,10 +56,8 @@ namespace SnakeBite.Classes
 
         public void RestoreFile(BackupFile BackupFile)
         {
-            File.Copy(BackupFile.BackupPath, ModManager.GameArchiveDir + BackupFile.BackupPath.Substring(BackupFile.BackupPath.IndexOf("\\")));
+            File.Copy(BackupFile.BackupPath, ModManager.ExtractedDatDir + BackupFile.BackupPath.Substring(BackupFile.BackupPath.IndexOf("\\")));
         }
-
-
     }
 
     [XmlType("BackupArchive")]
@@ -85,5 +79,4 @@ namespace SnakeBite.Classes
         [XmlAttribute("BackupPath")]
         public string BackupPath { get; set; }
     }
-
 }

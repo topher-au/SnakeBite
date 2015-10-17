@@ -1,12 +1,9 @@
-﻿using GzsTool.Utility;
-using ICSharpCode.SharpZipLib.Zip;
+﻿using FolderSelect;
+using GzsTool;
 using SnakeBite;
-using SnakeBite.GzsTool;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Windows.Forms;
-using FolderSelect;
 
 namespace makebite
 {
@@ -30,7 +27,7 @@ namespace makebite
             foreach (string modFile in Directory.GetFiles(modPath, "*.*", SearchOption.AllDirectories))
             {
                 string filePath = modFile.Substring(modPath.Length).Replace("\\", "/");
-                if(Hashing.ValidFileExtension(filePath) && filePath != "/metadata.xml") listModFiles.Items.Add(filePath);
+                if (Hashing.ValidFileExtension(filePath) && filePath != "/metadata.xml") listModFiles.Items.Add(filePath);
             }
 
             Properties.Settings.Default.LastModDir = modPath;
@@ -49,7 +46,6 @@ namespace makebite
             DoBuild(modPath);
 
             MessageBox.Show("_build completed.", "MakeBite", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
         }
 
         private void DoBuild(string BuildFile)
@@ -64,7 +60,6 @@ namespace makebite
             modMetaData.SaveToFile(textModPath.Text + "\\metadata.xml");
 
             Build.BuildArchive(textModPath.Text, modMetaData, BuildFile);
-
         }
 
         private void buttonMetaSave_Click(object sender, EventArgs e)
@@ -99,9 +94,9 @@ namespace makebite
             textModAuthor.Text = modMetaData.Author;
             textModWebsite.Text = modMetaData.Website;
             textModDescription.Text = modMetaData.Description.Replace("\n", "\r\n");
-            foreach(string li in comboForVersion.Items)
+            foreach (string li in comboForVersion.Items)
             {
-                if(modMetaData.MGSVersion == li)
+                if (modMetaData.MGSVersion == li)
                 {
                     comboForVersion.SelectedIndex = comboForVersion.Items.IndexOf(li);
                     break;
@@ -111,7 +106,6 @@ namespace makebite
 
         private void listModFiles_SelectedIndexChanged(object sender, EventArgs e)
         {
-
         }
 
         private void formMain_Load(object sender, EventArgs e)
@@ -128,7 +122,6 @@ namespace makebite
                 ModEntry modMetaData = new ModEntry();
                 if (File.Exists(modPath + "\\metadata.xml"))
                 {
-
                     modMetaData.ReadFromFile(modPath + "\\metadata.xml");
 
                     textModName.Text = modMetaData.Name;
@@ -153,14 +146,15 @@ namespace makebite
                     if (Hashing.ValidFileExtension(filePath) && filePath != "/metadata.xml") listModFiles.Items.Add(filePath);
                 }
 
-                if(args.Length==2)
+                if (args.Length == 2)
                 {
                     DoBuild(Path.Combine(args[1], String.Format("{0}.mgsv", modMetaData.Name)));
                     Application.Exit();
                 }
-            } else
+            }
+            else
             {
-                if(args.Length==0)
+                if (args.Length == 0)
                 {
                     Properties.Settings.Default.LastModDir = String.Empty;
                     Properties.Settings.Default.Save();

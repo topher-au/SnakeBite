@@ -1,4 +1,4 @@
-﻿using GzsTool.Utility;
+﻿using SnakeBite;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -7,9 +7,9 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
 
-namespace SnakeBite.GzsTool
+namespace GzsTool
 {
-    public static class GzsTool
+    public static class GzsApp
     {
         // Runs GzsTool with specified paramaters
         public static void Run(string args, bool wait = true)
@@ -81,7 +81,7 @@ namespace SnakeBite.GzsTool
         [XmlAttribute("FpkType")]
         public string FpkType { get; set; }
 
-        public void LoadFromFile(string Filename)
+        public void ReadXml(string Filename)
         {
             // Deserialize object from GzsTool XML data
             XmlSerializer xSerializer = new XmlSerializer(typeof(ArchiveFile), new[] { typeof(FpkFile), typeof(ArchiveFile) });
@@ -101,7 +101,7 @@ namespace SnakeBite.GzsTool
             }
         }
 
-        public void WriteToFile(string Filename)
+        public void WriteXml(string Filename)
         {
             XmlSerializer x = new XmlSerializer(typeof(ArchiveFile), new[] { typeof(FpkFile) });
             StreamWriter s = new StreamWriter(Filename);
@@ -132,7 +132,7 @@ namespace SnakeBite.GzsTool
         [XmlArray("Entries")]
         public List<QarEntry> QarEntries { get; set; }
 
-        public void LoadFromFile(string Filename)
+        public void ReadXml(string Filename)
         {
             // Deserialize object from GzsTool XML data
             XmlSerializer xSerializer = new XmlSerializer(typeof(ArchiveFile), new[] { typeof(QarFile), typeof(ArchiveFile) });
@@ -152,28 +152,28 @@ namespace SnakeBite.GzsTool
             }
         }
 
-        public void WriteToFile(string Filename)
+        public void WriteXml(string Filename)
         {
-            foreach (QarEntry qarFile in QarEntries)
+            foreach (QarEntry Entry in QarEntries)
             {
                 // regenerate hash for file
-                string filePath = qarFile.FilePath.Replace("\\", "/");
+                string filePath = Tools.ToQarPath(Entry.FilePath);
                 if (filePath.Substring(1).Contains("/"))
                 {
                     // generate normal hash
                     ulong hash = Hashing.HashFileNameWithExtension(filePath);
-                    qarFile.Hash = hash;
+                    Entry.Hash = hash;
                 }
                 else
                 {
                     // generate extension only hash
                     ulong hash = Hashing.HashFileNameExtensionOnly(filePath);
-                    qarFile.Hash = hash;
+                    Entry.Hash = hash;
                 }
-                string ext = qarFile.FilePath.Substring(qarFile.FilePath.LastIndexOf(".") + 1);
+                string ext = Entry.FilePath.Substring(Entry.FilePath.LastIndexOf(".") + 1);
                 if (ext == "fpk" || ext == "fpkd")
                 {
-                    qarFile.Compressed = true;
+                    Entry.Compressed = true;
                 }
             }
             XmlSerializer x = new XmlSerializer(typeof(ArchiveFile), new[] { typeof(QarFile) });

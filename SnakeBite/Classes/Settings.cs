@@ -15,7 +15,7 @@ namespace SnakeBite
         [XmlArray("Mods")]
         public List<ModEntry> ModEntries { get; set; } = new List<ModEntry>();
 
-        public void SaveSettings()
+        public void Save()
         {
             // Write settings to XML
 
@@ -34,7 +34,7 @@ namespace SnakeBite
             s.Close();
         }
 
-        public bool LoadSettings()
+        public bool Load()
         {
             // Load settings from XML
 
@@ -205,4 +205,6 @@ namespace SnakeBite
             return hashBuilder.ToString();
         }
     }
+
+
 }

@@ -61,8 +61,8 @@
     <Compile Include="formMain.Designer.cs">
       <DependentUpon>formMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="GzsTool.cs" />
-    <Compile Include="Hashing.cs" />
+    <Compile Include="GzsTool\GzsHashing.cs" />
+    <Compile Include="GzsTool\GzsApp.cs" />
     <Compile Include="MakeBite.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

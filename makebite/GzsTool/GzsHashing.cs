@@ -6,7 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Security.Cryptography;
 
-namespace GzsTool.Utility
+namespace GzsTool
 {
     internal static class Hashing
     {
@@ -155,6 +155,12 @@ namespace GzsTool.Utility
             "xml"
         };
 
+        public static bool ValidFileExtension(string FilePath)
+        {
+            string extension = Path.GetExtension(FilePath).Substring(1);
+            return FileExtensions.Contains(extension);
+        }
+
         private static readonly Dictionary<ulong, string> ExtensionsMap = FileExtensions.ToDictionary(HashFileExtension);
 
         public static ulong HashFileExtension(string fileExtension)
@@ -186,19 +192,6 @@ namespace GzsTool.Utility
             ulong seed1 = BitConverter.ToUInt64(seed1Bytes, 0);
             ulong maskedHash = CityHash.CityHash.CityHash64WithSeeds(text, seed0, seed1) & 0x3FFFFFFFFFFFF;
             return assetFlag ? maskedHash : maskedHash | 0x4000000000000;
-        }
-
-        public static ulong HashFileNameLegacy(string text, bool removeExtension = true)
-        {
-            if (removeExtension)
-            {
-                int index = text.IndexOf('.');
-                text = index == -1 ? text : text.Substring(0, index);
-            }
-
-            const ulong seed0 = 0x9ae16a3b2f90404f;
-            ulong seed1 = text.Length > 0 ? (uint)((text[0]) << 16) + (uint)text.Length : 0;
-            return CityHash.CityHash.CityHash64WithSeeds(text + "\0", seed0, seed1) & 0xFFFFFFFFFFFF;
         }
 
         public static ulong HashFileNameWithExtension(string filePath)

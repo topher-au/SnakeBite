@@ -1,5 +1,4 @@
-﻿using SnakeBite.Classes;
-using ICSharpCode.SharpZipLib.Zip;
+﻿using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -94,7 +93,7 @@ namespace SnakeBite
         {
             if (File.Exists(ModManager.GameDir + "\\sbmods.xml"))
             {
-                objSettings.LoadSettings();
+                objSettings.Load();
             }
             else
             {
@@ -151,7 +150,7 @@ namespace SnakeBite
 
             // Remove from mod database
             objSettings.ModEntries.Remove(mod);
-            objSettings.SaveSettings();
+            objSettings.Save();
 
             // Update installed mod list
             RefreshInstalledMods(true);
@@ -268,14 +267,12 @@ namespace SnakeBite
 
             showProgressWindow(String.Format("Installing {0}, please wait...", modMetadata.Name));
 
-
-
             // Install mod to 01.dat
             ModManager.InstallMod(ModFile);
 
             // Install mod to game database
             objSettings.ModEntries.Add(modMetadata);
-            objSettings.SaveSettings();
+            objSettings.Save();
 
             RefreshInstalledMods();
             listInstalledMods.SelectedIndex = listInstalledMods.Items.Count - 1;
@@ -346,7 +343,7 @@ namespace SnakeBite
             showProgressWindow("Rebuilding game data cache...");
 
             objSettings.GameData = ModManager.RebuildGameData(true);
-            objSettings.SaveSettings();
+            objSettings.Save();
 
             ModManager.CleanupModSettings();
 
@@ -377,13 +374,9 @@ namespace SnakeBite
             Application.Exit();
         }
 
-        private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void linkGithub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             System.Diagnostics.Process.Start(this.labelGithub.Text);
-        }
-
-        private void label2_Click(object sender, EventArgs e)
-        {
         }
 
         private void buttonCreateBackup_Click(object sender, EventArgs e)
@@ -398,11 +391,11 @@ namespace SnakeBite
             if (saveResult != DialogResult.OK) return;
 
             // copy current settings
-            objSettings.SaveSettings();
+            objSettings.Save();
             File.Copy(ModManager.GameDir + "\\sbmods.xml", "_backup\\sbmods.xml");
 
             // copy current 01.dat
-            File.Copy(ModManager.GameArchivePath, "_backup\\01.dat");
+            File.Copy(ModManager.DatPath, "_backup\\01.dat");
 
             // compress to backup
             FastZip zipper = new FastZip();
@@ -425,12 +418,12 @@ namespace SnakeBite
             FastZip unzipper = new FastZip();
             unzipper.ExtractZip(openBackup.FileName, "_backup", "(.*?)");
 
-            File.Copy("_backup\\01.dat", ModManager.GameArchivePath, true);
+            File.Copy("_backup\\01.dat", ModManager.DatPath, true);
             File.Copy("_backup\\sbmods.xml", ModManager.GameDir + "\\sbmods.xml", true);
 
             Directory.Delete("_backup", true);
 
-            objSettings.LoadSettings();
+            objSettings.Load();
             RefreshInstalledMods(true);
 
             this.tabControl.SelectedIndex = 0;
@@ -440,7 +433,6 @@ namespace SnakeBite
 
         private void buttonBackupSaves_Click(object sender, EventArgs e)
         {
-
-        } 
+        }
     }
 }
