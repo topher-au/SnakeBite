@@ -59,6 +59,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\BackupManager.cs" />
+    <Compile Include="Classes\GameFiles.cs" />
     <Compile Include="formMain.cs">
       <SubType>Form</SubType>
     </Compile>
