@@ -20,3 +20,5 @@ is performed.
 SnakeBite uses [GzsTool](https://www.github.com/Atvaark/GzsTool) by Atvaark
 and thus requires GzsTool to be installed into the application directory
 to function.
+
+**Until GzsTool implements singular file extraction, please use the included GzsTool only**
