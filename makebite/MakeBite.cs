@@ -1,6 +1,8 @@
-﻿using ICSharpCode.SharpZipLib.Zip;
+﻿using GzsTool.Utility;
+using ICSharpCode.SharpZipLib.Zip;
 using SnakeBite;
 using SnakeBite.GzsTool;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -36,13 +38,15 @@ namespace makebite
                     ListQarFolders.Add(Directory);
                 }
             }
-
+            ListQarFolders.Add(PathName);
             // Check all folders for files
             foreach (string Folder in ListQarFolders)
             {
                 foreach (string FileName in Directory.GetFiles(Folder))
                 {
-                    if (!FileName.Contains("metadata.xml")) ListQarFiles.Add(FileName);
+                    if (!FileName.Contains("metadata.xml") && !FileName.Contains("readme.txt") && // ignore xml metadata and readme
+                        GzsTool.Utility.Hashing.ValidFileExtension(FileName)) // only add valid files
+                            ListQarFiles.Add(FileName);
                 }
             }
 
@@ -86,8 +90,11 @@ namespace makebite
 
         public static void BuildArchive(string SourceDir, ModEntry metaData, string OutputFile)
         {
-            if (Directory.Exists("_build")) Directory.Delete("_build", true);
+            string buildDir = Directory.GetCurrentDirectory() + "\\build";
+            if (Directory.Exists(buildDir)) Directory.Delete(buildDir, true);
 
+            Directory.CreateDirectory("_build");
+            
             // build FPKs
             metaData.ModFpkEntries = new List<ModFpkEntry>();
             foreach (string FpkDir in ListFpkFolders(SourceDir))
@@ -102,15 +109,23 @@ namespace makebite
             metaData.ModQarEntries = new List<ModQarEntry>();
             foreach (string qarFile in ListQarFiles(SourceDir))
             {
-                string subDir = qarFile.Substring(0, qarFile.LastIndexOf("\\")); // the subdirectory for XML output
-                subDir = subDir.Substring(SourceDir.Length);
+                string subDir = qarFile.Substring(0, qarFile.LastIndexOf("\\")+1).Substring(SourceDir.Length); // the subdirectory for XML output
                 string qarFilePath = Tools.ToQarPath(qarFile.Substring(SourceDir.Length));
                 if (!Directory.Exists("_build" + subDir)) Directory.CreateDirectory("_build" + subDir); // create file structure
-                File.Copy(qarFile, "_build" + qarFile.Substring(SourceDir.Length), true);
-                metaData.ModQarEntries.Add(new ModQarEntry() { FilePath = qarFilePath, Compressed = qarFile.Substring(qarFile.LastIndexOf(".") + 1).Contains("fpk") ? true : false, ContentHash = Tools.HashFile(qarFile) });
+                File.Copy(qarFile, "_build" + Tools.ToWinPath(qarFilePath), true);
+                int subDirAt = qarFilePath.Substring(1).IndexOf("/");
+                ulong fHash;
+                if(subDirAt == -1)
+                {
+                    fHash = Hashing.HashFileNameExtensionOnly(qarFilePath);
+                } else
+                {
+                    fHash = Hashing.HashFileName(qarFilePath);
+                }
+                metaData.ModQarEntries.Add(new ModQarEntry() { FilePath = qarFilePath, Compressed = qarFile.Substring(qarFile.LastIndexOf(".") + 1).Contains("fpk") ? true : false, ContentHash = Tools.HashFile(qarFile) , Hash = fHash});
             }
 
-            metaData.SBVersion = "400"; // 0.4.0.0
+            metaData.SBVersion = "420"; // 0.4.2.0
 
             metaData.SaveToFile("_build\\metadata.xml");
 
