@@ -25,12 +25,35 @@ namespace SnakeBite.GzsTool
             if (wait)
             {
                 while (!gzsProcess.HasExited) { Application.DoEvents(); }
-            }
 
-            if (gzsProcess.ExitCode != 0)
+                if (gzsProcess.ExitCode != 0)
+                {
+                    string gzsError = gzsProcess.StandardError.ReadToEnd();
+                    MessageBox.Show(String.Format("Error running GzsTool!\n\n{0}", gzsError));
+                }
+            }
+        }
+
+        // Runs GzsTool with specified paramaters
+        public static void ExtractSingle(string QarFile, ulong FileHash, bool wait = true)
+        {
+            Process gzsProcess = new Process();
+            gzsProcess.StartInfo.UseShellExecute = false;
+            gzsProcess.StartInfo.CreateNoWindow = true;
+            gzsProcess.StartInfo.FileName = "GzsTool.exe";
+            gzsProcess.StartInfo.Arguments = "\"" + QarFile + "\" \"" + FileHash.ToString() + "\"";
+            gzsProcess.StartInfo.RedirectStandardError = true;
+            gzsProcess.Start();
+
+            if (wait)
             {
-                string gzsError = gzsProcess.StandardError.ReadToEnd();
-                MessageBox.Show(String.Format("Error running GzsTool!\n\n{0}", gzsError));
+                while (!gzsProcess.HasExited) { Application.DoEvents(); }
+
+                if (gzsProcess.ExitCode != 0)
+                {
+                    string gzsError = gzsProcess.StandardError.ReadToEnd();
+                    MessageBox.Show(String.Format("Error running GzsTool!\n\n{0}", gzsError));
+                }
             }
         }
     }
