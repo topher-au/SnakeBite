@@ -43,16 +43,18 @@
             this.labelModName = new System.Windows.Forms.Label();
             this.labelNoMods = new System.Windows.Forms.Label();
             this.tabSettings = new System.Windows.Forms.TabPage();
+            this.groupTools = new System.Windows.Forms.GroupBox();
+            this.labelRebuildCache = new System.Windows.Forms.Label();
+            this.buttonBuildGameDB = new System.Windows.Forms.Button();
             this.groupBackup = new System.Windows.Forms.GroupBox();
-            this.label3 = new System.Windows.Forms.Label();
-            this.label2 = new System.Windows.Forms.Label();
+            this.labelRestore = new System.Windows.Forms.Label();
+            this.labelBackup = new System.Windows.Forms.Label();
             this.buttonRestoreBackup = new System.Windows.Forms.Button();
             this.buttonCreateBackup = new System.Windows.Forms.Button();
             this.labelVersion = new System.Windows.Forms.Label();
             this.groupAbout = new System.Windows.Forms.GroupBox();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.label1 = new System.Windows.Forms.Label();
-            this.buttonBuildGameDB = new System.Windows.Forms.Button();
+            this.labelGithub = new System.Windows.Forms.LinkLabel();
+            this.labelThanks = new System.Windows.Forms.Label();
             this.checkConflicts = new System.Windows.Forms.CheckBox();
             this.groupBox1 = new System.Windows.Forms.GroupBox();
             this.buttonFindMGSV = new System.Windows.Forms.Button();
@@ -63,6 +65,7 @@
             this.groupModInfo.SuspendLayout();
             this.panelModDetails.SuspendLayout();
             this.tabSettings.SuspendLayout();
+            this.groupTools.SuspendLayout();
             this.groupBackup.SuspendLayout();
             this.groupAbout.SuspendLayout();
             this.groupBox1.SuspendLayout();
@@ -210,10 +213,10 @@
             // 
             // tabSettings
             // 
+            this.tabSettings.Controls.Add(this.groupTools);
             this.tabSettings.Controls.Add(this.groupBackup);
             this.tabSettings.Controls.Add(this.labelVersion);
             this.tabSettings.Controls.Add(this.groupAbout);
-            this.tabSettings.Controls.Add(this.buttonBuildGameDB);
             this.tabSettings.Controls.Add(this.checkConflicts);
             this.tabSettings.Controls.Add(this.groupBox1);
             this.tabSettings.Location = new System.Drawing.Point(4, 24);
@@ -225,35 +228,65 @@
             this.tabSettings.Text = "Settings";
             this.tabSettings.UseVisualStyleBackColor = true;
             // 
+            // groupTools
+            // 
+            this.groupTools.Controls.Add(this.labelRebuildCache);
+            this.groupTools.Controls.Add(this.buttonBuildGameDB);
+            this.groupTools.Location = new System.Drawing.Point(306, 65);
+            this.groupTools.Name = "groupTools";
+            this.groupTools.Size = new System.Drawing.Size(265, 89);
+            this.groupTools.TabIndex = 5;
+            this.groupTools.TabStop = false;
+            this.groupTools.Text = "Tools";
+            // 
+            // labelRebuildCache
+            // 
+            this.labelRebuildCache.Location = new System.Drawing.Point(92, 22);
+            this.labelRebuildCache.Name = "labelRebuildCache";
+            this.labelRebuildCache.Size = new System.Drawing.Size(167, 60);
+            this.labelRebuildCache.TabIndex = 3;
+            this.labelRebuildCache.Text = "Rebuilds the cache of MGSV game data contained within 01.dat.";
+            this.labelRebuildCache.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // buttonBuildGameDB
+            // 
+            this.buttonBuildGameDB.Location = new System.Drawing.Point(6, 22);
+            this.buttonBuildGameDB.Name = "buttonBuildGameDB";
+            this.buttonBuildGameDB.Size = new System.Drawing.Size(80, 60);
+            this.buttonBuildGameDB.TabIndex = 2;
+            this.buttonBuildGameDB.Text = "Rebuild Cache";
+            this.buttonBuildGameDB.UseVisualStyleBackColor = true;
+            this.buttonBuildGameDB.Click += new System.EventHandler(this.buttonBuildGameDB_Click);
+            // 
             // groupBackup
             // 
-            this.groupBackup.Controls.Add(this.label3);
-            this.groupBackup.Controls.Add(this.label2);
+            this.groupBackup.Controls.Add(this.labelRestore);
+            this.groupBackup.Controls.Add(this.labelBackup);
             this.groupBackup.Controls.Add(this.buttonRestoreBackup);
             this.groupBackup.Controls.Add(this.buttonCreateBackup);
-            this.groupBackup.Location = new System.Drawing.Point(277, 65);
+            this.groupBackup.Location = new System.Drawing.Point(6, 65);
             this.groupBackup.Name = "groupBackup";
             this.groupBackup.Size = new System.Drawing.Size(294, 155);
             this.groupBackup.TabIndex = 4;
             this.groupBackup.TabStop = false;
             this.groupBackup.Text = "Backup Game Files";
             // 
-            // label3
+            // labelRestore
             // 
-            this.label3.Location = new System.Drawing.Point(92, 88);
-            this.label3.Name = "label3";
-            this.label3.Size = new System.Drawing.Size(196, 60);
-            this.label3.TabIndex = 3;
-            this.label3.Text = "Restore a backup archive, immediately overwriting any installed mods or other cha" +
+            this.labelRestore.Location = new System.Drawing.Point(92, 88);
+            this.labelRestore.Name = "labelRestore";
+            this.labelRestore.Size = new System.Drawing.Size(196, 60);
+            this.labelRestore.TabIndex = 3;
+            this.labelRestore.Text = "Restore a backup archive, immediately overwriting any installed mods or other cha" +
     "nges to 01.dat.";
             // 
-            // label2
+            // labelBackup
             // 
-            this.label2.Location = new System.Drawing.Point(92, 22);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(196, 60);
-            this.label2.TabIndex = 2;
-            this.label2.Text = "Backup 01.dat and any installed mods for restoration in case something breaks. Yo" +
+            this.labelBackup.Location = new System.Drawing.Point(92, 22);
+            this.labelBackup.Name = "labelBackup";
+            this.labelBackup.Size = new System.Drawing.Size(196, 60);
+            this.labelBackup.TabIndex = 2;
+            this.labelBackup.Text = "Backup 01.dat and any installed mods for restoration in case something breaks. Yo" +
     "u can also swap between mod configurations.";
             // 
             // buttonRestoreBackup
@@ -288,50 +321,40 @@
             // 
             // groupAbout
             // 
-            this.groupAbout.Controls.Add(this.linkLabel1);
-            this.groupAbout.Controls.Add(this.label1);
-            this.groupAbout.Location = new System.Drawing.Point(232, 270);
+            this.groupAbout.Controls.Add(this.labelGithub);
+            this.groupAbout.Controls.Add(this.labelThanks);
+            this.groupAbout.Location = new System.Drawing.Point(125, 226);
             this.groupAbout.Name = "groupAbout";
             this.groupAbout.Size = new System.Drawing.Size(339, 133);
             this.groupAbout.TabIndex = 3;
             this.groupAbout.TabStop = false;
             // 
-            // linkLabel1
+            // labelGithub
             // 
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.linkLabel1.Location = new System.Drawing.Point(24, 70);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(299, 15);
-            this.linkLabel1.TabIndex = 1;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "https://www.github.com/topher-au/SnakeBite/releases";
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            this.labelGithub.AutoSize = true;
+            this.labelGithub.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.labelGithub.Location = new System.Drawing.Point(24, 70);
+            this.labelGithub.Name = "labelGithub";
+            this.labelGithub.Size = new System.Drawing.Size(299, 15);
+            this.labelGithub.TabIndex = 1;
+            this.labelGithub.TabStop = true;
+            this.labelGithub.Text = "https://www.github.com/topher-au/SnakeBite/releases";
+            this.labelGithub.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
-            // label1
+            // labelThanks
             // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(6, 19);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(325, 105);
-            this.label1.TabIndex = 0;
-            this.label1.Text = "Thankyou for using SnakeBite!\r\n\r\nLatest version available here:\r\n\r\n\r\nSpecial than" +
+            this.labelThanks.AutoSize = true;
+            this.labelThanks.Location = new System.Drawing.Point(6, 19);
+            this.labelThanks.Name = "labelThanks";
+            this.labelThanks.Size = new System.Drawing.Size(325, 105);
+            this.labelThanks.TabIndex = 0;
+            this.labelThanks.Text = "Thankyou for using SnakeBite!\r\n\r\nLatest version available here:\r\n\r\n\r\nSpecial than" +
     "ks to Atvaark for GzsTool and emoose and many\r\nmore for all their hard work!";
-            // 
-            // buttonBuildGameDB
-            // 
-            this.buttonBuildGameDB.Location = new System.Drawing.Point(12, 65);
-            this.buttonBuildGameDB.Name = "buttonBuildGameDB";
-            this.buttonBuildGameDB.Size = new System.Drawing.Size(143, 23);
-            this.buttonBuildGameDB.TabIndex = 2;
-            this.buttonBuildGameDB.Text = "Rebuild Database";
-            this.buttonBuildGameDB.UseVisualStyleBackColor = true;
-            this.buttonBuildGameDB.Click += new System.EventHandler(this.buttonBuildGameDB_Click);
             // 
             // checkConflicts
             // 
             this.checkConflicts.AutoSize = true;
-            this.checkConflicts.Location = new System.Drawing.Point(12, 94);
+            this.checkConflicts.Location = new System.Drawing.Point(413, 384);
             this.checkConflicts.Name = "checkConflicts";
             this.checkConflicts.Size = new System.Drawing.Size(158, 19);
             this.checkConflicts.TabIndex = 1;
@@ -402,6 +425,7 @@
             this.panelModDetails.PerformLayout();
             this.tabSettings.ResumeLayout(false);
             this.tabSettings.PerformLayout();
+            this.groupTools.ResumeLayout(false);
             this.groupBackup.ResumeLayout(false);
             this.groupAbout.ResumeLayout(false);
             this.groupAbout.PerformLayout();
@@ -434,14 +458,16 @@
         private System.Windows.Forms.Label labelNoMods;
         private System.Windows.Forms.Button buttonLaunch;
         private System.Windows.Forms.GroupBox groupAbout;
-        private System.Windows.Forms.LinkLabel linkLabel1;
-        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.LinkLabel labelGithub;
+        private System.Windows.Forms.Label labelThanks;
         private System.Windows.Forms.Label labelVersion;
         private System.Windows.Forms.GroupBox groupBackup;
         private System.Windows.Forms.Button buttonRestoreBackup;
         private System.Windows.Forms.Button buttonCreateBackup;
-        private System.Windows.Forms.Label label3;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label labelRestore;
+        private System.Windows.Forms.Label labelBackup;
+        private System.Windows.Forms.GroupBox groupTools;
+        private System.Windows.Forms.Label labelRebuildCache;
     }
 }
 
