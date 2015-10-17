@@ -27,13 +27,18 @@ namespace SnakeBite.Classes
         public void Load()
         {
             XmlSerializer x = new XmlSerializer(typeof(BackupArchive));
-            StreamReader s = new StreamReader("backup\backup.xml");
+            StreamReader s = new StreamReader("backup\\backup.xml");
             backupData = (BackupArchive)x.Deserialize(s);
             s.Close();
         }
 
         public void Save()
         {
+            foreach(BackupFile bFile in backupData.BackupFiles)
+            {
+                // clean up missing backup files
+                if (!File.Exists(bFile.BackupPath)) backupData.BackupFiles.Remove(bFile);
+            }
             XmlSerializer x = new XmlSerializer(typeof(BackupArchive));
             StreamWriter s = new StreamWriter("backup\\backup.xml");
             x.Serialize(s, backupData);
@@ -53,7 +58,10 @@ namespace SnakeBite.Classes
             }
         }
 
-
+        public void RestoreFile(BackupFile BackupFile)
+        {
+            File.Copy(BackupFile.BackupPath, ModManager.GameArchiveDir + BackupFile.BackupPath.Substring(BackupFile.BackupPath.IndexOf("\\")));
+        }
 
 
     }
