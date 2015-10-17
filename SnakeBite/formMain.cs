@@ -146,12 +146,12 @@ namespace SnakeBite
         {
             showProgressWindow(String.Format("Please wait while {0} is uninstalled...", mod.Name));
 
+            // Uninstall mod
+            ModManager.UninstallMod(mod);
+
             // Remove from mod database
             objSettings.ModEntries.Remove(mod);
             objSettings.SaveSettings();
-
-            // Uninstall mod
-            ModManager.UninstallMod(mod);
 
             // Update installed mod list
             RefreshInstalledMods(true);
@@ -249,7 +249,7 @@ namespace SnakeBite
                 // check for system file conflicts
                 foreach (ModQarEntry gameQarFile in objSettings.GameData.GameQarEntries)
                 {
-                    if (modMetadata.ModQarEntries.Count(entry => entry.FilePath == gameQarFile.FilePath) > 0) sysConflict = true;
+                    if (modMetadata.ModQarEntries.Count(entry => Tools.ToQarPath(entry.FilePath) == Tools.ToQarPath(gameQarFile.FilePath)) > 0) sysConflict = true;
                 }
 
                 foreach (ModFpkEntry gameFpkFile in objSettings.GameData.GameFpkEntries)
@@ -268,12 +268,14 @@ namespace SnakeBite
 
             showProgressWindow(String.Format("Installing {0}, please wait...", modMetadata.Name));
 
-            // Install mod to game database
-            objSettings.ModEntries.Add(modMetadata);
-            objSettings.SaveSettings();
+
 
             // Install mod to 01.dat
             ModManager.InstallMod(ModFile);
+
+            // Install mod to game database
+            objSettings.ModEntries.Add(modMetadata);
+            objSettings.SaveSettings();
 
             RefreshInstalledMods();
             listInstalledMods.SelectedIndex = listInstalledMods.Items.Count - 1;
@@ -377,7 +379,7 @@ namespace SnakeBite
 
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            System.Diagnostics.Process.Start(this.linkLabel1.Text);
+            System.Diagnostics.Process.Start(this.labelGithub.Text);
         }
 
         private void label2_Click(object sender, EventArgs e)
@@ -435,5 +437,10 @@ namespace SnakeBite
 
             MessageBox.Show("Backup successfully restored!", "SnakeBite", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
+
+        private void buttonBackupSaves_Click(object sender, EventArgs e)
+        {
+
+        } 
     }
 }
