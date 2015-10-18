@@ -178,7 +178,7 @@ namespace SnakeBite
     {
         public static string ToWinPath(string Path)
         {
-            return "\\" + Path.Replace("/", "\\").TrimStart('\\');
+            return Path.Replace("/", "\\").TrimStart('\\');
         }
 
         public static string ToQarPath(string Path)
