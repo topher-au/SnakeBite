@@ -175,13 +175,15 @@ namespace GzsTool
                 int index = text.IndexOf('.');
                 text = index == -1 ? text : text.Substring(0, index);
             }
+
             bool assetFlag = false;
-            text = text.TrimStart('/');
-            if (text.StartsWith("Assets/"))
+            const string assetsConstant = "/Assets/";
+            if (text.StartsWith(assetsConstant))
             {
-                text = text.Substring("Assets/".Length);
+                text = text.Substring(assetsConstant.Length);
                 assetFlag = true;
             }
+            text = text.TrimStart('/');
 
             const ulong seed0 = 0x9ae16a3b2f90404f;
             byte[] seed1Bytes = new byte[sizeof(ulong)];
