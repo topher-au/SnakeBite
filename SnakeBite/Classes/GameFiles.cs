@@ -21,6 +21,8 @@ namespace SnakeBite
             GameFiles g = (GameFiles)x.Deserialize(s);
             s.Close();
 
+            FileList.Clear();
+
             foreach (GameFile f in g.FileList)
             {
                 FileList.Add(f);
