@@ -63,6 +63,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\GameFiles.cs" />
+    <Compile Include="Classes\GzsLib.cs" />
     <Compile Include="Classes\Tools.cs" />
     <Compile Include="formMain.cs">
       <SubType>Form</SubType>

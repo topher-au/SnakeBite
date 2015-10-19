@@ -1,9 +1,13 @@
-﻿using ICSharpCode.SharpZipLib.Zip;
+﻿using System.Xml.Serialization;
+using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using SnakeBite;
+using SnakeBite.GzsTool;
+using GzsTool.Core.Qar;
 
 namespace SnakeBite
 {
@@ -272,7 +276,7 @@ namespace SnakeBite
             showProgressWindow(String.Format("Installing {0}, please wait...", modMetadata.Name));
 
             // Install mod to 01.dat
-            ModManager.InstallMod(ModFile);
+            ModManager.InstallMod2(ModFile);
 
             // Install mod to game database
             objSettings.Load();
@@ -431,5 +435,6 @@ namespace SnakeBite
             System.Diagnostics.Process.Start("SnakeBite.exe");
             Application.Exit();
         }
+
     }
 }
