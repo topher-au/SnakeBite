@@ -79,9 +79,10 @@ namespace SnakeBite
                 if (qarExt == ".fpk" || qarExt == ".fpkd")
                 {
                     // if mod metadata contains fpks that already exist
-                    if (modMetaData.ModFpkEntries.Count(fpkEntry => Tools.ToQarPath(fpkEntry.FpkFile) == Tools.ToQarPath(qarEntry.FilePath)) > 0)
+                    ModFpkEntry m = modMetaData.ModFpkEntries.FirstOrDefault(fpkEntry => Tools.NameToHash(fpkEntry.FpkFile) == Tools.NameToHash(qarEntry.FilePath));
+                    if (m != null)
                     {
-                        fpksToMerge.Add(Tools.ToQarPath(qarEntry.FilePath));
+                        fpksToMerge.Add(Tools.ToQarPath(m.FpkFile));
                     }
                 }
             }
@@ -92,24 +93,27 @@ namespace SnakeBite
 
             foreach (ModFpkEntry Entry in modMetaData.ModFpkEntries)
             {
-                ulong fileHash = Hashing.HashFileNameWithExtension(Entry.FpkFile);
+                ulong fileHash = Tools.NameToHash(Entry.FpkFile);
                 GameFile gameFile = gameFiles.FileList.FirstOrDefault(entry => entry.FileHash == fileHash); // see if fpk is part of base data
 
                 if (gameFile != null)
                 {
                     if (!fpksToMerge.Contains(Entry.FpkFile)) // if the file was already merged don't add it
                     {
+                        // Locate base QAR archive
                         string baseQar = Path.Combine(ModManager.GameDir, "master", gameFile.QarFile);
-                        string baseFilePath = Path.Combine(ModManager.GameDir, "master", gameFile.QarFile.Replace(".", "_"), Tools.ToWinPath(Entry.FpkFile));
-                        string destFilePath = Path.Combine(ModManager.ExtractedDatDir, Tools.ToWinPath(Entry.FpkFile));
-                        string destFileDir = Path.GetDirectoryName(destFilePath);
 
-                        GzsApp.ExtractSingle(baseQar, fileHash);
+                        // Extract single file from archive
+                        string singleFile = GzsApp.ExtractSingle(baseQar, fileHash);
+
+                        string baseFilePath = Path.Combine(ModManager.GameDir, "master", gameFile.QarFile.Replace(".", "_"), Tools.ToWinPath(singleFile));
+                        string destFilePath = Path.Combine(ModManager.ExtractedDatDir, Tools.ToWinPath(singleFile));
+                        string destFileDir = Path.GetDirectoryName(destFilePath);
 
                         if (!Directory.Exists(destFileDir)) Directory.CreateDirectory(destFileDir);
                         File.Copy(baseFilePath, destFilePath, true); // copy base file
 
-                        fpksToMerge.Add(Entry.FpkFile);
+                        fpksToMerge.Add(singleFile);
                     }
                 }
             }
@@ -124,8 +128,11 @@ namespace SnakeBite
                     string fpkPath = Tools.ToWinPath(fpkFile);
                     string gameFpkPath = Path.Combine(ExtractedDatDir,fpkPath);
                     string gameFpkDir = Path.Combine(ExtractedDatDir,fpkPath.Replace(".", "_"));
-                    string modFpkPath = Path.Combine("_temp", fpkPath);
-                    string modFpkDir = Path.Combine("_temp", fpkPath.Replace(".", "_"));
+
+                    ModFpkEntry fpkEntry = modMetaData.ModFpkEntries.First(entry => Tools.NameToHash(entry.FpkFile) == Tools.NameToHash(fpkPath));
+
+                    string modFpkPath = Path.Combine("_temp", Tools.ToWinPath(fpkEntry.FpkFile));
+                    string modFpkDir = Path.Combine("_temp", Tools.ToWinPath(fpkEntry.FpkFile).Replace(".", "_"));
 
                     GzsApp.Run(modFpkPath);
                     GzsApp.Run(gameFpkPath);
@@ -136,11 +143,12 @@ namespace SnakeBite
 
                     // generate list of files to move and add to xml
                     List<string> filesToMove = new List<string>();
-                    foreach (ModFpkEntry file in modMetaData.ModFpkEntries.FindAll(entry => entry.FpkFile == fpkFile))
+                    foreach (ModFpkEntry file in modMetaData.ModFpkEntries.FindAll(entry => Tools.NameToHash(entry.FpkFile) == Tools.NameToHash(fpkFile)))
                     {
                         filesToMove.Add(file.FilePath);
 
-                        if (fpkXml.FpkEntries.Count(entry => entry.FilePath == file.FilePath) == 0)
+                        FpkEntry eFpk = fpkXml.FpkEntries.FirstOrDefault(entry => entry.FilePath == file.FilePath);
+                        if (eFpk == null)
                         {
                             // insert new fpk entries as required
                             fpkXml.FpkEntries.Add(new FpkEntry() { FilePath = file.FilePath });
@@ -170,13 +178,17 @@ namespace SnakeBite
                 string fileDir = (ExtractedDatDir + modQarFile.FilePath.Replace("/", "\\")).Substring(0, (ExtractedDatDir + modQarFile.FilePath).LastIndexOf("/"));
 
                 // if file is not already in QAR, add it
-                if (qarXml.QarEntries.FirstOrDefault(entry => entry.FilePath == modQarFile.FilePath) == null)
+
+                string fpk = fpksToMerge.First(afpk => Tools.NameToHash(afpk) == Tools.NameToHash(modQarFile.FilePath));
+                QarEntry qE = qarXml.QarEntries.FirstOrDefault(entry => Tools.NameToHash(entry.FilePath) == Tools.NameToHash(modQarFile.FilePath));
+                if (qE == null)
                 {
-                    qarXml.QarEntries.Add(new QarEntry() { FilePath = modQarFile.FilePath, Compressed = modQarFile.Compressed, Hash = modQarFile.Hash });
+                    qarXml.QarEntries.Add(new QarEntry() { FilePath = Tools.ToQarPath(fpk), Compressed = modQarFile.Compressed, Hash = modQarFile.Hash });
                 }
 
                 // copy all files that weren't merged FPKS
-                if (!fpksToMerge.Contains(fileName))
+
+                if (fpksToMerge.Count(entry => Tools.NameToHash(entry) == Tools.NameToHash(fileName)) == 0)
                 {
                     if (!Directory.Exists(fileDir))
                     {
@@ -240,7 +252,7 @@ namespace SnakeBite
                     // check if any files left in fpk
                     foreach (FpkEntry fpkSubFile in fpkXml.FpkEntries)
                     {
-                            fpkList.RemoveAll(entry => entry.FilePath == fpkSubFile.FilePath);
+                            fpkList.RemoveAll(entry => entry.FilePath == (fpkSubFile.FilePath));
                     }
                     fpkXml.FpkEntries = fpkList;
 
@@ -248,7 +260,7 @@ namespace SnakeBite
                     if (fpkXml.FpkEntries.Count == 0)
                     {
                         // delete fpk from dat XML
-                        datXml.QarEntries.RemoveAll(entry => entry.FilePath == modFpkFile);
+                        datXml.QarEntries.RemoveAll(entry => Tools.NameToHash(entry.FilePath) == Tools.NameToHash(modFpkFile));
                     }
                     else
                     {
@@ -354,7 +366,7 @@ namespace SnakeBite
                 List<string> remQar = new List<string>(); // list of files to remove
                 foreach (ModQarEntry modQarFile in mod.ModQarEntries) // check all mod files
                 {
-                    if (!File.Exists(Path.Combine(ExtractedDatDir + Tools.ToWinPath(modQarFile.FilePath))))
+                    if (!File.Exists(Path.Combine(ExtractedDatDir, Tools.ToWinPath(modQarFile.FilePath))))
                     {
                         // if the file doesn't exist, it will be removed
                         remQar.Add(modQarFile.FilePath);
@@ -407,7 +419,7 @@ namespace SnakeBite
                 {
                     foreach(ModEntry mod in settings.ModEntries)
                     {
-                        ModQarEntry qe = mod.ModQarEntries.FirstOrDefault(entry => Tools.ConvertFileNameToHash(entry.FilePath) == Tools.ConvertFileNameToHash(Entry.FilePath));
+                        ModQarEntry qe = mod.ModQarEntries.FirstOrDefault(entry => Tools.NameToHash(entry.FilePath) == Tools.NameToHash(Entry.FilePath));
                         if (qe != null)
                         {
                             string FileDir = Path.Combine(ExtractedDatDir, Path.GetDirectoryName(Tools.ToWinPath(qe.FilePath)));
@@ -416,7 +428,7 @@ namespace SnakeBite
                                       File.Move(Path.Combine(ExtractedDatDir, Tools.ToWinPath(Entry.FilePath)),
                                                 Path.Combine(ExtractedDatDir, Tools.ToWinPath(qe.FilePath)));
                             Entry.FilePath = qe.FilePath;
-                            Entry.Hash = Tools.ConvertFileNameToHash(qe.FilePath);
+                            Entry.Hash = Tools.NameToHash(qe.FilePath);
                         }
                     }
                 }
@@ -473,11 +485,11 @@ namespace SnakeBite
                 // check all files in mod against qar archive
                 foreach (ModFpkEntry modFpkFile in mod.ModFpkEntries)
                 {
-                    buildData.GameFpkEntries.RemoveAll(entry => entry.FilePath == modFpkFile.FilePath && entry.FpkFile == modFpkFile.FpkFile);
+                    buildData.GameFpkEntries.RemoveAll(entry => Tools.NameToHash(entry.FilePath) == Tools.NameToHash(modFpkFile.FilePath) && entry.FpkFile == modFpkFile.FpkFile);
                 }
                 foreach (ModQarEntry modQarFile in mod.ModQarEntries)
                 {
-                    buildData.GameQarEntries.RemoveAll(entry => entry.FilePath == modQarFile.FilePath);
+                    buildData.GameQarEntries.RemoveAll(entry => Tools.NameToHash(entry.FilePath) == Tools.NameToHash(modQarFile.FilePath));
                 }
             }
 

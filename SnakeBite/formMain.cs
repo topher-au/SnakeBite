@@ -211,7 +211,8 @@ namespace SnakeBite
                 {
                     foreach (ModQarEntry qarEntry in modMetadata.ModQarEntries) // iterate qar files from new mod
                     {
-                        ModQarEntry conflicts = modEntry.ModQarEntries.FirstOrDefault(entry => entry.FilePath == qarEntry.FilePath);
+                        if (qarEntry.FilePath.Contains(".fpk")) continue;
+                        ModQarEntry conflicts = modEntry.ModQarEntries.FirstOrDefault(entry => Tools.NameToHash(entry.FilePath) == Tools.NameToHash(qarEntry.FilePath));
                         if (conflicts != null)
                         {
                             conflictingMods.Add(modEntry.Name);
@@ -221,7 +222,8 @@ namespace SnakeBite
 
                     foreach (ModFpkEntry fpkEntry in modMetadata.ModFpkEntries) // iterate fpk files from new mod
                     {
-                        ModFpkEntry conflicts = modEntry.ModFpkEntries.FirstOrDefault(entry => entry.FpkFile == fpkEntry.FpkFile && entry.FilePath == fpkEntry.FilePath);
+                        ModFpkEntry conflicts = modEntry.ModFpkEntries.FirstOrDefault(entry => Tools.NameToHash(entry.FpkFile) == Tools.NameToHash(fpkEntry.FpkFile) && 
+                                                                                               Tools.NameToHash(entry.FilePath) == Tools.NameToHash(fpkEntry.FilePath));
                         if (conflicts != null)
                         {
                             if (!conflictingMods.Contains(modEntry.Name))
@@ -348,8 +350,6 @@ namespace SnakeBite
             objSettings.Save();
 
             ModManager.CleanupModSettings();
-
-            objSettings.Save();
 
             ModManager.UpdateDatHash();
 

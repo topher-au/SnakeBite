@@ -179,7 +179,7 @@ namespace SnakeBite
                 return hashBuilder.ToString();
             }
 
-            internal static ulong ConvertFileNameToHash(string FileName)
+            internal static ulong NameToHash(string FileName)
             {
                 // regenerate hash for file
                 string filePath = Tools.ToQarPath(FileName);
