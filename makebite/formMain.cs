@@ -1,5 +1,5 @@
 ﻿using FolderSelect;
-using GzsTool;
+using GzsTool.Core.Utility;
 using SnakeBite;
 using System;
 using System.IO;
@@ -27,7 +27,7 @@ namespace makebite
             foreach (string modFile in Directory.GetFiles(modPath, "*.*", SearchOption.AllDirectories))
             {
                 string filePath = modFile.Substring(modPath.Length).Replace("\\", "/");
-                if (Hashing.ValidFileExtension(filePath) && filePath != "/metadata.xml") listModFiles.Items.Add(filePath);
+                if (Tools.IsValidFile(filePath) && filePath != "/metadata.xml") listModFiles.Items.Add(filePath);
             }
 
             Properties.Settings.Default.LastModDir = modPath;
@@ -143,7 +143,7 @@ namespace makebite
                 foreach (string modFile in Directory.GetFiles(modPath, "*.*", SearchOption.AllDirectories))
                 {
                     string filePath = Tools.ToQarPath(modFile.Substring(modPath.Length));
-                    if (Hashing.ValidFileExtension(filePath) && filePath != "/metadata.xml") listModFiles.Items.Add(filePath);
+                    if (Tools.IsValidFile(filePath) && filePath != "/metadata.xml") listModFiles.Items.Add(filePath);
                 }
 
                 if (args.Length == 2)

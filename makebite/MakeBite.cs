@@ -3,6 +3,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using SnakeBite;
 using System.Collections.Generic;
 using System.IO;
+using GzsTool.Core.Utility;
 
 namespace makebite
 {
@@ -42,8 +43,9 @@ namespace makebite
             {
                 foreach (string FileName in Directory.GetFiles(Folder))
                 {
-                    if (!FileName.Contains("metadata.xml") && !FileName.Contains("readme.txt") && // ignore xml metadata and readme
-                        Hashing.ValidFileExtension(FileName)) // only add valid files
+                    string FilePath = FileName.Substring(Folder.Length);
+                    if (!FilePath.Contains("metadata.xml") && !FilePath.Contains("readme.txt") && // ignore xml metadata and readme
+                        Tools.IsValidFile(FilePath)) // only add valid files
                         ListQarFiles.Add(FileName);
                 }
             }
@@ -77,7 +79,7 @@ namespace makebite
             {
                 string xmlFileName = FileName.Substring(FpkFolder.Length).Replace("\\", "/");
                 gzsFpk.FpkEntries.Add(new FpkEntry() { FilePath = xmlFileName });
-                fpkList.Add(new ModFpkEntry() { FilePath = xmlFileName, FpkFile = Tools.ToQarPath(FpkFile.Substring(rootDir.Length)), ContentHash = Tools.HashFile(FileName) });
+                fpkList.Add(new ModFpkEntry() { FilePath = xmlFileName, FpkFile = Tools.ToQarPath(FpkFile.Substring(rootDir.Length)), ContentHash = Tools.GetMd5Hash(FileName) });
             }
 
             gzsFpk.WriteXml(FpkXmlFile);
@@ -107,21 +109,13 @@ namespace makebite
             metaData.ModQarEntries = new List<ModQarEntry>();
             foreach (string qarFile in ListQarFiles(SourceDir))
             {
-                string subDir = qarFile.Substring(0, qarFile.LastIndexOf("\\") + 1).Substring(SourceDir.Length); // the subdirectory for XML output
+                string subDir = qarFile.Substring(0, qarFile.LastIndexOf("\\")).Substring(SourceDir.Length+1); // the subdirectory for XML output
                 string qarFilePath = Tools.ToQarPath(qarFile.Substring(SourceDir.Length));
-                if (!Directory.Exists("_build" + subDir)) Directory.CreateDirectory("_build" + subDir); // create file structure
-                File.Copy(qarFile, "_build" + Tools.ToWinPath(qarFilePath), true);
-                int subDirAt = qarFilePath.Substring(1).IndexOf("/");
-                ulong fHash;
-                if (subDirAt == -1)
-                {
-                    fHash = Hashing.HashFileNameExtensionOnly(qarFilePath);
-                }
-                else
-                {
-                    fHash = Hashing.HashFileName(qarFilePath);
-                }
-                metaData.ModQarEntries.Add(new ModQarEntry() { FilePath = qarFilePath, Compressed = qarFile.Substring(qarFile.LastIndexOf(".") + 1).Contains("fpk") ? true : false, ContentHash = Tools.HashFile(qarFile), Hash = fHash });
+                if (!Directory.Exists(Path.Combine("_build",subDir))) Directory.CreateDirectory(Path.Combine("_build",subDir)); // create file structure
+                File.Copy(qarFile, Path.Combine("_build",Tools.ToWinPath(qarFilePath)), true);
+
+                ulong hash = Tools.ConvertFileNameToHash(qarFilePath);
+                metaData.ModQarEntries.Add(new ModQarEntry() { FilePath = qarFilePath, Compressed = qarFile.Substring(qarFile.LastIndexOf(".") + 1).Contains("fpk") ? true : false, ContentHash = Tools.GetMd5Hash(qarFile), Hash = hash });
             }
 
             metaData.SBVersion = "420"; // 0.4.2.0

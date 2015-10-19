@@ -6,6 +6,7 @@ using System.IO;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Serialization;
+using GzsTool.Core.Utility;
 
 namespace GzsTool
 {
@@ -166,12 +167,27 @@ namespace GzsTool
                 }
                 else
                 {
-                    // generate extension only hash
-                    ulong hash = Hashing.HashFileNameExtensionOnly(filePath);
-                    Entry.Hash = hash;
+                    // get hash from filename
+                    string fileName = filePath.TrimStart('/');
+                    string fileNoExt = fileName.Substring(0, fileName.IndexOf("."));
+                    string fileExt = fileName.Substring(fileName.IndexOf(".") + 1);
+
+                    ulong Hash;
+                    bool tryParseHash = ulong.TryParse(fileNoExt, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.CurrentCulture, out Hash);
+                    if(tryParseHash)
+                    {
+                        ulong ExtHash = Hashing.HashFileName(fileExt, false) & 0x1FFF;
+                        ulong XH = (ExtHash << 51);
+                        Hash = XH | Hash;
+                    } else
+                    {
+                        Hash = Hashing.HashFileNameWithExtension(filePath);
+                    }
+
+                    Entry.Hash = Hash;
                 }
-                string ext = Entry.FilePath.Substring(Entry.FilePath.LastIndexOf(".") + 1);
-                if (ext == "fpk" || ext == "fpkd")
+                string ext = Path.GetExtension(Entry.FilePath);
+                if (ext == ".fpk" || ext == ".fpkd")
                 {
                     Entry.Compressed = true;
                 }
