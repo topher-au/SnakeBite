@@ -80,6 +80,15 @@ namespace SnakeBite
     [XmlType("ModEntry")]
     public class ModEntry
     {
+        public ModEntry()
+        {
+
+        }
+
+        public ModEntry(string SourceFile)
+        {
+            ReadFromFile(SourceFile);
+        }
         [XmlAttribute("Name")]
         public string Name { get; set; }
 
