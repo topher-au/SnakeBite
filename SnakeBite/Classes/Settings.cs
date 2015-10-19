@@ -3,6 +3,7 @@ using System.IO;
 using System.Security.Cryptography;
 using System.Text;
 using System.Xml.Serialization;
+using GzsTool.Core.Utility;
 
 namespace SnakeBite
 {
@@ -124,7 +125,7 @@ namespace SnakeBite
             SBVersion = loaded.SBVersion;
             Author = loaded.Author;
             Website = loaded.Website;
-            Description = loaded.Description;//.Replace("\n", "\r\n");
+            Description = loaded.Description;
 
             ModQarEntries = loaded.ModQarEntries;
             ModFpkEntries = loaded.ModFpkEntries;
@@ -173,38 +174,4 @@ namespace SnakeBite
         [XmlAttribute("ContentHash")]
         public string ContentHash { get; set; }
     }
-
-    public static class Tools
-    {
-        public static string ToWinPath(string Path)
-        {
-            return Path.Replace("/", "\\").TrimStart('\\');
-        }
-
-        public static string ToQarPath(string Path)
-        {
-            return "/" + Path.Replace("\\", "/").TrimStart('/');
-        }
-
-        internal static string HashFile(string Filename)
-        {
-            byte[] hashBytes;
-            using (var hashMD5 = MD5.Create())
-            {
-                using (var stream = File.OpenRead(Filename))
-                {
-                    hashBytes = hashMD5.ComputeHash(stream);
-                }
-            }
-
-            StringBuilder hashBuilder = new StringBuilder(hashBytes.Length * 2);
-
-            for (int i = 0; i < hashBytes.Length; i++)
-                hashBuilder.Append(hashBytes[i].ToString("X2"));
-
-            return hashBuilder.ToString();
-        }
-    }
-
-
 }
