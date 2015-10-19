@@ -45,7 +45,7 @@ namespace makebite
 
             DoBuild(modPath);
 
-            MessageBox.Show("_build completed.", "MakeBite", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("Build completed.", "MakeBite", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void DoBuild(string BuildFile)

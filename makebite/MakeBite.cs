@@ -95,13 +95,34 @@ namespace makebite
 
             Directory.CreateDirectory("_build");
 
-            // build FPKs
+            // check for FPKs that must be built and build
             metaData.ModFpkEntries = new List<ModFpkEntry>();
+            List<string> builtFpks = new List<string>();
             foreach (string FpkDir in ListFpkFolders(SourceDir))
             {
                 foreach (ModFpkEntry fpkEntry in BuildFpk(FpkDir, SourceDir))
                 {
                     metaData.ModFpkEntries.Add(fpkEntry);
+                    if (!builtFpks.Contains(fpkEntry.FpkFile)) builtFpks.Add(fpkEntry.FpkFile);
+                }
+            }
+
+            // check for other FPKs and build fpkentry data
+            foreach(string SourceFile in Directory.GetFiles(SourceDir, "*.fpk*", SearchOption.AllDirectories))
+            {
+                string FileName = Tools.ToQarPath(SourceFile.Substring(SourceDir.Length));
+                if(!builtFpks.Contains(FileName))
+                {
+                    // unpack FPK and build FPK list
+                    GzsApp.Run(SourceFile);
+                    FpkFile sourceXml = new FpkFile();
+                    sourceXml.ReadXml(SourceFile + ".xml");
+
+                    foreach(FpkEntry f in sourceXml.FpkEntries)
+                    {
+                        string fPath = Tools.ToWinPath(FileName.Replace(".fpk", "_fpk"));
+                        metaData.ModFpkEntries.Add(new ModFpkEntry() { FilePath = f.FilePath, FpkFile = FileName, ContentHash = Tools.GetMd5Hash(Path.Combine(SourceDir, fPath, Tools.ToWinPath(f.FilePath))) });
+                    }
                 }
             }
 
@@ -109,7 +130,7 @@ namespace makebite
             metaData.ModQarEntries = new List<ModQarEntry>();
             foreach (string qarFile in ListQarFiles(SourceDir))
             {
-                string subDir = qarFile.Substring(0, qarFile.LastIndexOf("\\")).Substring(SourceDir.Length+1); // the subdirectory for XML output
+                string subDir = qarFile.Substring(0, qarFile.LastIndexOf("\\")).Substring(SourceDir.Length).TrimStart('\\'); // the subdirectory for XML output
                 string qarFilePath = Tools.ToQarPath(qarFile.Substring(SourceDir.Length));
                 if (!Directory.Exists(Path.Combine("_build",subDir))) Directory.CreateDirectory(Path.Combine("_build",subDir)); // create file structure
                 File.Copy(qarFile, Path.Combine("_build",Tools.ToWinPath(qarFilePath)), true);
