@@ -36,26 +36,21 @@ namespace GzsTool
         }
 
         // Runs GzsTool with specified paramaters
-        public static void ExtractSingle(string QarFile, ulong FileHash, bool wait = true)
+        public static string ExtractSingle(string QarFile, ulong FileHash)
         {
             Process gzsProcess = new Process();
             gzsProcess.StartInfo.UseShellExecute = false;
             gzsProcess.StartInfo.CreateNoWindow = true;
             gzsProcess.StartInfo.FileName = "GzsTool.exe";
             gzsProcess.StartInfo.Arguments = "\"" + QarFile + "\" \"" + FileHash.ToString() + "\"";
+            gzsProcess.StartInfo.RedirectStandardOutput = true;
             gzsProcess.StartInfo.RedirectStandardError = true;
             gzsProcess.Start();
 
-            if (wait)
-            {
-                while (!gzsProcess.HasExited) { Application.DoEvents(); }
+            while (!gzsProcess.HasExited) { Application.DoEvents(); }
 
-                if (gzsProcess.ExitCode != 0)
-                {
-                    string gzsError = gzsProcess.StandardError.ReadToEnd();
-                    MessageBox.Show(String.Format("Error running GzsTool!\n\n{0}", gzsError));
-                }
-            }
+            string gzsOutput = gzsProcess.StandardOutput.ReadLine();
+            return gzsOutput;
         }
     }
 
