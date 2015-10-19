@@ -304,7 +304,7 @@ namespace SnakeBite
                 GzsApp.Run(fpkFile); // unpack fpk
                 FpkFile gzsFpkXml = new FpkFile();
                 gzsFpkXml.ReadXml(fpkFile + ".xml");
-                string fpkFileName = fpkFile.Substring(ExtractedDatDir.Length).Replace("\\", "/"); // name of fpk for fpk list
+                string fpkFileName = Tools.ToQarPath(fpkFile.Substring(ExtractedDatDir.Length)); // name of fpk for fpk list
 
                 foreach (FpkEntry fpkFileEntry in gzsFpkXml.FpkEntries)
                 {
@@ -412,8 +412,9 @@ namespace SnakeBite
                         {
                             string FileDir = Path.Combine(ExtractedDatDir, Path.GetDirectoryName(Tools.ToWinPath(qe.FilePath)));
                             if (!Directory.Exists(FileDir)) Directory.CreateDirectory(FileDir);
-                            File.Move(Path.Combine(ExtractedDatDir, Tools.ToWinPath(Entry.FilePath)),
-                                      Path.Combine(ExtractedDatDir, Tools.ToWinPath(qe.FilePath)));
+                            if(File.Exists(Path.Combine(ExtractedDatDir, Tools.ToWinPath(Entry.FilePath))))
+                                      File.Move(Path.Combine(ExtractedDatDir, Tools.ToWinPath(Entry.FilePath)),
+                                                Path.Combine(ExtractedDatDir, Tools.ToWinPath(qe.FilePath)));
                             Entry.FilePath = qe.FilePath;
                             Entry.Hash = Tools.ConvertFileNameToHash(qe.FilePath);
                         }
