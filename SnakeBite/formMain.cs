@@ -152,6 +152,8 @@ namespace SnakeBite
             objSettings.ModEntries.Remove(mod);
             objSettings.Save();
 
+            ModManager.UpdateDatHash();
+
             // Update installed mod list
             RefreshInstalledMods(true);
             hideProgressWindow();
@@ -271,6 +273,7 @@ namespace SnakeBite
             ModManager.InstallMod(ModFile);
 
             // Install mod to game database
+            objSettings.Load();
             objSettings.ModEntries.Add(modMetadata);
             objSettings.Save();
 
@@ -303,17 +306,16 @@ namespace SnakeBite
             if (findResult != DialogResult.OK) return;
 
             string filePath = findMGSV.FileName.Substring(0, findMGSV.FileName.LastIndexOf("\\"));
-            textInstallPath.Text = filePath;
-            Properties.Settings.Default.InstallPath = filePath;
-            Properties.Settings.Default.Save();
-
-            if (!ModManager.CheckDatHash())
+            if(filePath != textInstallPath.Text)
             {
-                MessageBox.Show("Game data appears to have changed. Database will be rebuilt.", "SnakeBite", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                buttonBuildGameDB_Click(null, null);
+                textInstallPath.Text = filePath;
+                Properties.Settings.Default.InstallPath = filePath;
+                Properties.Settings.Default.Save();
+                MessageBox.Show("SnakeBite will now restart.", "SnakeBite", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                System.Diagnostics.Process.Start("SnakeBite.exe");
+                Application.Exit();
             }
-
-            RefreshInstalledMods();
+            
         }
 
         private void showProgressWindow(string Text = "Processing...")
@@ -346,6 +348,8 @@ namespace SnakeBite
             objSettings.Save();
 
             ModManager.CleanupModSettings();
+
+            objSettings.Save();
 
             ModManager.UpdateDatHash();
 
@@ -423,16 +427,9 @@ namespace SnakeBite
 
             Directory.Delete("_backup", true);
 
-            objSettings.Load();
-            RefreshInstalledMods(true);
-
-            this.tabControl.SelectedIndex = 0;
-
-            MessageBox.Show("Backup successfully restored!", "SnakeBite", MessageBoxButtons.OK, MessageBoxIcon.Information);
-        }
-
-        private void buttonBackupSaves_Click(object sender, EventArgs e)
-        {
+            MessageBox.Show("Backup successfully restored!\nSnakeBite will now restart.", "SnakeBite", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            System.Diagnostics.Process.Start("SnakeBite.exe");
+            Application.Exit();
         }
     }
 }
