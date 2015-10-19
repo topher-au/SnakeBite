@@ -276,7 +276,7 @@ namespace SnakeBite
             showProgressWindow(String.Format("Installing {0}, please wait...", modMetadata.Name));
 
             // Install mod to 01.dat
-            ModManager.InstallMod2(ModFile);
+            ModManager.InstallMod(ModFile);
 
             // Install mod to game database
             objSettings.Load();
