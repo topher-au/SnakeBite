@@ -55,24 +55,24 @@ namespace GzsTool
     }
 
     [XmlType("ArchiveFile")] // ArchiveFile class used to import XML data
-    public abstract class ArchiveFile
+    public abstract class ArchiveFileXml
     {
         [XmlAttribute("Name")]
         public string Name { get; set; }
     }
 
     [XmlType("Entry")]
-    public class FpkEntry
+    public class FpkEntryXml
     {
         [XmlAttribute("FilePath")]
         public string FilePath { get; set; }
     }
 
     [XmlType("FpkFile")]
-    public class FpkFile : ArchiveFile
+    public class FpkFileXml : ArchiveFileXml
     {
         [XmlArray("Entries")]
-        public List<FpkEntry> FpkEntries { get; set; }
+        public List<FpkEntryXml> FpkEntries { get; set; }
 
         [XmlAttribute("FpkType")]
         public string FpkType { get; set; }
@@ -80,18 +80,18 @@ namespace GzsTool
         public void ReadXml(string Filename)
         {
             // Deserialize object from GzsTool XML data
-            XmlSerializer xSerializer = new XmlSerializer(typeof(ArchiveFile), new[] { typeof(FpkFile), typeof(ArchiveFile) });
+            XmlSerializer xSerializer = new XmlSerializer(typeof(ArchiveFileXml), new[] { typeof(FpkFileXml), typeof(ArchiveFileXml) });
             FileStream xStream = new FileStream(Filename, FileMode.Open);
             XmlReader xReader = XmlReader.Create(xStream);
-            FpkFile fpkXml = (FpkFile)xSerializer.Deserialize(xReader);
+            FpkFileXml fpkXml = (FpkFileXml)xSerializer.Deserialize(xReader);
             xStream.Close();
 
             Name = fpkXml.Name;
             FpkType = fpkXml.FpkType;
 
             // Clear existing entries and reload
-            FpkEntries = new List<FpkEntry>();
-            foreach (FpkEntry qarEntry in fpkXml.FpkEntries)
+            FpkEntries = new List<FpkEntryXml>();
+            foreach (FpkEntryXml qarEntry in fpkXml.FpkEntries)
             {
                 FpkEntries.Add(qarEntry);
             }
@@ -99,7 +99,7 @@ namespace GzsTool
 
         public void WriteXml(string Filename)
         {
-            XmlSerializer x = new XmlSerializer(typeof(ArchiveFile), new[] { typeof(FpkFile) });
+            XmlSerializer x = new XmlSerializer(typeof(ArchiveFileXml), new[] { typeof(FpkFileXml) });
             StreamWriter s = new StreamWriter(Filename);
             x.Serialize(s, this);
             s.Close();
@@ -107,7 +107,7 @@ namespace GzsTool
     }
 
     [XmlType("Entry")]
-    public class QarEntry
+    public class QarEntryXml
     {
         [XmlAttribute("Compressed")]
         public bool Compressed { get; set; }
@@ -120,29 +120,29 @@ namespace GzsTool
     }
 
     [XmlType("QarFile")]
-    public class QarFile : ArchiveFile
+    public class QarFileXml : ArchiveFileXml
     {
         [XmlAttribute("Flags")]
         public uint Flags { get; set; }
 
         [XmlArray("Entries")]
-        public List<QarEntry> QarEntries { get; set; }
+        public List<QarEntryXml> QarEntries { get; set; }
 
         public void ReadXml(string Filename)
         {
             // Deserialize object from GzsTool XML data
-            XmlSerializer xSerializer = new XmlSerializer(typeof(ArchiveFile), new[] { typeof(QarFile), typeof(ArchiveFile) });
+            XmlSerializer xSerializer = new XmlSerializer(typeof(ArchiveFileXml), new[] { typeof(QarFileXml), typeof(ArchiveFileXml) });
             FileStream xStream = new FileStream(Filename, FileMode.Open);
             XmlReader xReader = XmlReader.Create(xStream);
-            QarFile fpkXml = (QarFile)xSerializer.Deserialize(xReader);
+            QarFileXml fpkXml = (QarFileXml)xSerializer.Deserialize(xReader);
 
             xStream.Close();
             Name = fpkXml.Name;
             Flags = fpkXml.Flags;
 
             // Clear existing entries and reload
-            QarEntries = new List<QarEntry>();
-            foreach (QarEntry qarEntry in fpkXml.QarEntries)
+            QarEntries = new List<QarEntryXml>();
+            foreach (QarEntryXml qarEntry in fpkXml.QarEntries)
             {
                 QarEntries.Add(qarEntry);
             }
@@ -150,7 +150,7 @@ namespace GzsTool
 
         public void WriteXml(string Filename)
         {
-            foreach (QarEntry Entry in QarEntries)
+            foreach (QarEntryXml Entry in QarEntries)
             {
                 // regenerate hash for file
                 string filePath = Tools.ToQarPath(Entry.FilePath);
@@ -187,7 +187,7 @@ namespace GzsTool
                     Entry.Compressed = true;
                 }
             }
-            XmlSerializer x = new XmlSerializer(typeof(ArchiveFile), new[] { typeof(QarFile) });
+            XmlSerializer x = new XmlSerializer(typeof(ArchiveFileXml), new[] { typeof(QarFileXml) });
             StreamWriter s = new StreamWriter(Filename);
             x.Serialize(s, this);
             s.Close();
