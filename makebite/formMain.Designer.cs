@@ -44,11 +44,11 @@
             this.labelModAuthor = new System.Windows.Forms.Label();
             this.labelModName = new System.Windows.Forms.Label();
             this.groupFiles = new System.Windows.Forms.GroupBox();
+            this.buttonBuild = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.listModFiles = new System.Windows.Forms.ListBox();
             this.buttonSelectPath = new System.Windows.Forms.Button();
             this.textModPath = new System.Windows.Forms.TextBox();
-            this.buttonBuild = new System.Windows.Forms.Button();
             this.groupModInfo.SuspendLayout();
             this.groupFiles.SuspendLayout();
             this.SuspendLayout();
@@ -82,7 +82,8 @@
             this.comboForVersion.Items.AddRange(new object[] {
             "1000",
             "1020",
-            "1040"});
+            "1040",
+            "1041"});
             this.comboForVersion.Location = new System.Drawing.Point(381, 56);
             this.comboForVersion.Name = "comboForVersion";
             this.comboForVersion.Size = new System.Drawing.Size(50, 23);
@@ -213,6 +214,16 @@
             this.groupFiles.TabStop = false;
             this.groupFiles.Text = "Mod Files";
             // 
+            // buttonBuild
+            // 
+            this.buttonBuild.Location = new System.Drawing.Point(481, 454);
+            this.buttonBuild.Name = "buttonBuild";
+            this.buttonBuild.Size = new System.Drawing.Size(134, 23);
+            this.buttonBuild.TabIndex = 10;
+            this.buttonBuild.Text = "Do it (build archive)";
+            this.buttonBuild.UseVisualStyleBackColor = true;
+            this.buttonBuild.Click += new System.EventHandler(this.buttonBuild_Click);
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
@@ -251,16 +262,6 @@
             this.textModPath.Size = new System.Drawing.Size(563, 23);
             this.textModPath.TabIndex = 7;
             this.textModPath.Text = "Please select a directory containing your mod files";
-            // 
-            // buttonBuild
-            // 
-            this.buttonBuild.Location = new System.Drawing.Point(481, 454);
-            this.buttonBuild.Name = "buttonBuild";
-            this.buttonBuild.Size = new System.Drawing.Size(134, 23);
-            this.buttonBuild.TabIndex = 10;
-            this.buttonBuild.Text = "Do it (build archive)";
-            this.buttonBuild.UseVisualStyleBackColor = true;
-            this.buttonBuild.Click += new System.EventHandler(this.buttonBuild_Click);
             // 
             // formMain
             // 

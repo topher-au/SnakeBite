@@ -179,7 +179,7 @@ namespace SnakeBite
                 return hashBuilder.ToString();
             }
 
-            internal static ulong ConvertFileNameToHash(string FileName)
+            internal static ulong NameToHash(string FileName)
             {
                 // regenerate hash for file
                 string filePath = Tools.ToQarPath(FileName);
@@ -202,7 +202,7 @@ namespace SnakeBite
             }
         internal static bool IsValidFile(string FilePath)
         {
-            string ext = FilePath.Substring(FilePath.IndexOf(".")+1);
+            string ext = Path.GetExtension(FilePath).Substring(1);
             if (FileExtensions.Contains(ext)) return true;
             return false;
         }

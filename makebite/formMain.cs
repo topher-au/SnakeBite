@@ -128,6 +128,7 @@ namespace makebite
                     textModVersion.Text = modMetaData.Version;
                     textModAuthor.Text = modMetaData.Author;
                     textModWebsite.Text = modMetaData.Website;
+                    comboForVersion.Text = modMetaData.MGSVersion;
                     textModDescription.Text = modMetaData.Description.Replace("\n", "\r\n");
                 }
 
@@ -143,7 +144,7 @@ namespace makebite
                 foreach (string modFile in Directory.GetFiles(modPath, "*.*", SearchOption.AllDirectories))
                 {
                     string filePath = Tools.ToQarPath(modFile.Substring(modPath.Length));
-                    if (Tools.IsValidFile(filePath) && filePath != "/metadata.xml") listModFiles.Items.Add(filePath);
+                    if (Tools.IsValidFile(filePath) && filePath != "/metadata.xml" && filePath != "/readme.txt") listModFiles.Items.Add(filePath);
                 }
 
                 if (args.Length == 2)

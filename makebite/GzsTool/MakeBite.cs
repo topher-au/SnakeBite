@@ -4,6 +4,8 @@ using SnakeBite;
 using System.Collections.Generic;
 using System.IO;
 using GzsTool.Core.Utility;
+using GzsTool.Core.Fpk;
+using SnakeBite.GzsTool;
 
 namespace makebite
 {
@@ -57,34 +59,23 @@ namespace makebite
         {
             string FpkName = FpkFolder.Substring(FpkFolder.LastIndexOf("\\") + 1).Replace("_fpk", ".fpk");
             string FpkBuildFolder = FpkFolder.Substring(0, FpkFolder.TrimEnd('\\').LastIndexOf("\\"));
-            string FpkXmlFile = FpkBuildFolder + "\\" + FpkName + ".xml";
+            //string FpkXmlFile = FpkBuildFolder + "\\" + FpkName + ".xml";
             string FpkFile = FpkBuildFolder + "\\" + FpkName;
             string FpkType = FpkFolder.Substring(FpkFolder.LastIndexOf("_") + 1);
 
-            FpkFile gzsFpk = new FpkFile();
-            List<ModFpkEntry> fpkList = new List<ModFpkEntry>();
+            List<string> fpkFiles = new List<string>();
 
-            if (FpkType == "fpk")
-            {
-                gzsFpk.FpkType = "Fpk";
-            }
-            else if (FpkType == "fpkd")
-            {
-                gzsFpk.FpkType = "Fpkd";
-            }
-            gzsFpk.Name = FpkName;
-            gzsFpk.FpkEntries = new List<FpkEntry>();
+            List<ModFpkEntry> fpkList = new List<ModFpkEntry>();
 
             foreach (string FileName in Directory.GetFiles(FpkFolder, "*.*", SearchOption.AllDirectories))
             {
                 string xmlFileName = FileName.Substring(FpkFolder.Length).Replace("\\", "/");
-                gzsFpk.FpkEntries.Add(new FpkEntry() { FilePath = xmlFileName });
                 fpkList.Add(new ModFpkEntry() { FilePath = xmlFileName, FpkFile = Tools.ToQarPath(FpkFile.Substring(rootDir.Length)), ContentHash = Tools.GetMd5Hash(FileName) });
+                fpkFiles.Add(xmlFileName);
             }
 
-            gzsFpk.WriteXml(FpkXmlFile);
-            GzsApp.Run(FpkXmlFile);
-            File.Delete(FpkXmlFile);
+            GzsLib.WriteFpkArchive(FpkFile, FpkFolder, fpkFiles);
+
             return fpkList;
         }
 
@@ -114,14 +105,11 @@ namespace makebite
                 if(!builtFpks.Contains(FileName))
                 {
                     // unpack FPK and build FPK list
-                    GzsApp.Run(SourceFile);
-                    FpkFile sourceXml = new FpkFile();
-                    sourceXml.ReadXml(SourceFile + ".xml");
 
-                    foreach(FpkEntry f in sourceXml.FpkEntries)
+                    foreach(string file in GzsLib.ListArchiveContents<FpkFile>(SourceFile))
                     {
-                        string fPath = Tools.ToWinPath(FileName.Replace(".fpk", "_fpk"));
-                        metaData.ModFpkEntries.Add(new ModFpkEntry() { FilePath = f.FilePath, FpkFile = FileName, ContentHash = Tools.GetMd5Hash(Path.Combine(SourceDir, fPath, Tools.ToWinPath(f.FilePath))) });
+                        string fpkDir = Tools.ToWinPath(FileName.Replace(".fpk", "_fpk"));
+                        metaData.ModFpkEntries.Add(new ModFpkEntry() { FilePath = file, FpkFile = FileName, ContentHash = Tools.GetMd5Hash(Path.Combine(SourceDir, fpkDir, Tools.ToWinPath(file))) });
                     }
                 }
             }
@@ -135,11 +123,11 @@ namespace makebite
                 if (!Directory.Exists(Path.Combine("_build",subDir))) Directory.CreateDirectory(Path.Combine("_build",subDir)); // create file structure
                 File.Copy(qarFile, Path.Combine("_build",Tools.ToWinPath(qarFilePath)), true);
 
-                ulong hash = Tools.ConvertFileNameToHash(qarFilePath);
+                ulong hash = Tools.NameToHash(qarFilePath);
                 metaData.ModQarEntries.Add(new ModQarEntry() { FilePath = qarFilePath, Compressed = qarFile.Substring(qarFile.LastIndexOf(".") + 1).Contains("fpk") ? true : false, ContentHash = Tools.GetMd5Hash(qarFile), Hash = hash });
             }
 
-            metaData.SBVersion = "420"; // 0.4.2.0
+            metaData.SBVersion = "500"; // 0.4.2.0
 
             metaData.SaveToFile("_build\\metadata.xml");
 

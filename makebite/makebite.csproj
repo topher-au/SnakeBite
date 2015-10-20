@@ -65,13 +65,14 @@
     <Compile Include="formMain.Designer.cs">
       <DependentUpon>formMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="GzsTool\GzsApp.cs" />
-    <Compile Include="MakeBite.cs" />
+    <Compile Include="GzsTool\GameFiles.cs" />
+    <Compile Include="GzsTool\GzsLib.cs" />
+    <Compile Include="GzsTool\MakeBite.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FolderSelectDialog\Reflector.cs" />
-    <Compile Include="XmlSettings.cs" />
-    <Compile Include="Tools.cs" />
+    <Compile Include="GzsTool\XmlSettings.cs" />
+    <Compile Include="GzsTool\Tools.cs" />
     <EmbeddedResource Include="formMain.resx">
       <DependentUpon>formMain.cs</DependentUpon>
     </EmbeddedResource>
@@ -98,6 +99,7 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
