@@ -1,5 +1,4 @@
-﻿using GzsTool;
-using GzsTool.Core.Fpk;
+﻿using GzsTool.Core.Fpk;
 using GzsTool.Core.Qar;
 using ICSharpCode.SharpZipLib.Zip;
 using SnakeBite.GzsTool;
@@ -14,33 +13,15 @@ namespace SnakeBite
     internal static class ModManager
     {
         internal static string DatPath { get { return Properties.Settings.Default.InstallPath + "\\master\\0\\01.dat"; } }
-        internal static string DatXmlPath { get { return Properties.Settings.Default.InstallPath + "\\master\\0\\01.dat.xml"; } }
-        internal static string ExtractedDatDir { get { return Properties.Settings.Default.InstallPath + "\\master\\0\\01_dat"; } }
         internal static string GameDir { get { return Properties.Settings.Default.InstallPath; } }
-
-        // Checks the saved InstallPath variable for the existence of MGSVTPP.exe
-        internal static bool ValidInstallPath
-        {
-            get
-            {
-                string installPath = Properties.Settings.Default.InstallPath;
-                if (Directory.Exists(installPath))
-                {
-                    if (File.Exists(String.Format("{0}\\MGSVTPP.exe", installPath)))
-                    {
-                        return true;
-                    }
-                }
-                return false;
-            }
-        }
 
         public static bool InstallMod(string ModFile)
         {
-            CleanupDirectory();
+            CleanupFolders();
 
             // Extract game archive
             var datFiles = GzsLib.ExtractArchive<QarFile>(DatPath, "_working");
+            datFiles = FixModFilenames(datFiles, "_working");
 
             // Extract mod data
             FastZip unzipper = new FastZip();
@@ -147,18 +128,19 @@ namespace SnakeBite
 
             // Rebuild 01.dat
             GzsLib.WriteQarArchive(DatPath, "_working", datFiles, 3150048);
-            UpdateDatHash();
-            CleanupDirectory();
+
+            CleanupFolders();
 
             return true;
         }
 
         public static bool UninstallMod(ModEntry mod)
         {
-            CleanupDirectory();
+            CleanupFolders();
 
             // Extract game archive
             var datFiles = GzsLib.ExtractArchive<QarFile>(DatPath, "_working");
+            datFiles = FixModFilenames(datFiles, "_working");
 
             // List all FPKs in mod
             List<string> modFpks = new List<string>();
@@ -206,6 +188,8 @@ namespace SnakeBite
 
                         // Rebuild FPK
                         GzsLib.WriteFpkArchive(Path.Combine("_working", Tools.ToWinPath(fpk)), "_gamefpk", gameFpk);
+                        Directory.Delete("_gamefpk", true);
+                        Directory.Delete("_modfpk", true);
                         continue; // don't check base data if it's in 00
                     }
 
@@ -246,192 +230,102 @@ namespace SnakeBite
 
             // Rebuild 01.dat
             GzsLib.WriteQarArchive(DatPath, "_working", datFiles, 3150048);
-            CleanupDirectory();
+
+            CleanupFolders();
             return true;
         }
 
-        internal static List<ModFpkEntry> BuildFpkList(string SearchDir)
+        internal static void CleanupDatabase()
         {
-            // build list of all files in directory
-            List<string> allFiles = Directory.GetFiles(SearchDir, "*.*", SearchOption.AllDirectories).ToList();
-            List<string> fpkFiles = new List<string>();
-            List<ModFpkEntry> BuildFpkList = new List<ModFpkEntry>();
+            // Remove existing working data
+            CleanupFolders();
 
-            // find fpk/fpkd files
-            foreach (string file in allFiles)
+            // Get installed mods
+            List<ModEntry> mods = SettingsManager.GetInstalledMods();
+
+            // Extract game dat to working dir
+            List<string> datFiles = GzsLib.ExtractArchive<QarFile>(DatPath, "_working");
+            List<string> gameFiles = datFiles.ToList();
+            List<string> gameFpks = gameFiles.FindAll(entry => entry.Contains(".fpk"));
+            List<ModFpkEntry> gameFpkEntries = new List<ModFpkEntry>();
+            foreach (string fpk in gameFpks)
             {
-                string fileType = GetFileType(file);
-                if (fileType == "fpk" || fileType == "fpkd")
+                // List contents of FPK
+                var fpkContents = GzsLib.ListArchiveContents<FpkFile>(Path.Combine("_working", Tools.ToWinPath(fpk)));
+                foreach (string file in fpkContents)
                 {
-                    fpkFiles.Add(file);
+                    gameFpkEntries.Add(new ModFpkEntry() { FilePath = file, FpkFile = fpk });
                 }
             }
 
-            // unpack each archive and add to file list
-            foreach (string fpkFile in fpkFiles)
+            // Iterate through installed mods
+            foreach (ModEntry mod in mods)
             {
-                GzsApp.Run(fpkFile); // unpack fpk
-                FpkFileXml gzsFpkXml = new FpkFileXml();
-                gzsFpkXml.ReadXml(fpkFile + ".xml");
-                string fpkFileName = Tools.ToQarPath(fpkFile.Substring(ExtractedDatDir.Length)); // name of fpk for fpk list
+                // Files to be removed from mod
+                List<ulong> removeFiles = new List<ulong>();
 
-                foreach (FpkEntryXml fpkFileEntry in gzsFpkXml.FpkEntries)
+                // Iterate all QAR files for the mod
+                foreach (ModQarEntry modQarEntry in mod.ModQarEntries)
                 {
-                    BuildFpkList.Add(new ModFpkEntry() { FilePath = fpkFileEntry.FilePath, FpkFile = fpkFileName });
+                    if (!gameFiles.Contains(modQarEntry.FilePath))
+                        removeFiles.Add(Tools.NameToHash(modQarEntry.FilePath));
+                }
+
+                // Check if mod files are removed
+                foreach (ulong hash in removeFiles)
+                {
+                    mod.ModFpkEntries.RemoveAll(entry => Tools.NameToHash(entry.FpkFile) == hash);
+                    mod.ModQarEntries.RemoveAll(entry => Tools.NameToHash(entry.FilePath) == hash);
                 }
             }
 
-            return BuildFpkList;
-        }
-
-        // validates 01.dat MD5 against previous hash
-        internal static bool CheckDatHash()
-        {
-            string datHash = Tools.GetMd5Hash(DatPath);
-            Settings oSet = new Settings();
-            oSet.Load();
-            string hashOld = oSet.GameData.DatHash;
-            if (datHash != hashOld) return false;
-            return true;
-        }
-
-        internal static void CleanupModSettings()
-        {
-            if (!ExtractGameArchive()) return;
-
-            // Load current settings
-            Settings oSet = new Settings();
-            oSet.Load();
-
-            // Load archive data
-            QarFileXml gameQar = new QarFileXml();
-            gameQar.ReadXml(DatXmlPath);
-
-            // recurse through all installed mods
-            foreach (ModEntry mod in oSet.ModEntries)
+            Settings settings = new Settings();
+            settings.Load();
+            settings.ModEntries.RemoveAll(entry => entry.ModFpkEntries.Count == 0 && entry.ModQarEntries.Count == 0);
+            foreach (ModEntry mod in mods)
             {
-                List<string> remQar = new List<string>(); // list of files to remove
-                foreach (ModQarEntry modQarFile in mod.ModQarEntries) // check all mod files
+                foreach (ModFpkEntry fpkEntry in mod.ModFpkEntries)
                 {
-                    if (!File.Exists(Path.Combine(ExtractedDatDir, Tools.ToWinPath(modQarFile.FilePath))))
+                    gameFpkEntries.RemoveAll(entry => entry.FilePath == fpkEntry.FilePath && entry.FpkFile == fpkEntry.FpkFile);
+                }
+                foreach (ModQarEntry qarEntry in mod.ModQarEntries)
+                {
+                    gameFiles.RemoveAll(entry => Tools.NameToHash(entry) == Tools.NameToHash(qarEntry.FilePath));
+                }
+            }
+            settings.GameData.GameQarEntries = new List<ModQarEntry>();
+            foreach (string file in gameFiles)
+            {
+                settings.GameData.GameQarEntries.Add(new ModQarEntry() { FilePath = Tools.ToQarPath(file), Hash = Tools.NameToHash(file), Compressed = file.Contains(".fpk") ? true : false });
+            }
+            settings.GameData.GameFpkEntries = gameFpkEntries;
+            settings.Save();
+        }
+
+        internal static List<string> FixModFilenames(List<string> Files, string SourceDir)
+        {
+            List<ModEntry> mods = SettingsManager.GetInstalledMods();
+            List<string> outFiles = Files.ToList();
+
+            foreach (string file in Files)
+            {
+                foreach (ModEntry mod in mods)
+                {
+                    ModQarEntry qarEntry = mod.ModQarEntries.FirstOrDefault(entry => Tools.NameToHash(entry.FilePath) == Tools.NameToHash(file));
+                    if (qarEntry != null)
                     {
-                        // if the file doesn't exist, it will be removed
-                        remQar.Add(modQarFile.FilePath);
+                        string FileDir = Path.Combine(SourceDir, Path.GetDirectoryName(Tools.ToWinPath(qarEntry.FilePath)));
+                        if (FileDir == SourceDir) continue; // don't want to move named files to un-named files
+                        if (!Directory.Exists(FileDir)) Directory.CreateDirectory(FileDir);
+                        if (File.Exists(Path.Combine(SourceDir, Tools.ToWinPath(file))))
+                            File.Move(Path.Combine(SourceDir, Tools.ToWinPath(file)),
+                                      Path.Combine(SourceDir, Tools.ToWinPath(qarEntry.FilePath)));
+                        outFiles[Files.IndexOf(file)] = qarEntry.FilePath;
                     }
                 }
-                foreach (string remFile in remQar)
-                {
-                    mod.ModQarEntries.RemoveAll(entry => entry.FilePath == remFile); // remove files from db
-                    mod.ModFpkEntries.RemoveAll(entry => entry.FpkFile == remFile); // fpks from db
-                }
             }
 
-            // remove empty mods
-            oSet.ModEntries.RemoveAll(entry => entry.ModQarEntries.Count == 0 && entry.ModFpkEntries.Count == 0);
-            oSet.Save();
-
-            DeleteGameArchive();
-        }
-
-        internal static void DeleteGameArchive()
-        {
-            if (File.Exists(DatXmlPath)) File.Delete(DatXmlPath);
-            if (Directory.Exists(ExtractedDatDir)) Directory.Delete(ExtractedDatDir, true);
-        }
-
-        internal static void DoModdedFpk(string FpkFile)
-        {
-            string FilePath = Tools.ToQarPath(FpkFile);
-        }
-
-        internal static bool ExtractGameArchive()
-        {
-            // Check installation directory
-            if (!ValidInstallPath) return false;
-
-            try
-            {
-                // Remove existing directory
-                if (Directory.Exists(ExtractedDatDir)) Directory.Delete(ExtractedDatDir, true);
-
-                // Check 01.dat exists
-                if (!File.Exists(DatPath)) return false;
-
-                // Extract 01.dat archive using GzsTool
-                GzsApp.Run(DatPath);
-
-                QarFileXml datFile = new QarFileXml();
-                datFile.ReadXml(DatXmlPath);
-
-                Settings settings = new Settings();
-                settings.Load();
-
-                // fix up extracted mod filenames
-                foreach (QarEntryXml Entry in datFile.QarEntries)
-                {
-                    foreach (ModEntry mod in settings.ModEntries)
-                    {
-                        ModQarEntry qe = mod.ModQarEntries.FirstOrDefault(entry => Tools.NameToHash(entry.FilePath) == Tools.NameToHash(Entry.FilePath));
-                        if (qe != null)
-                        {
-                            string FileDir = Path.Combine(ExtractedDatDir, Path.GetDirectoryName(Tools.ToWinPath(qe.FilePath)));
-                            if (FileDir == ExtractedDatDir) continue; // don't want to move named files to un-named files
-                            if (!Directory.Exists(FileDir)) Directory.CreateDirectory(FileDir);
-                            if (File.Exists(Path.Combine(ExtractedDatDir, Tools.ToWinPath(Entry.FilePath))))
-                                File.Move(Path.Combine(ExtractedDatDir, Tools.ToWinPath(Entry.FilePath)),
-                                          Path.Combine(ExtractedDatDir, Tools.ToWinPath(qe.FilePath)));
-                            Entry.FilePath = qe.FilePath;
-                            Entry.Hash = Tools.NameToHash(qe.FilePath);
-                        }
-                    }
-                }
-
-                datFile.WriteXml(DatXmlPath);
-
-                return true;
-            }
-            catch
-            {
-                return false;
-            }
-        }
-
-        internal static string ExtractGameFile(ulong FileHash)
-        {
-            // check base game QARs for FPKS
-            GameFiles gameFiles = new GameFiles();
-            gameFiles.Load("gamedata.xml");
-
-            GameFile gameFile = gameFiles.FileList.FirstOrDefault(entry => entry.FileHash == FileHash);
-
-            if (gameFile != null)
-            {
-                // Locate base QAR archive
-                string baseQar = Path.Combine(ModManager.GameDir, "master", gameFile.QarFile);
-
-                // Extract single file from archive
-                string singleFile = GzsApp.ExtractSingle(baseQar, FileHash);
-
-                string baseFilePath = Path.Combine(ModManager.GameDir, "master", gameFile.QarFile.Replace(".", "_"), Tools.ToWinPath(singleFile));
-                string destFilePath = Path.Combine(ModManager.ExtractedDatDir, Tools.ToWinPath(singleFile));
-                string destFileDir = Path.GetDirectoryName(destFilePath);
-
-                return baseFilePath;
-            }
-            return null;
-        }
-
-        internal static string GetFileType(string FilePath)
-        {
-            return Path.GetExtension(FilePath).Substring(1);
-        }
-
-        internal static List<ModEntry> GetInstalledMods()
-        {
-            Settings settingsXml = new Settings();
-            settingsXml.Load();
-
-            return settingsXml.ModEntries;
+            return outFiles;
         }
 
         internal static int GetMGSVersion()
@@ -448,58 +342,8 @@ namespace SnakeBite
             string assemblyVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
             return Convert.ToInt32(assemblyVersion.Replace(".", ""));
         }
-        // gets information about the existing 01.dat archive
-        internal static GameData RebuildGameData(bool copyBackup = true)
-        {
-            if (!ExtractGameArchive()) return null;
 
-            if (!Directory.Exists(ExtractedDatDir)) return null;
-
-            GameData buildData = new GameData();
-
-            // Extract game archive and load data
-            QarFileXml gameQarXml = new QarFileXml();
-            gameQarXml.ReadXml(DatXmlPath);
-
-            // Load currently installed mods
-            Settings oSet = new Settings();
-            oSet.Load();
-
-            foreach (QarEntryXml gameQarEntry in gameQarXml.QarEntries)
-            {
-                buildData.GameQarEntries.Add(new ModQarEntry() { FilePath = gameQarEntry.FilePath, Compressed = gameQarEntry.Compressed, Hash = gameQarEntry.Hash });
-            }
-
-            buildData.GameFpkEntries = BuildFpkList(ExtractedDatDir);
-
-            // recurse through all installed mods
-            foreach (ModEntry mod in oSet.ModEntries)
-            {
-                // check all files in mod against qar archive
-                foreach (ModFpkEntry modFpkFile in mod.ModFpkEntries)
-                {
-                    buildData.GameFpkEntries.RemoveAll(entry => Tools.NameToHash(entry.FilePath) == Tools.NameToHash(modFpkFile.FilePath) && entry.FpkFile == modFpkFile.FpkFile);
-                }
-                foreach (ModQarEntry modQarFile in mod.ModQarEntries)
-                {
-                    buildData.GameQarEntries.RemoveAll(entry => Tools.NameToHash(entry.FilePath) == Tools.NameToHash(modQarFile.FilePath));
-                }
-            }
-
-            return buildData;
-        }
-
-        internal static void UpdateDatHash()
-        {
-            // updates dat file hash
-            string datHash = Tools.GetMd5Hash(DatPath);
-            Settings oSet = new Settings();
-            oSet.Load();
-            oSet.GameData.DatHash = datHash;
-            oSet.Save();
-        }
-
-        private static void CleanupDirectory()
+        private static void CleanupFolders()
         {
             if (Directory.Exists("_working")) Directory.Delete("_working", true);
             if (Directory.Exists("_extr")) Directory.Delete("_extr", true);

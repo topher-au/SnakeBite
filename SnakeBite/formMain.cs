@@ -1,19 +1,14 @@
-﻿using System.Xml.Serialization;
-using ICSharpCode.SharpZipLib.Zip;
+﻿using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
-using SnakeBite;
-using SnakeBite.GzsTool;
-using GzsTool.Core.Qar;
 
 namespace SnakeBite
 {
     public partial class formMain : Form
     {
-        private Settings objSettings = new Settings();
         private formProgress progWindow = new formProgress();
 
         public formMain()
@@ -28,13 +23,13 @@ namespace SnakeBite
             bool resetPath = false;
 
             // Verify the saved MGSV install directory
-            if (!ModManager.ValidInstallPath)
+            if (!SettingsManager.ValidInstallPath)
             {
                 MessageBox.Show("Please locate your MGSV installation to continue. If this is your first time running SnakeBite, it is recommended that you reset your MGSV installation before continuing.", "SnakeBite", MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                 this.Show();
                 tabControl.SelectedIndex = 1;
                 buttonFindMGSV_Click(null, null);
-                if (!ModManager.ValidInstallPath)
+                if (!SettingsManager.ValidInstallPath)
                     Application.Exit(); // Force user to specify valid installation directory
 
                 resetPath = true;
@@ -49,14 +44,22 @@ namespace SnakeBite
                 File.Move("settings.xml", ModManager.GameDir + "\\sbmods.xml");
             }
 
+            if (!File.Exists(Path.Combine(ModManager.GameDir, "sbmods.xml")))
+            {
+                Settings settings = new Settings();
+                settings.Save();
+            }
+
             // Load settings and update installed mod list
             RefreshInstalledMods(true);
+
+            var checkDat = SettingsManager.ValidateDatHash();
 
             // Show form before continuing
             this.Show();
 
             // check hash for dat file, if changed, rebuild database
-            if (!ModManager.CheckDatHash())
+            if (!checkDat)
             {
                 if (!resetPath)
                     MessageBox.Show("Game data modified outside of SnakeBite. SnakeBite will now attempt to recache game data.",
@@ -79,7 +82,8 @@ namespace SnakeBite
 
                     case "-u":
                         {
-                            ModEntry mod = objSettings.ModEntries.FirstOrDefault(entry => entry.Name == args[2]); // find matching mod name
+                            var mods = SettingsManager.GetInstalledMods();
+                            ModEntry mod = mods.FirstOrDefault(entry => entry.Name == args[2]); // find matching mod name
                             if (mod == null) return;
                             ProcessUninstallMod(mod); // uninstall mod
                             break;
@@ -95,22 +99,15 @@ namespace SnakeBite
 
         private void RefreshInstalledMods(bool resetSelection = false)
         {
-            if (File.Exists(ModManager.GameDir + "\\sbmods.xml"))
-            {
-                objSettings.Load();
-            }
-            else
-            {
-                objSettings.ModEntries = new List<ModEntry>();
-            }
+            var mods = SettingsManager.GetInstalledMods();
 
             listInstalledMods.Items.Clear();
 
-            if (objSettings.ModEntries.Count > 0)
+            if (mods.Count > 0)
             {
                 panelModDetails.Visible = true;
                 labelNoMods.Visible = false;
-                foreach (ModEntry mod in objSettings.ModEntries)
+                foreach (ModEntry mod in mods)
                 {
                     listInstalledMods.Items.Add(mod.Name);
                 }
@@ -139,7 +136,8 @@ namespace SnakeBite
             if (!(listInstalledMods.SelectedIndex >= 0)) return;
 
             // Get selected mod
-            ModEntry mod = objSettings.ModEntries[listInstalledMods.SelectedIndex];
+            var mods = SettingsManager.GetInstalledMods();
+            ModEntry mod = mods[listInstalledMods.SelectedIndex];
             if (!(MessageBox.Show(String.Format("{0} will be uninstalled.", mod.Name), "SnakeBite", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)) return;
 
             ProcessUninstallMod(mod);
@@ -150,13 +148,18 @@ namespace SnakeBite
             showProgressWindow(String.Format("Please wait while {0} is uninstalled...", mod.Name));
 
             // Uninstall mod
-            ModManager.UninstallMod(mod);
+            System.ComponentModel.BackgroundWorker uninstaller = new System.ComponentModel.BackgroundWorker();
+            uninstaller.DoWork += (obj, e) => ModManager.UninstallMod(mod);
+            uninstaller.RunWorkerAsync();
+
+            while (uninstaller.IsBusy)
+            {
+                Application.DoEvents();
+            }
 
             // Remove from mod database
-            objSettings.ModEntries.Remove(mod);
-            objSettings.Save();
-
-            ModManager.UpdateDatHash();
+            SettingsManager.RemoveMod(mod);
+            SettingsManager.UpdateDatHash();
 
             // Update installed mod list
             RefreshInstalledMods(true);
@@ -180,8 +183,8 @@ namespace SnakeBite
             FastZip unzipper = new FastZip();
             unzipper.ExtractZip(ModFile, ".", "metadata.xml");
 
-            ModEntry modMetadata = new ModEntry();
-            modMetadata.ReadFromFile("metadata.xml");
+            ModEntry metaData = new ModEntry();
+            metaData.ReadFromFile("metadata.xml");
             File.Delete("metadata.xml"); // delete temp metadata
 
             if (!checkConflicts.Checked && !ignoreConflicts)
@@ -190,49 +193,50 @@ namespace SnakeBite
                 int SBVersion = ModManager.GetSBVersion();
                 int MGSVersion = ModManager.GetMGSVersion();
 
-                int modSBVersion = Convert.ToInt32(modMetadata.SBVersion);
-                int modMGSVersion = Convert.ToInt32(modMetadata.MGSVersion);
+                int modSBVersion = Convert.ToInt32(metaData.SBVersion);
+                int modMGSVersion = Convert.ToInt32(metaData.MGSVersion);
 
                 // Check if mod requires SB update
                 if (modSBVersion > SBVersion)
                 {
-                    MessageBox.Show(String.Format("{0} requires a newer version of SnakeBite. Please follow the link on the Settings page to get the latest version.", modMetadata.Name), "Update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(String.Format("{0} requires a newer version of SnakeBite. Please follow the link on the Settings page to get the latest version.", metaData.Name), "Update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 // Check MGS version compatibility
                 if (MGSVersion != modMGSVersion && modMGSVersion != 0)
                 {
-                    if (MGSVersion > modMGSVersion) MessageBox.Show(String.Format("{0} requires MGSV version {1}, but your installation is version {2}. Please update {0} and try again.", modMetadata.Name, modMGSVersion, MGSVersion), "Update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    if (MGSVersion < modMGSVersion) MessageBox.Show(String.Format("{0} requires MGSV version {1}, but your installation is version {2}. Please update MGSV and try again.", modMetadata.Name, modMGSVersion, MGSVersion), "Update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (MGSVersion > modMGSVersion) MessageBox.Show(String.Format("{0} requires MGSV version {1}, but your installation is version {2}. Please update {0} and try again.", metaData.Name, modMGSVersion, MGSVersion), "Update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    if (MGSVersion < modMGSVersion) MessageBox.Show(String.Format("{0} requires MGSV version {1}, but your installation is version {2}. Please update MGSV and try again.", metaData.Name, modMGSVersion, MGSVersion), "Update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 // search installed mods for conflicts
+                var mods = SettingsManager.GetInstalledMods();
                 List<string> conflictingMods = new List<string>();
 
-                foreach (ModEntry modEntry in objSettings.ModEntries) // iterate through installed mods
+                foreach (ModEntry mod in mods) // iterate through installed mods
                 {
-                    foreach (ModQarEntry qarEntry in modMetadata.ModQarEntries) // iterate qar files from new mod
+                    foreach (ModQarEntry qarEntry in metaData.ModQarEntries) // iterate qar files from new mod
                     {
                         if (qarEntry.FilePath.Contains(".fpk")) continue;
-                        ModQarEntry conflicts = modEntry.ModQarEntries.FirstOrDefault(entry => Tools.NameToHash(entry.FilePath) == Tools.NameToHash(qarEntry.FilePath));
+                        ModQarEntry conflicts = mod.ModQarEntries.FirstOrDefault(entry => Tools.NameToHash(entry.FilePath) == Tools.NameToHash(qarEntry.FilePath));
                         if (conflicts != null)
                         {
-                            conflictingMods.Add(modEntry.Name);
+                            conflictingMods.Add(mod.Name);
                             break;
                         }
                     }
 
-                    foreach (ModFpkEntry fpkEntry in modMetadata.ModFpkEntries) // iterate fpk files from new mod
+                    foreach (ModFpkEntry fpkEntry in metaData.ModFpkEntries) // iterate fpk files from new mod
                     {
-                        ModFpkEntry conflicts = modEntry.ModFpkEntries.FirstOrDefault(entry => Tools.NameToHash(entry.FpkFile) == Tools.NameToHash(fpkEntry.FpkFile) && 
+                        ModFpkEntry conflicts = mod.ModFpkEntries.FirstOrDefault(entry => Tools.NameToHash(entry.FpkFile) == Tools.NameToHash(fpkEntry.FpkFile) &&
                                                                                                Tools.NameToHash(entry.FilePath) == Tools.NameToHash(fpkEntry.FilePath));
                         if (conflicts != null)
                         {
-                            if (!conflictingMods.Contains(modEntry.Name))
+                            if (!conflictingMods.Contains(mod.Name))
                             {
-                                conflictingMods.Add(modEntry.Name);
+                                conflictingMods.Add(mod.Name);
                                 break;
                             }
                         }
@@ -254,14 +258,15 @@ namespace SnakeBite
 
                 bool sysConflict = false;
                 // check for system file conflicts
-                foreach (ModQarEntry gameQarFile in objSettings.GameData.GameQarEntries)
+                var gameData = SettingsManager.GetGameData();
+                foreach (ModQarEntry gameQarFile in gameData.GameQarEntries)
                 {
-                    if (modMetadata.ModQarEntries.Count(entry => Tools.ToQarPath(entry.FilePath) == Tools.ToQarPath(gameQarFile.FilePath)) > 0) sysConflict = true;
+                    if (metaData.ModQarEntries.Count(entry => Tools.ToQarPath(entry.FilePath) == Tools.ToQarPath(gameQarFile.FilePath)) > 0) sysConflict = true;
                 }
 
-                foreach (ModFpkEntry gameFpkFile in objSettings.GameData.GameFpkEntries)
+                foreach (ModFpkEntry gameFpkFile in gameData.GameFpkEntries)
                 {
-                    if (modMetadata.ModFpkEntries.Count(entry => entry.FilePath == gameFpkFile.FilePath && entry.FpkFile == gameFpkFile.FpkFile) > 0) sysConflict = true;
+                    if (metaData.ModFpkEntries.Count(entry => entry.FilePath == gameFpkFile.FilePath && entry.FpkFile == gameFpkFile.FpkFile) > 0) sysConflict = true;
                 }
                 if (sysConflict)
                 {
@@ -270,18 +275,25 @@ namespace SnakeBite
                 }
             }
 
-            DialogResult confirmInstall = MessageBox.Show(String.Format("You are about to install {0}, continue?", modMetadata.Name), "SnakeBite", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+            DialogResult confirmInstall = MessageBox.Show(String.Format("You are about to install {0}, continue?", metaData.Name), "SnakeBite", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (confirmInstall == DialogResult.No) return;
 
-            showProgressWindow(String.Format("Installing {0}, please wait...", modMetadata.Name));
+            showProgressWindow(String.Format("Installing {0}, please wait...", metaData.Name));
 
             // Install mod to 01.dat
-            ModManager.InstallMod(ModFile);
+            System.ComponentModel.BackgroundWorker installer = new System.ComponentModel.BackgroundWorker();
+            installer.DoWork += (obj, e) => ModManager.InstallMod(ModFile);
+            installer.RunWorkerAsync();
+
+            while (installer.IsBusy)
+            {
+                Application.DoEvents();
+            }
+
+            SettingsManager.UpdateDatHash();
 
             // Install mod to game database
-            objSettings.Load();
-            objSettings.ModEntries.Add(modMetadata);
-            objSettings.Save();
+            SettingsManager.AddMod(metaData);
 
             RefreshInstalledMods();
             listInstalledMods.SelectedIndex = listInstalledMods.Items.Count - 1;
@@ -294,7 +306,8 @@ namespace SnakeBite
             // populate details pane
             if (listInstalledMods.SelectedIndex >= 0)
             {
-                ModEntry selectedMod = objSettings.ModEntries[listInstalledMods.SelectedIndex];
+                var mods = SettingsManager.GetInstalledMods();
+                ModEntry selectedMod = mods[listInstalledMods.SelectedIndex];
                 labelModName.Text = selectedMod.Name;
                 labelModVersion.Text = selectedMod.Version;
                 labelModAuthor.Text = "by " + selectedMod.Author;
@@ -312,7 +325,7 @@ namespace SnakeBite
             if (findResult != DialogResult.OK) return;
 
             string filePath = findMGSV.FileName.Substring(0, findMGSV.FileName.LastIndexOf("\\"));
-            if(filePath != textInstallPath.Text)
+            if (filePath != textInstallPath.Text)
             {
                 textInstallPath.Text = filePath;
                 Properties.Settings.Default.InstallPath = filePath;
@@ -321,7 +334,6 @@ namespace SnakeBite
                 System.Diagnostics.Process.Start("SnakeBite.exe");
                 Application.Exit();
             }
-            
         }
 
         private void showProgressWindow(string Text = "Processing...")
@@ -329,7 +341,8 @@ namespace SnakeBite
             progWindow.Owner = this;
             progWindow.StatusText.Text = Text;
 
-            progWindow.Show(this);
+            progWindow.ShowInTaskbar = false;
+            progWindow.Show();
             this.Enabled = false;
         }
 
@@ -344,24 +357,34 @@ namespace SnakeBite
             // attempt to determine which files are game files and which are mod files
             if (sender != null)
             {
-                DialogResult areYouSure = MessageBox.Show("SnakeBite will recache the installed game data and remove any invalid mods. This may take some time.\n\nContinue?", "SnakeBite", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                if (areYouSure == DialogResult.No) return;
+                DialogResult areYouSure = MessageBox.Show("SnakeBite will read the installed game data and remove any mod files that are missing. Corrupted mods may then be uninstalled.\n\nThis may take some time.", "SnakeBite", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+                if (areYouSure == DialogResult.Cancel) return;
             }
 
             showProgressWindow("Rebuilding game data cache...");
 
-            objSettings.GameData = ModManager.RebuildGameData(true);
-            objSettings.Save();
+            // REBUILD GAME DATA
+            // CLEAN UP MOD SETTINGS
 
-            ModManager.CleanupModSettings();
+            System.ComponentModel.BackgroundWorker rebuilder = new System.ComponentModel.BackgroundWorker();
+            rebuilder.DoWork += (obj, var) => ModManager.CleanupDatabase();
+            rebuilder.RunWorkerAsync();
+            while (rebuilder.IsBusy)
+            {
+                Application.DoEvents();
+            }
 
-            ModManager.UpdateDatHash();
+            SettingsManager.UpdateDatHash();
 
             RefreshInstalledMods(true);
 
             hideProgressWindow();
 
             if (sender != null) tabControl.SelectedIndex = 0;
+        }
+
+        private void DoBuildDB()
+        {
         }
 
         private void checkConflicts_CheckedChanged(object sender, EventArgs e)
@@ -399,7 +422,6 @@ namespace SnakeBite
             if (saveResult != DialogResult.OK) return;
 
             // copy current settings
-            objSettings.Save();
             File.Copy(ModManager.GameDir + "\\sbmods.xml", "_backup\\sbmods.xml");
 
             // copy current 01.dat
@@ -435,6 +457,5 @@ namespace SnakeBite
             System.Diagnostics.Process.Start("SnakeBite.exe");
             Application.Exit();
         }
-
     }
 }

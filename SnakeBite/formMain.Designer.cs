@@ -245,7 +245,7 @@
             this.labelRebuildCache.Name = "labelRebuildCache";
             this.labelRebuildCache.Size = new System.Drawing.Size(167, 60);
             this.labelRebuildCache.TabIndex = 3;
-            this.labelRebuildCache.Text = "Rebuilds the cache of MGSV game data contained within 01.dat.";
+            this.labelRebuildCache.Text = "Remove any invalid mod files from the database and collect info about game data.";
             this.labelRebuildCache.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // buttonBuildGameDB
@@ -254,7 +254,7 @@
             this.buttonBuildGameDB.Name = "buttonBuildGameDB";
             this.buttonBuildGameDB.Size = new System.Drawing.Size(80, 60);
             this.buttonBuildGameDB.TabIndex = 2;
-            this.buttonBuildGameDB.Text = "Rebuild Cache";
+            this.buttonBuildGameDB.Text = "Rebuild Database";
             this.buttonBuildGameDB.UseVisualStyleBackColor = true;
             this.buttonBuildGameDB.Click += new System.EventHandler(this.buttonBuildGameDB_Click);
             // 

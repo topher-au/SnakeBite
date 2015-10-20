@@ -1,44 +1,53 @@
-﻿using System.IO;
+﻿using GzsTool.Core.Common;
+using GzsTool.Core.Common.Interfaces;
+using GzsTool.Core.Fpk;
+using GzsTool.Core.Qar;
+using GzsTool.Core.Utility;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using GzsTool.Core;
-using GzsTool.Core.Common;
-using GzsTool.Core.Qar;
-using GzsTool.Core.Fpk;
-using GzsTool.Core.Utility;
-using SnakeBite;
 using System.Windows.Forms;
-using GzsTool.Core.Common.Interfaces;
 
 namespace SnakeBite.GzsTool
 {
     public static class GzsLib
     {
-        // Read file hashes contained within QAR archive
-        public static List<GameFile> ListArchiveHashes<T>(string ArchiveName) where T : ArchiveFile, new()
+        // Extract full archive
+        public static List<string> ExtractArchive<T>(string FileName, string OutputPath) where T : ArchiveFile, new()
         {
-            using (FileStream archiveFile = new FileStream(ArchiveName, FileMode.Open))
+            Hashing.ReadDictionary("qar_dictionary.txt");
+            Hashing.ReadMd5Dictionary("fpk_dictionary.txt");
+            using (FileStream archiveFile = new FileStream(FileName, FileMode.Open))
             {
-                List<GameFile> archiveContents = new List<GameFile>();
+                List<string> outFiles = new List<string>();
                 T archive = new T();
-                archive.Name = Path.GetFileName(ArchiveName);
+                archive.Name = Path.GetFileName(FileName);
                 archive.Read(archiveFile);
-                foreach(var x in archive.ExportFiles(archiveFile))
+
+                // Select single file for output
+
+                foreach (var v in archive.ExportFiles(archiveFile))
                 {
-                    archiveContents.Add(new GameFile() { FilePath = x.FileName, FileHash = Tools.NameToHash(x.FileName), QarFile=archive.Name });
+                    string outDirectory = Path.Combine(OutputPath, Path.GetDirectoryName(v.FileName));
+                    string outFileName = Path.Combine(OutputPath, v.FileName);
+                    if (!Directory.Exists(outDirectory)) Directory.CreateDirectory(outDirectory);
+                    using (FileStream outStream = new FileStream(outFileName, FileMode.Create))
+                    {
+                        // copy to output stream
+                        v.DataStream().CopyTo(outStream);
+                        outFiles.Add(v.FileName);
+                    }
+                    Application.DoEvents();
                 }
-                return archiveContents;
+
+                return outFiles;
             }
         }
 
         // Extract single file from archive
         public static bool ExtractFile<T>(string SourceArchive, string FilePath, string OutputFile) where T : ArchiveFile, new()
         {
-            Hashing.ReadDictionary("qar_dictionary.txt");
-            Hashing.ReadMd5Dictionary("fpk_dictionary.txt");
             // Get file hash from path
             ulong fileHash = Tools.NameToHash(FilePath);
 
@@ -51,7 +60,7 @@ namespace SnakeBite.GzsTool
                 // Select single file for output
                 var outFile = archive.ExportFiles(archiveFile).FirstOrDefault(entry => Tools.NameToHash(entry.FileName) == fileHash);
 
-                if(outFile != null)
+                if (outFile != null)
                 {
                     if (!Directory.Exists(Path.GetDirectoryName(OutputFile))) Directory.CreateDirectory(Path.GetDirectoryName(OutputFile));
                     using (FileStream outStream = new FileStream(OutputFile, FileMode.Create))
@@ -60,7 +69,8 @@ namespace SnakeBite.GzsTool
                         outFile.DataStream().CopyTo(outStream);
                     }
                     return true;
-                } else
+                }
+                else
                 {
                     // file not found
                     return false;
@@ -103,72 +113,48 @@ namespace SnakeBite.GzsTool
             }
         }
 
-        // Extract full archive
-        public static List<string> ExtractArchive<T>(string FileName, string OutputPath) where T : ArchiveFile, new()
+        // Read file hashes contained within QAR archive
+        public static List<GameFile> ListArchiveHashes<T>(string ArchiveName) where T : ArchiveFile, new()
+        {
+            using (FileStream archiveFile = new FileStream(ArchiveName, FileMode.Open))
+            {
+                List<GameFile> archiveContents = new List<GameFile>();
+                T archive = new T();
+                archive.Name = Path.GetFileName(ArchiveName);
+                archive.Read(archiveFile);
+                foreach (var x in archive.ExportFiles(archiveFile))
+                {
+                    archiveContents.Add(new GameFile() { FilePath = x.FileName, FileHash = Tools.NameToHash(x.FileName), QarFile = archive.Name });
+                }
+                return archiveContents;
+            }
+        }
+
+        // Read file hashes contained within QAR archive
+        public static List<string> ListArchiveContents<T>(string ArchiveName) where T : ArchiveFile, new()
+        {
+            using (FileStream archiveFile = new FileStream(ArchiveName, FileMode.Open))
+            {
+                List<string> archiveContents = new List<string>();
+                T archive = new T();
+                archive.Name = Path.GetFileName(ArchiveName);
+                archive.Read(archiveFile);
+                foreach (var x in archive.ExportFiles(archiveFile))
+                {
+                    archiveContents.Add(x.FileName);
+                }
+                return archiveContents;
+            }
+        }
+
+        // Load filename dictionaries
+        public static void LoadDictionaries()
         {
             Hashing.ReadDictionary("qar_dictionary.txt");
             Hashing.ReadMd5Dictionary("fpk_dictionary.txt");
-            using (FileStream archiveFile = new FileStream(FileName, FileMode.Open))
-            {
-                List<string> outFiles = new List<string>();
-                T archive = new T();
-                archive.Name = Path.GetFileName(FileName);
-                archive.Read(archiveFile);
-
-                // Select single file for output
-
-                foreach(var v in archive.ExportFiles(archiveFile))
-                {
-                    string outDirectory = Path.Combine(OutputPath, Path.GetDirectoryName(v.FileName));
-                    string outFileName = Path.Combine(OutputPath, v.FileName);
-                    if (!Directory.Exists(outDirectory)) Directory.CreateDirectory(outDirectory);
-                    using (FileStream outStream = new FileStream(outFileName, FileMode.Create))
-                    {
-                        // copy to output stream
-                        v.DataStream().CopyTo(outStream);
-                        outFiles.Add(v.FileName);
-                    }
-                    Application.DoEvents();
-                }
-
-                return outFiles;
-            }
         }
 
-        public static void WriteQarArchive(string FileName, string SourceDirectory, List<string> Files, uint Flags)
-        {
-
-            List<QarEntry> qarEntries = new List<QarEntry>();
-            foreach(string s in Files)
-            {
-                qarEntries.Add(new QarEntry() { FilePath = s, Hash = Tools.NameToHash(s), Compressed = Path.GetExtension(s).Contains(".fpk") ? true : false });
-            }
-
-            QarFile q = new QarFile() { Entries = qarEntries, Flags = Flags, Name = FileName };
-            
-            using(FileStream outFile = new FileStream(FileName, FileMode.Create))
-            {
-                IDirectory fileDirectory = new FileSystemDirectory(SourceDirectory);
-                q.Write(outFile, fileDirectory);
-            }
-        }
-
-        public static void WriteFpkArchive(string FileName, string SourceDirectory, List<string> Files)
-        {
-
-            FpkFile q = new FpkFile() { Name = FileName };
-            foreach (string s in Files)
-            {
-                q.Entries.Add(new FpkEntry() { FilePath = s });
-            }
-
-            using (FileStream outFile = new FileStream(FileName, FileMode.Create))
-            {
-                IDirectory fileDirectory = new FileSystemDirectory(SourceDirectory);
-                q.Write(outFile, fileDirectory);
-            }
-        }
-
+        // Read contents of base game files into list
         public static GameFiles ReadBaseData()
         {
             List<GameFile> ReadBaseData = new List<GameFile>();
@@ -178,22 +164,23 @@ namespace SnakeBite.GzsTool
             string zeroDat = "0\\{0:X2}.dat";
 
             Dictionary<ulong, string> BaseData = new Dictionary<ulong, string>();
-            
+
             // read data1
             var dataFiles = ListArchiveHashes<QarFile>(Path.Combine(dataDir, String.Format(dataDat, 1)));
-            foreach(GameFile file in dataFiles)
+            foreach (GameFile file in dataFiles)
             {
                 try
                 {
                     ReadBaseData.Add(file);
-                } catch { }
+                }
+                catch { }
             }
 
             // read chunks
-            for(int i = 0; i <= 4; i++)
+            for (int i = 0; i <= 4; i++)
             {
                 var chunkFiles = ListArchiveHashes<QarFile>(Path.Combine(dataDir, String.Format(chunkDat, i)));
-                foreach(GameFile file in chunkFiles)
+                foreach (GameFile file in chunkFiles)
                 {
                     try
                     {
@@ -214,8 +201,41 @@ namespace SnakeBite.GzsTool
                 catch { }
             }
 
-
             return new GameFiles { FileList = ReadBaseData };
+        }
+
+        // Export FPK archive with specified parameters
+        public static void WriteFpkArchive(string FileName, string SourceDirectory, List<string> Files)
+        {
+            FpkFile q = new FpkFile() { Name = FileName };
+            foreach (string s in Files)
+            {
+                q.Entries.Add(new FpkEntry() { FilePath = s });
+            }
+
+            using (FileStream outFile = new FileStream(FileName, FileMode.Create))
+            {
+                IDirectory fileDirectory = new FileSystemDirectory(SourceDirectory);
+                q.Write(outFile, fileDirectory);
+            }
+        }
+
+        // Export QAR archive with specified parameters
+        public static void WriteQarArchive(string FileName, string SourceDirectory, List<string> Files, uint Flags)
+        {
+            List<QarEntry> qarEntries = new List<QarEntry>();
+            foreach (string s in Files)
+            {
+                qarEntries.Add(new QarEntry() { FilePath = s, Hash = Tools.NameToHash(s), Compressed = Path.GetExtension(s).Contains(".fpk") ? true : false });
+            }
+
+            QarFile q = new QarFile() { Entries = qarEntries, Flags = Flags, Name = FileName };
+
+            using (FileStream outFile = new FileStream(FileName, FileMode.Create))
+            {
+                IDirectory fileDirectory = new FileSystemDirectory(SourceDirectory);
+                q.Write(outFile, fileDirectory);
+            }
         }
     }
 }

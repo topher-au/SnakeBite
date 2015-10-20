@@ -1,13 +1,13 @@
-﻿using System.Text;
-using GzsTool.Core.Utility;
-using System.Security.Cryptography;
-using System.IO;
+﻿using GzsTool.Core.Utility;
 using System.Collections.Generic;
+using System.IO;
+using System.Security.Cryptography;
+using System.Text;
 
 namespace SnakeBite
 {
-        public static class Tools
-        {
+    public static class Tools
+    {
         private static readonly List<string> FileExtensions = new List<string>
         {
             "1.ftexs",
@@ -151,60 +151,61 @@ namespace SnakeBite
         };
 
         public static string ToWinPath(string Path)
-            {
-                return Path.Replace("/", "\\").TrimStart('\\');
-            }
+        {
+            return Path.Replace("/", "\\").TrimStart('\\');
+        }
 
-            public static string ToQarPath(string Path)
-            {
-                return "/" + Path.Replace("\\", "/").TrimStart('/');
-            }
+        public static string ToQarPath(string Path)
+        {
+            return "/" + Path.Replace("\\", "/").TrimStart('/');
+        }
 
-            internal static string GetMd5Hash(string FileName)
+        internal static string GetMd5Hash(string FileName)
+        {
+            byte[] hashBytes;
+            using (var hashMD5 = MD5.Create())
             {
-                byte[] hashBytes;
-                using (var hashMD5 = MD5.Create())
+                using (var stream = File.OpenRead(FileName))
                 {
-                    using (var stream = File.OpenRead(FileName))
-                    {
-                        hashBytes = hashMD5.ComputeHash(stream);
-                    }
+                    hashBytes = hashMD5.ComputeHash(stream);
                 }
-
-                StringBuilder hashBuilder = new StringBuilder(hashBytes.Length * 2);
-
-                for (int i = 0; i < hashBytes.Length; i++)
-                    hashBuilder.Append(hashBytes[i].ToString("X2"));
-
-                return hashBuilder.ToString();
             }
 
-            internal static ulong NameToHash(string FileName)
+            StringBuilder hashBuilder = new StringBuilder(hashBytes.Length * 2);
+
+            for (int i = 0; i < hashBytes.Length; i++)
+                hashBuilder.Append(hashBytes[i].ToString("X2"));
+
+            return hashBuilder.ToString();
+        }
+
+        internal static ulong NameToHash(string FileName)
+        {
+            // regenerate hash for file
+            string filePath = Tools.ToQarPath(FileName);
+            ulong hash = Hashing.HashFileNameWithExtension(filePath);
+            if (!filePath.Substring(1).Contains("/"))
             {
-                // regenerate hash for file
-                string filePath = Tools.ToQarPath(FileName);
-                ulong hash = Hashing.HashFileNameWithExtension(filePath);
-                if (!filePath.Substring(1).Contains("/"))
-                {
-                    // try to parse hash from filename
-                    string fileName = filePath.TrimStart('/');
-                    string fileNoExt = fileName.Substring(0, fileName.IndexOf("."));
-                    string fileExt = fileName.Substring(fileName.IndexOf(".") + 1);
+                // try to parse hash from filename
+                string fileName = filePath.TrimStart('/');
+                string fileNoExt = fileName.Substring(0, fileName.IndexOf("."));
+                string fileExt = fileName.Substring(fileName.IndexOf(".") + 1);
 
-                    bool tryParseHash = ulong.TryParse(fileNoExt, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.CurrentCulture, out hash);
-                    if (tryParseHash) // successfully parsed filename
-                    {
-                        ulong ExtHash = Hashing.HashFileName(fileExt, false) & 0x1FFF;
-                        hash = (ExtHash << 51) | hash;
-                    }
+                bool tryParseHash = ulong.TryParse(fileNoExt, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.CurrentCulture, out hash);
+                if (tryParseHash) // successfully parsed filename
+                {
+                    ulong ExtHash = Hashing.HashFileName(fileExt, false) & 0x1FFF;
+                    hash = (ExtHash << 51) | hash;
                 }
-                return hash;
             }
+            return hash;
+        }
+
         internal static bool IsValidFile(string FilePath)
         {
             string ext = FilePath.Substring(FilePath.IndexOf("."));
             if (FileExtensions.Contains(ext)) return true;
             return false;
         }
-        }
     }
+}

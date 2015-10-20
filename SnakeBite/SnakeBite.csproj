@@ -71,7 +71,6 @@
     <Compile Include="formMain.Designer.cs">
       <DependentUpon>formMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="Classes\GzsApp.cs" />
     <Compile Include="Classes\Settings.cs" />
     <Compile Include="formProgress.cs">
       <SubType>Form</SubType>

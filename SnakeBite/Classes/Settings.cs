@@ -1,12 +1,81 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Security.Cryptography;
-using System.Text;
 using System.Xml.Serialization;
-using GzsTool.Core.Utility;
 
 namespace SnakeBite
 {
+    public static class SettingsManager
+    {
+        public static void AddMod(ModEntry Mod)
+        {
+            Settings settings = new Settings();
+            settings.Load();
+            settings.ModEntries.Add(Mod);
+            settings.Save();
+        }
+
+        public static void RemoveMod(ModEntry Mod)
+        {
+            Settings settings = new Settings();
+            settings.Load();
+            ModEntry remMod = settings.ModEntries.Find(entry => entry.Name == Mod.Name);
+            settings.ModEntries.Remove(remMod);
+            settings.Save();
+        }
+
+        public static List<ModEntry> GetInstalledMods()
+        {
+            Settings settings = new Settings();
+            settings.Load();
+            return settings.ModEntries;
+        }
+
+        public static GameData GetGameData()
+        {
+            Settings settings = new Settings();
+            settings.Load();
+            return settings.GameData;
+        }
+
+        public static void UpdateDatHash()
+        {
+            Settings settings = new Settings();
+            settings.Load();
+
+            // Hash 01.dat and update settings file
+            string datHash = Tools.GetMd5Hash(ModManager.DatPath);
+            settings.GameData.DatHash = datHash;
+
+            settings.Save();
+        }
+
+        internal static bool ValidateDatHash()
+        {
+            string datHash = Tools.GetMd5Hash(ModManager.DatPath);
+            string hashOld = SettingsManager.GetGameData().DatHash;
+            if (datHash != hashOld) return false;
+            return true;
+        }
+
+        // Checks the saved InstallPath variable for the existence of MGSVTPP.exe
+        public static bool ValidInstallPath
+        {
+            get
+            {
+                string installPath = Properties.Settings.Default.InstallPath;
+                if (Directory.Exists(installPath))
+                {
+                    if (File.Exists(String.Format("{0}\\MGSVTPP.exe", installPath)))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+    }
+
     [XmlType("Settings")]
     public class Settings
     {
@@ -82,13 +151,13 @@ namespace SnakeBite
     {
         public ModEntry()
         {
-
         }
 
         public ModEntry(string SourceFile)
         {
             ReadFromFile(SourceFile);
         }
+
         [XmlAttribute("Name")]
         public string Name { get; set; }
 
