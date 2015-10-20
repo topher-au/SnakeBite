@@ -3,7 +3,6 @@ using GzsTool.Core.Common.Interfaces;
 using GzsTool.Core.Fpk;
 using GzsTool.Core.Qar;
 using GzsTool.Core.Utility;
-using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -154,7 +153,6 @@ namespace SnakeBite.GzsTool
             Hashing.ReadMd5Dictionary("fpk_dictionary.txt");
         }
 
-        
         // Export FPK archive with specified parameters
         public static void WriteFpkArchive(string FileName, string SourceDirectory, List<string> Files)
         {
@@ -174,7 +172,6 @@ namespace SnakeBite.GzsTool
         // Export QAR archive with specified parameters
         public static void WriteQarArchive(string FileName, string SourceDirectory, List<string> Files, uint Flags)
         {
-
             List<QarEntry> qarEntries = new List<QarEntry>();
             foreach (string s in Files)
             {

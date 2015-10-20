@@ -1,9 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
-using System.Security.Cryptography;
-using System.Text;
 using System.Xml.Serialization;
-using GzsTool.Core.Utility;
 
 namespace SnakeBite
 {

@@ -1,11 +1,9 @@
-﻿using GzsTool;
+﻿using GzsTool.Core.Fpk;
 using ICSharpCode.SharpZipLib.Zip;
 using SnakeBite;
+using SnakeBite.GzsTool;
 using System.Collections.Generic;
 using System.IO;
-using GzsTool.Core.Utility;
-using GzsTool.Core.Fpk;
-using SnakeBite.GzsTool;
 
 namespace makebite
 {
@@ -99,14 +97,14 @@ namespace makebite
             }
 
             // check for other FPKs and build fpkentry data
-            foreach(string SourceFile in Directory.GetFiles(SourceDir, "*.fpk*", SearchOption.AllDirectories))
+            foreach (string SourceFile in Directory.GetFiles(SourceDir, "*.fpk*", SearchOption.AllDirectories))
             {
                 string FileName = Tools.ToQarPath(SourceFile.Substring(SourceDir.Length));
-                if(!builtFpks.Contains(FileName))
+                if (!builtFpks.Contains(FileName))
                 {
                     // unpack FPK and build FPK list
 
-                    foreach(string file in GzsLib.ListArchiveContents<FpkFile>(SourceFile))
+                    foreach (string file in GzsLib.ListArchiveContents<FpkFile>(SourceFile))
                     {
                         string fpkDir = Tools.ToWinPath(FileName.Replace(".fpk", "_fpk"));
                         metaData.ModFpkEntries.Add(new ModFpkEntry() { FilePath = file, FpkFile = FileName, ContentHash = Tools.GetMd5Hash(Path.Combine(SourceDir, fpkDir, Tools.ToWinPath(file))) });
@@ -120,8 +118,8 @@ namespace makebite
             {
                 string subDir = qarFile.Substring(0, qarFile.LastIndexOf("\\")).Substring(SourceDir.Length).TrimStart('\\'); // the subdirectory for XML output
                 string qarFilePath = Tools.ToQarPath(qarFile.Substring(SourceDir.Length));
-                if (!Directory.Exists(Path.Combine("_build",subDir))) Directory.CreateDirectory(Path.Combine("_build",subDir)); // create file structure
-                File.Copy(qarFile, Path.Combine("_build",Tools.ToWinPath(qarFilePath)), true);
+                if (!Directory.Exists(Path.Combine("_build", subDir))) Directory.CreateDirectory(Path.Combine("_build", subDir)); // create file structure
+                File.Copy(qarFile, Path.Combine("_build", Tools.ToWinPath(qarFilePath)), true);
 
                 ulong hash = Tools.NameToHash(qarFilePath);
                 metaData.ModQarEntries.Add(new ModQarEntry() { FilePath = qarFilePath, Compressed = qarFile.Substring(qarFile.LastIndexOf(".") + 1).Contains("fpk") ? true : false, ContentHash = Tools.GetMd5Hash(qarFile), Hash = hash });
