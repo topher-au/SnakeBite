@@ -16,8 +16,7 @@ namespace SnakeBite.GzsTool
         // Extract full archive
         public static List<string> ExtractArchive<T>(string FileName, string OutputPath) where T : ArchiveFile, new()
         {
-            Hashing.ReadDictionary("qar_dictionary.txt");
-            Hashing.ReadMd5Dictionary("fpk_dictionary.txt");
+            LoadDictionaries();
             using (FileStream archiveFile = new FileStream(FileName, FileMode.Open))
             {
                 List<string> outFiles = new List<string>();
@@ -81,8 +80,7 @@ namespace SnakeBite.GzsTool
         // Extract single file from archive
         public static bool ExtractFileByHash<T>(string SourceArchive, ulong FileHash, string OutputFile) where T : ArchiveFile, new()
         {
-            Hashing.ReadDictionary("qar_dictionary.txt");
-            Hashing.ReadMd5Dictionary("fpk_dictionary.txt");
+            LoadDictionaries();
             // Get file hash from path
             ulong fileHash = FileHash;
 
