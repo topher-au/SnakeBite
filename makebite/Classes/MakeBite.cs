@@ -107,6 +107,10 @@ namespace makebite
                     foreach (string file in GzsLib.ListArchiveContents<FpkFile>(SourceFile))
                     {
                         string fpkDir = Tools.ToWinPath(FileName.Replace(".fpk", "_fpk"));
+                        string fpkFullDir = Path.Combine(SourceDir, fpkDir);
+                        if (!Directory.Exists(fpkFullDir)) {
+                            GzsLib.ExtractArchive<FpkFile>(SourceFile, fpkFullDir);
+                        }
                         metaData.ModFpkEntries.Add(new ModFpkEntry() { FilePath = file, FpkFile = FileName, ContentHash = Tools.GetMd5Hash(Path.Combine(SourceDir, fpkDir, Tools.ToWinPath(file))) });
                     }
                 }
@@ -125,7 +129,7 @@ namespace makebite
                 metaData.ModQarEntries.Add(new ModQarEntry() { FilePath = qarFilePath, Compressed = qarFile.Substring(qarFile.LastIndexOf(".") + 1).Contains("fpk") ? true : false, ContentHash = Tools.GetMd5Hash(qarFile), Hash = hash });
             }
 
-            metaData.SBVersion = "500"; // 0.4.2.0
+            metaData.SBVersion = "500"; // 0.5.0.0
 
             metaData.SaveToFile("_build\\metadata.xml");
 

@@ -65,14 +65,14 @@
     <Compile Include="formMain.Designer.cs">
       <DependentUpon>formMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="GzsTool\GameFiles.cs" />
-    <Compile Include="GzsTool\GzsLib.cs" />
-    <Compile Include="GzsTool\MakeBite.cs" />
+    <Compile Include="Classes\GameFiles.cs" />
+    <Compile Include="Classes\GzsLib.cs" />
+    <Compile Include="Classes\MakeBite.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="FolderSelectDialog\Reflector.cs" />
-    <Compile Include="GzsTool\XmlSettings.cs" />
-    <Compile Include="GzsTool\Tools.cs" />
+    <Compile Include="Classes\XmlSettings.cs" />
+    <Compile Include="Classes\Tools.cs" />
     <EmbeddedResource Include="formMain.resx">
       <DependentUpon>formMain.cs</DependentUpon>
     </EmbeddedResource>
