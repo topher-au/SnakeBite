@@ -208,7 +208,7 @@ namespace SnakeBite.GzsTool
             FpkFile q = new FpkFile() { Name = FileName };
             foreach (string s in Files)
             {
-                q.Entries.Add(new FpkEntry() { FilePath = s });
+                q.Entries.Add(new FpkEntry() { FilePath = Tools.ToQarPath(s) });
             }
 
             using (FileStream outFile = new FileStream(FileName, FileMode.Create))
