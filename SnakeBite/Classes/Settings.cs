@@ -79,6 +79,7 @@ namespace SnakeBite
     [XmlType("Settings")]
     public class Settings
     {
+
         [XmlElement("GameData")]
         public GameData GameData { get; set; } = new GameData();
 
@@ -110,7 +111,7 @@ namespace SnakeBite
 
             if (!File.Exists(ModManager.GameDir + "\\sbmods.xml"))
             {
-                return false;
+                Save();
             }
 
             XmlSerializer x = new XmlSerializer(typeof(Settings));
