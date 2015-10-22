@@ -157,7 +157,8 @@ namespace SnakeBite
             // Extract FPK
             foreach (string fpk in modFpks)
             {
-                var fpkFile = GzsLib.ExtractArchive<FpkFile>(Path.Combine("_working", Tools.ToWinPath(fpk)), "_modfpk");
+                string fpkDatPath = datFiles.First(file => Tools.NameToHash(file) == Tools.NameToHash(fpk));
+                var fpkFile = GzsLib.ExtractArchive<FpkFile>(Path.Combine("_working", Tools.ToWinPath(fpkDatPath)), "_modfpk");
                 foreach (ModFpkEntry fpkEntry in mod.ModFpkEntries)
                 {
                     // Remove Mod Files
@@ -192,7 +193,7 @@ namespace SnakeBite
                         }
 
                         // Rebuild FPK
-                        GzsLib.WriteFpkArchive(Path.Combine("_working", Tools.ToWinPath(fpk)), "_gamefpk", gameFpk);
+                        GzsLib.WriteFpkArchive(Path.Combine("_working", Tools.ToWinPath(fpkDatPath)), "_gamefpk", gameFpk);
                         Directory.Delete("_gamefpk", true);
                         Directory.Delete("_modfpk", true);
                         continue; // don't check base data if it's in 00
