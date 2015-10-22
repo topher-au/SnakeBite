@@ -43,8 +43,9 @@ namespace SnakeBite
             foreach (string fpk in modFpks)
             {
                 string datFile = datFiles.FirstOrDefault(file => Tools.NameToHash(file) == Tools.NameToHash(fpk));
-                if (datFile != null && !mergeFpks.Contains(fpk))
+                if (datFile != null)
                 {
+                    if (!mergeFpks.Contains(Tools.ToQarPath(datFile))) continue;
                     mergeFpks.Add(fpk);
                 }
             }
@@ -58,14 +59,15 @@ namespace SnakeBite
             foreach (string fpk in modFpks)
             {
                 GameFile file = zeroFiles.FirstOrDefault(entry => entry.FileHash == Tools.NameToHash(fpk));
-                if (file != null && !mergeFpks.Contains(fpk))
+                if (file != null)
                 {
+                    if (!mergeFpks.Contains(Tools.ToQarPath(file.FilePath))) continue;
                     // Create destination directory
                     string destDirectory = Path.Combine("_working", Path.GetDirectoryName(Tools.ToWinPath(file.FilePath)));
                     if (!Directory.Exists(destDirectory)) Directory.CreateDirectory(destDirectory);
                     // Extract file into dat directory
-                    var ex = GzsLib.ExtractFileByHash<QarFile>(Path.Combine(GameDir, "master\\0\\00.dat"), file.FileHash, Path.Combine("_working", Tools.ToWinPath(fpk)));
-                    mergeFpks.Add(fpk);
+                    var ex = GzsLib.ExtractFileByHash<QarFile>(Path.Combine(GameDir, "master\\0\\00.dat"), file.FileHash, Path.Combine("_working", Tools.ToWinPath(file.FilePath)));
+                    mergeFpks.Add(Tools.ToQarPath(file.FilePath));
                 }
             }
 
@@ -73,14 +75,15 @@ namespace SnakeBite
             foreach (string fpk in modFpks)
             {
                 GameFile file = baseFiles.FirstOrDefault(entry => entry.FileHash == Tools.NameToHash(fpk));
-                if (file != null && !mergeFpks.Contains(fpk))
+                if (file != null)
                 {
+                    if (!mergeFpks.Contains(Tools.ToQarPath(file.FilePath))) continue;
                     // Create destination directory
                     string destDirectory = Path.Combine("_working", Path.GetDirectoryName(Tools.ToWinPath(file.FilePath)));
                     if (!Directory.Exists(destDirectory)) Directory.CreateDirectory(destDirectory);
                     // Extract file into dat directory
-                    var ex = GzsLib.ExtractFileByHash<QarFile>(Path.Combine(GameDir, "master\\" + file.QarFile), file.FileHash, Path.Combine("_working", Tools.ToWinPath(fpk)));
-                    mergeFpks.Add(fpk);
+                    var ex = GzsLib.ExtractFileByHash<QarFile>(Path.Combine(GameDir, "master\\" + file.QarFile), file.FileHash, Path.Combine("_working", Tools.ToWinPath(file.FilePath)));
+                    mergeFpks.Add(Tools.ToQarPath(file.FilePath));
                 }
             }
 
@@ -88,7 +91,8 @@ namespace SnakeBite
             foreach (string fpk in mergeFpks)
             {
                 // Extract game FPK
-                string fpkPath = Path.Combine("_working", Tools.ToWinPath(fpk));
+                string fpkDatPath = datFiles.Find(file => Tools.NameToHash(file) == Tools.NameToHash(fpk));
+                string fpkPath = Path.Combine("_working", Tools.ToWinPath(fpkDatPath));
                 var gameFpk = GzsLib.ExtractArchive<FpkFile>(fpkPath, "_gamefpk");
 
                 // Extract mod FPK
@@ -305,7 +309,7 @@ namespace SnakeBite
             {
                 foreach (ModFpkEntry fpkEntry in mod.ModFpkEntries)
                 {
-                    gameFpkEntries.RemoveAll(entry => entry.FilePath == fpkEntry.FilePath && Tools.NameToHash(entry.FpkFile) == Tools.NameToHash(fpkEntry.FpkFile));
+                    gameFpkEntries.RemoveAll(entry => Tools.ToQarPath(entry.FilePath) == Tools.ToQarPath(fpkEntry.FilePath) && Tools.NameToHash(entry.FpkFile) == Tools.NameToHash(fpkEntry.FpkFile));
                 }
                 foreach (ModQarEntry qarEntry in mod.ModQarEntries)
                 {
@@ -321,6 +325,60 @@ namespace SnakeBite
             settings.Save();
 
             CleanupFolders();
+        }
+
+        internal static void MoveGameFilesToOtherDat()
+        {
+            Settings settings = new Settings();
+            settings.Load();
+
+            //if (settings.GameData.GameQarEntries.Count == 0) return;
+
+            if (Directory.Exists("_zero")) Directory.Delete("_zero", true);
+            if (Directory.Exists("_one")) Directory.Delete("_one", true);
+
+            var zeroFiles = GzsLib.ExtractArchive<QarFile>(ModManager.GameDir + "\\master\\0\\00.dat", "_zero");
+            var oneFiles = GzsLib.ExtractArchive<QarFile>(ModManager.GameDir + "\\master\\0\\01.dat", "_one");
+
+            List<ModQarEntry> outQar = settings.GameData.GameQarEntries.ToList();
+
+            foreach(ModQarEntry q in settings.GameData.GameQarEntries)
+            {
+                var e = oneFiles.First(file => Tools.NameToHash(file) == Tools.NameToHash(q.FilePath));
+                if (e != null) {
+                    // do thing
+                    string sourceFile = Path.Combine("_one", e);
+                    string destFile = Path.Combine("_zero", e);
+                    string destDir = Path.GetDirectoryName(destFile);
+                    if (!Directory.Exists(destDir)) Directory.CreateDirectory(destDir);
+                    File.Copy(sourceFile, destFile, true);
+                    oneFiles.Remove(e);
+                    if(!zeroFiles.Contains(e)) zeroFiles.Add(e);
+                    outQar.RemoveAll(entry => Tools.ToQarPath(entry.FilePath) == Tools.ToQarPath(e));
+                }
+            }
+            settings.GameData.GameQarEntries = outQar;
+            settings.Save();
+
+            // remove duplicate entries from zerofiles
+            var zeroTwo = zeroFiles.ToList();
+            foreach (string file in zeroFiles)
+            {
+                while(zeroTwo.Count(two => two == file) > 1)
+                {
+                    zeroTwo.Remove(file);
+                }
+            }
+
+            zeroFiles = zeroTwo;
+
+
+            GzsLib.WriteQarArchive(ModManager.GameDir + "\\master\\0\\00.dat", "_zero", zeroFiles, 3150304);
+            GzsLib.WriteQarArchive(ModManager.GameDir + "\\master\\0\\01.dat", "_one", oneFiles, 3150048);
+
+            settings.Save();
+            SettingsManager.UpdateDatHash();
+
         }
 
         internal static List<string> FixModFilenames(List<string> Files, string SourceDir)

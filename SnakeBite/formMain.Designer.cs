@@ -60,6 +60,8 @@
             this.buttonFindMGSV = new System.Windows.Forms.Button();
             this.textInstallPath = new System.Windows.Forms.TextBox();
             this.buttonLaunch = new System.Windows.Forms.Button();
+            this.buttonMoveDat = new System.Windows.Forms.Button();
+            this.label1 = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabInstalledMods.SuspendLayout();
             this.groupModInfo.SuspendLayout();
@@ -231,11 +233,13 @@
             // 
             // groupTools
             // 
+            this.groupTools.Controls.Add(this.label1);
+            this.groupTools.Controls.Add(this.buttonMoveDat);
             this.groupTools.Controls.Add(this.labelRebuildCache);
             this.groupTools.Controls.Add(this.buttonBuildGameDB);
             this.groupTools.Location = new System.Drawing.Point(306, 65);
             this.groupTools.Name = "groupTools";
-            this.groupTools.Size = new System.Drawing.Size(265, 89);
+            this.groupTools.Size = new System.Drawing.Size(265, 155);
             this.groupTools.TabIndex = 5;
             this.groupTools.TabStop = false;
             this.groupTools.Text = "Tools";
@@ -401,6 +405,26 @@
             this.buttonLaunch.UseVisualStyleBackColor = true;
             this.buttonLaunch.Click += new System.EventHandler(this.buttonLaunch_Click);
             // 
+            // buttonMoveDat
+            // 
+            this.buttonMoveDat.Location = new System.Drawing.Point(6, 88);
+            this.buttonMoveDat.Name = "buttonMoveDat";
+            this.buttonMoveDat.Size = new System.Drawing.Size(80, 60);
+            this.buttonMoveDat.TabIndex = 4;
+            this.buttonMoveDat.Text = "Move Game Data";
+            this.buttonMoveDat.UseVisualStyleBackColor = true;
+            this.buttonMoveDat.Click += new System.EventHandler(this.buttonMoveDat_Click);
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(92, 88);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(167, 60);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "Moves non-SnakeBite files to 00.dat, speeding up install and uninstall times and " +
+    "reducing backup size.";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
             // formMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -468,6 +492,8 @@
         private System.Windows.Forms.Label labelBackup;
         private System.Windows.Forms.GroupBox groupTools;
         private System.Windows.Forms.Label labelRebuildCache;
+        private System.Windows.Forms.Button buttonMoveDat;
+        private System.Windows.Forms.Label label1;
     }
 }
 

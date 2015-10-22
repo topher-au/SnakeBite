@@ -462,5 +462,23 @@ namespace SnakeBite
         {
             System.Diagnostics.Process.Start(this.labelModWebsite.Text);
         }
+
+        private void buttonMoveDat_Click(object sender, EventArgs e)
+        {
+            var doIt = MessageBox.Show("This feature is not fully tested, although it may overwrite some data, it should not cause any issues.", "SnakeBite", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            if (doIt == DialogResult.Cancel) return;
+
+            showProgressWindow("Moving game data, please wait...");
+            System.ComponentModel.BackgroundWorker rebuilder = new System.ComponentModel.BackgroundWorker();
+            rebuilder.DoWork += (obj, var) => ModManager.MoveGameFilesToOtherDat();
+            rebuilder.RunWorkerAsync();
+            while (rebuilder.IsBusy)
+            {
+                Application.DoEvents();
+            }
+
+            SettingsManager.UpdateDatHash();
+            hideProgressWindow();
+        }
     }
 }
