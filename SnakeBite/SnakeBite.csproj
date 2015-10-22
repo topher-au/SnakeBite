@@ -65,6 +65,7 @@
     <Compile Include="Classes\GameFiles.cs" />
     <Compile Include="Classes\GzsLib.cs" />
     <Compile Include="Classes\Tools.cs" />
+    <Compile Include="Classes\WebManager.cs" />
     <Compile Include="formMain.cs">
       <SubType>Form</SubType>
     </Compile>

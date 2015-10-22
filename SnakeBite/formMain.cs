@@ -1,15 +1,18 @@
-﻿using ICSharpCode.SharpZipLib.Zip;
+﻿using System.Net;
+using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
+using SnakeBite;
 
 namespace SnakeBite
 {
     public partial class formMain : Form
     {
         private formProgress progWindow = new formProgress();
+        private List<WebMod> webMods = WebManager.GetOnlineMods();
 
         public formMain()
         {
@@ -49,6 +52,21 @@ namespace SnakeBite
                 Settings settings = new Settings();
                 settings.Save();
             }
+
+            // Populate web mod list
+            if(webMods.Count > 0)
+            {
+                foreach (WebMod webMod in webMods)
+                {
+                    listWebMods.Items.Add(webMod.Name);
+                }
+                listWebMods.SelectedIndex = 0;
+            } else
+            {
+                tabControl.TabPages.RemoveAt(1);
+            }
+            
+
 
             // Load settings and update installed mod list
             RefreshInstalledMods(true);
@@ -95,6 +113,8 @@ namespace SnakeBite
                         }
                 }
             }
+
+            
         }
 
         private void RefreshInstalledMods(bool resetSelection = false)
@@ -141,6 +161,9 @@ namespace SnakeBite
             if (!(MessageBox.Show(String.Format("{0} will be uninstalled.", mod.Name), "SnakeBite", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)) return;
 
             ProcessUninstallMod(mod);
+
+            // Update installed mod list
+            RefreshInstalledMods(true);
         }
 
         private void ProcessUninstallMod(ModEntry mod)
@@ -161,8 +184,6 @@ namespace SnakeBite
             SettingsManager.RemoveMod(mod);
             SettingsManager.UpdateDatHash();
 
-            // Update installed mod list
-            RefreshInstalledMods(true);
             hideProgressWindow();
         }
 
@@ -175,6 +196,10 @@ namespace SnakeBite
             if (ofdResult != DialogResult.OK) return;
 
             ProcessInstallMod(openModFile.FileName);
+
+            RefreshInstalledMods();
+
+            listInstalledMods.SelectedIndex = listInstalledMods.Items.Count - 1;
         }
 
         private void ProcessInstallMod(string ModFile, bool ignoreConflicts = false)
@@ -301,9 +326,6 @@ namespace SnakeBite
             // Install mod to game database
             SettingsManager.AddMod(metaData);
 
-            RefreshInstalledMods();
-            listInstalledMods.SelectedIndex = listInstalledMods.Items.Count - 1;
-
             hideProgressWindow();
         }
 
@@ -344,18 +366,24 @@ namespace SnakeBite
 
         private void showProgressWindow(string Text = "Processing...")
         {
-            progWindow.Owner = this;
-            progWindow.StatusText.Text = Text;
+            this.Invoke((MethodInvoker)delegate
+           {
+               progWindow.Owner = this;
+               progWindow.StatusText.Text = Text;
 
-            progWindow.ShowInTaskbar = false;
-            progWindow.Show();
-            this.Enabled = false;
+               progWindow.ShowInTaskbar = false;
+               progWindow.Show();
+               this.Enabled = false;
+           });
         }
 
         private void hideProgressWindow()
         {
-            this.Enabled = true;
-            progWindow.Hide();
+            this.Invoke((MethodInvoker)delegate
+            {
+                this.Enabled = true;
+                progWindow.Hide();
+            });
         }
 
         private void buttonBuildGameDB_Click(object sender, EventArgs e)
@@ -386,7 +414,7 @@ namespace SnakeBite
 
             hideProgressWindow();
 
-            if (sender != null) tabControl.SelectedIndex = 0;
+            if (sender == null) tabControl.SelectedIndex = 0;
         }
 
         private void DoBuildDB()
@@ -486,5 +514,66 @@ namespace SnakeBite
             SettingsManager.UpdateDatHash();
             hideProgressWindow();
         }
+
+        private void listWebMods_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            // populate details pane
+            if (listWebMods.SelectedIndex >= 0)
+            {
+                WebMod selectedWebMod = webMods[listWebMods.SelectedIndex];
+                labelWebName.Text = selectedWebMod.Name;
+                labelWebVersion.Text = selectedWebMod.Version;
+                labelWebAuthor.Text = "by " + selectedWebMod.Author;
+                labelWebAuthor.Left = labelModName.Left + labelModName.Width + 4;
+                labelWebWebsite.Text = selectedWebMod.Website;
+                textWebDescription.Text = selectedWebMod.Description;
+                string dlName = selectedWebMod.DownloadUrl.Substring(selectedWebMod.DownloadUrl.LastIndexOf("/") + 1);
+                buttonWebInstall.Text = (File.Exists(dlName)) ? "Install" : "Download";
+            }
+        }
+
+        private void textWebInstall_Click(object sender, EventArgs e)
+        {
+            string dl = webMods[listWebMods.SelectedIndex].DownloadUrl;
+            System.ComponentModel.BackgroundWorker webInstaller = new System.ComponentModel.BackgroundWorker();
+            webInstaller.DoWork += (obj, var) => DownloadAndInstallMod(dl);
+            webInstaller.RunWorkerAsync();
+        }
+
+        private void DownloadAndInstallMod(string DownloadUrl)
+        {
+            string dlName = DownloadUrl.Substring(DownloadUrl.LastIndexOf("/")+1);
+
+            // download mod
+            if(!File.Exists(dlName))
+                WebManager.DownloadModFile(DownloadUrl, dlName);
+
+            // reset to main tab
+            GoToModList();
+
+            ProcessInstallMod(dlName);
+
+            this.Invoke((MethodInvoker) delegate {
+                buttonWebInstall.Text = (File.Exists(dlName)) ? "Install" : "Download";
+                RefreshInstalledMods();
+                listInstalledMods.SelectedIndex = listInstalledMods.Items.Count - 1;
+            });
+
+
+        }
+        private void GoToModList()
+        {
+            if(tabControl.InvokeRequired)
+            {
+                tabControl.Invoke(new GoToModListDelegate(GoToModList));
+            } else
+            {
+                tabControl.SelectedIndex = 0;
+            }
+            
+        }
+
+        private delegate void GoToModListDelegate();
     }
+   
 }
