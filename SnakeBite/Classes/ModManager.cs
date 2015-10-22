@@ -290,7 +290,8 @@ namespace SnakeBite
                 // Iterate all QAR files for the mod
                 foreach (ModQarEntry modQarEntry in mod.ModQarEntries)
                 {
-                    if (!gameFiles.Contains(Tools.ToWinPath(modQarEntry.FilePath)))
+                    string file = gameFiles.FirstOrDefault(f => Tools.NameToHash(f) == Tools.NameToHash(modQarEntry.FilePath));
+                    if (file == null)
                         removeFiles.Add(Tools.NameToHash(modQarEntry.FilePath));
                 }
 
@@ -332,7 +333,7 @@ namespace SnakeBite
             Settings settings = new Settings();
             settings.Load();
 
-            //if (settings.GameData.GameQarEntries.Count == 0) return;
+            if (settings.GameData.GameQarEntries.Count == 0) return;
 
             if (Directory.Exists("_zero")) Directory.Delete("_zero", true);
             if (Directory.Exists("_one")) Directory.Delete("_one", true);
