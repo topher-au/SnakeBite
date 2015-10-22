@@ -203,6 +203,12 @@ namespace SnakeBite
                     return;
                 }
 
+                if(modSBVersion < 500)
+                {
+                    MessageBox.Show(String.Format("The selected version of {0} was created for an older version of SnakeBite and is not compatible, please download the latest version.", metaData.Name), "Mod update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+
                 // Check MGS version compatibility
                 if (MGSVersion != modMGSVersion && modMGSVersion != 0)
                 {
@@ -391,7 +397,7 @@ namespace SnakeBite
         {
             if (checkConflicts.Checked)
             {
-                MessageBox.Show("Disabling conflict checking will allow SnakeBite to overwrite existing files, potentially causing unpredictable results. It is recommended you backup 01.dat before continuing!", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Enabling this option will allow mods to overwrite existing files during installation.\nIt is recommended that you create a backup before continuing as the results may be unpredictable.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 

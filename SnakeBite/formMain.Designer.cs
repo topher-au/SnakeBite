@@ -44,6 +44,8 @@
             this.labelNoMods = new System.Windows.Forms.Label();
             this.tabSettings = new System.Windows.Forms.TabPage();
             this.groupTools = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.buttonMoveDat = new System.Windows.Forms.Button();
             this.labelRebuildCache = new System.Windows.Forms.Label();
             this.buttonBuildGameDB = new System.Windows.Forms.Button();
             this.groupBackup = new System.Windows.Forms.GroupBox();
@@ -60,8 +62,6 @@
             this.buttonFindMGSV = new System.Windows.Forms.Button();
             this.textInstallPath = new System.Windows.Forms.TextBox();
             this.buttonLaunch = new System.Windows.Forms.Button();
-            this.buttonMoveDat = new System.Windows.Forms.Button();
-            this.label1 = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabInstalledMods.SuspendLayout();
             this.groupModInfo.SuspendLayout();
@@ -167,9 +167,11 @@
             // 
             // textDescription
             // 
+            this.textDescription.BackColor = System.Drawing.SystemColors.ControlLightLight;
             this.textDescription.Location = new System.Drawing.Point(8, 61);
             this.textDescription.Multiline = true;
             this.textDescription.Name = "textDescription";
+            this.textDescription.ReadOnly = true;
             this.textDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
             this.textDescription.Size = new System.Drawing.Size(343, 288);
             this.textDescription.TabIndex = 8;
@@ -243,6 +245,26 @@
             this.groupTools.TabIndex = 5;
             this.groupTools.TabStop = false;
             this.groupTools.Text = "Tools";
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(92, 88);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(167, 60);
+            this.label1.TabIndex = 5;
+            this.label1.Text = "Moves non-SnakeBite files to 00.dat, speeding up install and uninstall times and " +
+    "reducing backup size.";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // buttonMoveDat
+            // 
+            this.buttonMoveDat.Location = new System.Drawing.Point(6, 88);
+            this.buttonMoveDat.Name = "buttonMoveDat";
+            this.buttonMoveDat.Size = new System.Drawing.Size(80, 60);
+            this.buttonMoveDat.TabIndex = 4;
+            this.buttonMoveDat.Text = "Move Game Data";
+            this.buttonMoveDat.UseVisualStyleBackColor = true;
+            this.buttonMoveDat.Click += new System.EventHandler(this.buttonMoveDat_Click);
             // 
             // labelRebuildCache
             // 
@@ -404,26 +426,6 @@
             this.buttonLaunch.Text = "Launch MGSV";
             this.buttonLaunch.UseVisualStyleBackColor = true;
             this.buttonLaunch.Click += new System.EventHandler(this.buttonLaunch_Click);
-            // 
-            // buttonMoveDat
-            // 
-            this.buttonMoveDat.Location = new System.Drawing.Point(6, 88);
-            this.buttonMoveDat.Name = "buttonMoveDat";
-            this.buttonMoveDat.Size = new System.Drawing.Size(80, 60);
-            this.buttonMoveDat.TabIndex = 4;
-            this.buttonMoveDat.Text = "Move Game Data";
-            this.buttonMoveDat.UseVisualStyleBackColor = true;
-            this.buttonMoveDat.Click += new System.EventHandler(this.buttonMoveDat_Click);
-            // 
-            // label1
-            // 
-            this.label1.Location = new System.Drawing.Point(92, 88);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(167, 60);
-            this.label1.TabIndex = 5;
-            this.label1.Text = "Moves non-SnakeBite files to 00.dat, speeding up install and uninstall times and " +
-    "reducing backup size.";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // formMain
             // 
