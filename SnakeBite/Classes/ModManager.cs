@@ -299,7 +299,7 @@ namespace SnakeBite
             {
                 foreach (ModFpkEntry fpkEntry in mod.ModFpkEntries)
                 {
-                    gameFpkEntries.RemoveAll(entry => entry.FilePath == fpkEntry.FilePath && entry.FpkFile == fpkEntry.FpkFile);
+                    gameFpkEntries.RemoveAll(entry => entry.FilePath == fpkEntry.FilePath && Tools.NameToHash(entry.FpkFile) == Tools.NameToHash(fpkEntry.FpkFile));
                 }
                 foreach (ModQarEntry qarEntry in mod.ModQarEntries)
                 {
