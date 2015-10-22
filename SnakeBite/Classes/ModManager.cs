@@ -291,10 +291,10 @@ namespace SnakeBite
                     mod.ModQarEntries.RemoveAll(entry => Tools.NameToHash(entry.FilePath) == hash);
                 }
             }
-
+            mods.RemoveAll(entry => entry.ModFpkEntries.Count == 0 && entry.ModQarEntries.Count == 0);
             Settings settings = new Settings();
             settings.Load();
-            settings.ModEntries.RemoveAll(entry => entry.ModFpkEntries.Count == 0 && entry.ModQarEntries.Count == 0);
+            settings.ModEntries = mods;
             foreach (ModEntry mod in mods)
             {
                 foreach (ModFpkEntry fpkEntry in mod.ModFpkEntries)
@@ -313,6 +313,8 @@ namespace SnakeBite
             }
             settings.GameData.GameFpkEntries = gameFpkEntries;
             settings.Save();
+
+            CleanupFolders();
         }
 
         internal static List<string> FixModFilenames(List<string> Files, string SourceDir)
