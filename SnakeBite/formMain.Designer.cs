@@ -151,6 +151,7 @@
             this.labelModWebsite.TabIndex = 9;
             this.labelModWebsite.TabStop = true;
             this.labelModWebsite.Text = "http://mod.website.com/path/to/mod.html";
+            this.labelModWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.labelModWebsite_LinkClicked);
             // 
             // buttonUninstallMod
             // 

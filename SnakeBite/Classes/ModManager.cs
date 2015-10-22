@@ -245,7 +245,20 @@ namespace SnakeBite
 
             // Extract game dat to working dir
             List<string> datFiles = GzsLib.ExtractArchive<QarFile>(DatPath, "_working");
+
+            datFiles = FixModFilenames(datFiles, "_working");
+
             List<string> gameFiles = datFiles.ToList();
+
+            // clean up duplicate entries
+            foreach(string file in datFiles)
+            {
+                while(gameFiles.Count(entry => entry == file) > 1)
+                {
+                    gameFiles.Remove(file);
+                }
+            }
+
             List<string> gameFpks = gameFiles.FindAll(entry => entry.Contains(".fpk"));
             List<ModFpkEntry> gameFpkEntries = new List<ModFpkEntry>();
             foreach (string fpk in gameFpks)
@@ -267,7 +280,7 @@ namespace SnakeBite
                 // Iterate all QAR files for the mod
                 foreach (ModQarEntry modQarEntry in mod.ModQarEntries)
                 {
-                    if (!gameFiles.Contains(modQarEntry.FilePath))
+                    if (!gameFiles.Contains(Tools.ToWinPath(modQarEntry.FilePath)))
                         removeFiles.Add(Tools.NameToHash(modQarEntry.FilePath));
                 }
 
@@ -320,7 +333,7 @@ namespace SnakeBite
                         if (File.Exists(Path.Combine(SourceDir, Tools.ToWinPath(file))))
                             File.Move(Path.Combine(SourceDir, Tools.ToWinPath(file)),
                                       Path.Combine(SourceDir, Tools.ToWinPath(qarEntry.FilePath)));
-                        outFiles[Files.IndexOf(file)] = qarEntry.FilePath;
+                        outFiles[Files.IndexOf(file)] = Tools.ToWinPath(qarEntry.FilePath);
                     }
                 }
             }

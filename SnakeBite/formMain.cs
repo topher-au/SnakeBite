@@ -457,5 +457,10 @@ namespace SnakeBite
             System.Diagnostics.Process.Start("SnakeBite.exe");
             Application.Exit();
         }
+
+        private void labelModWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            System.Diagnostics.Process.Start(this.labelModWebsite.Text);
+        }
     }
 }
