@@ -7,6 +7,16 @@ namespace SnakeBite
 {
     public static class SettingsManager
     {
+        public static bool SettingsExist()
+        {
+            return File.Exists(ModManager.GameDir + "\\sbmods.xml");
+        }
+
+        public static void DeleteSettings()
+        {
+            File.Delete(ModManager.GameDir + "\\sbmods.xml");
+        }
+
         public static void AddMod(ModEntry Mod)
         {
             Settings settings = new Settings();
@@ -47,6 +57,14 @@ namespace SnakeBite
             string datHash = Tools.GetMd5Hash(ModManager.DatPath);
             settings.GameData.DatHash = datHash;
 
+            settings.Save();
+        }
+
+        public static void ClearAllMods()
+        {
+            Settings settings = new Settings();
+            settings.Load();
+            settings.ModEntries = new List<ModEntry>();
             settings.Save();
         }
 
