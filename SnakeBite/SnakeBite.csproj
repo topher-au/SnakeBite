@@ -62,6 +62,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\BackupManager.cs" />
     <Compile Include="Classes\GameFiles.cs" />
     <Compile Include="Classes\GzsLib.cs" />
     <Compile Include="Classes\Tools.cs" />
@@ -72,7 +73,7 @@
     <Compile Include="formMain.Designer.cs">
       <DependentUpon>formMain.cs</DependentUpon>
     </Compile>
-    <Compile Include="Classes\Settings.cs" />
+    <Compile Include="Classes\SettingsManager.cs" />
     <Compile Include="formProgress.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -82,6 +83,36 @@
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Classes\ModManager.cs" />
+    <Compile Include="SetupWizard\Pages\CreateBackupPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SetupWizard\Pages\CreateBackupPage.Designer.cs">
+      <DependentUpon>CreateBackupPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SetupWizard\Pages\FindInstallPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SetupWizard\Pages\FindInstallPage.Designer.cs">
+      <DependentUpon>FindInstallPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SetupWizard\Pages\MergeDatPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SetupWizard\Pages\MergeDatPage.Designer.cs">
+      <DependentUpon>MergeDatPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SetupWizard\Pages\IntroPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="SetupWizard\Pages\IntroPage.Designer.cs">
+      <DependentUpon>IntroPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="SetupWizard\SetupWizard.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="SetupWizard\SetupWizard.Designer.cs">
+      <DependentUpon>SetupWizard.cs</DependentUpon>
+    </Compile>
     <EmbeddedResource Include="formMain.resx">
       <DependentUpon>formMain.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -92,6 +123,21 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SetupWizard\Pages\CreateBackupPage.resx">
+      <DependentUpon>CreateBackupPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SetupWizard\Pages\FindInstallPage.resx">
+      <DependentUpon>FindInstallPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SetupWizard\Pages\MergeDatPage.resx">
+      <DependentUpon>MergeDatPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SetupWizard\Pages\IntroPage.resx">
+      <DependentUpon>IntroPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="SetupWizard\SetupWizard.resx">
+      <DependentUpon>SetupWizard.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
