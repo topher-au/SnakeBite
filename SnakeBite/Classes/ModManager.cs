@@ -388,6 +388,8 @@ namespace SnakeBite
             settings.Save();
             SettingsManager.UpdateDatHash();
 
+            if (Directory.Exists("_zero")) Directory.Delete("_zero", true);
+            if (Directory.Exists("_one")) Directory.Delete("_one", true);
         }
 
         internal static List<string> FixModFilenames(List<string> Files, string SourceDir)
