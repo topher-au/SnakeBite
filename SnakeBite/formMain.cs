@@ -1,4 +1,5 @@
-﻿using System.Net;
+﻿using System.ComponentModel;
+using System.Net;
 using ICSharpCode.SharpZipLib.Zip;
 using System;
 using System.Collections.Generic;
@@ -65,14 +66,10 @@ namespace SnakeBite
             {
                 tabControl.TabPages.RemoveAt(1);
             }
-            
 
-
-            // Load settings and update installed mod list
-            RefreshInstalledMods(true);
 
             var checkDat = SettingsManager.ValidateDatHash();
-
+            RefreshInstalledMods(true);
             // Show form before continuing
             this.Show();
 
@@ -93,18 +90,33 @@ namespace SnakeBite
                 switch (args[1])
                 {
                     case "-i":
-                        {
-                            ProcessInstallMod(args[2], true); // install mod ignoring conflicts
-                            break;
+                        {   
+                            string modPath = Path.Combine(Application.StartupPath, args[2]);
+
+                            if (File.Exists(modPath))
+                            {
+                                ProcessInstallMod(modPath); // install mod ignoring conflicts
+                            } else
+                            {
+                                MessageBox.Show("File not found.", "SnakeBite", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            }
+
+                            RefreshInstalledMods(true);
+
+                            return;
                         }
 
                     case "-u":
                         {
                             var mods = SettingsManager.GetInstalledMods();
                             ModEntry mod = mods.FirstOrDefault(entry => entry.Name == args[2]); // find matching mod name
-                            if (mod == null) return;
-                            ProcessUninstallMod(mod); // uninstall mod
-                            break;
+
+                            if (mod != null)
+                                ProcessUninstallMod(mod); // uninstall mod
+
+                            RefreshInstalledMods(true);
+
+                            return;
                         }
 
                     default:
@@ -113,6 +125,8 @@ namespace SnakeBite
                         }
                 }
             }
+
+            
 
             
         }
@@ -204,12 +218,12 @@ namespace SnakeBite
 
         private void ProcessInstallMod(string ModFile, bool ignoreConflicts = false)
         {
+
             // extract metadata and load
             FastZip unzipper = new FastZip();
             unzipper.ExtractZip(ModFile, ".", "metadata.xml");
 
-            ModEntry metaData = new ModEntry();
-            metaData.ReadFromFile("metadata.xml");
+            ModEntry metaData = new ModEntry("metadata.xml");
             File.Delete("metadata.xml"); // delete temp metadata
 
             if (!checkConflicts.Checked && !ignoreConflicts)
@@ -524,29 +538,42 @@ namespace SnakeBite
                 labelWebName.Text = selectedWebMod.Name;
                 labelWebVersion.Text = selectedWebMod.Version;
                 labelWebAuthor.Text = "by " + selectedWebMod.Author;
-                labelWebAuthor.Left = labelModName.Left + labelModName.Width + 4;
+                labelWebAuthor.Left = labelWebName.Left + labelWebName.Width + 4;
                 labelWebWebsite.Text = selectedWebMod.Website;
                 textWebDescription.Text = selectedWebMod.Description;
-                string dlName = selectedWebMod.DownloadUrl.Substring(selectedWebMod.DownloadUrl.LastIndexOf("/") + 1);
+                string dlName = Path.Combine("downloaded", selectedWebMod.DownloadUrl.Substring(selectedWebMod.DownloadUrl.LastIndexOf("/") + 1));
                 buttonWebInstall.Text = (File.Exists(dlName)) ? "Install" : "Download";
+                buttonWebRemove.Visible = (File.Exists(dlName)) ? true : false;
             }
         }
 
         private void textWebInstall_Click(object sender, EventArgs e)
         {
-            string dl = webMods[listWebMods.SelectedIndex].DownloadUrl;
+            var dl = webMods[listWebMods.SelectedIndex];
             System.ComponentModel.BackgroundWorker webInstaller = new System.ComponentModel.BackgroundWorker();
             webInstaller.DoWork += (obj, var) => DownloadAndInstallMod(dl);
             webInstaller.RunWorkerAsync();
         }
 
-        private void DownloadAndInstallMod(string DownloadUrl)
+        private void DownloadAndInstallMod(WebMod mod)
         {
-            string dlName = DownloadUrl.Substring(DownloadUrl.LastIndexOf("/")+1);
-
+            string dlName = Path.Combine("downloaded", mod.DownloadUrl.Substring(mod.DownloadUrl.LastIndexOf("/") + 1));
+            
             // download mod
-            if(!File.Exists(dlName))
-                WebManager.DownloadModFile(DownloadUrl, dlName);
+            if (!File.Exists(dlName))
+            {
+                showProgressWindow(String.Format("{0} is being downloaded...", mod.Name));
+                if (!Directory.Exists("downloaded")) Directory.CreateDirectory("downloaded");
+                BackgroundWorker downloader = new BackgroundWorker();
+                downloader.DoWork += (obj,e) => WebManager.DownloadModFile(mod.DownloadUrl, dlName);
+                downloader.RunWorkerAsync();
+                while (downloader.IsBusy)
+                {
+                    Application.DoEvents();
+                }
+                hideProgressWindow();
+            }
+                
 
             // reset to main tab
             GoToModList();
@@ -555,6 +582,7 @@ namespace SnakeBite
 
             this.Invoke((MethodInvoker) delegate {
                 buttonWebInstall.Text = (File.Exists(dlName)) ? "Install" : "Download";
+                buttonWebRemove.Visible = (File.Exists(dlName)) ? true : false;
                 RefreshInstalledMods();
                 listInstalledMods.SelectedIndex = listInstalledMods.Items.Count - 1;
             });
@@ -574,6 +602,16 @@ namespace SnakeBite
         }
 
         private delegate void GoToModListDelegate();
+
+        private void buttonWebRemove_Click(object sender, EventArgs e)
+        {
+            var dl = webMods[listWebMods.SelectedIndex];
+            var file = Path.Combine("downloaded", dl.DownloadUrl.Substring(dl.DownloadUrl.LastIndexOf("/") + 1));
+
+            if (File.Exists(file)) File.Delete(file);
+            buttonWebInstall.Text = (File.Exists(file)) ? "Install" : "Download";
+            buttonWebRemove.Visible = (File.Exists(file)) ? true : false;
+        }
     }
    
 }

@@ -42,6 +42,17 @@
             this.labelModAuthor = new System.Windows.Forms.Label();
             this.labelModName = new System.Windows.Forms.Label();
             this.labelNoMods = new System.Windows.Forms.Label();
+            this.tabPageDownloadMods = new System.Windows.Forms.TabPage();
+            this.listWebMods = new System.Windows.Forms.ListBox();
+            this.groupBox1 = new System.Windows.Forms.GroupBox();
+            this.panelWebMod = new System.Windows.Forms.Panel();
+            this.labelWebWebsite = new System.Windows.Forms.LinkLabel();
+            this.buttonWebInstall = new System.Windows.Forms.Button();
+            this.textWebDescription = new System.Windows.Forms.TextBox();
+            this.labelWebVersion = new System.Windows.Forms.Label();
+            this.labelWebAuthor = new System.Windows.Forms.Label();
+            this.labelWebName = new System.Windows.Forms.Label();
+            this.label5 = new System.Windows.Forms.Label();
             this.tabSettings = new System.Windows.Forms.TabPage();
             this.groupTools = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
@@ -62,29 +73,20 @@
             this.buttonFindMGSV = new System.Windows.Forms.Button();
             this.textInstallPath = new System.Windows.Forms.TextBox();
             this.buttonLaunch = new System.Windows.Forms.Button();
-            this.tabPageDownloadMods = new System.Windows.Forms.TabPage();
-            this.listWebMods = new System.Windows.Forms.ListBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.panelWebMod = new System.Windows.Forms.Panel();
-            this.labelWebWebsite = new System.Windows.Forms.LinkLabel();
-            this.buttonWebInstall = new System.Windows.Forms.Button();
-            this.textWebDescription = new System.Windows.Forms.TextBox();
-            this.labelWebVersion = new System.Windows.Forms.Label();
-            this.labelWebAuthor = new System.Windows.Forms.Label();
-            this.labelWebName = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
+            this.labelModAd = new System.Windows.Forms.Label();
+            this.buttonWebRemove = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tabInstalledMods.SuspendLayout();
             this.groupModInfo.SuspendLayout();
             this.panelModDetails.SuspendLayout();
+            this.tabPageDownloadMods.SuspendLayout();
+            this.groupBox1.SuspendLayout();
+            this.panelWebMod.SuspendLayout();
             this.tabSettings.SuspendLayout();
             this.groupTools.SuspendLayout();
             this.groupBackup.SuspendLayout();
             this.groupAbout.SuspendLayout();
             this.groupMGSVDir.SuspendLayout();
-            this.tabPageDownloadMods.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.panelWebMod.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl
@@ -232,6 +234,126 @@
             this.labelNoMods.TabIndex = 2;
             this.labelNoMods.Text = "No mods installed";
             // 
+            // tabPageDownloadMods
+            // 
+            this.tabPageDownloadMods.Controls.Add(this.listWebMods);
+            this.tabPageDownloadMods.Controls.Add(this.groupBox1);
+            this.tabPageDownloadMods.Location = new System.Drawing.Point(4, 24);
+            this.tabPageDownloadMods.Name = "tabPageDownloadMods";
+            this.tabPageDownloadMods.Size = new System.Drawing.Size(570, 410);
+            this.tabPageDownloadMods.TabIndex = 2;
+            this.tabPageDownloadMods.Text = "Download Mods";
+            this.tabPageDownloadMods.UseVisualStyleBackColor = true;
+            // 
+            // listWebMods
+            // 
+            this.listWebMods.FormattingEnabled = true;
+            this.listWebMods.IntegralHeight = false;
+            this.listWebMods.ItemHeight = 15;
+            this.listWebMods.Location = new System.Drawing.Point(3, 12);
+            this.listWebMods.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.listWebMods.Name = "listWebMods";
+            this.listWebMods.Size = new System.Drawing.Size(187, 392);
+            this.listWebMods.TabIndex = 2;
+            this.listWebMods.SelectedIndexChanged += new System.EventHandler(this.listWebMods_SelectedIndexChanged);
+            // 
+            // groupBox1
+            // 
+            this.groupBox1.Controls.Add(this.panelWebMod);
+            this.groupBox1.Controls.Add(this.label5);
+            this.groupBox1.Location = new System.Drawing.Point(196, 4);
+            this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupBox1.Name = "groupBox1";
+            this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.groupBox1.Size = new System.Drawing.Size(367, 401);
+            this.groupBox1.TabIndex = 3;
+            this.groupBox1.TabStop = false;
+            // 
+            // panelWebMod
+            // 
+            this.panelWebMod.Controls.Add(this.buttonWebRemove);
+            this.panelWebMod.Controls.Add(this.labelModAd);
+            this.panelWebMod.Controls.Add(this.labelWebWebsite);
+            this.panelWebMod.Controls.Add(this.buttonWebInstall);
+            this.panelWebMod.Controls.Add(this.textWebDescription);
+            this.panelWebMod.Controls.Add(this.labelWebVersion);
+            this.panelWebMod.Controls.Add(this.labelWebAuthor);
+            this.panelWebMod.Controls.Add(this.labelWebName);
+            this.panelWebMod.Location = new System.Drawing.Point(6, 13);
+            this.panelWebMod.Name = "panelWebMod";
+            this.panelWebMod.Size = new System.Drawing.Size(354, 381);
+            this.panelWebMod.TabIndex = 6;
+            // 
+            // labelWebWebsite
+            // 
+            this.labelWebWebsite.AutoSize = true;
+            this.labelWebWebsite.Location = new System.Drawing.Point(5, 32);
+            this.labelWebWebsite.Name = "labelWebWebsite";
+            this.labelWebWebsite.Size = new System.Drawing.Size(240, 15);
+            this.labelWebWebsite.TabIndex = 9;
+            this.labelWebWebsite.TabStop = true;
+            this.labelWebWebsite.Text = "http://mod.website.com/path/to/mod.html";
+            // 
+            // buttonWebInstall
+            // 
+            this.buttonWebInstall.Location = new System.Drawing.Point(258, 340);
+            this.buttonWebInstall.Name = "buttonWebInstall";
+            this.buttonWebInstall.Size = new System.Drawing.Size(96, 23);
+            this.buttonWebInstall.TabIndex = 5;
+            this.buttonWebInstall.Text = "Install";
+            this.buttonWebInstall.UseVisualStyleBackColor = true;
+            this.buttonWebInstall.Click += new System.EventHandler(this.textWebInstall_Click);
+            // 
+            // textWebDescription
+            // 
+            this.textWebDescription.BackColor = System.Drawing.SystemColors.ControlLightLight;
+            this.textWebDescription.Location = new System.Drawing.Point(8, 61);
+            this.textWebDescription.Multiline = true;
+            this.textWebDescription.Name = "textWebDescription";
+            this.textWebDescription.ReadOnly = true;
+            this.textWebDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.textWebDescription.Size = new System.Drawing.Size(343, 273);
+            this.textWebDescription.TabIndex = 8;
+            // 
+            // labelWebVersion
+            // 
+            this.labelWebVersion.AutoSize = true;
+            this.labelWebVersion.Location = new System.Drawing.Point(5, 344);
+            this.labelWebVersion.Name = "labelWebVersion";
+            this.labelWebVersion.Size = new System.Drawing.Size(37, 15);
+            this.labelWebVersion.TabIndex = 7;
+            this.labelWebVersion.Text = "v1234";
+            // 
+            // labelWebAuthor
+            // 
+            this.labelWebAuthor.AutoSize = true;
+            this.labelWebAuthor.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelWebAuthor.Location = new System.Drawing.Point(154, 15);
+            this.labelWebAuthor.Name = "labelWebAuthor";
+            this.labelWebAuthor.Size = new System.Drawing.Size(59, 15);
+            this.labelWebAuthor.TabIndex = 6;
+            this.labelWebAuthor.Text = "by Author";
+            // 
+            // labelWebName
+            // 
+            this.labelWebName.AutoSize = true;
+            this.labelWebName.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelWebName.Location = new System.Drawing.Point(3, 7);
+            this.labelWebName.Name = "labelWebName";
+            this.labelWebName.Size = new System.Drawing.Size(145, 25);
+            this.labelWebName.TabIndex = 5;
+            this.labelWebName.Text = "Mod Title Here";
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label5.Location = new System.Drawing.Point(95, 178);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(192, 30);
+            this.label5.TabIndex = 2;
+            this.label5.Text = "No mods installed";
+            // 
             // tabSettings
             // 
             this.tabSettings.Controls.Add(this.groupTools);
@@ -244,7 +366,7 @@
             this.tabSettings.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabSettings.Name = "tabSettings";
             this.tabSettings.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.tabSettings.Size = new System.Drawing.Size(577, 410);
+            this.tabSettings.Size = new System.Drawing.Size(570, 410);
             this.tabSettings.TabIndex = 1;
             this.tabSettings.Text = "Settings";
             this.tabSettings.UseVisualStyleBackColor = true;
@@ -443,123 +565,26 @@
             this.buttonLaunch.UseVisualStyleBackColor = true;
             this.buttonLaunch.Click += new System.EventHandler(this.buttonLaunch_Click);
             // 
-            // tabPageDownloadMods
+            // labelModAd
             // 
-            this.tabPageDownloadMods.Controls.Add(this.listWebMods);
-            this.tabPageDownloadMods.Controls.Add(this.groupBox1);
-            this.tabPageDownloadMods.Location = new System.Drawing.Point(4, 24);
-            this.tabPageDownloadMods.Name = "tabPageDownloadMods";
-            this.tabPageDownloadMods.Size = new System.Drawing.Size(570, 410);
-            this.tabPageDownloadMods.TabIndex = 2;
-            this.tabPageDownloadMods.Text = "Download Mods";
-            this.tabPageDownloadMods.UseVisualStyleBackColor = true;
+            this.labelModAd.Enabled = false;
+            this.labelModAd.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelModAd.Location = new System.Drawing.Point(0, 366);
+            this.labelModAd.Name = "labelModAd";
+            this.labelModAd.Size = new System.Drawing.Size(354, 15);
+            this.labelModAd.TabIndex = 10;
+            this.labelModAd.Text = "Want your mod listed here? Contact me!";
+            this.labelModAd.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // listWebMods
+            // buttonWebRemove
             // 
-            this.listWebMods.FormattingEnabled = true;
-            this.listWebMods.IntegralHeight = false;
-            this.listWebMods.ItemHeight = 15;
-            this.listWebMods.Location = new System.Drawing.Point(3, 12);
-            this.listWebMods.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.listWebMods.Name = "listWebMods";
-            this.listWebMods.Size = new System.Drawing.Size(187, 392);
-            this.listWebMods.TabIndex = 2;
-            this.listWebMods.SelectedIndexChanged += new System.EventHandler(this.listWebMods_SelectedIndexChanged);
-            // 
-            // groupBox1
-            // 
-            this.groupBox1.Controls.Add(this.panelWebMod);
-            this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Location = new System.Drawing.Point(196, 4);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox1.Size = new System.Drawing.Size(367, 401);
-            this.groupBox1.TabIndex = 3;
-            this.groupBox1.TabStop = false;
-            // 
-            // panelWebMod
-            // 
-            this.panelWebMod.Controls.Add(this.labelWebWebsite);
-            this.panelWebMod.Controls.Add(this.buttonWebInstall);
-            this.panelWebMod.Controls.Add(this.textWebDescription);
-            this.panelWebMod.Controls.Add(this.labelWebVersion);
-            this.panelWebMod.Controls.Add(this.labelWebAuthor);
-            this.panelWebMod.Controls.Add(this.labelWebName);
-            this.panelWebMod.Location = new System.Drawing.Point(6, 13);
-            this.panelWebMod.Name = "panelWebMod";
-            this.panelWebMod.Size = new System.Drawing.Size(354, 381);
-            this.panelWebMod.TabIndex = 6;
-            // 
-            // labelWebWebsite
-            // 
-            this.labelWebWebsite.AutoSize = true;
-            this.labelWebWebsite.Location = new System.Drawing.Point(5, 32);
-            this.labelWebWebsite.Name = "labelWebWebsite";
-            this.labelWebWebsite.Size = new System.Drawing.Size(240, 15);
-            this.labelWebWebsite.TabIndex = 9;
-            this.labelWebWebsite.TabStop = true;
-            this.labelWebWebsite.Text = "http://mod.website.com/path/to/mod.html";
-            // 
-            // buttonWebInstall
-            // 
-            this.buttonWebInstall.Location = new System.Drawing.Point(255, 355);
-            this.buttonWebInstall.Name = "buttonWebInstall";
-            this.buttonWebInstall.Size = new System.Drawing.Size(96, 23);
-            this.buttonWebInstall.TabIndex = 5;
-            this.buttonWebInstall.Text = "Install";
-            this.buttonWebInstall.UseVisualStyleBackColor = true;
-            this.buttonWebInstall.Click += new System.EventHandler(this.textWebInstall_Click);
-            // 
-            // textWebDescription
-            // 
-            this.textWebDescription.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.textWebDescription.Location = new System.Drawing.Point(8, 61);
-            this.textWebDescription.Multiline = true;
-            this.textWebDescription.Name = "textWebDescription";
-            this.textWebDescription.ReadOnly = true;
-            this.textWebDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textWebDescription.Size = new System.Drawing.Size(343, 288);
-            this.textWebDescription.TabIndex = 8;
-            // 
-            // labelWebVersion
-            // 
-            this.labelWebVersion.AutoSize = true;
-            this.labelWebVersion.Location = new System.Drawing.Point(5, 359);
-            this.labelWebVersion.Name = "labelWebVersion";
-            this.labelWebVersion.Size = new System.Drawing.Size(37, 15);
-            this.labelWebVersion.TabIndex = 7;
-            this.labelWebVersion.Text = "v1234";
-            // 
-            // labelWebAuthor
-            // 
-            this.labelWebAuthor.AutoSize = true;
-            this.labelWebAuthor.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelWebAuthor.Location = new System.Drawing.Point(154, 15);
-            this.labelWebAuthor.Name = "labelWebAuthor";
-            this.labelWebAuthor.Size = new System.Drawing.Size(59, 15);
-            this.labelWebAuthor.TabIndex = 6;
-            this.labelWebAuthor.Text = "by Author";
-            // 
-            // labelWebName
-            // 
-            this.labelWebName.AutoSize = true;
-            this.labelWebName.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelWebName.Location = new System.Drawing.Point(3, 7);
-            this.labelWebName.Name = "labelWebName";
-            this.labelWebName.Size = new System.Drawing.Size(145, 25);
-            this.labelWebName.TabIndex = 5;
-            this.labelWebName.Text = "Mod Title Here";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(95, 178);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(192, 30);
-            this.label5.TabIndex = 2;
-            this.label5.Text = "No mods installed";
+            this.buttonWebRemove.Location = new System.Drawing.Point(190, 340);
+            this.buttonWebRemove.Name = "buttonWebRemove";
+            this.buttonWebRemove.Size = new System.Drawing.Size(62, 23);
+            this.buttonWebRemove.TabIndex = 11;
+            this.buttonWebRemove.Text = "Remove";
+            this.buttonWebRemove.UseVisualStyleBackColor = true;
+            this.buttonWebRemove.Click += new System.EventHandler(this.buttonWebRemove_Click);
             // 
             // formMain
             // 
@@ -583,6 +608,11 @@
             this.groupModInfo.PerformLayout();
             this.panelModDetails.ResumeLayout(false);
             this.panelModDetails.PerformLayout();
+            this.tabPageDownloadMods.ResumeLayout(false);
+            this.groupBox1.ResumeLayout(false);
+            this.groupBox1.PerformLayout();
+            this.panelWebMod.ResumeLayout(false);
+            this.panelWebMod.PerformLayout();
             this.tabSettings.ResumeLayout(false);
             this.tabSettings.PerformLayout();
             this.groupTools.ResumeLayout(false);
@@ -591,11 +621,6 @@
             this.groupAbout.PerformLayout();
             this.groupMGSVDir.ResumeLayout(false);
             this.groupMGSVDir.PerformLayout();
-            this.tabPageDownloadMods.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.panelWebMod.ResumeLayout(false);
-            this.panelWebMod.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -646,6 +671,8 @@
         private System.Windows.Forms.Label labelWebAuthor;
         private System.Windows.Forms.Label labelWebName;
         private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.Label labelModAd;
+        private System.Windows.Forms.Button buttonWebRemove;
     }
 }
 

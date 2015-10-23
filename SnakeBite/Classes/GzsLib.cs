@@ -24,9 +24,9 @@ namespace SnakeBite.GzsTool
                 archive.Name = Path.GetFileName(FileName);
                 archive.Read(archiveFile);
 
-                // Select single file for output
-
-                foreach (var v in archive.ExportFiles(archiveFile))
+                // Extract all files
+                var exportedFiles = archive.ExportFiles(archiveFile);
+                foreach (var v in exportedFiles)
                 {
                     string outDirectory = Path.Combine(OutputPath, Path.GetDirectoryName(v.FileName));
                     string outFileName = Path.Combine(OutputPath, v.FileName);
@@ -37,7 +37,6 @@ namespace SnakeBite.GzsTool
                         v.DataStream().CopyTo(outStream);
                         outFiles.Add(v.FileName);
                     }
-                    Application.DoEvents();
                 }
 
                 return outFiles;
