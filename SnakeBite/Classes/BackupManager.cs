@@ -59,6 +59,8 @@ namespace SnakeBite
                 // copy original files
                 File.Copy(OriginalZero, GameZero, true);
                 File.Copy(OriginalOne, GameOne, true);
+
+                SettingsManager.UpdateDatHash();
             }
         }
 
@@ -73,6 +75,8 @@ namespace SnakeBite
                 // delete mod backup
                 File.Delete(ModOne);
                 File.Delete(ModZero);
+
+                SettingsManager.UpdateDatHash();
             }
         }
 
