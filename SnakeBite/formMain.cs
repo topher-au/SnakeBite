@@ -178,15 +178,21 @@ namespace SnakeBite
             // Set installation path textbox
             textInstallPath.Text = Properties.Settings.Default.InstallPath;
 
-            if (!SettingsManager.SettingsExist() || !SettingsManager.ValidInstallPath)
+            // Show wizard on first run, if folder is invalid or settings out of date
+            if (!SettingsManager.SettingsExist() || !SettingsManager.ValidInstallPath || SettingsManager.GetSettingsVersion() < 600)
             {
                 // show setup wizard
                 SetupWizard.SetupWizard setupWizard = new SetupWizard.SetupWizard();
                 setupWizard.ShowDialog();
             }
 
-            // Populate web mod list
-            if (webMods.Count > 0)
+            if (!SettingsManager.SettingsExist() || !SettingsManager.ValidInstallPath || SettingsManager.GetSettingsVersion() < 600)
+            {
+                Application.Exit();
+            }
+
+                // Populate web mod list
+                if (webMods.Count > 0)
             {
                 foreach (WebMod webMod in webMods)
                 {
