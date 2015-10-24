@@ -120,8 +120,6 @@
   <data name="labelWelcomeText.Text" xml:space="preserve">
     <value>For the application to work correctly, we need to collect some data about your Metal Gear Solid V installation.
 
-This process will create a backup of some of the game files so you can restore them at a later date.
-
-Additionally, some of the game's data will be merged. This process may take some time but it will significantly shorten the amount of time required to install each mod.</value>
+During the process a backup will be created of some of the game files so you can restore them at a later date.</value>
   </data>
 </root>

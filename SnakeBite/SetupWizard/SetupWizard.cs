@@ -33,7 +33,7 @@ namespace SnakeBite.SetupWizard
 
         private void formSetupWizard_Closing(object sender, FormClosingEventArgs e)
         {
-            if(displayPage != 5)
+            if (displayPage != 5 && (string)Tag != "closable")
                 e.Cancel = true;
         }
 
@@ -70,19 +70,33 @@ namespace SnakeBite.SetupWizard
                         return;
                     }
 
+                    if(BackupManager.OriginalsExist())
+                    {
+                        // skip backup
+                        // move to merge dats
+                        buttonBack.Visible = false;
+                        mergeDatPage.panelProcessing.Visible = false;
+                        this.contentPanel.Controls.Clear();
+                        this.contentPanel.Controls.Add(mergeDatPage);
+                        buttonNext.Enabled = true;
+
+                        displayPage = 3;
+                    } else
+                    {
                         // show create backup page, without processing panel, enable skip
                         createBackupPage.panelProcessing.Visible = false;
                         this.contentPanel.Controls.Clear();
                         this.contentPanel.Controls.Add(createBackupPage);
                         buttonSkip.Visible = true;
-                        displayPage = 2;
-                        break;
 
+                        displayPage = 2;
+                    }
+                    break;
 
                 case 2:
                     if(BackupManager.BackupExists())
                     {
-                        var overWrite = MessageBox.Show("Backup data already exists. Continuing will overwrite any existing backups. Unless you have just updated MGSV, you should skip this step.\n\nAre you sure?", "SnakeBite", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                        var overWrite = MessageBox.Show("Some backup data already exists. Continuing will overwrite any existing backups. If the game files have been modified seperately, you should restore them or skip this step.\n\nAre you sure?", "SnakeBite", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
                         if (overWrite == DialogResult.No) return;
                     }
 
@@ -115,6 +129,7 @@ namespace SnakeBite.SetupWizard
                 case 3:
                     // merge dat files
                     buttonNext.Enabled = false;
+                    Tag = "";
                     mergeDatPage.panelProcessing.Visible = true;
 
                     // do merge processing

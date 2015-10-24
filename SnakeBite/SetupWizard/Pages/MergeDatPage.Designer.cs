@@ -54,8 +54,8 @@
             this.labelWelcomeText.Name = "labelWelcomeText";
             this.labelWelcomeText.Size = new System.Drawing.Size(429, 256);
             this.labelWelcomeText.TabIndex = 5;
-            this.labelWelcomeText.Text = "For optimum performance, SnakeBite needs to make some changes to your game files." +
-    " This may take some time.";
+            this.labelWelcomeText.Text = "SnakeBite now needs to gather some information about the installed game files, as" +
+    " well as build some configuration data. This may take some time.";
             // 
             // labelWelcome
             // 
@@ -71,9 +71,9 @@
             // 
             this.panelProcessing.Controls.Add(this.labelWorking);
             this.panelProcessing.Controls.Add(this.pictureWorkingSpiral);
-            this.panelProcessing.Location = new System.Drawing.Point(96, 160);
+            this.panelProcessing.Location = new System.Drawing.Point(102, 160);
             this.panelProcessing.Name = "panelProcessing";
-            this.panelProcessing.Size = new System.Drawing.Size(246, 43);
+            this.panelProcessing.Size = new System.Drawing.Size(237, 43);
             this.panelProcessing.TabIndex = 8;
             // 
             // labelWorking
@@ -81,9 +81,9 @@
             this.labelWorking.AutoSize = true;
             this.labelWorking.Location = new System.Drawing.Point(43, 14);
             this.labelWorking.Name = "labelWorking";
-            this.labelWorking.Size = new System.Drawing.Size(196, 15);
+            this.labelWorking.Size = new System.Drawing.Size(189, 15);
             this.labelWorking.TabIndex = 7;
-            this.labelWorking.Text = "Processing game data, please wait...";
+            this.labelWorking.Text = "Checking game data, please wait...";
             // 
             // pictureWorkingSpiral
             // 

@@ -118,6 +118,8 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="labelSelectDir.Text" xml:space="preserve">
-    <value>Press Next to create a backup and enable MOD-OFF functionality, or press Skip to continue without creating a backup. You will still be able to uninstall mods but SnakeBite will not be able to restore the original files later.</value>
+    <value>Next, some game files need to be backed up in case they are required later.
+
+If you do not create a backup file, you will not be able to use the Toggle feature or restore your game files to their default state.</value>
   </data>
 </root>
