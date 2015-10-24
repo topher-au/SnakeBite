@@ -80,10 +80,7 @@
             // 
             this.comboForVersion.FormattingEnabled = true;
             this.comboForVersion.Items.AddRange(new object[] {
-            "1000",
-            "1020",
-            "1040",
-            "1041"});
+            "1043"});
             this.comboForVersion.Location = new System.Drawing.Point(381, 56);
             this.comboForVersion.Name = "comboForVersion";
             this.comboForVersion.Size = new System.Drawing.Size(50, 23);

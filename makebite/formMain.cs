@@ -1,6 +1,8 @@
-﻿using FolderSelect;
+﻿using SnakeBite;
+using FolderSelect;
 using GzsTool.Core.Utility;
-using SnakeBite;
+using GzsTool.Core.Fpk;
+using SnakeBite.GzsTool;
 using System;
 using System.IO;
 using System.Windows.Forms;
@@ -24,14 +26,57 @@ namespace makebite
 
             string modPath = fsd.FileName;
             textModPath.Text = modPath;
-            foreach (string modFile in Directory.GetFiles(modPath, "*.*", SearchOption.AllDirectories))
+            PopulateBoxes(modPath);
+            Properties.Settings.Default.LastModDir = modPath;
+            Properties.Settings.Default.Save();
+        }
+
+        private void PopulateBoxes(string DataPath)
+        {
+            // unpack existing fpks
+            foreach (string fpkFile in Directory.GetFiles(DataPath, "*.fpk*", SearchOption.AllDirectories))
             {
-                string filePath = modFile.Substring(modPath.Length).Replace("\\", "/");
+                string fpkDir = Path.Combine(Path.GetDirectoryName(fpkFile), Path.GetFileName(fpkFile).Replace(".","_"));
+                if(!Directory.Exists(fpkDir))
+                {
+                    //extract fpk
+                    GzsLib.ExtractArchive<FpkFile>(fpkFile, fpkDir);
+                }
+            }
+
+            foreach (string modFile in Directory.GetFiles(DataPath, "*.*", SearchOption.AllDirectories))
+            {
+                string filePath = modFile.Substring(DataPath.Length).Replace("\\", "/");
                 if (Tools.IsValidFile(filePath) && filePath != "/metadata.xml") listModFiles.Items.Add(filePath);
             }
 
-            Properties.Settings.Default.LastModDir = modPath;
-            Properties.Settings.Default.Save();
+            if (File.Exists(Path.Combine(DataPath, "metadata.xml")))
+            {
+                ModEntry modMetaData = new ModEntry();
+                modMetaData.ReadFromFile(Path.Combine(DataPath, "metadata.xml"));
+
+                textModName.Text = modMetaData.Name;
+                textModVersion.Text = modMetaData.Version;
+                textModAuthor.Text = modMetaData.Author;
+                textModWebsite.Text = modMetaData.Website;
+                textModDescription.Text = modMetaData.Description.Replace("\n", "\r\n");
+                foreach (string li in comboForVersion.Items)
+                {
+                    if (modMetaData.MGSVersion == li)
+                    {
+                        comboForVersion.SelectedIndex = comboForVersion.Items.IndexOf(li);
+                        break;
+                    }
+                }
+            }
+
+            if (File.Exists(DataPath + "\\readme.txt"))
+            {
+                StreamReader s = new StreamReader(DataPath + "\\readme.txt");
+                string readme = s.ReadToEnd();
+                textModDescription.Text = readme;
+            }
+
         }
 
         private void buttonBuild_Click(object sender, EventArgs e)
@@ -111,47 +156,15 @@ namespace makebite
         private void formMain_Load(object sender, EventArgs e)
         {
             string modPath = Properties.Settings.Default.LastModDir;
+            textModPath.Text = modPath;
 
             string[] args = Environment.GetCommandLineArgs();
             if (args.Length == 2) modPath = args[1];
 
             comboForVersion.SelectedIndex = comboForVersion.Items.Count - 1;
 
-            if (Directory.Exists(modPath))
-            {
-                ModEntry modMetaData = new ModEntry();
-                if (File.Exists(modPath + "\\metadata.xml"))
-                {
-                    modMetaData.ReadFromFile(modPath + "\\metadata.xml");
-
-                    textModName.Text = modMetaData.Name;
-                    textModVersion.Text = modMetaData.Version;
-                    textModAuthor.Text = modMetaData.Author;
-                    textModWebsite.Text = modMetaData.Website;
-                    comboForVersion.Text = modMetaData.MGSVersion;
-                    textModDescription.Text = modMetaData.Description.Replace("\n", "\r\n");
-                }
-
-                if (File.Exists(modPath + "\\readme.txt"))
-                {
-                    StreamReader s = new StreamReader(modPath + "\\readme.txt");
-                    string readme = s.ReadToEnd();
-                    textModDescription.Text = readme;
-                }
-
-                textModPath.Text = modPath;
-
-                foreach (string modFile in Directory.GetFiles(modPath, "*.*", SearchOption.AllDirectories))
-                {
-                    string filePath = Tools.ToQarPath(modFile.Substring(modPath.Length));
-                    if (Tools.IsValidFile(filePath) && filePath != "/metadata.xml" && filePath != "/readme.txt") listModFiles.Items.Add(filePath);
-                }
-
-                if (args.Length == 2)
-                {
-                    DoBuild(Path.Combine(args[1], String.Format("{0}.mgsv", modMetaData.Name)));
-                    Application.Exit();
-                }
+            if (Directory.Exists(modPath)) {
+                PopulateBoxes(modPath);
             }
             else
             {

@@ -209,7 +209,6 @@
             this.labelModAuthor.Size = new System.Drawing.Size(59, 15);
             this.labelModAuthor.TabIndex = 6;
             this.labelModAuthor.Text = "by Author";
-            this.labelModAuthor.Click += new System.EventHandler(this.labelModAuthor_Click);
             // 
             // labelModName
             // 
@@ -287,7 +286,7 @@
             this.buttonWebRemove.Name = "buttonWebRemove";
             this.buttonWebRemove.Size = new System.Drawing.Size(62, 23);
             this.buttonWebRemove.TabIndex = 11;
-            this.buttonWebRemove.Text = "Remove";
+            this.buttonWebRemove.Text = "Delete";
             this.buttonWebRemove.UseVisualStyleBackColor = true;
             this.buttonWebRemove.Click += new System.EventHandler(this.buttonWebRemove_Click);
             // 
@@ -436,7 +435,7 @@
             this.buttonRestoreOriginals.Name = "buttonRestoreOriginals";
             this.buttonRestoreOriginals.Size = new System.Drawing.Size(107, 59);
             this.buttonRestoreOriginals.TabIndex = 7;
-            this.buttonRestoreOriginals.Text = "Permanently Uninstall Everything";
+            this.buttonRestoreOriginals.Text = "Permanently Restore Original Game Files";
             this.buttonRestoreOriginals.UseVisualStyleBackColor = true;
             this.buttonRestoreOriginals.Click += new System.EventHandler(this.buttonRestoreOriginals_Click);
             // 
@@ -448,7 +447,7 @@
             this.buttonSetupWizard.TabIndex = 2;
             this.buttonSetupWizard.Text = "Setup Wizard";
             this.buttonSetupWizard.UseVisualStyleBackColor = true;
-            this.buttonSetupWizard.Click += new System.EventHandler(this.button1_Click);
+            this.buttonSetupWizard.Click += new System.EventHandler(this.buttonSetup);
             // 
             // buttonToggleMods
             // 
@@ -462,12 +461,12 @@
             // 
             // labelVersion
             // 
-            this.labelVersion.AutoSize = true;
-            this.labelVersion.Location = new System.Drawing.Point(3, 391);
+            this.labelVersion.Location = new System.Drawing.Point(494, 378);
             this.labelVersion.Name = "labelVersion";
-            this.labelVersion.Size = new System.Drawing.Size(51, 15);
+            this.labelVersion.Size = new System.Drawing.Size(70, 27);
             this.labelVersion.TabIndex = 2;
             this.labelVersion.Text = "version1";
+            this.labelVersion.TextAlign = System.Drawing.ContentAlignment.BottomRight;
             // 
             // groupAbout
             // 
@@ -505,11 +504,11 @@
             // checkConflicts
             // 
             this.checkConflicts.AutoSize = true;
-            this.checkConflicts.Location = new System.Drawing.Point(413, 384);
+            this.checkConflicts.Location = new System.Drawing.Point(6, 388);
             this.checkConflicts.Name = "checkConflicts";
-            this.checkConflicts.Size = new System.Drawing.Size(158, 19);
+            this.checkConflicts.Size = new System.Drawing.Size(188, 19);
             this.checkConflicts.TabIndex = 1;
-            this.checkConflicts.Text = "Disable conflict checking";
+            this.checkConflicts.Text = "Disable compatibility warnings";
             this.checkConflicts.UseVisualStyleBackColor = true;
             this.checkConflicts.CheckedChanged += new System.EventHandler(this.checkConflicts_CheckedChanged);
             // 
