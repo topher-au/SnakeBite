@@ -33,7 +33,7 @@ namespace SnakeBite.SetupWizard
 
         private void formSetupWizard_Closing(object sender, FormClosingEventArgs e)
         {
-            if (displayPage != 5 && (string)Tag != "closable")
+            if ((string)Tag == "noclose" && !(displayPage == 5))
                 e.Cancel = true;
         }
 
@@ -129,7 +129,7 @@ namespace SnakeBite.SetupWizard
                 case 3:
                     // merge dat files
                     buttonNext.Enabled = false;
-                    Tag = "";
+                    Tag = "noclose";
                     mergeDatPage.panelProcessing.Visible = true;
 
                     // do merge processing
