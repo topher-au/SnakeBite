@@ -162,10 +162,13 @@ namespace SnakeBite
             {
                 GoToModList();
                 ProcessInstallMod(dlName);
+                RefreshInstalledMods();
+                listInstalledMods.SelectedIndex = listInstalledMods.Items.Count - 1;
             }
 
             this.Invoke((MethodInvoker)delegate
             {
+                // update buttons
                 buttonWebInstall.Text = (File.Exists(dlName)) ? "Install" : "Download";
                 buttonWebRemove.Visible = (File.Exists(dlName)) ? true : false;
             });
@@ -494,7 +497,7 @@ namespace SnakeBite
         private void RefreshInstalledMods(bool resetSelection = false)
         {
             var mods = SettingsManager.GetInstalledMods();
-
+            textInstallPath.Text = Properties.Settings.Default.InstallPath;
             listInstalledMods.Items.Clear();
 
             if (mods.Count > 0)
