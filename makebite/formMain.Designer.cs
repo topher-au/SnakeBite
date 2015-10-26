@@ -210,6 +210,7 @@
             this.groupFiles.TabIndex = 2;
             this.groupFiles.TabStop = false;
             this.groupFiles.Text = "Mod Files";
+            this.groupFiles.Enter += new System.EventHandler(this.groupFiles_Enter);
             // 
             // buttonBuild
             // 

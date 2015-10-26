@@ -1,9 +1,4 @@
 ﻿using System.IO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SnakeBite
 {
@@ -29,8 +24,8 @@ namespace SnakeBite
         public static void RestoreOriginals()
         {
             // delete existing data
-            if(File.Exists(GameOne)) File.Delete(GameOne);
-            if(File.Exists(GameZero)) File.Delete(GameZero);
+            if (File.Exists(GameOne)) File.Delete(GameOne);
+            if (File.Exists(GameZero)) File.Delete(GameZero);
 
             // delete mod data
             if (File.Exists(ModOne)) File.Delete(ModOne);
@@ -50,7 +45,7 @@ namespace SnakeBite
 
         public static void SwitchToOriginal()
         {
-            if(!File.Exists(ModZero) || !File.Exists(ModOne))
+            if (!File.Exists(ModZero) || !File.Exists(ModOne))
             {
                 // copy mod files to backup
                 File.Copy(GameZero, ModZero, true);
@@ -114,6 +109,5 @@ namespace SnakeBite
         Unknown,
         ModActive,
         DefaultActive,
-
     }
 }

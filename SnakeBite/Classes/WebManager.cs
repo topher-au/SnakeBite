@@ -1,13 +1,9 @@
-﻿using System.Threading;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using System.Xml;
 using System.Xml.Serialization;
-using System.Net;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SnakeBite
 {
@@ -26,7 +22,7 @@ namespace SnakeBite
 
                 XmlSerializer x = new XmlSerializer(typeof(List<WebMod>));
                 StringReader s = new StringReader(webModData);
-                
+
                 XmlReader r = XmlReader.Create(s);
 
                 WebMods = (List<WebMod>)x.Deserialize(r);
@@ -35,7 +31,8 @@ namespace SnakeBite
                 {
                     mod.Description = mod.Description.Replace("\n", "\r\n");
                 }
-            } catch
+            }
+            catch
             {
                 WebMods = new List<WebMod>();
             }
@@ -52,19 +49,16 @@ namespace SnakeBite
         public static void CreateSampleData()
         {
             List<WebMod> SampleData = new List<WebMod>();
-            for(int i=1;i<=1;i++)
+            for (int i = 1; i <= 1; i++)
             {
                 SampleData.Add(new WebMod() { Name = i.ToString(), Author = i.ToString(), Description = i.ToString(), DownloadUrl = i.ToString(), Version = i.ToString(), Website = i.ToString(), DownloadSize = (uint)i });
             }
             XmlSerializer x = new XmlSerializer(typeof(List<WebMod>));
-            using(FileStream fs = new FileStream("mods.xml",FileMode.Create))
+            using (FileStream fs = new FileStream("mods.xml", FileMode.Create))
             {
                 x.Serialize(fs, SampleData);
             }
-            
         }
-
-
     }
 
     [XmlType("WebMod")]
@@ -91,5 +85,4 @@ namespace SnakeBite
         [XmlElement("Description")]
         public string Description { get; set; }
     }
-
 }

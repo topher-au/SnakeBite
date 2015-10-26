@@ -1,12 +1,6 @@
-﻿using System.Threading;
+﻿using System;
 using System.ComponentModel;
-using System;
-using System.Collections.Generic;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace SnakeBite.SetupWizard
@@ -39,7 +33,7 @@ namespace SnakeBite.SetupWizard
 
         private void buttonNext_Click(object sender, EventArgs e)
         {
-            switch(displayPage)
+            switch (displayPage)
             {
                 case -1:
                     buttonBack.Visible = false;
@@ -58,19 +52,19 @@ namespace SnakeBite.SetupWizard
                     break;
 
                 case 1:
-                    if(!SettingsManager.ValidInstallPath)
+                    if (!SettingsManager.ValidInstallPath)
                     {
                         MessageBox.Show("Please select a valid installation directory.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
-                    if(!BackupManager.GameFilesExist())
+                    if (!BackupManager.GameFilesExist())
                     {
                         MessageBox.Show("Some game data appears to be missing. If you have just revalidated the game data, please wait for Steam to finish downloading the new files before continuing.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
 
-                    if(BackupManager.OriginalsExist())
+                    if (BackupManager.OriginalsExist())
                     {
                         // skip backup
                         // move to merge dats
@@ -81,7 +75,8 @@ namespace SnakeBite.SetupWizard
                         buttonNext.Enabled = true;
 
                         displayPage = 3;
-                    } else
+                    }
+                    else
                     {
                         // show create backup page, without processing panel, enable skip
                         createBackupPage.panelProcessing.Visible = false;
@@ -94,7 +89,7 @@ namespace SnakeBite.SetupWizard
                     break;
 
                 case 2:
-                    if(BackupManager.BackupExists())
+                    if (BackupManager.BackupExists())
                     {
                         var overWrite = MessageBox.Show("Some backup data already exists. Continuing will overwrite any existing backups. If the game files have been modified seperately, you should restore them or skip this step.\n\nAre you sure?", "SnakeBite", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
                         if (overWrite == DialogResult.No) return;
@@ -137,7 +132,7 @@ namespace SnakeBite.SetupWizard
                     mergeProcessor.DoWork += (obj, var) => ModManager.DoFullCleanup();
                     mergeProcessor.RunWorkerAsync();
 
-                    while(mergeProcessor.IsBusy)
+                    while (mergeProcessor.IsBusy)
                     {
                         Application.DoEvents();
                         Thread.Sleep(10);

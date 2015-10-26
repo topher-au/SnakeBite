@@ -64,20 +64,20 @@
   <ItemGroup>
     <Compile Include="Classes\BackupManager.cs" />
     <Compile Include="Classes\GameFiles.cs" />
-    <Compile Include="Classes\GzsLib.cs" />
-    <Compile Include="Classes\Tools.cs" />
+    <Compile Include="GzsLib.cs" />
+    <Compile Include="Tools.cs" />
     <Compile Include="Classes\WebManager.cs" />
-    <Compile Include="formMain.cs">
+    <Compile Include="Forms\formMain.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="formMain.Designer.cs">
+    <Compile Include="Forms\formMain.Designer.cs">
       <DependentUpon>formMain.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\SettingsManager.cs" />
-    <Compile Include="formProgress.cs">
+    <Compile Include="Forms\formProgress.cs">
       <SubType>Form</SubType>
     </Compile>
-    <Compile Include="formProgress.Designer.cs">
+    <Compile Include="Forms\formProgress.Designer.cs">
       <DependentUpon>formProgress.cs</DependentUpon>
     </Compile>
     <Compile Include="Program.cs" />
@@ -113,11 +113,11 @@
     <Compile Include="SetupWizard\SetupWizard.Designer.cs">
       <DependentUpon>SetupWizard.cs</DependentUpon>
     </Compile>
-    <EmbeddedResource Include="formMain.resx">
+    <EmbeddedResource Include="Forms\formMain.resx">
       <DependentUpon>formMain.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="formProgress.resx">
+    <EmbeddedResource Include="Forms\formProgress.resx">
       <DependentUpon>formProgress.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">

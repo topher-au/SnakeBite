@@ -183,7 +183,7 @@ namespace SnakeBite
         {
             // regenerate hash for file
             string filePath = Tools.ToQarPath(FileName);
-            ulong hash = Hashing.HashFileNameWithExtension(filePath);
+            ulong hash;
             if (!filePath.Substring(1).Contains("/"))
             {
                 // try to parse hash from filename
@@ -197,6 +197,10 @@ namespace SnakeBite
                     ulong ExtHash = Hashing.HashFileName(fileExt, false) & 0x1FFF;
                     hash = (ExtHash << 51) | hash;
                 }
+            }
+            else
+            {
+                hash = Hashing.HashFileNameWithExtension(filePath);
             }
             return hash;
         }

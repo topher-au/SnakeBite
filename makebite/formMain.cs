@@ -165,6 +165,8 @@ namespace makebite
 
             if (Directory.Exists(modPath)) {
                 PopulateBoxes(modPath);
+                DoBuild("mod.mgsv");
+                Application.Exit();
             }
             else
             {

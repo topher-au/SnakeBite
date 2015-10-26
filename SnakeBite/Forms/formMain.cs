@@ -84,18 +84,30 @@ namespace SnakeBite
 
         private void buttonToggleMods_Click(object sender, EventArgs e)
         {
+            showProgressWindow("Please wait...");
+
+            BackgroundWorker toggleWorker = new BackgroundWorker();
+
             if (BackupManager.ModsDisabled())
             {
                 // re-enable mods
-                BackupManager.SwitchToMods();
-                UpdateModToggle();
+                toggleWorker.DoWork += (obj, var) => BackupManager.SwitchToMods();
             }
             else
             {
                 // disable mods
-                BackupManager.SwitchToOriginal();
-                UpdateModToggle();
+                toggleWorker.DoWork += (obj, var) => BackupManager.SwitchToOriginal();
             }
+
+            toggleWorker.RunWorkerAsync();
+            while (toggleWorker.IsBusy)
+            {
+                Application.DoEvents();
+            }
+
+            UpdateModToggle();
+
+            hideProgressWindow();
         }
 
         private void buttonUninstallMod_Click(object sender, EventArgs e)
@@ -162,8 +174,11 @@ namespace SnakeBite
             {
                 GoToModList();
                 ProcessInstallMod(dlName);
-                RefreshInstalledMods();
-                listInstalledMods.SelectedIndex = listInstalledMods.Items.Count - 1;
+                this.Invoke((MethodInvoker)delegate
+                {
+                    RefreshInstalledMods();
+                    listInstalledMods.SelectedIndex = listInstalledMods.Items.Count - 1;
+                });
             }
 
             this.Invoke((MethodInvoker)delegate
@@ -189,13 +204,14 @@ namespace SnakeBite
                 setupWizard.ShowDialog();
             }
 
+            // force user to run setup wizard
             if (!SettingsManager.SettingsExist() || !SettingsManager.ValidInstallPath || SettingsManager.GetSettingsVersion() < 600)
             {
                 Application.Exit();
             }
 
-                // Populate web mod list
-                if (webMods.Count > 0)
+            // Populate web mod list
+            if (webMods.Count > 0)
             {
                 foreach (WebMod webMod in webMods)
                 {
@@ -208,6 +224,58 @@ namespace SnakeBite
                 tabControl.TabPages.RemoveAt(1);
             }
 
+            // Process command line arguments
+
+            string[] args = Environment.GetCommandLineArgs();
+            bool doCmdLine = false;
+            bool closeApp = false;
+            bool install = false;
+            bool ignoreConflicts = false;
+            bool resetDatHash = false;
+            string installFile = String.Empty;
+            if (args.Count() > 1)
+            {
+                foreach (string arg in args)
+                {
+                    switch (arg.ToLower())
+                    {
+                        case "-i":
+                            install = true;
+                            break;
+
+                        case "-u":
+                            install = false;
+                            break;
+
+                        case "-c":
+                            ignoreConflicts = true;
+                            break;
+
+                        case "-d":
+                            resetDatHash = true;
+                            break;
+
+                        case "-x":
+                            closeApp = true;
+                            break;
+
+                        default:
+                            if (Path.GetExtension(arg) != ".mgsv") break;
+                            if (File.Exists(arg))
+                            {
+                                installFile = arg;
+                                doCmdLine = true;
+                            }
+                            break;
+                    }
+                }
+            }
+
+            if(resetDatHash)
+            {
+                SettingsManager.UpdateDatHash();
+            }
+
             var checkDat = SettingsManager.ValidateDatHash();
             if (!checkDat)
             {
@@ -218,51 +286,14 @@ namespace SnakeBite
 
             RefreshInstalledMods(true);
 
-            // Process command line arguments
-
-            string[] args = Environment.GetCommandLineArgs();
-            bool doCmdLine = false;
-            bool closeApp = false;
-            bool install = false;
-            bool ignoreConflicts = false;
-            string installFile = String.Empty;
-            if (args.Count() > 1)
+            if (doCmdLine)
             {
-                foreach (string arg in args)
-                {
-                    switch(arg.ToLower())
-                    {
-                        case "-i":
-                            install = true;
-                            break;
-                        case "-u":
-                            install = false;
-                            break;
-                        case "-c":
-                            ignoreConflicts = true;
-                            break;
-                        case "-x":
-                            closeApp = true;
-                            break;
-                        default:
-                            if (Path.GetExtension(arg) != ".mgsv") break;
-                            if(File.Exists(arg))
-                            {
-                                installFile = arg;
-                                doCmdLine = true;
-                            }
-                            break;
-                    }
-                }
-            }
-            
-            if(doCmdLine)
-            {
-                if(install)
+                if (install)
                 {
                     // install
                     ProcessInstallMod(installFile, ignoreConflicts); // install mod
-                } else
+                }
+                else
                 {
                     // uninstall
                     var mods = SettingsManager.GetInstalledMods();
@@ -281,6 +312,7 @@ namespace SnakeBite
             // Show form before continuing
             this.Show();
         }
+
         private void GoToModList()
         {
             if (tabControl.InvokeRequired)
@@ -380,7 +412,8 @@ namespace SnakeBite
                 // Check MGS version compatibility
                 if (MGSVersion != modMGSVersion && modMGSVersion != 0)
                 {
-                    if (MGSVersion > modMGSVersion) {
+                    if (MGSVersion > modMGSVersion)
+                    {
                         var contInstall = MessageBox.Show(String.Format("{0} appears to be for an older version of MGSV. It is recommended that you at least check for an updated version before installing.\n\nContinue installation?", metaData.Name, modMGSVersion, MGSVersion), "Game version mismatch", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                         if (contInstall == DialogResult.No) return;
                     }
@@ -388,7 +421,7 @@ namespace SnakeBite
                     {
                         MessageBox.Show(String.Format("{0} requires MGSV version {1}, but your installation is version {2}. Please update MGSV and try again.", metaData.Name, modMGSVersion, MGSVersion), "Update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
-                    } 
+                    }
                 }
 
                 // search installed mods for conflicts
@@ -527,6 +560,7 @@ namespace SnakeBite
                 labelNoMods.Visible = true;
             }
         }
+
         private void showProgressWindow(string Text = "Processing...")
         {
             this.Invoke((MethodInvoker)delegate
@@ -539,6 +573,7 @@ namespace SnakeBite
                this.Enabled = false;
            });
         }
+
         private void textWebInstall_Click(object sender, EventArgs e)
         {
             var dl = webMods[listWebMods.SelectedIndex];
@@ -546,6 +581,7 @@ namespace SnakeBite
             webInstaller.DoWork += (obj, var) => DownloadAndInstallMod(dl);
             webInstaller.RunWorkerAsync();
         }
+
         private void UpdateModToggle()
         {
             bool enabled = !BackupManager.ModsDisabled();
