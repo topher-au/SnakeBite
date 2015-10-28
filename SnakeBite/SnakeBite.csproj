@@ -33,7 +33,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Resources\snake2.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\phantompain_icon_128.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
@@ -163,10 +163,16 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <Resource Include="Resources\snake2.ico" />
+    <None Include="Resources\loading-spiral.gif" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\loading-spiral.gif" />
+    <Content Include="Resources\fpk_dictionary.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\phantompain_icon_128.ico" />
+    <Content Include="Resources\qar_dictionary.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
