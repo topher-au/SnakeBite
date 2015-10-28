@@ -122,12 +122,12 @@ namespace SnakeBite.SetupWizard
                     break;
 
                 case 3:
-                    // merge dat files
+                    // do cleanup processing
                     buttonNext.Enabled = false;
+                    buttonBack.Visible = false;
                     Tag = "noclose";
                     mergeDatPage.panelProcessing.Visible = true;
 
-                    // do merge processing
                     BackgroundWorker mergeProcessor = new BackgroundWorker();
                     mergeProcessor.DoWork += (obj, var) => ModManager.DoFullCleanup();
                     mergeProcessor.RunWorkerAsync();
