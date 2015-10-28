@@ -346,7 +346,7 @@ namespace SnakeBite
 
         private void listInstalledMods_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // populate details pane
+            // Populate mod details pane
             if (listInstalledMods.SelectedIndex >= 0)
             {
                 var mods = SettingsManager.GetInstalledMods();
@@ -362,7 +362,7 @@ namespace SnakeBite
 
         private void listWebMods_SelectedIndexChanged(object sender, EventArgs e)
         {
-            // populate details pane
+            // Populate online mod details pane
             if (listWebMods.SelectedIndex >= 0)
             {
                 WebMod selectedWebMod = webMods[listWebMods.SelectedIndex];
@@ -372,9 +372,17 @@ namespace SnakeBite
                 labelWebAuthor.Left = labelWebName.Left + labelWebName.Width + 4;
                 labelWebWebsite.Text = selectedWebMod.Website;
                 textWebDescription.Text = selectedWebMod.Description;
-                string dlName = Path.Combine("downloaded", selectedWebMod.DownloadUrl.Substring(selectedWebMod.DownloadUrl.LastIndexOf("/") + 1));
-                buttonWebInstall.Text = (File.Exists(dlName)) ? "Install" : "Download";
-                buttonWebRemove.Visible = (File.Exists(dlName)) ? true : false;
+                string modUrl = selectedWebMod.DownloadUrl;
+                if(modUrl == "browse:")
+                {
+                    buttonWebInstall.Text = "Website";
+                    buttonWebRemove.Visible = false;
+                } else
+                {
+                    string dlName = Path.Combine("downloaded", selectedWebMod.DownloadUrl.Substring(selectedWebMod.DownloadUrl.LastIndexOf("/") + 1));
+                    buttonWebInstall.Text = (File.Exists(dlName)) ? "Install" : "Download";
+                    buttonWebRemove.Visible = (File.Exists(dlName)) ? true : false;
+                }
             }
         }
 
@@ -577,9 +585,15 @@ namespace SnakeBite
         private void textWebInstall_Click(object sender, EventArgs e)
         {
             var dl = webMods[listWebMods.SelectedIndex];
-            BackgroundWorker webInstaller = new System.ComponentModel.BackgroundWorker();
-            webInstaller.DoWork += (obj, var) => DownloadAndInstallMod(dl);
-            webInstaller.RunWorkerAsync();
+            if(dl.DownloadUrl == "browse:")
+            {
+                Process.Start(dl.Website);
+            } else
+            {
+                BackgroundWorker webInstaller = new System.ComponentModel.BackgroundWorker();
+                webInstaller.DoWork += (obj, var) => DownloadAndInstallMod(dl);
+                webInstaller.RunWorkerAsync();
+            }
         }
 
         private void UpdateModToggle()
