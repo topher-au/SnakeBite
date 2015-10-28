@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(formMain));
             this.groupModInfo = new System.Windows.Forms.GroupBox();
             this.comboForVersion = new System.Windows.Forms.ComboBox();
             this.labelForVersion = new System.Windows.Forms.Label();
@@ -210,7 +211,6 @@
             this.groupFiles.TabIndex = 2;
             this.groupFiles.TabStop = false;
             this.groupFiles.Text = "Mod Files";
-            this.groupFiles.Enter += new System.EventHandler(this.groupFiles_Enter);
             // 
             // buttonBuild
             // 
@@ -270,6 +270,7 @@
             this.Controls.Add(this.groupModInfo);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.Name = "formMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;

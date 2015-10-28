@@ -155,22 +155,25 @@ namespace makebite
 
         private void formMain_Load(object sender, EventArgs e)
         {
-            string modPath = Properties.Settings.Default.LastModDir;
-            textModPath.Text = modPath;
-
             string[] args = Environment.GetCommandLineArgs();
-            if (args.Length == 2) modPath = args[1];
-
+            string modPath = Properties.Settings.Default.LastModDir;
+            if (args.Length == 2) modPath = Path.GetFullPath(args[1]);
+            
+            textModPath.Text = modPath;
             comboForVersion.SelectedIndex = comboForVersion.Items.Count - 1;
 
-            if (Directory.Exists(modPath)) {
+            if (Directory.Exists(modPath)) // if loaded folder exists
+            {
                 PopulateBoxes(modPath);
-                DoBuild("mod.mgsv");
-                Application.Exit();
+                if (args.Length == 2)      // if command line was specified
+                {
+                    DoBuild("mod.mgsv");
+                    Application.Exit();    // build and exit
+                }
             }
             else
             {
-                if (args.Length == 0)
+                if (args.Length == 1)      // if folder doesnt exist reset path
                 {
                     Properties.Settings.Default.LastModDir = String.Empty;
                     Properties.Settings.Default.Save();
