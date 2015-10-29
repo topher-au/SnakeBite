@@ -7,6 +7,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnakeBite", "SnakeBite\Snak
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "makebite", "makebite\makebite.csproj", "{A85F4E49-1FCB-4FD2-8242-0FE13450FF0E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "sbupdater", "sbupdater\sbupdater.csproj", "{5472FEE1-912F-4957-92E4-91066BE6473D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -21,6 +23,10 @@ Global
 		{A85F4E49-1FCB-4FD2-8242-0FE13450FF0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A85F4E49-1FCB-4FD2-8242-0FE13450FF0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A85F4E49-1FCB-4FD2-8242-0FE13450FF0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5472FEE1-912F-4957-92E4-91066BE6473D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5472FEE1-912F-4957-92E4-91066BE6473D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5472FEE1-912F-4957-92E4-91066BE6473D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5472FEE1-912F-4957-92E4-91066BE6473D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
