@@ -55,7 +55,7 @@ namespace sbupdater
 
             if (update.Updater.Version > UpdaterVersion)
             {
-                Console.WriteLine(String.Format("Updating SBUpdater to version {0}", update.Updater.Version));
+                Console.WriteLine(String.Format("Updating SBUpdater to version {0}...", update.Updater.Version));
                 // Process updating the updater
                 DownloadAndUpdateUpdater(update.Updater.URL);
             }
@@ -66,13 +66,15 @@ namespace sbupdater
 
             if (update.SnakeBite.Version > SBVersion)
             {
-                Console.WriteLine(String.Format("Updating SnakeBite to version {0}", update.SnakeBite.Version));
+                Console.WriteLine(String.Format("Updating SnakeBite to version {0}...", update.SnakeBite.Version));
                 // Process updating SnakeBite
                 DownloadAndUpdateSnakeBite(update.SnakeBite.URL);
             } else
             {
-                Console.WriteLine("SnakeBite is up to date");
+                Console.WriteLine("SnakeBite is up to date.");
             }
+
+            Process.Start("SnakeBite.exe");
         }
 
         private static void DownloadAndUpdateUpdater(string URL)
