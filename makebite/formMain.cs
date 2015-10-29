@@ -1,7 +1,6 @@
-﻿using SnakeBite;
-using FolderSelect;
-using GzsTool.Core.Utility;
+﻿using FolderSelect;
 using GzsTool.Core.Fpk;
+using SnakeBite;
 using SnakeBite.GzsTool;
 using System;
 using System.IO;
@@ -36,8 +35,8 @@ namespace makebite
             // unpack existing fpks
             foreach (string fpkFile in Directory.GetFiles(DataPath, "*.fpk*", SearchOption.AllDirectories))
             {
-                string fpkDir = Path.Combine(Path.GetDirectoryName(fpkFile), Path.GetFileName(fpkFile).Replace(".","_"));
-                if(!Directory.Exists(fpkDir))
+                string fpkDir = Path.Combine(Path.GetDirectoryName(fpkFile), Path.GetFileName(fpkFile).Replace(".", "_"));
+                if (!Directory.Exists(fpkDir))
                 {
                     //extract fpk
                     GzsLib.ExtractArchive<FpkFile>(fpkFile, fpkDir);
@@ -76,7 +75,6 @@ namespace makebite
                 string readme = s.ReadToEnd();
                 textModDescription.Text = readme;
             }
-
         }
 
         private void buttonBuild_Click(object sender, EventArgs e)
@@ -158,7 +156,7 @@ namespace makebite
             string[] args = Environment.GetCommandLineArgs();
             string modPath = Properties.Settings.Default.LastModDir;
             if (args.Length == 2) modPath = Path.GetFullPath(args[1]);
-            
+
             textModPath.Text = modPath;
             comboForVersion.SelectedIndex = comboForVersion.Items.Count - 1;
 
