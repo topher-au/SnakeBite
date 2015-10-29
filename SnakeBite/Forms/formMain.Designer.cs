@@ -555,6 +555,7 @@
             // 
             this.labelModsDisabled.AutoSize = true;
             this.labelModsDisabled.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelModsDisabled.ForeColor = System.Drawing.Color.Red;
             this.labelModsDisabled.Location = new System.Drawing.Point(358, 9);
             this.labelModsDisabled.Name = "labelModsDisabled";
             this.labelModsDisabled.Size = new System.Drawing.Size(129, 20);
