@@ -311,6 +311,30 @@ namespace SnakeBite
 
             // Show form before continuing
             this.Show();
+
+            // Check for updates
+            UpdateFile updater = new UpdateFile();
+            bool updateSuccess = updater.ReadXmlFromInterweb("http://www.xobanimot.com/snakebite/update/update.xml");
+            if(updateSuccess)
+            {
+                if(updater.SnakeBite.Version > ModManager.GetSBVersion())
+                {
+                    var launchUpdate = MessageBox.Show(String.Format("SnakeBite v{0} is now available.\n\nWould you like to update now?", updater.SnakeBite.Version), "SnakeBite Update", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                    if(launchUpdate == DialogResult.Yes)
+                    {
+                        if(File.Exists("sbupdater.exe"))
+                        {
+                            Process.Start("sbupdater.exe", "-u");
+                            Application.Exit();
+                        } else
+                        {
+                            MessageBox.Show("SnakeBite updater appears to be missing!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+
+                    }
+                }
+            }
+
         }
 
         private void GoToModList()
@@ -606,5 +630,6 @@ namespace SnakeBite
             buttonWebInstall.Enabled = enabled;
             labelModsDisabled.Visible = !enabled;
         }
+
     }
 }

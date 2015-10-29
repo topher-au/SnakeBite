@@ -68,6 +68,7 @@
   <ItemGroup>
     <Compile Include="Classes\BackupManager.cs" />
     <Compile Include="Classes\GameFiles.cs" />
+    <Compile Include="Classes\UpdateFile.cs" />
     <Compile Include="GzsLib.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="Classes\WebManager.cs" />
