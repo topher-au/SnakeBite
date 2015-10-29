@@ -64,20 +64,6 @@ namespace SnakeBite.SetupWizard
                         return;
                     }
 
-                    if (BackupManager.OriginalsExist())
-                    {
-                        // skip backup
-                        // move to merge dats
-                        buttonBack.Visible = false;
-                        mergeDatPage.panelProcessing.Visible = false;
-                        this.contentPanel.Controls.Clear();
-                        this.contentPanel.Controls.Add(mergeDatPage);
-                        buttonNext.Enabled = true;
-
-                        displayPage = 3;
-                    }
-                    else
-                    {
                         // show create backup page, without processing panel, enable skip
                         createBackupPage.panelProcessing.Visible = false;
                         this.contentPanel.Controls.Clear();
@@ -85,13 +71,12 @@ namespace SnakeBite.SetupWizard
                         buttonSkip.Visible = true;
 
                         displayPage = 2;
-                    }
                     break;
 
                 case 2:
                     if (BackupManager.BackupExists())
                     {
-                        var overWrite = MessageBox.Show("Some backup data already exists. Continuing will overwrite any existing backups. If the game files have been modified seperately, you should restore them or skip this step.\n\nAre you sure?", "SnakeBite", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                        var overWrite = MessageBox.Show("Some backup data already exists. Continuing will overwrite any existing backups.\n\nIf you have modified the game files seperately, you should restore them or skip this step.\n\nIf MGSV has just been updated, you should overwrite.\n\nAre you sure?", "SnakeBite", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
                         if (overWrite == DialogResult.No) return;
                     }
 
