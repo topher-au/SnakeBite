@@ -89,8 +89,7 @@ namespace sbupdater
 
             // Move update file
             File.Move("sbupdater.exe", "_updater.exe");
-            //File.Move("_update/sbupdater.exe", "sbupdater.exe");
-            File.Copy("_updater.exe", "sbupdater.exe");
+            File.Move("_update/sbupdater.exe", "sbupdater.exe");
 
             // Restart updater
             Process updater = new Process();
