@@ -201,6 +201,7 @@ namespace SnakeBite
                     SettingsManager.DeleteSettings();
                     BackupManager.RestoreOriginals();
                     Application.Exit();
+                    return;
                 }
             }
 
