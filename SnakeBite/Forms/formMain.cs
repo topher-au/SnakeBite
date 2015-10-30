@@ -191,6 +191,19 @@ namespace SnakeBite
 
         private void formMain_Load(object sender, EventArgs e)
         {
+            string[] args = Environment.GetCommandLineArgs();
+
+            if(args.Length == 2)
+            {
+                // completely remove all settings and restore backups - used for uninstaller
+                if (args[1] == "-completeuninstall")
+                {
+                    SettingsManager.DeleteSettings();
+                    BackupManager.RestoreOriginals();
+                    Application.Exit();
+                }
+            }
+
             labelVersion.Text = Application.ProductVersion;
 
             // Set installation path textbox
@@ -226,12 +239,12 @@ namespace SnakeBite
 
             // Process command line arguments
 
-            string[] args = Environment.GetCommandLineArgs();
-            bool doCmdLine = false;
-            bool closeApp = false;
-            bool install = false;
-            bool ignoreConflicts = false;
-            bool resetDatHash = false;
+
+            bool doCmdLine = false;             // Process command line args?
+            bool closeApp = false;              // Close app after?
+            bool install = false;               // Install = true, uninstall = false
+            bool ignoreConflicts = false;       // Bypass conflict check
+            bool resetDatHash = false;          // Rehash dat file
             string installFile = String.Empty;
             if (args.Count() > 1)
             {
