@@ -69,6 +69,12 @@
     <Compile Include="Classes\BackupManager.cs" />
     <Compile Include="Classes\GameFiles.cs" />
     <Compile Include="Classes\UpdateFile.cs" />
+    <Compile Include="Forms\formSelectModelTarget.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\formSelectModelTarget.Designer.cs">
+      <DependentUpon>formSelectModelTarget.cs</DependentUpon>
+    </Compile>
     <Compile Include="GzsLib.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="Classes\WebManager.cs" />
@@ -124,6 +130,9 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\formProgress.resx">
       <DependentUpon>formProgress.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\formSelectModelTarget.resx">
+      <DependentUpon>formSelectModelTarget.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
