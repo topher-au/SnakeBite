@@ -165,7 +165,7 @@ namespace makebite
                 PopulateBoxes(modPath);
                 if (args.Length == 2)      // if command line was specified
                 {
-                    DoBuild("mod.mgsv");
+                    DoBuild(Path.Combine(modPath, "mod.mgsv"));
                     Application.Exit();    // build and exit
                 }
             }
