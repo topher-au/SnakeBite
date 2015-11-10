@@ -15,6 +15,8 @@ namespace SnakeBite
         {
             Debug.LogLine("[Web] Fetching online mod list");
             WebClient modListClient = new WebClient();
+            modListClient.Headers.Add("User-Agent", string.Format("SnakeBite/{0}", ModManager.GetSBVersion()));
+
             List<WebMod> WebMods;
 
             try
@@ -47,6 +49,7 @@ namespace SnakeBite
         {
             Debug.LogLine(String.Format("[Web] Downloading {0}", SourceUrl));
             WebClient modWebClient = new WebClient();
+            modWebClient.Headers.Add("User-Agent", string.Format("SnakeBite/{0}", ModManager.GetSBVersion()));
             modWebClient.DownloadFile(new Uri(SourceUrl), DestFile);
         }
 
