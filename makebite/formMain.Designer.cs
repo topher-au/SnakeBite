@@ -81,11 +81,13 @@
             // 
             this.comboForVersion.FormattingEnabled = true;
             this.comboForVersion.Items.AddRange(new object[] {
-            "1043"});
+            "",
+            "1045"});
             this.comboForVersion.Location = new System.Drawing.Point(381, 56);
             this.comboForVersion.Name = "comboForVersion";
             this.comboForVersion.Size = new System.Drawing.Size(50, 23);
             this.comboForVersion.TabIndex = 8;
+            this.comboForVersion.SelectedIndexChanged += new System.EventHandler(this.comboForVersion_SelectedIndexChanged);
             // 
             // labelForVersion
             // 
