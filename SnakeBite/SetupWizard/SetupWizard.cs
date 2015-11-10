@@ -114,7 +114,7 @@ namespace SnakeBite.SetupWizard
                     mergeDatPage.panelProcessing.Visible = true;
 
                     BackgroundWorker mergeProcessor = new BackgroundWorker();
-                    mergeProcessor.DoWork += (obj, var) => ModManager.DoFullCleanup();
+                    mergeProcessor.DoWork += (obj, var) => ModManager.CleanupDatabase();
                     mergeProcessor.RunWorkerAsync();
 
                     while (mergeProcessor.IsBusy)
