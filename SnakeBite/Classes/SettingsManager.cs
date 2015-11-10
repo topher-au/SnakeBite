@@ -7,6 +7,44 @@ namespace SnakeBite
 {
     public static class SettingsManager
     {
+        public static List<string> GetModFpkFiles()
+        {
+            Settings settings = new Settings();
+            settings.Load();
+            List<string> fpkList = new List<string>();
+            foreach(ModEntry mod in settings.ModEntries)
+            {
+                foreach(ModFpkEntry fpkFile in mod.ModFpkEntries)
+                {
+                    fpkList.Add(Tools.ToQarPath(fpkFile.FilePath));
+                }
+            }
+            return fpkList;
+        }
+
+        public static List<string> GetModQarFiles( bool HideExtension = false)
+        {
+            Settings settings = new Settings();
+            settings.Load();
+            List<string> qarList = new List<string>();
+            foreach (ModEntry mod in settings.ModEntries)
+            {
+                foreach (ModQarEntry qarFile in mod.ModQarEntries)
+                {
+                    string fileName;
+                    if(HideExtension)
+                    {
+                        fileName = Tools.ToQarPath(qarFile.FilePath.Substring(0,qarFile.FilePath.IndexOf(".")));
+                    } else
+                    {
+                        fileName = Tools.ToQarPath(qarFile.FilePath);
+                    }
+                    qarList.Add(fileName);
+                }
+            }
+            return qarList;
+        }
+
         public static bool SettingsExist()
         {
             return File.Exists(ModManager.GameDir + "\\sbmods.xml");
@@ -21,6 +59,22 @@ namespace SnakeBite
         {
             Settings settings = new Settings();
             settings.Load();
+
+            foreach (ModFpkEntry f in Mod.ModFpkEntries)
+            {
+                f.SourceType = FileSource.Mod;
+                f.FpkFile = Tools.ToQarPath(f.FpkFile);
+                f.FilePath = Tools.ToQarPath(f.FilePath);
+            }
+                
+
+            foreach (ModQarEntry q in Mod.ModQarEntries)
+            {
+                q.SourceType = FileSource.Mod;
+                q.FilePath = Tools.ToQarPath(q.FilePath);
+            }
+                
+
             settings.ModEntries.Add(Mod);
             settings.Save();
         }
@@ -46,6 +100,14 @@ namespace SnakeBite
             Settings settings = new Settings();
             settings.Load();
             return settings.GameData;
+        }
+
+        public static void SetGameData(GameData NewGameData)
+        {
+            Settings settings = new Settings();
+            settings.Load();
+            settings.GameData = NewGameData;
+            settings.Save();
         }
 
         public static int GetSettingsVersion()
@@ -127,8 +189,9 @@ namespace SnakeBite
             foreach (ModEntry mod in ModEntries)
             {
                 mod.Description = mod.Description.Replace("\r\n", "\n");
+                
             }
-            this.SbVersion = 600;
+            this.SbVersion = 700;
             x.Serialize(s, this);
             s.Close();
         }
@@ -254,6 +317,13 @@ namespace SnakeBite
         }
     }
 
+    public enum FileSource
+    {
+        System,
+        Merged,
+        Mod
+    }
+
     [XmlType("QarEntry")]
     public class ModQarEntry
     {
@@ -268,6 +338,12 @@ namespace SnakeBite
 
         [XmlAttribute("ContentHash")]
         public string ContentHash { get; set; }
+
+        [XmlAttribute("SourceType")]
+        public FileSource SourceType { get; set; }
+
+        [XmlAttribute("SourceName")]
+        public string SourceName { get; set; }
     }
 
     [XmlType("FpkEntry")]
@@ -281,5 +357,11 @@ namespace SnakeBite
 
         [XmlAttribute("ContentHash")]
         public string ContentHash { get; set; }
+
+        [XmlAttribute("SourceType")]
+        public FileSource SourceType { get; set; }
+
+        [XmlAttribute("SourceName")]
+        public string SourceName { get; set; }
     }
 }
