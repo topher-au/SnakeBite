@@ -15,6 +15,14 @@ namespace SnakeBite.GzsTool
         // Extract full archive
         public static List<string> ExtractArchive<T>(string FileName, string OutputPath) where T : ArchiveFile, new()
         {
+            Debug.LogLine(String.Format("[GzsLib] Extracting archive {0} to {1}", FileName, OutputPath));
+
+            if(!File.Exists(FileName))
+            {
+                Debug.LogLine("[GzsLib] File not found");
+                throw new FileNotFoundException();
+            }
+
             LoadDictionaries();
             using (FileStream archiveFile = new FileStream(FileName, FileMode.Open))
             {
@@ -37,7 +45,7 @@ namespace SnakeBite.GzsTool
                         outFiles.Add(v.FileName);
                     }
                 }
-
+                Debug.LogLine(String.Format("[GzsLib] Extracted {0} files", outFiles.Count));
                 return outFiles;
             }
         }
@@ -45,6 +53,13 @@ namespace SnakeBite.GzsTool
         // Extract single file from archive
         public static bool ExtractFile<T>(string SourceArchive, string FilePath, string OutputFile) where T : ArchiveFile, new()
         {
+            LoadDictionaries();
+            Debug.LogLine(String.Format("[GzsLib] Extracting file {1}: {0} -> {2}", FilePath, SourceArchive, OutputFile));
+            if (!File.Exists(SourceArchive))
+            {
+                Debug.LogLine("[GzsLib] File not found");
+                throw new FileNotFoundException();
+            }
             // Get file hash from path
             ulong fileHash = Tools.NameToHash(FilePath);
 
@@ -59,7 +74,8 @@ namespace SnakeBite.GzsTool
 
                 if (outFile != null)
                 {
-                    if (!Directory.Exists(Path.GetDirectoryName(OutputFile))) Directory.CreateDirectory(Path.GetDirectoryName(OutputFile));
+                    string path = Path.GetDirectoryName(Path.GetFullPath(OutputFile));
+                    if (!Directory.Exists(path) )Directory.CreateDirectory(path);
                     using (FileStream outStream = new FileStream(OutputFile, FileMode.Create))
                     {
                         // copy to output stream
@@ -78,6 +94,12 @@ namespace SnakeBite.GzsTool
         // Extract single file from archive
         public static bool ExtractFileByHash<T>(string SourceArchive, ulong FileHash, string OutputFile) where T : ArchiveFile, new()
         {
+            Debug.LogLine(String.Format("[GzsLib] Extracting file from {1}: hash {0} -> {2}", FileHash, SourceArchive, OutputFile));
+            if (!File.Exists(SourceArchive))
+            {
+                Debug.LogLine("[GzsLib] File not found");
+                throw new FileNotFoundException();
+            }
             LoadDictionaries();
             // Get file hash from path
             ulong fileHash = FileHash;
@@ -112,6 +134,13 @@ namespace SnakeBite.GzsTool
         // Read file hashes contained within QAR archive
         public static List<GameFile> ListArchiveHashes<T>(string ArchiveName) where T : ArchiveFile, new()
         {
+            Debug.LogLine(String.Format("[GzsLib] Reading archive contents: {0}", ArchiveName));
+            if (!File.Exists(ArchiveName))
+            {
+                Debug.LogLine("[GzsLib] File not found");
+                throw new FileNotFoundException();
+            }
+            LoadDictionaries();
             using (FileStream archiveFile = new FileStream(ArchiveName, FileMode.Open))
             {
                 List<GameFile> archiveContents = new List<GameFile>();
@@ -129,6 +158,13 @@ namespace SnakeBite.GzsTool
         // Read file hashes contained within QAR archive
         public static List<string> ListArchiveContents<T>(string ArchiveName) where T : ArchiveFile, new()
         {
+            Debug.LogLine(String.Format("[GzsLib] Reading archive contents: {0}", ArchiveName));
+            if (!File.Exists(ArchiveName))
+            {
+                Debug.LogLine("[GzsLib] File not found");
+                throw new FileNotFoundException();
+            }
+            LoadDictionaries();
             using (FileStream archiveFile = new FileStream(ArchiveName, FileMode.Open))
             {
                 List<string> archiveContents = new List<string>();
@@ -146,13 +182,26 @@ namespace SnakeBite.GzsTool
         // Load filename dictionaries
         public static void LoadDictionaries()
         {
+            if (File.Exists("mod_fpk_dict.txt")) File.Delete("mod_fpk_dict.txt");
+            if (File.Exists("mod_qar_dict.txt")) File.Delete("mod_qar_dict.txt");
+
+            var FpkNames = SettingsManager.GetModFpkFiles();
+            var QarNames = SettingsManager.GetModQarFiles(true);
+
+            File.WriteAllLines("mod_fpk_dict.txt", FpkNames);
+            File.WriteAllLines("mod_qar_dict.txt", QarNames);
+
             Hashing.ReadDictionary("qar_dictionary.txt");
+            Hashing.ReadDictionary("mod_qar_dict.txt");
+
             Hashing.ReadMd5Dictionary("fpk_dictionary.txt");
+            Hashing.ReadMd5Dictionary("mod_fpk_dict.txt");
         }
 
         // Read contents of base game files into list
         public static GameFiles ReadBaseData()
         {
+            Debug.LogLine(String.Format("[GzsLib] Acquiring base game data"));
             List<GameFile> ReadBaseData = new List<GameFile>();
             string dataDir = Path.Combine(ModManager.GameDir, "master");
             string dataDat = "data{0}.dat";
@@ -160,7 +209,7 @@ namespace SnakeBite.GzsTool
             string zeroDat = "0\\{0:X2}.dat";
 
             Dictionary<ulong, string> BaseData = new Dictionary<ulong, string>();
-
+            LoadDictionaries();
             // read data1
             var dataFiles = ListArchiveHashes<QarFile>(Path.Combine(dataDir, String.Format(dataDat, 1)));
             foreach (GameFile file in dataFiles)
@@ -203,6 +252,7 @@ namespace SnakeBite.GzsTool
         // Export FPK archive with specified parameters
         public static void WriteFpkArchive(string FileName, string SourceDirectory, List<string> Files)
         {
+            Debug.LogLine(String.Format("[GzsLib] Writing FPK archive: {0}", FileName));
             FpkFile q = new FpkFile() { Name = FileName };
             foreach (string s in Files)
             {
@@ -219,6 +269,7 @@ namespace SnakeBite.GzsTool
         // Export QAR archive with specified parameters
         public static void WriteQarArchive(string FileName, string SourceDirectory, List<string> Files, uint Flags)
         {
+            Debug.LogLine(String.Format("[GzsLib] Writing QAR archive: {0}", FileName));
             List<QarEntry> qarEntries = new List<QarEntry>();
             foreach (string s in Files)
             {
