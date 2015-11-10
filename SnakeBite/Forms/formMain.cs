@@ -211,7 +211,7 @@ namespace SnakeBite
             textInstallPath.Text = Properties.Settings.Default.InstallPath;
 
             // Show wizard on first run, if folder is invalid or settings out of date
-            if (!SettingsManager.SettingsExist() || !SettingsManager.ValidInstallPath || SettingsManager.GetSettingsVersion() < 600)
+            if (!SettingsManager.SettingsExist() || !SettingsManager.ValidInstallPath || SettingsManager.GetSettingsVersion() < 700) 
             {
                 // show setup wizard
                 SetupWizard.SetupWizard setupWizard = new SetupWizard.SetupWizard();
@@ -219,10 +219,12 @@ namespace SnakeBite
             }
 
             // force user to run setup wizard
-            if (!SettingsManager.SettingsExist() || !SettingsManager.ValidInstallPath || SettingsManager.GetSettingsVersion() < 600)
+            if (!SettingsManager.SettingsExist() || !SettingsManager.ValidInstallPath || SettingsManager.GetSettingsVersion() < 700)
             {
                 Application.Exit();
             }
+
+
 
             // Populate web mod list
             if (webMods.Count > 0)
@@ -458,7 +460,7 @@ namespace SnakeBite
                 // Check MGS version compatibility
                 if (MGSVersion != modMGSVersion && modMGSVersion != 0)
                 {
-                    if (MGSVersion > modMGSVersion)
+                    if (MGSVersion > modMGSVersion && modMGSVersion > 0)
                     {
                         var contInstall = MessageBox.Show(String.Format("{0} appears to be for an older version of MGSV. It is recommended that you at least check for an updated version before installing.\n\nContinue installation?", metaData.Name, modMGSVersion, MGSVersion), "Game version mismatch", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                         if (contInstall == DialogResult.No) return;
@@ -522,12 +524,12 @@ namespace SnakeBite
                 bool sysConflict = false;
                 // check for system file conflicts
                 var gameData = SettingsManager.GetGameData();
-                foreach (ModQarEntry gameQarFile in gameData.GameQarEntries)
+                foreach (ModQarEntry gameQarFile in gameData.GameQarEntries.FindAll(entry => entry.SourceType == FileSource.System))
                 {
                     if (metaData.ModQarEntries.Count(entry => Tools.ToQarPath(entry.FilePath) == Tools.ToQarPath(gameQarFile.FilePath)) > 0) sysConflict = true;
                 }
 
-                foreach (ModFpkEntry gameFpkFile in gameData.GameFpkEntries)
+                foreach (ModFpkEntry gameFpkFile in gameData.GameFpkEntries.FindAll(entry => entry.SourceType == FileSource.System))
                 {
                     if (metaData.ModFpkEntries.Count(entry => entry.FilePath == gameFpkFile.FilePath && entry.FpkFile == gameFpkFile.FpkFile) > 0) sysConflict = true;
                 }
@@ -644,6 +646,5 @@ namespace SnakeBite
             buttonWebInstall.Enabled = enabled;
             labelModsDisabled.Visible = !enabled;
         }
-
     }
 }
