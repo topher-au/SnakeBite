@@ -67,6 +67,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\BackupManager.cs" />
+    <Compile Include="Classes\DebugManager.cs" />
     <Compile Include="Classes\GameFiles.cs" />
     <Compile Include="Classes\UpdateFile.cs" />
     <Compile Include="Forms\formSelectModelTarget.cs">
