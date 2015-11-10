@@ -18,13 +18,14 @@ namespace SnakeBite
 
         public static void LogLine(string Text, LogLevel LogLevel = LogLevel.All)
         {
-            if (LogLevel == 0) return;
-            using (FileStream s = new FileStream(LOG_FILE, FileMode.Append))
-            {
-                Text = Text.Insert(0, LogLevel.ToString() + "> ");
+            //if (LogLevel == 0) return;
+            FileMode F = File.Exists(LOG_FILE) ? FileMode.Append : FileMode.Create;
+            using (FileStream s = new FileStream(LOG_FILE, F))
+            { 
 
                 string logString = String.Format("{0}\n", Text);
                 s.Write(Encoding.UTF8.GetBytes(logString), 0, logString.Length);
+                Console.Write(logString);
             }
         }
 
