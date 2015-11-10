@@ -7,6 +7,16 @@ namespace SnakeBite
 {
     public static class SettingsManager
     {
+        public static bool DisableConflictCheck { get
+            {
+                return Properties.Settings.Default.DisableConflictCheck;
+            }
+            set
+            {
+                Properties.Settings.Default.DisableConflictCheck = value;
+                Properties.Settings.Default.Save();
+            }
+        }
         public static List<string> GetModFpkFiles()
         {
             Settings settings = new Settings();
