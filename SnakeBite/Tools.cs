@@ -205,6 +205,16 @@ namespace SnakeBite
             return hash;
         }
 
+        internal static bool CompareNames(string File1, string File2)
+        {
+            return Tools.ToQarPath(File1) == Tools.ToQarPath(File2);
+        }
+
+        internal static bool CompareHashes(string File1, string File2)
+        {
+            return Tools.NameToHash(File1) == Tools.NameToHash(File2);
+        }
+
         internal static bool IsValidFile(string FilePath)
         {
             string ext = FilePath.Substring(FilePath.IndexOf("."));
