@@ -5,5 +5,11 @@
     <Setting Name="InstallPath" Type="System.String" Scope="User">
       <Value Profile="(Default)">C:\Program Files (x86)\Steam\SteamApps\Common\MGS_TPP</Value>
     </Setting>
+    <Setting Name="DisableConflictCheck" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="EnableSound" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
   </Settings>
 </SettingsFile>

@@ -34,5 +34,27 @@ namespace SnakeBite.Properties {
                 this["InstallPath"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public bool DisableConflictCheck {
+            get {
+                return ((bool)(this["DisableConflictCheck"]));
+            }
+            set {
+                this["DisableConflictCheck"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        public bool EnableSound {
+            get {
+                return ((bool)(this["EnableSound"]));
+            }
+            set {
+                this["EnableSound"] = value;
+            }
+        }
     }
 }

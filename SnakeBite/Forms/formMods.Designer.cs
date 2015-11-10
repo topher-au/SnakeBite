@@ -1,6 +1,6 @@
 ﻿namespace SnakeBite
 {
-    partial class formMain
+    partial class formMods
     {
         /// <summary>
         /// Required designer variable.
@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(formMain));
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabInstalledMods = new System.Windows.Forms.TabPage();
             this.buttonInstallMod = new System.Windows.Forms.Button();
@@ -55,24 +54,6 @@
             this.labelWebAuthor = new System.Windows.Forms.Label();
             this.labelWebName = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.tabSettings = new System.Windows.Forms.TabPage();
-            this.groupBackup = new System.Windows.Forms.GroupBox();
-            this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
-            this.labelSetupWizard = new System.Windows.Forms.Label();
-            this.buttonRestoreOriginals = new System.Windows.Forms.Button();
-            this.buttonSetupWizard = new System.Windows.Forms.Button();
-            this.buttonToggleMods = new System.Windows.Forms.Button();
-            this.labelVersion = new System.Windows.Forms.Label();
-            this.groupAbout = new System.Windows.Forms.GroupBox();
-            this.labelGithub = new System.Windows.Forms.LinkLabel();
-            this.labelThanks = new System.Windows.Forms.Label();
-            this.checkConflicts = new System.Windows.Forms.CheckBox();
-            this.groupMGSVDir = new System.Windows.Forms.GroupBox();
-            this.buttonFindMGSV = new System.Windows.Forms.Button();
-            this.textInstallPath = new System.Windows.Forms.TextBox();
-            this.buttonLaunch = new System.Windows.Forms.Button();
-            this.labelModsDisabled = new System.Windows.Forms.Label();
             this.tabControl.SuspendLayout();
             this.tabInstalledMods.SuspendLayout();
             this.groupModInfo.SuspendLayout();
@@ -80,23 +61,19 @@
             this.tabPageDownloadMods.SuspendLayout();
             this.groupBox1.SuspendLayout();
             this.panelWebMod.SuspendLayout();
-            this.tabSettings.SuspendLayout();
-            this.groupBackup.SuspendLayout();
-            this.groupAbout.SuspendLayout();
-            this.groupMGSVDir.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabControl
             // 
             this.tabControl.Controls.Add(this.tabInstalledMods);
             this.tabControl.Controls.Add(this.tabPageDownloadMods);
-            this.tabControl.Controls.Add(this.tabSettings);
             this.tabControl.Location = new System.Drawing.Point(14, 14);
             this.tabControl.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(578, 438);
             this.tabControl.TabIndex = 0;
+            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
             // 
             // tabInstalledMods
             // 
@@ -371,213 +348,20 @@
             this.label5.TabIndex = 2;
             this.label5.Text = "No mods installed";
             // 
-            // tabSettings
-            // 
-            this.tabSettings.Controls.Add(this.groupBackup);
-            this.tabSettings.Controls.Add(this.labelVersion);
-            this.tabSettings.Controls.Add(this.groupAbout);
-            this.tabSettings.Controls.Add(this.checkConflicts);
-            this.tabSettings.Controls.Add(this.groupMGSVDir);
-            this.tabSettings.Location = new System.Drawing.Point(4, 24);
-            this.tabSettings.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.tabSettings.Name = "tabSettings";
-            this.tabSettings.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.tabSettings.Size = new System.Drawing.Size(570, 410);
-            this.tabSettings.TabIndex = 1;
-            this.tabSettings.Text = "Settings";
-            this.tabSettings.UseVisualStyleBackColor = true;
-            // 
-            // groupBackup
-            // 
-            this.groupBackup.Controls.Add(this.label2);
-            this.groupBackup.Controls.Add(this.label1);
-            this.groupBackup.Controls.Add(this.labelSetupWizard);
-            this.groupBackup.Controls.Add(this.buttonRestoreOriginals);
-            this.groupBackup.Controls.Add(this.buttonSetupWizard);
-            this.groupBackup.Controls.Add(this.buttonToggleMods);
-            this.groupBackup.Location = new System.Drawing.Point(119, 65);
-            this.groupBackup.Name = "groupBackup";
-            this.groupBackup.Size = new System.Drawing.Size(349, 215);
-            this.groupBackup.TabIndex = 4;
-            this.groupBackup.TabStop = false;
-            // 
-            // label2
-            // 
-            this.label2.Location = new System.Drawing.Point(8, 149);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(213, 59);
-            this.label2.TabIndex = 9;
-            this.label2.Text = "Restores your backup files, permanently removing any installed mods and SnakeBite" +
-    " data";
-            this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label1
-            // 
-            this.label1.Location = new System.Drawing.Point(8, 84);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(213, 59);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "Quickly enable or disable all installed mods";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // labelSetupWizard
-            // 
-            this.labelSetupWizard.Location = new System.Drawing.Point(0, 19);
-            this.labelSetupWizard.Name = "labelSetupWizard";
-            this.labelSetupWizard.Size = new System.Drawing.Size(221, 59);
-            this.labelSetupWizard.TabIndex = 5;
-            this.labelSetupWizard.Text = "Run the Setup Wizard again to create backups and fix database errors";
-            this.labelSetupWizard.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // buttonRestoreOriginals
-            // 
-            this.buttonRestoreOriginals.Location = new System.Drawing.Point(236, 149);
-            this.buttonRestoreOriginals.Name = "buttonRestoreOriginals";
-            this.buttonRestoreOriginals.Size = new System.Drawing.Size(107, 59);
-            this.buttonRestoreOriginals.TabIndex = 7;
-            this.buttonRestoreOriginals.Text = "Permanently Restore Original Game Files";
-            this.buttonRestoreOriginals.UseVisualStyleBackColor = true;
-            this.buttonRestoreOriginals.Click += new System.EventHandler(this.buttonRestoreOriginals_Click);
-            // 
-            // buttonSetupWizard
-            // 
-            this.buttonSetupWizard.Location = new System.Drawing.Point(236, 19);
-            this.buttonSetupWizard.Name = "buttonSetupWizard";
-            this.buttonSetupWizard.Size = new System.Drawing.Size(107, 59);
-            this.buttonSetupWizard.TabIndex = 2;
-            this.buttonSetupWizard.Text = "Setup Wizard";
-            this.buttonSetupWizard.UseVisualStyleBackColor = true;
-            this.buttonSetupWizard.Click += new System.EventHandler(this.buttonSetup);
-            // 
-            // buttonToggleMods
-            // 
-            this.buttonToggleMods.Location = new System.Drawing.Point(236, 84);
-            this.buttonToggleMods.Name = "buttonToggleMods";
-            this.buttonToggleMods.Size = new System.Drawing.Size(107, 59);
-            this.buttonToggleMods.TabIndex = 6;
-            this.buttonToggleMods.Text = "Toggle Mods";
-            this.buttonToggleMods.UseVisualStyleBackColor = true;
-            this.buttonToggleMods.Click += new System.EventHandler(this.buttonToggleMods_Click);
-            // 
-            // labelVersion
-            // 
-            this.labelVersion.Location = new System.Drawing.Point(494, 378);
-            this.labelVersion.Name = "labelVersion";
-            this.labelVersion.Size = new System.Drawing.Size(70, 27);
-            this.labelVersion.TabIndex = 2;
-            this.labelVersion.Text = "version1";
-            this.labelVersion.TextAlign = System.Drawing.ContentAlignment.BottomRight;
-            // 
-            // groupAbout
-            // 
-            this.groupAbout.Controls.Add(this.labelGithub);
-            this.groupAbout.Controls.Add(this.labelThanks);
-            this.groupAbout.Location = new System.Drawing.Point(119, 281);
-            this.groupAbout.Name = "groupAbout";
-            this.groupAbout.Size = new System.Drawing.Size(349, 97);
-            this.groupAbout.TabIndex = 3;
-            this.groupAbout.TabStop = false;
-            // 
-            // labelGithub
-            // 
-            this.labelGithub.AutoSize = true;
-            this.labelGithub.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.labelGithub.Location = new System.Drawing.Point(20, 32);
-            this.labelGithub.Name = "labelGithub";
-            this.labelGithub.Size = new System.Drawing.Size(299, 15);
-            this.labelGithub.TabIndex = 1;
-            this.labelGithub.TabStop = true;
-            this.labelGithub.Text = "https://www.github.com/topher-au/SnakeBite/releases";
-            this.labelGithub.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkGithub_LinkClicked);
-            // 
-            // labelThanks
-            // 
-            this.labelThanks.AutoSize = true;
-            this.labelThanks.Location = new System.Drawing.Point(6, 15);
-            this.labelThanks.Name = "labelThanks";
-            this.labelThanks.Size = new System.Drawing.Size(325, 75);
-            this.labelThanks.TabIndex = 0;
-            this.labelThanks.Text = "The latest version of SnakeBite is available here:\r\n\r\n\r\nSpecial thanks to Atvaark" +
-    " for GzsTool and emoose and many\r\nmore for all their hard work!";
-            this.labelThanks.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // checkConflicts
-            // 
-            this.checkConflicts.AutoSize = true;
-            this.checkConflicts.Location = new System.Drawing.Point(6, 388);
-            this.checkConflicts.Name = "checkConflicts";
-            this.checkConflicts.Size = new System.Drawing.Size(188, 19);
-            this.checkConflicts.TabIndex = 1;
-            this.checkConflicts.Text = "Disable compatibility warnings";
-            this.checkConflicts.UseVisualStyleBackColor = true;
-            this.checkConflicts.CheckedChanged += new System.EventHandler(this.checkConflicts_CheckedChanged);
-            // 
-            // groupMGSVDir
-            // 
-            this.groupMGSVDir.Controls.Add(this.buttonFindMGSV);
-            this.groupMGSVDir.Controls.Add(this.textInstallPath);
-            this.groupMGSVDir.Location = new System.Drawing.Point(6, 7);
-            this.groupMGSVDir.Name = "groupMGSVDir";
-            this.groupMGSVDir.Size = new System.Drawing.Size(558, 52);
-            this.groupMGSVDir.TabIndex = 0;
-            this.groupMGSVDir.TabStop = false;
-            this.groupMGSVDir.Text = "MGSV Installation";
-            // 
-            // buttonFindMGSV
-            // 
-            this.buttonFindMGSV.Location = new System.Drawing.Point(528, 21);
-            this.buttonFindMGSV.Name = "buttonFindMGSV";
-            this.buttonFindMGSV.Size = new System.Drawing.Size(25, 25);
-            this.buttonFindMGSV.TabIndex = 2;
-            this.buttonFindMGSV.Text = "...";
-            this.buttonFindMGSV.UseVisualStyleBackColor = true;
-            this.buttonFindMGSV.Click += new System.EventHandler(this.buttonFindMGSV_Click);
-            // 
-            // textInstallPath
-            // 
-            this.textInstallPath.Location = new System.Drawing.Point(6, 22);
-            this.textInstallPath.Name = "textInstallPath";
-            this.textInstallPath.ReadOnly = true;
-            this.textInstallPath.Size = new System.Drawing.Size(516, 23);
-            this.textInstallPath.TabIndex = 1;
-            // 
-            // buttonLaunch
-            // 
-            this.buttonLaunch.Location = new System.Drawing.Point(493, 8);
-            this.buttonLaunch.Name = "buttonLaunch";
-            this.buttonLaunch.Size = new System.Drawing.Size(95, 23);
-            this.buttonLaunch.TabIndex = 3;
-            this.buttonLaunch.Text = "Launch MGSV";
-            this.buttonLaunch.UseVisualStyleBackColor = true;
-            this.buttonLaunch.Click += new System.EventHandler(this.buttonLaunch_Click);
-            // 
-            // labelModsDisabled
-            // 
-            this.labelModsDisabled.AutoSize = true;
-            this.labelModsDisabled.Font = new System.Drawing.Font("Segoe UI", 11.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelModsDisabled.ForeColor = System.Drawing.Color.Red;
-            this.labelModsDisabled.Location = new System.Drawing.Point(358, 9);
-            this.labelModsDisabled.Name = "labelModsDisabled";
-            this.labelModsDisabled.Size = new System.Drawing.Size(129, 20);
-            this.labelModsDisabled.TabIndex = 4;
-            this.labelModsDisabled.Text = "MODS DISABLED";
-            // 
-            // formMain
+            // formMods
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(605, 467);
-            this.Controls.Add(this.labelModsDisabled);
-            this.Controls.Add(this.buttonLaunch);
             this.Controls.Add(this.tabControl);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.MaximizeBox = false;
-            this.Name = "formMain";
+            this.Name = "formMods";
+            this.ShowIcon = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "SnakeBite Mod Manager";
+            this.Text = "Mod Manager";
             this.Load += new System.EventHandler(this.formMain_Load);
             this.tabControl.ResumeLayout(false);
             this.tabInstalledMods.ResumeLayout(false);
@@ -590,15 +374,7 @@
             this.groupBox1.PerformLayout();
             this.panelWebMod.ResumeLayout(false);
             this.panelWebMod.PerformLayout();
-            this.tabSettings.ResumeLayout(false);
-            this.tabSettings.PerformLayout();
-            this.groupBackup.ResumeLayout(false);
-            this.groupAbout.ResumeLayout(false);
-            this.groupAbout.PerformLayout();
-            this.groupMGSVDir.ResumeLayout(false);
-            this.groupMGSVDir.PerformLayout();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 
@@ -606,7 +382,6 @@
 
         private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.TabPage tabInstalledMods;
-        private System.Windows.Forms.TabPage tabSettings;
         private System.Windows.Forms.ListBox listInstalledMods;
         private System.Windows.Forms.GroupBox groupModInfo;
         private System.Windows.Forms.Button buttonInstallMod;
@@ -617,17 +392,7 @@
         private System.Windows.Forms.Label labelModVersion;
         private System.Windows.Forms.Label labelModAuthor;
         private System.Windows.Forms.Label labelModName;
-        private System.Windows.Forms.GroupBox groupMGSVDir;
-        private System.Windows.Forms.Button buttonFindMGSV;
-        private System.Windows.Forms.TextBox textInstallPath;
-        private System.Windows.Forms.CheckBox checkConflicts;
         private System.Windows.Forms.Label labelNoMods;
-        private System.Windows.Forms.Button buttonLaunch;
-        private System.Windows.Forms.GroupBox groupAbout;
-        private System.Windows.Forms.LinkLabel labelGithub;
-        private System.Windows.Forms.Label labelThanks;
-        private System.Windows.Forms.Label labelVersion;
-        private System.Windows.Forms.GroupBox groupBackup;
         private System.Windows.Forms.TabPage tabPageDownloadMods;
         private System.Windows.Forms.ListBox listWebMods;
         private System.Windows.Forms.GroupBox groupBox1;
@@ -641,13 +406,6 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label labelModAd;
         private System.Windows.Forms.Button buttonWebRemove;
-        private System.Windows.Forms.Button buttonSetupWizard;
-        private System.Windows.Forms.Button buttonToggleMods;
-        private System.Windows.Forms.Button buttonRestoreOriginals;
-        private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Label labelSetupWizard;
-        private System.Windows.Forms.Label labelModsDisabled;
     }
 }
 
