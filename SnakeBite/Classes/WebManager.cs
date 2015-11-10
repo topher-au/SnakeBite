@@ -13,6 +13,7 @@ namespace SnakeBite
 
         public static List<WebMod> GetOnlineMods()
         {
+            Debug.LogLine("[Web] Fetching online mod list");
             WebClient modListClient = new WebClient();
             List<WebMod> WebMods;
 
@@ -31,9 +32,11 @@ namespace SnakeBite
                 {
                     mod.Description = mod.Description.Replace("\n", "\r\n");
                 }
+                Debug.LogLine("[Web] Download successful");
             }
             catch
             {
+                Debug.LogLine("[Web] Download failed", Debug.LogLevel.Debug);
                 WebMods = new List<WebMod>();
             }
 
@@ -42,6 +45,7 @@ namespace SnakeBite
 
         public static void DownloadModFile(string SourceUrl, string DestFile)
         {
+            Debug.LogLine(String.Format("[Web] Downloading {0}", SourceUrl));
             WebClient modWebClient = new WebClient();
             modWebClient.DownloadFile(new Uri(SourceUrl), DestFile);
         }
