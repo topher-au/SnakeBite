@@ -82,17 +82,17 @@
             this.comboForVersion.FormattingEnabled = true;
             this.comboForVersion.Items.AddRange(new object[] {
             "",
-            "1045"});
-            this.comboForVersion.Location = new System.Drawing.Point(381, 56);
+            "1.0.6.0"});
+            this.comboForVersion.Location = new System.Drawing.Point(369, 56);
             this.comboForVersion.Name = "comboForVersion";
-            this.comboForVersion.Size = new System.Drawing.Size(50, 23);
+            this.comboForVersion.Size = new System.Drawing.Size(62, 23);
             this.comboForVersion.TabIndex = 8;
             this.comboForVersion.SelectedIndexChanged += new System.EventHandler(this.comboForVersion_SelectedIndexChanged);
             // 
             // labelForVersion
             // 
             this.labelForVersion.AutoSize = true;
-            this.labelForVersion.Location = new System.Drawing.Point(295, 59);
+            this.labelForVersion.Location = new System.Drawing.Point(283, 59);
             this.labelForVersion.Name = "labelForVersion";
             this.labelForVersion.Size = new System.Drawing.Size(80, 15);
             this.labelForVersion.TabIndex = 7;
@@ -129,7 +129,7 @@
             // 
             this.textModAuthor.Location = new System.Drawing.Point(99, 56);
             this.textModAuthor.Name = "textModAuthor";
-            this.textModAuthor.Size = new System.Drawing.Size(190, 23);
+            this.textModAuthor.Size = new System.Drawing.Size(178, 23);
             this.textModAuthor.TabIndex = 2;
             // 
             // textModVersion
