@@ -251,10 +251,10 @@ namespace SnakeBite
         public string DatHash { get; set; }
 
         [XmlArray("QarEntries")]
-        public List<ModQarEntry> GameQarEntries { get; set; }
+        public List<ModQarEntry> GameQarEntries { get; set; } = new List<ModQarEntry>();
 
         [XmlArray("FpkEntries")]
-        public List<ModFpkEntry> GameFpkEntries { get; set; }
+        public List<ModFpkEntry> GameFpkEntries { get; set; } = new List<ModFpkEntry>();
     }
 
     [XmlType("ModEntry")]
@@ -291,10 +291,10 @@ namespace SnakeBite
         public string Description { get; set; }
 
         [XmlArray("QarEntries")]
-        public List<ModQarEntry> ModQarEntries { get; set; }
+        public List<ModQarEntry> ModQarEntries { get; set; } = new List<ModQarEntry>();
 
         [XmlArray("FpkEntries")]
-        public List<ModFpkEntry> ModFpkEntries { get; set; }
+        public List<ModFpkEntry> ModFpkEntries { get; set; } = new List<ModFpkEntry>();
 
         public void ReadFromFile(string Filename)
         {
