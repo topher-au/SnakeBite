@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net;
 using System.Xml.Serialization;
 
@@ -71,9 +72,52 @@ public class UpdateFile
 [XmlType("UpdateData")]
 public class UpdateData
 {
+    public UpdateData()
+    {
+        Version = new SerialVersion();
+        URL = string.Empty;
+    }
     [XmlAttribute("Version")]
-    public int Version { get; set; }
+    public int OldVersion { get; set; }
 
-    [XmlAttribute("URL")]
+    [XmlElement("Version")]
+    public SerialVersion Version { get; set; }
+
+    [XmlElement("URL")]
     public string URL { get; set; }
+}
+
+[XmlType("SerialVersion")]
+public class SerialVersion
+{
+    public SerialVersion()
+    {
+        Version = "0.0.0.0";
+    }
+
+    Version version = new Version();
+
+    [XmlAttribute("Version")]
+    public string Version
+    {
+        get
+        {
+            return version.ToString();
+        }
+
+        set
+        {
+            version = new Version(value);
+        }
+    }
+
+    public Version AsVersion()
+    {
+        return version;
+    }
+
+    public string AsString()
+    {
+        return version.ToString();
+    }
 }
