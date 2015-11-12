@@ -34,10 +34,12 @@ namespace sbupdater
         {
             UpdateFile update = new UpdateFile();
 
-            update.SnakeBite.Version = 620;
+            update.SnakeBite.OldVersion = 800;
+            update.SnakeBite.Version.Version = "0.8.0.0";
             update.SnakeBite.URL = "http://www.xobanimot.com/snakebite/update/update.zip";
 
-            update.Updater.Version = 1;
+            update.Updater.OldVersion = 2;
+            update.Updater.Version.Version = "0.0.0.2";
             update.Updater.URL = "http://www.xobanimot.com/snakebite/update/updater.zip";
 
             update.WriteXml("test.xml");
@@ -52,7 +54,7 @@ namespace sbupdater
             var SBVersion = GetSBVersion();
             var UpdaterVersion = GetUpdaterVersion();
 
-            if (update.Updater.Version > UpdaterVersion)
+            if (update.Updater.Version.AsVersion() > UpdaterVersion)
             {
                 Console.WriteLine(String.Format("Updating SBUpdater to version {0}...", update.Updater.Version));
                 // Process updating the updater
@@ -63,7 +65,7 @@ namespace sbupdater
                 Console.WriteLine("SBUpdater is up to date.");
             }
 
-            if (update.SnakeBite.Version > SBVersion)
+            if (update.SnakeBite.Version.AsVersion() > SBVersion)
             {
                 Console.WriteLine(String.Format("Updating SnakeBite to version {0}...", update.SnakeBite.Version));
                 // Process updating SnakeBite
@@ -135,26 +137,24 @@ namespace sbupdater
         {
         }
 
-        private static int GetSBVersion()
+        private static Version GetSBVersion()
         {
             // get SB version or return 0
             try
             {
                 var versionInfo = FileVersionInfo.GetVersionInfo("SnakeBite.exe");
-                string version = versionInfo.ProductVersion;
-                return Convert.ToInt32(version.Replace(".", ""));
+                return new Version(versionInfo.ProductVersion);
             }
             catch
             {
-                return 0;
+                return null;
             }
         }
 
-        private static int GetUpdaterVersion()
+        private static Version GetUpdaterVersion()
         {
             // Get updater version
-            string assemblyVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            return Convert.ToInt32(assemblyVersion.Replace(".", ""));
+            return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
         }
     }
 }

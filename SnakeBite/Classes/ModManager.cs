@@ -516,19 +516,16 @@ namespace SnakeBite
             SettingsManager.SetGameData(game);
         }
 
-        internal static int GetMGSVersion()
+        internal static Version GetMGSVersion()
         {
             // Get MGSV executable version
             var versionInfo = FileVersionInfo.GetVersionInfo(Properties.Settings.Default.InstallPath + "\\mgsvtpp.exe");
-            string version = versionInfo.ProductVersion;
-            return Convert.ToInt32(version.Replace(".", ""));
+            return new Version(versionInfo.ProductVersion);
         }
 
-        internal static int GetSBVersion()
+        internal static Version GetSBVersion()
         {
-            // Get SB app version
-            string assemblyVersion = System.Reflection.Assembly.GetExecutingAssembly().GetName().Version.ToString();
-            return Convert.ToInt32(assemblyVersion.Replace(".", ""));
+            return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
         }
 
         private static void CleanupFolders()

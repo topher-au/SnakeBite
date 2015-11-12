@@ -207,11 +207,11 @@ namespace SnakeBite
             if (!SettingsManager.DisableConflictCheck && !ignoreConflicts)
             {
                 // check version conflicts
-                int SBVersion = ModManager.GetSBVersion();
-                int MGSVersion = ModManager.GetMGSVersion();
+                var SBVersion = ModManager.GetSBVersion();
+                var MGSVersion = ModManager.GetMGSVersion();
 
-                int modSBVersion = Convert.ToInt32(metaData.SBVersion);
-                int modMGSVersion = Convert.ToInt32(metaData.MGSVersion);
+                var modSBVersion = new Version(metaData.SBVersion);
+                var modMGSVersion = new Version(metaData.MGSVersion);
 
                 // Check if mod requires SB update
                 if (modSBVersion > SBVersion)
@@ -220,16 +220,16 @@ namespace SnakeBite
                     return;
                 }
 
-                if (modSBVersion < 500)
+                if (modSBVersion < new Version(0,8,0,0))
                 {
                     MessageBox.Show(String.Format("The selected version of {0} was created with an older version of SnakeBite may cause issues, please download the latest version and try again.", metaData.Name), "Mod update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 
                 // Check MGS version compatibility
-                if (MGSVersion != modMGSVersion && modMGSVersion != 0)
+                if (MGSVersion != modMGSVersion && modMGSVersion != new Version(0,0,0,0))
                 {
-                    if (MGSVersion > modMGSVersion && modMGSVersion > 0)
+                    if (MGSVersion > modMGSVersion && modMGSVersion > new Version(0,0,0,0))
                     {
                         var contInstall = MessageBox.Show(String.Format("{0} appears to be for an older version of MGSV. It is recommended that you at least check for an updated version before installing.\n\nContinue installation?", metaData.Name, modMGSVersion, MGSVersion), "Game version mismatch", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                         if (contInstall == DialogResult.No) return;

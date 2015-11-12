@@ -29,7 +29,7 @@ namespace SnakeBite
             bool updateSuccess = updater.ReadXmlFromInterweb("http://www.xobanimot.com/snakebite/update/update.xml");
             if (updateSuccess)
             {
-                if (updater.SnakeBite.Version > ModManager.GetSBVersion())
+                if (updater.SnakeBite.Version.AsVersion() > ModManager.GetSBVersion())
                 {
                     labelUpdate.Text = String.Format("SnakeBite version {0} now available!", updater.SnakeBite.Version);
                     labelUpdate.Show();

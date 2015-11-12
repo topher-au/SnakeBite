@@ -122,11 +122,11 @@ namespace SnakeBite
             settings.Save();
         }
 
-        public static int GetSettingsVersion()
+        public static Version GetSettingsVersion()
         {
             Settings settings = new Settings();
             settings.Load();
-            return settings.SbVersion;
+            return settings.SbVersion.AsVersion();
         }
 
         public static void UpdateDatHash()
@@ -178,8 +178,8 @@ namespace SnakeBite
     [XmlType("Settings")]
     public class Settings
     {
-        [XmlAttribute("SbVersion")]
-        public int SbVersion { get; set; }
+        [XmlElement("SbVersion")]
+        public SerialVersion SbVersion { get; set; }
 
         [XmlElement("GameData")]
         public GameData GameData { get; set; } = new GameData();
@@ -202,7 +202,7 @@ namespace SnakeBite
             {
                 mod.Description = mod.Description.Replace("\r\n", "\n");
             }
-            this.SbVersion = ModManager.GetSBVersion();
+            SbVersion.Version = ModManager.GetSBVersion().ToString();
             x.Serialize(s, this);
             s.Close();
         }
