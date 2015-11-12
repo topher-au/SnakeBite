@@ -108,7 +108,8 @@ namespace makebite
                     {
                         string fpkDir = Tools.ToWinPath(FileName.Replace(".fpk", "_fpk"));
                         string fpkFullDir = Path.Combine(SourceDir, fpkDir);
-                        if (!Directory.Exists(fpkFullDir)) {
+                        if (!Directory.Exists(fpkFullDir))
+                        {
                             GzsLib.ExtractArchive<FpkFile>(SourceFile, fpkFullDir);
                         }
                         metaData.ModFpkEntries.Add(new ModFpkEntry() { FilePath = file, FpkFile = FileName, ContentHash = Tools.GetMd5Hash(Path.Combine(SourceDir, fpkDir, Tools.ToWinPath(file))) });

@@ -181,7 +181,6 @@ namespace makebite
 
         private void comboForVersion_SelectedIndexChanged(object sender, EventArgs e)
         {
-
         }
     }
 }
