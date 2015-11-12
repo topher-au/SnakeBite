@@ -1,6 +1,5 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -17,7 +16,7 @@ namespace sbupdater
             // Remove existing update files
             if (File.Exists("update.dat")) File.Delete("update.dat");
             if (Directory.Exists("_update")) Directory.Delete("_update", true);
-            if (File.Exists("_updater.exe")) File.Delete("_updater.exe");  
+            if (File.Exists("_updater.exe")) File.Delete("_updater.exe");
 
             switch (args[0])
             {
@@ -69,7 +68,8 @@ namespace sbupdater
                 Console.WriteLine(String.Format("Updating SnakeBite to version {0}...", update.SnakeBite.Version));
                 // Process updating SnakeBite
                 DownloadAndUpdateSnakeBite(update.SnakeBite.URL);
-            } else
+            }
+            else
             {
                 Console.WriteLine("SnakeBite is up to date.");
             }
@@ -79,7 +79,6 @@ namespace sbupdater
 
         private static void DownloadAndUpdateUpdater(string URL)
         {
-
             // Download update archive
             using (WebClient w = new WebClient()) w.DownloadFile(URL, "update.dat");
 
@@ -134,7 +133,6 @@ namespace sbupdater
 
         private static void GetUpdateContents()
         {
-
         }
 
         private static int GetSBVersion()
@@ -145,11 +143,11 @@ namespace sbupdater
                 var versionInfo = FileVersionInfo.GetVersionInfo("SnakeBite.exe");
                 string version = versionInfo.ProductVersion;
                 return Convert.ToInt32(version.Replace(".", ""));
-            } catch
+            }
+            catch
             {
                 return 0;
             }
-            
         }
 
         private static int GetUpdaterVersion()
