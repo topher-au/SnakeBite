@@ -64,13 +64,13 @@ namespace SnakeBite.SetupWizard
                         return;
                     }
 
-                        // show create backup page, without processing panel, enable skip
-                        createBackupPage.panelProcessing.Visible = false;
-                        this.contentPanel.Controls.Clear();
-                        this.contentPanel.Controls.Add(createBackupPage);
-                        buttonSkip.Visible = true;
+                    // show create backup page, without processing panel, enable skip
+                    createBackupPage.panelProcessing.Visible = false;
+                    this.contentPanel.Controls.Clear();
+                    this.contentPanel.Controls.Add(createBackupPage);
+                    buttonSkip.Visible = true;
 
-                        displayPage = 2;
+                    displayPage = 2;
                     break;
 
                 case 2:
@@ -114,7 +114,7 @@ namespace SnakeBite.SetupWizard
                     mergeDatPage.panelProcessing.Visible = true;
 
                     BackgroundWorker mergeProcessor = new BackgroundWorker();
-                    mergeProcessor.DoWork += (obj, var) => ModManager.CleanupDatabase();
+                    mergeProcessor.DoWork += (obj, var) => ModManager.MergeAndCleanup();
                     mergeProcessor.RunWorkerAsync();
 
                     while (mergeProcessor.IsBusy)
@@ -138,7 +138,8 @@ namespace SnakeBite.SetupWizard
 
                 case 4:
                     displayPage = 5;
-                    this.Close();
+                    DialogResult = DialogResult.OK;
+                    Close();
                     break;
             }
         }

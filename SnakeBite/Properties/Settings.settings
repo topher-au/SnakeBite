@@ -6,10 +6,10 @@
       <Value Profile="(Default)">C:\Program Files (x86)\Steam\SteamApps\Common\MGS_TPP</Value>
     </Setting>
     <Setting Name="DisableConflictCheck" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="EnableSound" Type="System.Boolean" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">True</Value>
     </Setting>
   </Settings>
 </SettingsFile>

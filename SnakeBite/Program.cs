@@ -17,8 +17,9 @@ namespace SnakeBite
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
 
-            Properties.Settings.Default.Upgrade();
             SettingsManager.DisableConflictCheck = false;
+            Properties.Settings.Default.Save();
+
             Debug.Clear();
 
             string InitLog = String.Format(
@@ -33,6 +34,32 @@ namespace SnakeBite
 
             Debug.LogLine(InitLog, Debug.LogLevel.Basic);
 
+            // Delete old settings file
+            if (File.Exists(ModManager.GameDir + "\\sbmods.xml"))
+            {
+                Debug.LogLine("Removing old settings file");
+                File.Delete(ModManager.GameDir + "\\sbmods.xml");
+                MessageBox.Show("Due to fundamental changes from version 0.8 onwards, your settings have been reset. Please re-verify or restore the game files and run the setup wizard before continuing.", "Version Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+            bool showSetupWizard = false;
+
+            if (!SettingsManager.SettingsExist())
+            {
+                showSetupWizard = true;
+            }
+
+            // Show wizard on first run, if folder is invalid or settings out of date
+            while (showSetupWizard)
+            {
+                // show setup wizard
+                Debug.LogLine("Showing setup wizard");
+                SetupWizard.SetupWizard setupWizard = new SetupWizard.SetupWizard();
+                var wizResult = setupWizard.ShowDialog();
+                if (wizResult == DialogResult.Cancel) return;
+                if (wizResult == DialogResult.OK) showSetupWizard = false;
+            }
+
             // Process Command Line args
             // TODO: test all command line args
 
@@ -41,10 +68,10 @@ namespace SnakeBite
             {
                 if (args[0] == "-completeuninstall")
                 {
+                    Debug.LogLine("Complete uninstall");
                     // Restore backup and remove settings
                     SettingsManager.DeleteSettings();
                     BackupManager.RestoreOriginals();
-                    Application.Exit();
                     return;
                 }
             }
@@ -94,34 +121,22 @@ namespace SnakeBite
             // Update dat hash in settings
             if (resetDatHash)
             {
+                Debug.LogLine("Resetting dat hash");
                 SettingsManager.UpdateDatHash();
-            }
-
-            // Show wizard on first run, if folder is invalid or settings out of date
-            if (!SettingsManager.SettingsExist() || !SettingsManager.ValidInstallPath || SettingsManager.GetSettingsVersion() < 700)
-            {
-                // show setup wizard
-                SetupWizard.SetupWizard setupWizard = new SetupWizard.SetupWizard();
-                setupWizard.ShowDialog();
-            }
-
-            // force user to run setup wizard
-            if (!SettingsManager.SettingsExist() || !SettingsManager.ValidInstallPath || SettingsManager.GetSettingsVersion() < 700)
-            {
-                Application.Exit();
             }
 
             var checkDat = SettingsManager.ValidateDatHash();
 
             if (!checkDat)
             {
-                MessageBox.Show("The game data appears to have been modified outside of SnakeBite.\n\nThe Setup Wizard will now run.", "Game data hash mismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Game archive has been modified. The setup wizard will now run.", "Game data hash mismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 SetupWizard.SetupWizard setupWizard = new SetupWizard.SetupWizard();
                 setupWizard.ShowDialog();
             }
 
             if (doCmdLine)
             {
+                Debug.LogLine("Doing cmd line args");
                 formMods ModForm = new formMods();
                 ModForm.Show();
                 ModForm.Hide();
@@ -141,32 +156,7 @@ namespace SnakeBite
                 }
                 ModForm.Dispose();
 
-                if (closeApp) return; 
-
-            }
-
-            // Check for updates
-            UpdateFile updater = new UpdateFile();
-            bool updateSuccess = updater.ReadXmlFromInterweb("http://www.xobanimot.com/snakebite/update/update.xml");
-            if (updateSuccess)
-            {
-                if (updater.SnakeBite.Version > ModManager.GetSBVersion())
-                {
-                    var launchUpdate = MessageBox.Show(String.Format("SnakeBite v{0} is now available.\n\nWould you like to update now?", updater.SnakeBite.Version), "SnakeBite Update", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-                    if (launchUpdate == DialogResult.Yes)
-                    {
-                        if (File.Exists("sbupdater.exe"))
-                        {
-                            Process.Start("sbupdater.exe", "-u");
-                            Application.Exit();
-                        }
-                        else
-                        {
-                            MessageBox.Show("SnakeBite updater appears to be missing!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        }
-
-                    }
-                }
+                if (closeApp) return;
             }
 
             //Application.Run(new formMain());

@@ -17,7 +17,7 @@ namespace SnakeBite.GzsTool
         {
             Debug.LogLine(String.Format("[GzsLib] Extracting archive {0} to {1}", FileName, OutputPath));
 
-            if(!File.Exists(FileName))
+            if (!File.Exists(FileName))
             {
                 Debug.LogLine("[GzsLib] File not found");
                 throw new FileNotFoundException();
@@ -75,7 +75,7 @@ namespace SnakeBite.GzsTool
                 if (outFile != null)
                 {
                     string path = Path.GetDirectoryName(Path.GetFullPath(OutputFile));
-                    if (!Directory.Exists(path) )Directory.CreateDirectory(path);
+                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
                     using (FileStream outStream = new FileStream(OutputFile, FileMode.Create))
                     {
                         // copy to output stream
@@ -206,7 +206,7 @@ namespace SnakeBite.GzsTool
             string dataDir = Path.Combine(ModManager.GameDir, "master");
             string dataDat = "data{0}.dat";
             string chunkDat = "chunk{0}.dat";
-            string zeroDat = "0\\{0:X2}.dat";
+            string oneDat = "0\\{0:X2}.dat";
 
             Dictionary<ulong, string> BaseData = new Dictionary<ulong, string>();
             LoadDictionaries();
@@ -235,9 +235,9 @@ namespace SnakeBite.GzsTool
                 }
             }
 
-            // read 00.dat
-            var zeroFiles = ListArchiveHashes<QarFile>(Path.Combine(dataDir, String.Format(zeroDat, 0)));
-            foreach (GameFile file in zeroFiles)
+            // read 01.dat
+            var oneFiles = ListArchiveHashes<QarFile>(Path.Combine(dataDir, String.Format(oneDat, 1)));
+            foreach (GameFile file in oneFiles)
             {
                 try
                 {

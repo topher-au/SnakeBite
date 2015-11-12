@@ -54,7 +54,7 @@
             // 
             // buttonRevalidate
             // 
-            this.buttonRevalidate.Location = new System.Drawing.Point(148, 214);
+            this.buttonRevalidate.Location = new System.Drawing.Point(140, 268);
             this.buttonRevalidate.Name = "buttonRevalidate";
             this.buttonRevalidate.Size = new System.Drawing.Size(164, 23);
             this.buttonRevalidate.TabIndex = 9;
@@ -65,12 +65,13 @@
             // labelWarning
             // 
             this.labelWarning.ForeColor = System.Drawing.Color.Red;
-            this.labelWarning.Location = new System.Drawing.Point(65, 135);
+            this.labelWarning.Location = new System.Drawing.Point(56, 140);
             this.labelWarning.Name = "labelWarning";
-            this.labelWarning.Size = new System.Drawing.Size(330, 77);
+            this.labelWarning.Size = new System.Drawing.Size(330, 125);
             this.labelWarning.TabIndex = 8;
             this.labelWarning.Text = resources.GetString("labelWarning.Text");
             this.labelWarning.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelWarning.Click += new System.EventHandler(this.labelWarning_Click);
             // 
             // buttonBrowse
             // 

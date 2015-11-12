@@ -13,40 +13,46 @@ namespace SnakeBite
 
         public static bool OriginalsExist()
         {
-            return (File.Exists(OriginalOne));
+            return (File.Exists(OriginalZero) || File.Exists(OriginalOne));
         }
 
         public static bool ModsDisabled()
         {
-            return (File.Exists(ModOne));
+            return (File.Exists(ModZero) || File.Exists(ModOne));
         }
 
         public static void RestoreOriginals()
         {
             // delete existing data
+            if (File.Exists(GameZero)) File.Delete(GameZero);
             if (File.Exists(GameOne)) File.Delete(GameOne);
 
             // delete mod data
+            if (File.Exists(ModZero)) File.Delete(ModZero);
             if (File.Exists(ModOne)) File.Delete(ModOne);
 
             // restore backups
+            File.Move(OriginalZero, GameZero);
             File.Move(OriginalOne, GameOne);
         }
 
         public static void DeleteOriginals()
         {
             // delete backups
+            if (File.Exists(OriginalZero)) File.Delete(OriginalZero);
             if (File.Exists(OriginalOne)) File.Delete(OriginalOne);
         }
 
         public static void SwitchToOriginal()
         {
-            if (!File.Exists(ModOne))
+            if (File.Exists(OriginalZero) && File.Exists(OriginalOne))
             {
                 // copy mod files to backup
+                File.Copy(GameZero, ModZero, true);
                 File.Copy(GameOne, ModOne, true);
 
                 // copy original files
+                File.Copy(OriginalZero, GameZero, true);
                 File.Copy(OriginalOne, GameOne, true);
 
                 SettingsManager.UpdateDatHash();
@@ -55,12 +61,14 @@ namespace SnakeBite
 
         public static void SwitchToMods()
         {
-            if (File.Exists(ModOne))
+            if (File.Exists(ModZero) && File.Exists(ModOne))
             {
                 // restore mod backup
+                File.Copy(ModZero, GameZero, true);
                 File.Copy(ModOne, GameOne, true);
 
                 // delete mod backup
+                File.Delete(ModZero);
                 File.Delete(ModOne);
 
                 SettingsManager.UpdateDatHash();
@@ -74,11 +82,16 @@ namespace SnakeBite
                 // copy one
                 File.Copy(GameOne, OriginalOne, true);
             }
+            if (!File.Exists(OriginalZero) || Overwrite)
+            {
+                // copy one
+                File.Copy(GameZero, OriginalZero, true);
+            }
         }
 
         public static bool BackupExists()
         {
-            if (File.Exists(OriginalOne))
+            if (File.Exists(OriginalZero) || File.Exists(OriginalOne))
             {
                 return true;
             }
@@ -87,7 +100,7 @@ namespace SnakeBite
 
         public static bool GameFilesExist()
         {
-            return File.Exists(GameOne);
+            return (File.Exists(GameZero) && File.Exists(GameOne));
         }
     }
 

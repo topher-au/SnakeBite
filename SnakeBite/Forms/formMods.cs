@@ -250,7 +250,7 @@ namespace SnakeBite
                     foreach (ModQarEntry qarEntry in metaData.ModQarEntries) // iterate qar files from new mod
                     {
                         if (qarEntry.FilePath.Contains(".fpk")) continue;
-                        ModQarEntry conflicts = mod.ModQarEntries.FirstOrDefault(entry => Tools.NameToHash(entry.FilePath) == Tools.NameToHash(qarEntry.FilePath));
+                        ModQarEntry conflicts = mod.ModQarEntries.FirstOrDefault(entry => Tools.CompareHashes(entry.FilePath, qarEntry.FilePath));
                         if (conflicts != null)
                         {
                             if (confIndex == -1) confIndex = mods.IndexOf(mod);
@@ -261,8 +261,8 @@ namespace SnakeBite
 
                     foreach (ModFpkEntry fpkEntry in metaData.ModFpkEntries) // iterate fpk files from new mod
                     {
-                        ModFpkEntry conflicts = mod.ModFpkEntries.FirstOrDefault(entry => Tools.NameToHash(entry.FpkFile) == Tools.NameToHash(fpkEntry.FpkFile) &&
-                                                                                               Tools.NameToHash(entry.FilePath) == Tools.NameToHash(fpkEntry.FilePath));
+                        ModFpkEntry conflicts = mod.ModFpkEntries.FirstOrDefault(entry => Tools.CompareHashes(entry.FpkFile, fpkEntry.FpkFile) &&
+                                                                                               Tools.CompareHashes(entry.FilePath, fpkEntry.FilePath));
                         if (conflicts != null)
                         {
                             if (!conflictingMods.Contains(mod.Name))

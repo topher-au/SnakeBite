@@ -37,6 +37,7 @@ namespace SnakeBite.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
         public bool DisableConflictCheck {
             get {
                 return ((bool)(this["DisableConflictCheck"]));
@@ -48,6 +49,7 @@ namespace SnakeBite.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
         public bool EnableSound {
             get {
                 return ((bool)(this["EnableSound"]));

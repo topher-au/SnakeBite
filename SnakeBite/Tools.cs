@@ -207,6 +207,7 @@ namespace SnakeBite
 
         internal static bool CompareNames(string File1, string File2)
         {
+            // TODO: change name comparison to use function
             return Tools.ToQarPath(File1) == Tools.ToQarPath(File2);
         }
 

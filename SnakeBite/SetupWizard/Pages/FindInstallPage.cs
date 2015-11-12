@@ -1,4 +1,5 @@
-﻿using System;
+﻿using System.ComponentModel;
+using System;
 using System.IO;
 using System.Windows.Forms;
 
@@ -15,9 +16,51 @@ namespace SnakeBite.SetupWizard
 
         private void buttonValidate_Click(object sender, EventArgs e)
         {
-            var doValidate = MessageBox.Show("Modded game data and backups will be reset. Although Steam will scan the entire installation, you can cancel the validation after any modified files are deleted by Steam and they will be redownloaded immediately.", "SnakeBite", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            var doValidate = MessageBox.Show("SnakeBite will close the Steam validation window automatically when ready, please do not cancel or close the Steam window.", "SnakeBite", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
             if (doValidate == DialogResult.Cancel) return;
             System.Diagnostics.Process.Start("steam://validate/287700/");
+            BackgroundWorker bw = new BackgroundWorker();
+            bw.DoWork += (obj, var) =>
+            {
+                int sleep = 0;
+                int maxSleep = 7500;
+                while (true)
+                {
+                    System.Threading.Thread.Sleep(100);
+                    sleep += 100;
+
+                    if(!BackupManager.GameFilesExist()) // break when files are removed by Steam
+                    {
+                        try
+                        {
+                            Microsoft.VisualBasic.Interaction.AppActivate("Validating Steam files");
+                            SendKeys.SendWait("%{F4}");
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Unable to locate and close the Steam window, you may need to launch Steam before trying again, or validate manually through the Steam application.", "Steam Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        break;
+                    }
+
+                    if (sleep >= maxSleep) // break on timeout
+                    {
+                        try
+                        {
+                            Microsoft.VisualBasic.Interaction.AppActivate("Validating Steam files");
+                            SendKeys.SendWait("%{F4}");
+                        }
+                        catch
+                        {
+                            MessageBox.Show("Timed out waiting for Steam window. Please launch Steam before trying again, or validate manually through the Steam application.", "Steam Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
+                        break;
+                    }
+                }
+                
+                bw.Dispose();
+            };
+            bw.RunWorkerAsync();
             BackupManager.DeleteOriginals();
         }
 
@@ -35,6 +78,11 @@ namespace SnakeBite.SetupWizard
                 Properties.Settings.Default.InstallPath = filePath;
                 Properties.Settings.Default.Save();
             }
+        }
+
+        private void labelWarning_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }

@@ -1,11 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SnakeBite
@@ -14,8 +8,8 @@ namespace SnakeBite
     {
         private string formText;
         private List<string> modelNames;
-        
-        public formSelectModelTarget(string FormText, List<string> ModelNames, int Width=300)
+
+        public formSelectModelTarget(string FormText, List<string> ModelNames, int Width = 300)
         {
             InitializeComponent();
             formText = FormText;
@@ -30,7 +24,7 @@ namespace SnakeBite
             // Create new radio button for each model passed to constructor
             for (int i = 0; i < modelNames.Count; i++)
             {
-                groupModelSelect.Controls.Add(new RadioButton() { Text = modelNames[i], Top = i * 20 + 12, Left = 12 , Width = groupModelSelect.Width-24, Tag = i});
+                groupModelSelect.Controls.Add(new RadioButton() { Text = modelNames[i], Top = i * 20 + 12, Left = 12, Width = groupModelSelect.Width - 24, Tag = i });
                 groupModelSelect.Height = i * 20 + 42;
             }
 
@@ -46,7 +40,7 @@ namespace SnakeBite
 
         private void buttonConfirm_Click(object sender, EventArgs e)
         {
-            foreach(RadioButton r in groupModelSelect.Controls)
+            foreach (RadioButton r in groupModelSelect.Controls)
             {
                 if (r.Checked) this.Tag = r.Tag;
             }

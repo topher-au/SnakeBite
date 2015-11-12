@@ -1,16 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Forms;
-using System.Globalization;
 using System.Diagnostics;
-using System.Media;
+using System.Drawing;
+using System.Globalization;
 using System.IO;
+using System.Media;
+using System.Windows.Forms;
 
 namespace SnakeBite
 {
@@ -28,15 +23,32 @@ namespace SnakeBite
         {
             textInfo = cultureInfo.TextInfo;
 
+            // Check for updates
+            Debug.LogLine("[Update] Checking for updates");
+            UpdateFile updater = new UpdateFile();
+            bool updateSuccess = updater.ReadXmlFromInterweb("http://www.xobanimot.com/snakebite/update/update.xml");
+            if (updateSuccess)
+            {
+                if (updater.SnakeBite.Version > ModManager.GetSBVersion())
+                {
+                    labelUpdate.Text = String.Format("SnakeBite version {0} now available!", updater.SnakeBite.Version);
+                    labelUpdate.Show();
+                }
+            }
+
             // Retrieve and display version info
             var MGSVersionInfo = FileVersionInfo.GetVersionInfo(Properties.Settings.Default.InstallPath + "\\mgsvtpp.exe");
 
             string SBVersion = Application.ProductVersion;
             string MGSVersion = MGSVersionInfo.ProductVersion;
 
+            // Update version text
             string VersionText = String.Format("MGSV {0} / SB {1}", MGSVersion, SBVersion);
             labelVersion.Text = VersionText;
             UpdateVersionLabel();
+
+            // Enable/disable mods button
+            buttonMods.Enabled = !BackupManager.ModsDisabled();
 
             // Fade in form
             Opacity = 0;
@@ -64,23 +76,24 @@ namespace SnakeBite
         private void formLauncher_KeyPress(object sender, KeyPressEventArgs e)
         {
             // Handle keypresses on launcher
-            switch(e.KeyChar)
+            switch (e.KeyChar)
             {
                 case (char)Keys.Escape:
-                    ExitLauncher();
+                    ExitLauncher(true);
                     break;
+
                 case (char)Keys.Enter:
-                    StartGame();
+                    StartGame(true);
                     break;
             }
         }
 
         private void OnMouseEnter(object sender, EventArgs e)
         {
+            PlaySound("ui_move");
             Control control = sender as Control;
             control.ForeColor = Color.Red;
-            control.Text = control.Text.ToUpper();
-            PlaySound("ui_move");
+            control.Text = textInfo.ToUpper(control.Text);
         }
 
         private void OnMouseExit(object sender, EventArgs e)
@@ -100,18 +113,23 @@ namespace SnakeBite
                 Stream str = Properties.Resources.ResourceManager.GetStream(ResourceName);
                 SoundPlayer snd = new SoundPlayer(str);
                 snd.Play();
-                System.Threading.Thread.Sleep(250);
+                System.Threading.Thread.Sleep(200);
                 soundWorker.Dispose();
             };
             soundWorker.RunWorkerAsync();
-            
         }
 
-        private void StartGame()
+        private void StartGame(bool silent = false)
         {
-            // TODO: Implement StartGame()
-
-            ExitLauncher();
+            if (SettingsManager.ValidInstallPath)
+            {
+                Process.Start(ModManager.GameDir + "\\mgsvtpp.exe");
+                ExitLauncher(silent);
+            }
+            else
+            {
+                MessageBox.Show("Unable to locate MGSVTPP.exe. Please check the Settings and try again.", "Error launching MGSV", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
         }
 
         private void ShowMods()
@@ -128,14 +146,13 @@ namespace SnakeBite
             Settings.ShowDialog();
         }
 
-        private void ExitLauncher()
+        private void ExitLauncher(bool silent = false)
         {
-            PlaySound("ui_select");
+            if (!silent) PlaySound("ui_select");
             Hide();
             System.Threading.Thread.Sleep(200);
             Close();
         }
-        
 
         private void buttonStartGame_Click(object sender, EventArgs e)
         {
@@ -150,6 +167,7 @@ namespace SnakeBite
         private void buttonSettings_Click(object sender, EventArgs e)
         {
             ShowConfiguration();
+            buttonMods.Enabled = !BackupManager.ModsDisabled();
         }
 
         private void buttonExit_Click(object sender, EventArgs e)
@@ -172,6 +190,30 @@ namespace SnakeBite
             labelVersion.Refresh();
             labelVersion.Left = Width - labelVersion.Width - 8;
             labelVersion.Top = Height - labelVersion.Height - 8;
+            labelUpdate.Left = 8;
+            labelUpdate.Top = Height - labelUpdate.Height - 8;
+        }
+
+        private void labelClose_Click(object sender, EventArgs e)
+        {
+            ExitLauncher(true);
+        }
+
+        private void labelUpdate_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var launchUpdate = MessageBox.Show(String.Format("A new version of SnakeBite is available!\n\nWould you like to update now?"), "SnakeBite Update", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+            if (launchUpdate == DialogResult.Yes)
+            {
+                if (File.Exists("sbupdater.exe"))
+                {
+                    Process.Start("sbupdater.exe", "-u");
+                    Application.Exit();
+                }
+                else
+                {
+                    MessageBox.Show("SnakeBite updater appears to be missing!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
     }
 }

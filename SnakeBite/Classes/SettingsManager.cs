@@ -7,7 +7,9 @@ namespace SnakeBite
 {
     public static class SettingsManager
     {
-        public static bool DisableConflictCheck { get
+        public static bool DisableConflictCheck
+        {
+            get
             {
                 return Properties.Settings.Default.DisableConflictCheck;
             }
@@ -17,14 +19,15 @@ namespace SnakeBite
                 Properties.Settings.Default.Save();
             }
         }
+
         public static List<string> GetModFpkFiles()
         {
             Settings settings = new Settings();
             settings.Load();
             List<string> fpkList = new List<string>();
-            foreach(ModEntry mod in settings.ModEntries)
+            foreach (ModEntry mod in settings.ModEntries)
             {
-                foreach(ModFpkEntry fpkFile in mod.ModFpkEntries)
+                foreach (ModFpkEntry fpkFile in mod.ModFpkEntries)
                 {
                     fpkList.Add(Tools.ToQarPath(fpkFile.FilePath));
                 }
@@ -32,7 +35,7 @@ namespace SnakeBite
             return fpkList;
         }
 
-        public static List<string> GetModQarFiles( bool HideExtension = false)
+        public static List<string> GetModQarFiles(bool HideExtension = false)
         {
             Settings settings = new Settings();
             settings.Load();
@@ -42,10 +45,11 @@ namespace SnakeBite
                 foreach (ModQarEntry qarFile in mod.ModQarEntries)
                 {
                     string fileName;
-                    if(HideExtension)
+                    if (HideExtension)
                     {
-                        fileName = Tools.ToQarPath(qarFile.FilePath.Substring(0,qarFile.FilePath.IndexOf(".")));
-                    } else
+                        fileName = Tools.ToQarPath(qarFile.FilePath.Substring(0, qarFile.FilePath.IndexOf(".")));
+                    }
+                    else
                     {
                         fileName = Tools.ToQarPath(qarFile.FilePath);
                     }
@@ -57,12 +61,12 @@ namespace SnakeBite
 
         public static bool SettingsExist()
         {
-            return File.Exists(ModManager.GameDir + "\\sbmods.xml");
+            return File.Exists(ModManager.GameDir + "\\snakebite.xml");
         }
 
         public static void DeleteSettings()
         {
-            File.Delete(ModManager.GameDir + "\\sbmods.xml");
+            File.Delete(ModManager.GameDir + "\\snakebite.xml");
         }
 
         public static void AddMod(ModEntry Mod)
@@ -76,14 +80,12 @@ namespace SnakeBite
                 f.FpkFile = Tools.ToQarPath(f.FpkFile);
                 f.FilePath = Tools.ToQarPath(f.FilePath);
             }
-                
 
             foreach (ModQarEntry q in Mod.ModQarEntries)
             {
                 q.SourceType = FileSource.Mod;
                 q.FilePath = Tools.ToQarPath(q.FilePath);
             }
-                
 
             settings.ModEntries.Add(Mod);
             settings.Save();
@@ -133,7 +135,7 @@ namespace SnakeBite
             settings.Load();
 
             // Hash 01.dat and update settings file
-            string datHash = Tools.GetMd5Hash(ModManager.DatPath);
+            string datHash = Tools.GetMd5Hash(ModManager.ZeroPath);
             settings.GameData.DatHash = datHash;
 
             settings.Save();
@@ -149,7 +151,7 @@ namespace SnakeBite
 
         internal static bool ValidateDatHash()
         {
-            string datHash = Tools.GetMd5Hash(ModManager.DatPath);
+            string datHash = Tools.GetMd5Hash(ModManager.ZeroPath);
             string hashOld = SettingsManager.GetGameData().DatHash;
             if (datHash != hashOld) return false;
             return true;
@@ -189,19 +191,18 @@ namespace SnakeBite
         {
             // Write settings to XML
 
-            if (File.Exists(ModManager.GameDir + "\\sbmods.xml"))
+            if (File.Exists(ModManager.GameDir + "\\snakebite.xml"))
             {
-                File.Delete(ModManager.GameDir + "\\sbmods.xml");
+                File.Delete(ModManager.GameDir + "\\snakebite.xml");
             }
 
             XmlSerializer x = new XmlSerializer(typeof(Settings), new[] { typeof(Settings) });
-            StreamWriter s = new StreamWriter(ModManager.GameDir + "\\sbmods.xml");
+            StreamWriter s = new StreamWriter(ModManager.GameDir + "\\snakebite.xml");
             foreach (ModEntry mod in ModEntries)
             {
                 mod.Description = mod.Description.Replace("\r\n", "\n");
-                
             }
-            this.SbVersion = 700;
+            this.SbVersion = ModManager.GetSBVersion();
             x.Serialize(s, this);
             s.Close();
         }
@@ -210,13 +211,13 @@ namespace SnakeBite
         {
             // Load settings from XML
 
-            if (!File.Exists(ModManager.GameDir + "\\sbmods.xml"))
+            if (!File.Exists(ModManager.GameDir + "\\snakebite.xml"))
             {
-                Save();
+                return false;
             }
 
             XmlSerializer x = new XmlSerializer(typeof(Settings));
-            StreamReader s = new StreamReader(ModManager.GameDir + "\\sbmods.xml");
+            StreamReader s = new StreamReader(ModManager.GameDir + "\\snakebite.xml");
             Settings loaded = (Settings)x.Deserialize(s);
             s.Close();
             GameData = loaded.GameData;
