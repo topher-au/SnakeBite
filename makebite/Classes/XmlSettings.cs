@@ -42,11 +42,11 @@ namespace SnakeBite
         [XmlAttribute("Version")]
         public string Version { get; set; }
 
-        [XmlAttribute("MGSVersion")]
-        public string MGSVersion { get; set; }
+        [XmlElement("MGSVersion")]
+        public SerialVersion MGSVersion { get; set; } = new SerialVersion();
 
-        [XmlAttribute("SBVersion")]
-        public string SBVersion { get; set; }
+        [XmlElement("SBVersion")]
+        public SerialVersion SBVersion { get; set; } = new SerialVersion();
 
         [XmlAttribute("Author")]
         public string Author { get; set; }
@@ -77,8 +77,25 @@ namespace SnakeBite
 
             Name = loaded.Name;
             Version = loaded.Version;
-            MGSVersion = loaded.MGSVersion;
-            SBVersion = loaded.SBVersion;
+            try
+            {
+                MGSVersion.Version = loaded.MGSVersion.AsString();
+                SBVersion.Version = loaded.SBVersion.AsString();
+            }
+            catch
+            {
+                if (MGSVersion == null)
+                {
+                    MGSVersion = new SerialVersion();
+                    MGSVersion.Version = "0.0.0.0";
+                }
+                if (SBVersion == null)
+                {
+                    SBVersion = new SerialVersion();
+                    SBVersion.Version = "0.0.0.0";
+                }
+            }
+            
             Author = loaded.Author;
             Website = loaded.Website;
             Description = loaded.Description;

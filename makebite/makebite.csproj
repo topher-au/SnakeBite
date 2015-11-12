@@ -61,6 +61,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\UpdateFile.cs" />
     <Compile Include="FolderSelectDialog\FolderSelectDialog.cs" />
     <Compile Include="formMain.cs">
       <SubType>Form</SubType>

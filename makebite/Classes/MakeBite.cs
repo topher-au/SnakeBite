@@ -2,6 +2,7 @@
 using ICSharpCode.SharpZipLib.Zip;
 using SnakeBite;
 using SnakeBite.GzsTool;
+using System;
 using System.Collections.Generic;
 using System.IO;
 
@@ -130,7 +131,7 @@ namespace makebite
                 metaData.ModQarEntries.Add(new ModQarEntry() { FilePath = qarFilePath, Compressed = qarFile.Substring(qarFile.LastIndexOf(".") + 1).Contains("fpk") ? true : false, ContentHash = Tools.GetMd5Hash(qarFile), Hash = hash });
             }
 
-            metaData.SBVersion = "500"; // 0.5.0.0
+            metaData.SBVersion.Version = "0.8.0.0";
 
             metaData.SaveToFile("_build\\metadata.xml");
 

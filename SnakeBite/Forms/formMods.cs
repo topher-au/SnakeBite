@@ -210,8 +210,18 @@ namespace SnakeBite
                 var SBVersion = ModManager.GetSBVersion();
                 var MGSVersion = ModManager.GetMGSVersion();
 
-                var modSBVersion = new Version(metaData.SBVersion);
-                var modMGSVersion = new Version(metaData.MGSVersion);
+                Version modSBVersion = new Version();
+                Version modMGSVersion = new Version();
+                try
+                {
+                    modSBVersion = metaData.SBVersion.AsVersion();
+                    modMGSVersion = metaData.MGSVersion.AsVersion();
+                } catch
+                {
+                    MessageBox.Show(String.Format("The selected version of {0} was created with an older version of SnakeBite and is no longer compatible, please download the latest version and try again.", metaData.Name), "Mod update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    return;
+                }
+                
 
                 // Check if mod requires SB update
                 if (modSBVersion > SBVersion)
@@ -222,7 +232,7 @@ namespace SnakeBite
 
                 if (modSBVersion < new Version(0,8,0,0))
                 {
-                    MessageBox.Show(String.Format("The selected version of {0} was created with an older version of SnakeBite may cause issues, please download the latest version and try again.", metaData.Name), "Mod update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(String.Format("The selected version of {0} was created with an older version of SnakeBite and is no longer compatible, please download the latest version and try again.", metaData.Name), "Mod update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
 

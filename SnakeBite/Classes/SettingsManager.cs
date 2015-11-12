@@ -179,7 +179,7 @@ namespace SnakeBite
     public class Settings
     {
         [XmlElement("SbVersion")]
-        public SerialVersion SbVersion { get; set; }
+        public SerialVersion SbVersion { get; set; } = new SerialVersion();
 
         [XmlElement("GameData")]
         public GameData GameData { get; set; } = new GameData();
@@ -216,18 +216,25 @@ namespace SnakeBite
                 return false;
             }
 
-            XmlSerializer x = new XmlSerializer(typeof(Settings));
-            StreamReader s = new StreamReader(ModManager.GameDir + "\\snakebite.xml");
-            Settings loaded = (Settings)x.Deserialize(s);
-            s.Close();
-            GameData = loaded.GameData;
-            ModEntries = loaded.ModEntries;
-            SbVersion = loaded.SbVersion;
-            foreach (ModEntry mod in ModEntries)
+            try
             {
-                mod.Description = mod.Description.Replace("\n", "\r\n");
+                XmlSerializer x = new XmlSerializer(typeof(Settings));
+                StreamReader s = new StreamReader(ModManager.GameDir + "\\snakebite.xml");
+                Settings loaded = (Settings)x.Deserialize(s);
+                s.Close();
+                GameData = loaded.GameData;
+                ModEntries = loaded.ModEntries;
+                SbVersion = loaded.SbVersion;
+                foreach (ModEntry mod in ModEntries)
+                {
+                    mod.Description = mod.Description.Replace("\n", "\r\n");
+                }
+                return true;
+            } catch
+            {
+                return false;
             }
-            return true;
+            
         }
     }
 
@@ -268,11 +275,11 @@ namespace SnakeBite
         [XmlAttribute("Version")]
         public string Version { get; set; }
 
-        [XmlAttribute("MGSVersion")]
-        public string MGSVersion { get; set; }
+        [XmlElement("MGSVersion")]
+        public SerialVersion MGSVersion { get; set; } = new SerialVersion();
 
-        [XmlAttribute("SBVersion")]
-        public string SBVersion { get; set; }
+        [XmlElement("SBVersion")]
+        public SerialVersion SBVersion { get; set; } = new SerialVersion();
 
         [XmlAttribute("Author")]
         public string Author { get; set; }

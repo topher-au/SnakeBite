@@ -61,7 +61,7 @@ namespace makebite
                 textModDescription.Text = modMetaData.Description.Replace("\n", "\r\n");
                 foreach (string li in comboForVersion.Items)
                 {
-                    if (modMetaData.MGSVersion == li)
+                    if (modMetaData.MGSVersion.AsString() == li)
                     {
                         comboForVersion.SelectedIndex = comboForVersion.Items.IndexOf(li);
                         break;
@@ -97,7 +97,7 @@ namespace makebite
             modMetaData.Name = textModName.Text;
             modMetaData.Author = textModAuthor.Text;
             modMetaData.Version = textModVersion.Text;
-            modMetaData.MGSVersion = comboForVersion.Text;
+            modMetaData.MGSVersion.Version = comboForVersion.Text;
             modMetaData.Website = textModWebsite.Text;
             modMetaData.Description = textModDescription.Text;
             modMetaData.SaveToFile(textModPath.Text + "\\metadata.xml");
@@ -116,7 +116,7 @@ namespace makebite
             modMetaData.Name = textModName.Text;
             modMetaData.Author = textModAuthor.Text;
             modMetaData.Version = textModVersion.Text;
-            modMetaData.MGSVersion = comboForVersion.Text;
+            modMetaData.MGSVersion.Version = comboForVersion.Text;
             modMetaData.Website = textModWebsite.Text;
             modMetaData.Description = textModDescription.Text;
             modMetaData.SaveToFile(SaveMeta.FileName);
@@ -139,7 +139,7 @@ namespace makebite
             textModDescription.Text = modMetaData.Description.Replace("\n", "\r\n");
             foreach (string li in comboForVersion.Items)
             {
-                if (modMetaData.MGSVersion == li)
+                if (modMetaData.MGSVersion.AsString() == li)
                 {
                     comboForVersion.SelectedIndex = comboForVersion.Items.IndexOf(li);
                     break;
