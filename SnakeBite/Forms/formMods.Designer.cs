@@ -362,7 +362,7 @@
             this.Name = "formMods";
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
-            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Mod Manager";
             this.Load += new System.EventHandler(this.formMain_Load);
             this.tabControl.ResumeLayout(false);

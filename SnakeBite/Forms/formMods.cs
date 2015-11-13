@@ -326,27 +326,14 @@ namespace SnakeBite
                 if (confirmInstall == DialogResult.No) return;
             }
 
-            ProgressWindow.Show("Installing Mod", "", new Action((MethodInvoker)delegate { ModManager.InstallMod(ModFile); }));
+            ProgressWindow.Show("Installing Mod", String.Format("Installing {0}, please wait...", metaData.Name), new Action((MethodInvoker)delegate { ModManager.InstallMod(ModFile); }));
 
             this.Invoke((MethodInvoker)delegate { RefreshInstalledMods(); });
-            hideProgressWindow();
         }
 
         public void ProcessUninstallMod(ModEntry mod)
         {
-            showProgressWindow(String.Format("Please wait while {0} is uninstalled...", mod.Name));
-
-            // Uninstall mod
-            System.ComponentModel.BackgroundWorker uninstaller = new System.ComponentModel.BackgroundWorker();
-            uninstaller.DoWork += (obj, e) => ModManager.UninstallMod(mod);
-            uninstaller.RunWorkerAsync();
-
-            while (uninstaller.IsBusy)
-            {
-                Application.DoEvents();
-            }
-
-            hideProgressWindow();
+            ProgressWindow.Show("Uninstalling Mod", String.Format("Uninstalling {0}, please wait...", mod.Name), new Action((MethodInvoker)delegate { ModManager.UninstallMod(mod); }));
         }
 
         private void RefreshInstalledMods(bool resetSelection = false)
