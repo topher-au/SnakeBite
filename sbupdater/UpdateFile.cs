@@ -83,7 +83,7 @@ public class UpdateData
     [XmlElement("Version")]
     public SerialVersion Version { get; set; }
 
-    [XmlElement("URL")]
+    [XmlAttribute("URL")]
     public string URL { get; set; }
 }
 

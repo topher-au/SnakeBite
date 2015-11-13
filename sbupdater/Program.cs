@@ -56,7 +56,7 @@ namespace sbupdater
 
             if (update.Updater.Version.AsVersion() > UpdaterVersion)
             {
-                Console.WriteLine(String.Format("Updating SBUpdater to version {0}...", update.Updater.Version));
+                Console.WriteLine(String.Format("Updating SBUpdater to version {0}...", update.Updater.Version.AsString()));
                 // Process updating the updater
                 DownloadAndUpdateUpdater(update.Updater.URL);
             }
@@ -67,7 +67,7 @@ namespace sbupdater
 
             if (update.SnakeBite.Version.AsVersion() > SBVersion)
             {
-                Console.WriteLine(String.Format("Updating SnakeBite to version {0}...", update.SnakeBite.Version));
+                Console.WriteLine(String.Format("Updating SnakeBite to version {0}...", update.SnakeBite.Version.AsString()));
                 // Process updating SnakeBite
                 DownloadAndUpdateSnakeBite(update.SnakeBite.URL);
             }
@@ -84,13 +84,12 @@ namespace sbupdater
             // Download update archive
             using (WebClient w = new WebClient()) w.DownloadFile(URL, "update.dat");
 
-            // Extract archive
-            FastZip z = new FastZip();
-            z.ExtractZip("update.dat", "_update", "(.*?)");
-
-            // Move update file
+            // Move updater executable
             File.Move("sbupdater.exe", "_updater.exe");
-            File.Move("_update/sbupdater.exe", "sbupdater.exe");
+
+            // Extract archive to local directory
+            FastZip z = new FastZip();
+            z.ExtractZip("update.dat", ".", "(.*?)");
 
             // Restart updater
             Process updater = new Process();
