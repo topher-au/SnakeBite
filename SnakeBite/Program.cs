@@ -22,29 +22,14 @@ namespace SnakeBite
 
             Debug.Clear();
 
-            string InitLog = String.Format(
+            Debug.LogLine(String.Format(
                 "SnakeBite Version: {0}\n" +
-                "-------------------------\n" +
-                "MGS Install Folder: {1}\n" +
-                "MGS Version: {2}\n" +
                 "-------------------------\n",
-                ModManager.GetSBVersion(),
-                Properties.Settings.Default.InstallPath,
-                ModManager.GetMGSVersion());
-
-            Debug.LogLine(InitLog, Debug.LogLevel.Basic);
-
-            // Delete old settings file
-            if (File.Exists(ModManager.GameDir + "\\sbmods.xml"))
-            {
-                Debug.LogLine("Removing old settings file");
-                File.Delete(ModManager.GameDir + "\\sbmods.xml");
-                MessageBox.Show("Due to fundamental changes from version 0.8 onwards, your settings have been reset. Please re-verify or restore the game files and run the setup wizard before continuing.", "Version Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-            }
+                ModManager.GetSBVersion()));
 
             bool showSetupWizard = false;
 
-            if (!SettingsManager.SettingsExist())
+            if (!SettingsManager.SettingsExist() || !SettingsManager.ValidInstallPath)
             {
                 showSetupWizard = true;
             }
@@ -59,6 +44,27 @@ namespace SnakeBite
                 if (wizResult == DialogResult.Cancel) return;
                 if (wizResult == DialogResult.OK) showSetupWizard = false;
             }
+
+
+
+            string InitLog = String.Format(
+                "MGS Install Folder: {0}\n" +
+                "MGS Version: {1}\n" +
+                "-------------------------\n",
+                Properties.Settings.Default.InstallPath,
+                ModManager.GetMGSVersion());
+
+            Debug.LogLine(InitLog, Debug.LogLevel.Basic);
+
+            // Delete old settings file
+            if (File.Exists(ModManager.GameDir + "\\sbmods.xml"))
+            {
+                Debug.LogLine("Removing old settings file");
+                File.Delete(ModManager.GameDir + "\\sbmods.xml");
+                MessageBox.Show("Due to fundamental changes from version 0.8 onwards, your settings have been reset. Please re-verify or restore the game files and run the setup wizard before continuing.", "Version Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
+
 
             // Process Command Line args
             // TODO: test all command line args

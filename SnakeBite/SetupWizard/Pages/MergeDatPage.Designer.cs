@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MergeDatPage));
             this.panelContent = new System.Windows.Forms.Panel();
             this.labelWelcomeText = new System.Windows.Forms.Label();
             this.labelWelcome = new System.Windows.Forms.Label();
@@ -41,6 +42,7 @@
             // 
             // panelContent
             // 
+            this.panelContent.Controls.Add(this.panelProcessing);
             this.panelContent.Controls.Add(this.labelWelcomeText);
             this.panelContent.Controls.Add(this.labelWelcome);
             this.panelContent.Location = new System.Drawing.Point(0, 0);
@@ -54,8 +56,7 @@
             this.labelWelcomeText.Name = "labelWelcomeText";
             this.labelWelcomeText.Size = new System.Drawing.Size(429, 256);
             this.labelWelcomeText.TabIndex = 5;
-            this.labelWelcomeText.Text = "SnakeBite now needs to modify some of the game files and collect some data before" +
-    " mod installation can take place. This may take some time.";
+            this.labelWelcomeText.Text = resources.GetString("labelWelcomeText.Text");
             // 
             // labelWelcome
             // 
@@ -71,7 +72,7 @@
             // 
             this.panelProcessing.Controls.Add(this.labelWorking);
             this.panelProcessing.Controls.Add(this.pictureWorkingSpiral);
-            this.panelProcessing.Location = new System.Drawing.Point(100, 160);
+            this.panelProcessing.Location = new System.Drawing.Point(90, 250);
             this.panelProcessing.Name = "panelProcessing";
             this.panelProcessing.Size = new System.Drawing.Size(249, 43);
             this.panelProcessing.TabIndex = 8;
@@ -98,7 +99,6 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.panelProcessing);
             this.Controls.Add(this.panelContent);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Name = "MergeDatPage";

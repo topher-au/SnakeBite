@@ -130,4 +130,10 @@
   <data name="ui_select" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\ui_select.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </data>
+  <data name="toggleoff" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\toggleoff.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="toggleon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\toggleon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

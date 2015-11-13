@@ -34,11 +34,9 @@
             this.checkConflicts = new System.Windows.Forms.CheckBox();
             this.groupBackup = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.label1 = new System.Windows.Forms.Label();
             this.labelSetupWizard = new System.Windows.Forms.Label();
             this.buttonRestoreOriginals = new System.Windows.Forms.Button();
             this.buttonSetupWizard = new System.Windows.Forms.Button();
-            this.buttonToggleMods = new System.Windows.Forms.Button();
             this.groupAbout = new System.Windows.Forms.GroupBox();
             this.labelGithub = new System.Windows.Forms.LinkLabel();
             this.labelThanks = new System.Windows.Forms.Label();
@@ -64,7 +62,7 @@
             this.tabSettings.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabSettings.Name = "tabSettings";
             this.tabSettings.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.tabSettings.Size = new System.Drawing.Size(363, 431);
+            this.tabSettings.Size = new System.Drawing.Size(363, 382);
             this.tabSettings.TabIndex = 2;
             this.tabSettings.Text = "Settings";
             this.tabSettings.UseVisualStyleBackColor = true;
@@ -73,7 +71,7 @@
             // 
             this.groupSettings.Controls.Add(this.checkBox1);
             this.groupSettings.Controls.Add(this.checkConflicts);
-            this.groupSettings.Location = new System.Drawing.Point(6, 243);
+            this.groupSettings.Location = new System.Drawing.Point(6, 191);
             this.groupSettings.Name = "groupSettings";
             this.groupSettings.Size = new System.Drawing.Size(349, 76);
             this.groupSettings.TabIndex = 5;
@@ -105,35 +103,24 @@
             // groupBackup
             // 
             this.groupBackup.Controls.Add(this.label2);
-            this.groupBackup.Controls.Add(this.label1);
             this.groupBackup.Controls.Add(this.labelSetupWizard);
             this.groupBackup.Controls.Add(this.buttonRestoreOriginals);
             this.groupBackup.Controls.Add(this.buttonSetupWizard);
-            this.groupBackup.Controls.Add(this.buttonToggleMods);
             this.groupBackup.Location = new System.Drawing.Point(6, 65);
             this.groupBackup.Name = "groupBackup";
-            this.groupBackup.Size = new System.Drawing.Size(349, 172);
+            this.groupBackup.Size = new System.Drawing.Size(349, 120);
             this.groupBackup.TabIndex = 4;
             this.groupBackup.TabStop = false;
             this.groupBackup.Text = "Tools";
             // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(12, 119);
+            this.label2.Location = new System.Drawing.Point(14, 69);
             this.label2.Name = "label2";
             this.label2.Size = new System.Drawing.Size(207, 44);
             this.label2.TabIndex = 9;
             this.label2.Text = "Permanently removes all mods and SnakeBite settings";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // label1
-            // 
-            this.label1.Location = new System.Drawing.Point(15, 69);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(206, 44);
-            this.label1.TabIndex = 8;
-            this.label1.Text = "Quickly enable or disable all installed mods";
-            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelSetupWizard
             // 
@@ -146,7 +133,7 @@
             // 
             // buttonRestoreOriginals
             // 
-            this.buttonRestoreOriginals.Location = new System.Drawing.Point(236, 119);
+            this.buttonRestoreOriginals.Location = new System.Drawing.Point(236, 69);
             this.buttonRestoreOriginals.Name = "buttonRestoreOriginals";
             this.buttonRestoreOriginals.Size = new System.Drawing.Size(107, 44);
             this.buttonRestoreOriginals.TabIndex = 7;
@@ -164,21 +151,11 @@
             this.buttonSetupWizard.UseVisualStyleBackColor = true;
             this.buttonSetupWizard.Click += new System.EventHandler(this.buttonSetup);
             // 
-            // buttonToggleMods
-            // 
-            this.buttonToggleMods.Location = new System.Drawing.Point(236, 69);
-            this.buttonToggleMods.Name = "buttonToggleMods";
-            this.buttonToggleMods.Size = new System.Drawing.Size(107, 44);
-            this.buttonToggleMods.TabIndex = 6;
-            this.buttonToggleMods.Text = "Toggle Mods";
-            this.buttonToggleMods.UseVisualStyleBackColor = true;
-            this.buttonToggleMods.Click += new System.EventHandler(this.buttonToggleMods_Click);
-            // 
             // groupAbout
             // 
             this.groupAbout.Controls.Add(this.labelGithub);
             this.groupAbout.Controls.Add(this.labelThanks);
-            this.groupAbout.Location = new System.Drawing.Point(6, 325);
+            this.groupAbout.Location = new System.Drawing.Point(6, 273);
             this.groupAbout.Name = "groupAbout";
             this.groupAbout.Size = new System.Drawing.Size(349, 101);
             this.groupAbout.TabIndex = 3;
@@ -242,13 +219,13 @@
             this.tabControl1.Location = new System.Drawing.Point(12, 12);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(371, 459);
+            this.tabControl1.Size = new System.Drawing.Size(371, 410);
             this.tabControl1.TabIndex = 0;
             // 
             // formSettings
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(395, 483);
+            this.ClientSize = new System.Drawing.Size(392, 432);
             this.Controls.Add(this.tabControl1);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -278,11 +255,9 @@
         private System.Windows.Forms.TabPage tabSettings;
         private System.Windows.Forms.GroupBox groupBackup;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label labelSetupWizard;
         private System.Windows.Forms.Button buttonRestoreOriginals;
         private System.Windows.Forms.Button buttonSetupWizard;
-        private System.Windows.Forms.Button buttonToggleMods;
         private System.Windows.Forms.GroupBox groupAbout;
         private System.Windows.Forms.LinkLabel labelGithub;
         private System.Windows.Forms.Label labelThanks;

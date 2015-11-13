@@ -71,7 +71,6 @@
             this.labelWarning.TabIndex = 8;
             this.labelWarning.Text = resources.GetString("labelWarning.Text");
             this.labelWarning.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.labelWarning.Click += new System.EventHandler(this.labelWarning_Click);
             // 
             // buttonBrowse
             // 

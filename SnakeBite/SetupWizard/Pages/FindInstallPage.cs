@@ -10,7 +10,6 @@ namespace SnakeBite.SetupWizard
         public FindInstallPage()
         {
             InitializeComponent();
-            if (SettingsManager.ValidInstallPath)
                 textInstallPath.Text = Properties.Settings.Default.InstallPath;
         }
 
@@ -78,11 +77,6 @@ namespace SnakeBite.SetupWizard
                 Properties.Settings.Default.InstallPath = filePath;
                 Properties.Settings.Default.Save();
             }
-        }
-
-        private void labelWarning_Click(object sender, EventArgs e)
-        {
-
         }
     }
 }

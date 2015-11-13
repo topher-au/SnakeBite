@@ -118,8 +118,10 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="labelWelcomeText.Text" xml:space="preserve">
-    <value>For the application to work correctly, we need to collect some data about your Metal Gear Solid V installation.
+    <value>Thankyou for choosing SnakeBite for your MGSV modding needs.
 
-During the process a backup will be created of some of the game files so you can restore them at a later date.</value>
+For the application to work correctly, we need to gather some information about your installation and perform some minor modification to the game files.
+
+During this process, you will have the opportunity to reset your game data and create a backup.</value>
   </data>
 </root>

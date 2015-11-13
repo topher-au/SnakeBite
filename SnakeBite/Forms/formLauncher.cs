@@ -5,12 +5,21 @@ using System.Drawing;
 using System.Globalization;
 using System.IO;
 using System.Media;
+using System.Runtime.InteropServices;
 using System.Windows.Forms;
 
 namespace SnakeBite
 {
     public partial class formLauncher : Form
     {
+        public const int WM_NCLBUTTONDOWN = 0xA1;
+        public const int HTCAPTION = 0x2;
+        [DllImport("User32.dll")]
+        public static extern bool ReleaseCapture();
+        [DllImport("User32.dll")]
+        public static extern int SendMessage(IntPtr hWnd, int Msg, int wParam, int lParam);
+
+
         private CultureInfo cultureInfo = System.Threading.Thread.CurrentThread.CurrentCulture;
         private TextInfo textInfo;
 
@@ -47,8 +56,8 @@ namespace SnakeBite
             labelVersion.Text = VersionText;
             UpdateVersionLabel();
 
-            // Enable/disable mods button
-            buttonMods.Enabled = !BackupManager.ModsDisabled();
+            UpdateModToggle();
+
 
             // Fade in form
             Opacity = 0;
@@ -167,7 +176,7 @@ namespace SnakeBite
         private void buttonSettings_Click(object sender, EventArgs e)
         {
             ShowConfiguration();
-            buttonMods.Enabled = !BackupManager.ModsDisabled();
+            UpdateModToggle();
         }
 
         private void buttonExit_Click(object sender, EventArgs e)
@@ -194,6 +203,23 @@ namespace SnakeBite
             labelUpdate.Top = Height - labelUpdate.Height - 8;
         }
 
+        private void UpdateModToggle()
+        {
+            // Enable/disable mods button
+
+            if(BackupManager.ModsDisabled())
+            {
+                buttonMods.Enabled = false;
+                picModToggle.Image = Properties.Resources.toggleoff;
+            } else
+            {
+                buttonMods.Enabled = true;
+                picModToggle.Image = Properties.Resources.toggleon;
+            }
+            
+
+        }
+
         private void labelClose_Click(object sender, EventArgs e)
         {
             ExitLauncher(true);
@@ -214,6 +240,29 @@ namespace SnakeBite
                     MessageBox.Show("SnakeBite updater appears to be missing!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
+        }
+
+        private void formLauncher_MouseDown(object sender, MouseEventArgs e)
+        {
+            if (e.Button == MouseButtons.Left)
+            {
+                ReleaseCapture();
+                SendMessage(Handle, WM_NCLBUTTONDOWN, HTCAPTION, 0);
+            }
+        }
+
+        private void picModToggle_Click(object sender, EventArgs e)
+        {
+            PlaySound("ui_select");
+            if (BackupManager.ModsDisabled())
+            {
+                ProgressWindow.Show("Working","Enabling mods, please wait...", new Action(BackupManager.SwitchToMods));
+            }
+            else
+            {
+                ProgressWindow.Show("Working","Disabling mods, please wait...", new Action(BackupManager.SwitchToOriginal));
+            }
+            UpdateModToggle();
         }
     }
 }

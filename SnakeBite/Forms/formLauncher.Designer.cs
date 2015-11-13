@@ -36,6 +36,8 @@
             this.labelVersion = new System.Windows.Forms.Label();
             this.labelClose = new System.Windows.Forms.Label();
             this.labelUpdate = new System.Windows.Forms.LinkLabel();
+            this.picModToggle = new System.Windows.Forms.PictureBox();
+            ((System.ComponentModel.ISupportInitialize)(this.picModToggle)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonStartGame
@@ -132,11 +134,24 @@
             this.labelUpdate.Visible = false;
             this.labelUpdate.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.labelUpdate_LinkClicked);
             // 
+            // picModToggle
+            // 
+            this.picModToggle.BackColor = System.Drawing.Color.Transparent;
+            this.picModToggle.Image = global::SnakeBite.Properties.Resources.toggleoff;
+            this.picModToggle.Location = new System.Drawing.Point(164, 276);
+            this.picModToggle.Name = "picModToggle";
+            this.picModToggle.Size = new System.Drawing.Size(92, 39);
+            this.picModToggle.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picModToggle.TabIndex = 8;
+            this.picModToggle.TabStop = false;
+            this.picModToggle.Click += new System.EventHandler(this.picModToggle_Click);
+            // 
             // formLauncher
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackgroundImage = global::SnakeBite.Properties.Resources.LAUNCHERBG;
             this.ClientSize = new System.Drawing.Size(768, 432);
+            this.Controls.Add(this.picModToggle);
             this.Controls.Add(this.labelUpdate);
             this.Controls.Add(this.labelClose);
             this.Controls.Add(this.labelVersion);
@@ -155,6 +170,8 @@
             this.Text = "SnakeBite Launcher";
             this.Load += new System.EventHandler(this.formLauncher_Load);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.formLauncher_KeyPress);
+            this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.formLauncher_MouseDown);
+            ((System.ComponentModel.ISupportInitialize)(this.picModToggle)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -169,5 +186,6 @@
         private System.Windows.Forms.Label labelVersion;
         private System.Windows.Forms.Label labelClose;
         private System.Windows.Forms.LinkLabel labelUpdate;
+        private System.Windows.Forms.PictureBox picModToggle;
     }
 }

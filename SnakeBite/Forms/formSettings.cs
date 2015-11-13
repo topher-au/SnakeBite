@@ -22,16 +22,8 @@ namespace SnakeBite
         {
             bool backupExists = BackupManager.OriginalsExist();
             {
-                buttonToggleMods.Enabled = backupExists;
                 buttonRestoreOriginals.Enabled = backupExists;
             }
-        }
-
-        private void UpdateModToggle()
-        {
-            bool enabled = !BackupManager.ModsDisabled();
-            buttonToggleMods.Text = enabled ? "Disable Mods" : "Enable Mods";
-            buttonSetupWizard.Enabled = enabled;
         }
 
         private void buttonRestoreOriginals_Click(object sender, EventArgs e)
@@ -49,27 +41,6 @@ namespace SnakeBite
 
         private void buttonToggleMods_Click(object sender, EventArgs e)
         {
-
-            BackgroundWorker toggleWorker = new BackgroundWorker();
-
-            if (BackupManager.ModsDisabled())
-            {
-                // re-enable mods
-                toggleWorker.DoWork += (obj, var) => BackupManager.SwitchToMods();
-            }
-            else
-            {
-                // disable mods
-                toggleWorker.DoWork += (obj, var) => BackupManager.SwitchToOriginal();
-            }
-
-            toggleWorker.RunWorkerAsync();
-            while (toggleWorker.IsBusy)
-            {
-                Application.DoEvents();
-            }
-
-            UpdateModToggle();
         }
 
         private void buttonSetup(object sender, EventArgs e)
@@ -122,7 +93,6 @@ namespace SnakeBite
             textInstallPath.Text = Properties.Settings.Default.InstallPath;
             checkConflicts.Checked = SettingsManager.DisableConflictCheck;
             checkBox1.Checked = Properties.Settings.Default.EnableSound;
-            UpdateModToggle();
         }
 
         private void checkEnableSound_CheckedChanged(object sender, EventArgs e)

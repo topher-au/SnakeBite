@@ -251,6 +251,8 @@ namespace SnakeBite
                     }
                 }
 
+                Debug.LogLine(String.Format("[Mod] Checking conflicts for {0}", metaData.Name));
+                int confCounter = 0;
                 // search installed mods for conflicts
                 var mods = SettingsManager.GetInstalledMods();
                 List<string> conflictingMods = new List<string>();
@@ -264,8 +266,9 @@ namespace SnakeBite
                         if (conflicts != null)
                         {
                             if (confIndex == -1) confIndex = mods.IndexOf(mod);
-                            conflictingMods.Add(mod.Name);
-                            break;
+                            if(!conflictingMods.Contains(mod.Name)) conflictingMods.Add(mod.Name);
+                            Debug.LogLine(String.Format("[{0}] Conflict in 00.dat: {1}", mod.Name, conflicts.FilePath));
+                            confCounter++;
                         }
                     }
 
@@ -275,12 +278,10 @@ namespace SnakeBite
                                                                                                Tools.CompareHashes(entry.FilePath, fpkEntry.FilePath));
                         if (conflicts != null)
                         {
-                            if (!conflictingMods.Contains(mod.Name))
-                            {
-                                if (confIndex == -1) confIndex = mods.IndexOf(mod);
-                                conflictingMods.Add(mod.Name);
-                                break;
-                            }
+                            if (confIndex == -1) confIndex = mods.IndexOf(mod);
+                            if (!conflictingMods.Contains(mod.Name)) conflictingMods.Add(mod.Name);
+                            Debug.LogLine(String.Format("[{0}] Conflict in {2}: {1}", mod.Name, conflicts.FilePath, Path.GetFileName(conflicts.FpkFile)));
+                            confCounter++;
                         }
                     }
                 }
@@ -289,16 +290,19 @@ namespace SnakeBite
 
                 if (conflictingMods.Count > 0)
                 {
+                    Debug.LogLine(String.Format("[Mod] Found {0} conflicts", confCounter));
                     string msgboxtext = "The selected mod conflicts with these mods:\n";
                     foreach (string Conflict in conflictingMods)
                     {
                         msgboxtext += Conflict + "\n";
                     }
-                    msgboxtext += "\nPlease uninstall the mods above and try again.";
+                    msgboxtext += "\nMore information regarding the conflicts has been output to the logfile. Double click the version number shown in the Launcher to view the current logfile.";
                     this.Invoke((MethodInvoker)delegate { listInstalledMods.SelectedIndex = confIndex; });
                     MessageBox.Show(msgboxtext, "Installation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
                 }
+
+                Debug.LogLine("[Mod] No conflicts found");
 
                 bool sysConflict = false;
                 // check for system file conflicts
@@ -322,17 +326,8 @@ namespace SnakeBite
                 if (confirmInstall == DialogResult.No) return;
             }
 
-            showProgressWindow(String.Format("Installing {0}, please wait...", metaData.Name));
+            ProgressWindow.Show("Installing Mod", "", new Action((MethodInvoker)delegate { ModManager.InstallMod(ModFile); }));
 
-            // Install mod to 01.dat
-            System.ComponentModel.BackgroundWorker installer = new System.ComponentModel.BackgroundWorker();
-            installer.DoWork += (obj, e) => ModManager.InstallMod(ModFile);
-            installer.RunWorkerAsync();
-
-            while (installer.IsBusy)
-            {
-                Application.DoEvents();
-            }
             this.Invoke((MethodInvoker)delegate { RefreshInstalledMods(); });
             hideProgressWindow();
         }
