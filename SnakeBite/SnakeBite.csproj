@@ -43,7 +43,7 @@
     </Reference>
     <Reference Include="GzsTool.Core, Version=0.5.2.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>bin\Debug\GzsTool.Core.dll</HintPath>
+      <HintPath>..\..\GzsTool\GzsTool\bin\Release\GzsTool.Core.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
