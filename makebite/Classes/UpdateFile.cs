@@ -112,7 +112,14 @@ public class SerialVersion
 
         set
         {
-            version = new Version(value);
+            try
+            {
+                version = new Version(value);
+            } catch
+            {
+                version = new Version("0.0.0.0");
+            }
+            
         }
     }
 
