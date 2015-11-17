@@ -9,7 +9,7 @@ namespace SnakeBite
 {
     public static class WebManager
     {
-        private const string MODLIST_URL = "http://www.xobanimot.com/mods.xml";
+        private const string MODLIST_URL = "http://www.xobanimot.com/snakebite/webmod/mods.xml";
 
         public static List<WebMod> GetOnlineMods()
         {
