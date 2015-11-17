@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using ICSharpCode.SharpZipLib.Zip;
+using System.Xml.Serialization;
 
 namespace SnakeBite
 {
@@ -149,6 +151,24 @@ namespace SnakeBite
             "wem",
             "xml"
         };
+
+        public static ModEntry ReadMetaData(string ModFile)
+        {
+            if (!File.Exists(ModFile)) return null;
+
+            using (FileStream streamMod = new FileStream(ModFile, FileMode.Open))
+            using (ZipFile zipMod = new ZipFile(streamMod))
+            {
+                var metaIndex = zipMod.FindEntry("metadata.xml", true);
+                if (metaIndex == -1) return null;
+                using (StreamReader metaReader = new StreamReader(zipMod.GetInputStream(metaIndex)))
+                {
+                    XmlSerializer x = new XmlSerializer(typeof(ModEntry));
+                    var metaData = (ModEntry)x.Deserialize(metaReader);
+                    return metaData;
+                }
+            }
+        }
 
         public static string ToWinPath(string Path)
         {

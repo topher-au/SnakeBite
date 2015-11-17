@@ -21,8 +21,6 @@ namespace SnakeBite
 
         private delegate void GoToModListDelegate();
 
-
-
         private void buttonInstallMod_Click(object sender, EventArgs e)
         {
             // Show open file dialog for mod file
@@ -197,12 +195,8 @@ namespace SnakeBite
 
         public void ProcessInstallMod(string ModFile, bool ignoreConflicts = false)
         {
-            // extract metadata and load
-            FastZip unzipper = new FastZip();
-            unzipper.ExtractZip(ModFile, ".", "metadata.xml");
-
-            ModEntry metaData = new ModEntry("metadata.xml");
-            File.Delete("metadata.xml"); // delete temp metadata
+            var metaData = Tools.ReadMetaData(ModFile);
+            if (metaData == null) return;
 
             if (!SettingsManager.DisableConflictCheck && !ignoreConflicts)
             {
@@ -230,7 +224,7 @@ namespace SnakeBite
                     return;
                 }
 
-                if (modSBVersion < new Version(0,8,0,0))
+                if (modSBVersion < new Version(0,8,0,0)) // 0.8.0.0
                 {
                     MessageBox.Show(String.Format("The selected version of {0} was created with an older version of SnakeBite and is no longer compatible, please download the latest version and try again.", metaData.Name), "Mod update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return;
@@ -406,10 +400,11 @@ namespace SnakeBite
 
         private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
         {
+            // Check if web mods have already been loaded
             if (webMods != null) return;
 
-            webMods  = WebManager.GetOnlineMods();
-            // Populate web mod list
+            // Download and populate mod list
+            webMods = WebManager.GetOnlineMods();
             if (webMods.Count > 0)
             {
                 foreach (WebMod webMod in webMods)
