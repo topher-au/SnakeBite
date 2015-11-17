@@ -23,9 +23,11 @@ namespace SnakeBite
             Debug.Clear();
 
             Debug.LogLine(String.Format(
-                "SnakeBite Version: {0}\n" +
-                "-------------------------\n",
-                ModManager.GetSBVersion()));
+                "SnakeBite {0}\n" +
+                "{1}\n" + 
+                "-------------------------",
+                ModManager.GetSBVersion(),
+                Environment.OSVersion.VersionString));
 
             // Delete old settings file
             if (File.Exists(ModManager.GameDir + "\\sbmods.xml"))
@@ -58,7 +60,7 @@ namespace SnakeBite
             string InitLog = String.Format(
                 "MGS Install Folder: {0}\n" +
                 "MGS Version: {1}\n" +
-                "-------------------------\n",
+                "-------------------------",
                 Properties.Settings.Default.InstallPath,
                 ModManager.GetMGSVersion());
 
