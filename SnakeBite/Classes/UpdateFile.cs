@@ -95,6 +95,11 @@ public class SerialVersion
         Version = "0.0.0.0";
     }
 
+    public SerialVersion(string Ver)
+    {
+        Version = Ver;
+    }
+
     Version version = new Version();
 
     [XmlAttribute("Version")]
@@ -107,7 +112,14 @@ public class SerialVersion
 
         set
         {
-            version = new Version(value);
+            try
+            {
+                version = new Version(value);
+            } catch
+            {
+                version = new Version("0.0.0.0");
+            }
+            
         }
     }
 
