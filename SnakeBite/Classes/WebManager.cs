@@ -15,7 +15,7 @@ namespace SnakeBite
         {
             Debug.LogLine("[Web] Fetching online mod list");
             WebClient modListClient = new WebClient();
-            modListClient.Headers.Add("User-Agent", string.Format("SnakeBite/{0}", ModManager.GetSBVersion()));
+            modListClient.Headers.Add("User-Agent", string.Format("{0}/SnakeBite-{1}", Environment.OSVersion.VersionString, ModManager.GetSBVersion()));
 
             List<WebMod> WebMods;
 
