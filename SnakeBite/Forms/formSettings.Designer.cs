@@ -30,7 +30,7 @@
         {
             this.tabSettings = new System.Windows.Forms.TabPage();
             this.groupSettings = new System.Windows.Forms.GroupBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.checkEnableSound = new System.Windows.Forms.CheckBox();
             this.checkConflicts = new System.Windows.Forms.CheckBox();
             this.groupBackup = new System.Windows.Forms.GroupBox();
             this.label2 = new System.Windows.Forms.Label();
@@ -43,13 +43,17 @@
             this.groupMGSVDir = new System.Windows.Forms.GroupBox();
             this.buttonFindMGSV = new System.Windows.Forms.Button();
             this.textInstallPath = new System.Windows.Forms.TextBox();
-            this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabControl = new System.Windows.Forms.TabControl();
+            this.tabThemes = new System.Windows.Forms.TabPage();
+            this.listThemes = new System.Windows.Forms.ListBox();
+            this.buttonSetTheme = new System.Windows.Forms.Button();
             this.tabSettings.SuspendLayout();
             this.groupSettings.SuspendLayout();
             this.groupBackup.SuspendLayout();
             this.groupAbout.SuspendLayout();
             this.groupMGSVDir.SuspendLayout();
-            this.tabControl1.SuspendLayout();
+            this.tabControl.SuspendLayout();
+            this.tabThemes.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabSettings
@@ -69,7 +73,7 @@
             // 
             // groupSettings
             // 
-            this.groupSettings.Controls.Add(this.checkBox1);
+            this.groupSettings.Controls.Add(this.checkEnableSound);
             this.groupSettings.Controls.Add(this.checkConflicts);
             this.groupSettings.Location = new System.Drawing.Point(6, 191);
             this.groupSettings.Name = "groupSettings";
@@ -80,14 +84,14 @@
             // 
             // checkBox1
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Location = new System.Drawing.Point(12, 48);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(151, 19);
-            this.checkBox1.TabIndex = 2;
-            this.checkBox1.Text = "Enable launcher sounds";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkEnableSound_CheckedChanged);
+            this.checkEnableSound.AutoSize = true;
+            this.checkEnableSound.Location = new System.Drawing.Point(12, 48);
+            this.checkEnableSound.Name = "checkBox1";
+            this.checkEnableSound.Size = new System.Drawing.Size(151, 19);
+            this.checkEnableSound.TabIndex = 2;
+            this.checkEnableSound.Text = "Enable launcher sounds";
+            this.checkEnableSound.UseVisualStyleBackColor = true;
+            this.checkEnableSound.CheckedChanged += new System.EventHandler(this.checkEnableSound_CheckedChanged);
             // 
             // checkConflicts
             // 
@@ -215,18 +219,51 @@
             // 
             // tabControl1
             // 
-            this.tabControl1.Controls.Add(this.tabSettings);
-            this.tabControl1.Location = new System.Drawing.Point(12, 12);
-            this.tabControl1.Name = "tabControl1";
-            this.tabControl1.SelectedIndex = 0;
-            this.tabControl1.Size = new System.Drawing.Size(371, 410);
-            this.tabControl1.TabIndex = 0;
+            this.tabControl.Controls.Add(this.tabSettings);
+            this.tabControl.Controls.Add(this.tabThemes);
+            this.tabControl.Location = new System.Drawing.Point(12, 12);
+            this.tabControl.Name = "tabControl1";
+            this.tabControl.SelectedIndex = 0;
+            this.tabControl.Size = new System.Drawing.Size(371, 410);
+            this.tabControl.TabIndex = 0;
+            // 
+            // tabThemes
+            // 
+            this.tabThemes.Controls.Add(this.buttonSetTheme);
+            this.tabThemes.Controls.Add(this.listThemes);
+            this.tabThemes.Location = new System.Drawing.Point(4, 24);
+            this.tabThemes.Name = "tabThemes";
+            this.tabThemes.Size = new System.Drawing.Size(363, 382);
+            this.tabThemes.TabIndex = 3;
+            this.tabThemes.Text = "Themes";
+            this.tabThemes.UseVisualStyleBackColor = true;
+            // 
+            // listThemes
+            // 
+            this.listThemes.FormattingEnabled = true;
+            this.listThemes.ItemHeight = 15;
+            this.listThemes.Items.AddRange(new object[] {
+            "Default"});
+            this.listThemes.Location = new System.Drawing.Point(83, 29);
+            this.listThemes.Name = "listThemes";
+            this.listThemes.Size = new System.Drawing.Size(201, 289);
+            this.listThemes.TabIndex = 0;
+            // 
+            // buttonSetTheme
+            // 
+            this.buttonSetTheme.Location = new System.Drawing.Point(83, 324);
+            this.buttonSetTheme.Name = "buttonSetTheme";
+            this.buttonSetTheme.Size = new System.Drawing.Size(201, 23);
+            this.buttonSetTheme.TabIndex = 1;
+            this.buttonSetTheme.Text = "Set Theme";
+            this.buttonSetTheme.UseVisualStyleBackColor = true;
+            this.buttonSetTheme.Click += new System.EventHandler(this.buttonSetTheme_Click);
             // 
             // formSettings
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.ClientSize = new System.Drawing.Size(392, 432);
-            this.Controls.Add(this.tabControl1);
+            this.Controls.Add(this.tabControl);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -245,7 +282,8 @@
             this.groupAbout.PerformLayout();
             this.groupMGSVDir.ResumeLayout(false);
             this.groupMGSVDir.PerformLayout();
-            this.tabControl1.ResumeLayout(false);
+            this.tabControl.ResumeLayout(false);
+            this.tabThemes.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
@@ -265,8 +303,11 @@
         private System.Windows.Forms.GroupBox groupMGSVDir;
         private System.Windows.Forms.Button buttonFindMGSV;
         private System.Windows.Forms.TextBox textInstallPath;
-        private System.Windows.Forms.TabControl tabControl1;
+        private System.Windows.Forms.TabControl tabControl;
         private System.Windows.Forms.GroupBox groupSettings;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.CheckBox checkEnableSound;
+        private System.Windows.Forms.TabPage tabThemes;
+        private System.Windows.Forms.ListBox listThemes;
+        private System.Windows.Forms.Button buttonSetTheme;
     }
 }

@@ -7,6 +7,8 @@ using System.IO;
 using System.Media;
 using System.Runtime.InteropServices;
 using System.Windows.Forms;
+using ICSharpCode.SharpZipLib.Zip;
+using System.Xml.Serialization;
 
 namespace SnakeBite
 {
@@ -23,8 +25,16 @@ namespace SnakeBite
         private CultureInfo cultureInfo = System.Threading.Thread.CurrentThread.CurrentCulture;
         private TextInfo textInfo;
 
+        private Color baseColour;
+        private Color hoverColour;
+        private Color exitColour;
+        private SoundPlayer playerMove;
+        private SoundPlayer playerSelect;
+        
+
         public formLauncher()
         {
+            
             InitializeComponent();
         }
 
@@ -40,8 +50,12 @@ namespace SnakeBite
             {
                 if (updater.SnakeBite.Version.AsVersion() > ModManager.GetSBVersion())
                 {
-                    labelUpdate.Text = String.Format("SnakeBite version {0} now available!", updater.SnakeBite.Version);
+                    Debug.LogLine(String.Format("Update found! Version {0} is available", updater.SnakeBite.Version.AsVersion()));
+                    labelUpdate.Text = String.Format("SnakeBite version {0} now available!", updater.SnakeBite.Version.AsString());
                     labelUpdate.Show();
+                } else
+                {
+                    Debug.LogLine("No update found");
                 }
             }
 
@@ -58,6 +72,7 @@ namespace SnakeBite
 
             UpdateModToggle();
 
+            SetupTheme();
 
             // Fade in form
             Opacity = 0;
@@ -82,6 +97,69 @@ namespace SnakeBite
             timer.Start();
         }
 
+        public void SetupTheme()
+        {
+
+            // Load theme
+            if (File.Exists(Properties.Settings.Default.ThemeFile))
+            {
+                // attempt to load data from theme file
+                try
+                {
+                    ZipFile themeFile = new ZipFile(Properties.Settings.Default.ThemeFile);
+                    var themeEntry = themeFile.FindEntry("Theme.xml", true);
+                    if (themeEntry >= 0)
+                    {
+                        var themeStream = themeFile.GetInputStream(themeFile[themeEntry]);
+                        using (StreamReader themeReader = new StreamReader(themeStream))
+                        {
+                            XmlSerializer themeSerializer = new XmlSerializer(typeof(ThemeXml.Theme));
+                            var theme = (ThemeXml.Theme)themeSerializer.Deserialize(themeReader);
+                            baseColour = Color.FromArgb(theme.BaseColour.alpha, theme.BaseColour.red, theme.BaseColour.green, theme.BaseColour.blue);
+                            hoverColour = Color.FromArgb(theme.HoverColour.alpha, theme.HoverColour.red, theme.HoverColour.green, theme.HoverColour.blue);
+                            exitColour = Color.FromArgb(theme.ExitColour.alpha, theme.ExitColour.red, theme.ExitColour.green, theme.ExitColour.blue);
+                        }
+                    }
+                    var bgEntry = themeFile.FindEntry("launcherbg.png", true);
+                    if (bgEntry >= 0)
+                    {
+                        BackgroundImage = Image.FromStream(themeFile.GetInputStream(themeFile[bgEntry]));
+                    }
+                    // TODO: implemenmt theme sound effects
+                    var soundMoveEntry = themeFile.FindEntry("ui_move.wav", true);
+                    if(soundMoveEntry >= 0)
+                    {
+                        playerMove = new SoundPlayer(themeFile.GetInputStream(themeFile[soundMoveEntry]));
+                    }
+                    var soundSelectEntry = themeFile.FindEntry("ui_select.wav", true);
+                    if (soundSelectEntry >= 0)
+                    {
+                        playerSelect = new SoundPlayer(themeFile.GetInputStream(themeFile[soundSelectEntry]));
+                    }
+                }
+                catch
+                {
+
+                }
+            } else
+            {
+                // Setup default theme
+                BackgroundImage = Properties.Resources.LAUNCHERBG;
+                baseColour = Color.White;
+                hoverColour = Color.Red;
+                exitColour = Color.DarkGray;
+                playerMove = new SoundPlayer(Properties.Resources.ui_move);
+                playerSelect = new SoundPlayer(Properties.Resources.ui_select);
+            }
+
+            buttonStartGame.ForeColor = baseColour;
+            buttonMods.ForeColor = baseColour;
+            buttonSettings.ForeColor = baseColour;
+            buttonExit.ForeColor = baseColour;
+            labelClose.ForeColor = exitColour;
+            labelVersion.ForeColor = baseColour;
+        }
+
         private void formLauncher_KeyPress(object sender, KeyPressEventArgs e)
         {
             // Handle keypresses on launcher
@@ -101,27 +179,39 @@ namespace SnakeBite
         {
             PlaySound("ui_move");
             Control control = sender as Control;
-            control.ForeColor = Color.Red;
+            control.ForeColor = hoverColour;
             control.Text = textInfo.ToUpper(control.Text);
         }
 
         private void OnMouseExit(object sender, EventArgs e)
         {
             Control control = sender as Control;
-            control.ForeColor = Color.White;
+            control.ForeColor = baseColour;
             control.Text = textInfo.ToTitleCase(control.Text.ToLower());
         }
 
-        private void PlaySound(string ResourceName)
+        private void PlaySound(string SoundName)
         {
             if (!Properties.Settings.Default.EnableSound) return;
 
             BackgroundWorker soundWorker = new BackgroundWorker();
             soundWorker.DoWork += (obj, var) =>
             {
-                Stream str = Properties.Resources.ResourceManager.GetStream(ResourceName);
-                SoundPlayer snd = new SoundPlayer(str);
-                snd.Play();
+                switch(SoundName)
+                {
+                    case "ui_move":
+                        playerMove.Play();
+                        break;
+                    case "ui_select":
+                        playerSelect.Play();
+                        break;
+                    default:
+                        Stream str = Properties.Resources.ResourceManager.GetStream(SoundName);
+                        SoundPlayer snd = new SoundPlayer(str);
+                        snd.Play();
+                        break;
+                }
+                
                 System.Threading.Thread.Sleep(200);
                 soundWorker.Dispose();
             };
@@ -152,6 +242,7 @@ namespace SnakeBite
         {
             PlaySound("ui_select");
             formSettings Settings = new formSettings();
+            Settings.Owner = this;
             Settings.ShowDialog();
         }
 

@@ -58,5 +58,17 @@ namespace SnakeBite.Properties {
                 this["EnableSound"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ThemeFile {
+            get {
+                return ((string)(this["ThemeFile"]));
+            }
+            set {
+                this["ThemeFile"] = value;
+            }
+        }
     }
 }

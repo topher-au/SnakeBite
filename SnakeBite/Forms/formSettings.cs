@@ -8,11 +8,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Diagnostics;
+using ICSharpCode.SharpZipLib.Zip;
+using System.IO;
+using System.Xml.Serialization;
 
 namespace SnakeBite
 {
     public partial class formSettings : Form
     {
+        List<string> themeFiles = new List<string>() { "" };
+
         public formSettings()
         {
             InitializeComponent();
@@ -92,13 +97,49 @@ namespace SnakeBite
             // Set installation path textbox
             textInstallPath.Text = Properties.Settings.Default.InstallPath;
             checkConflicts.Checked = SettingsManager.DisableConflictCheck;
-            checkBox1.Checked = Properties.Settings.Default.EnableSound;
+            checkEnableSound.Checked = Properties.Settings.Default.EnableSound;
+            listThemes.SelectedIndex = 0;
+
+            if(Directory.Exists("Themes"))
+            {
+                foreach(string file in Directory.GetFiles("Themes", "*.sbtheme"))
+                {
+                    // Read theme names
+                    ZipFile themeZip = new ZipFile(file);
+                    var themeEntry = themeZip.FindEntry("Theme.xml", true);
+                    if(themeEntry >= 0)
+                    {
+                        var themeStream = themeZip.GetInputStream(themeZip[themeEntry]);
+                        using (StreamReader themeReader = new StreamReader(themeStream))
+                        {
+                            XmlSerializer themeSerializer = new XmlSerializer(typeof(ThemeXml.Theme));
+                            var theme = (ThemeXml.Theme)themeSerializer.Deserialize(themeReader);
+                            listThemes.Items.Add(theme.Name);
+                            themeFiles.Add(file);
+                            if (Properties.Settings.Default.ThemeFile == file) listThemes.SelectedIndex = themeFiles.Count-1;
+                        }
+                    }
+                }
+            } else
+            {
+                tabControl.TabPages.RemoveAt(1);
+            }
         }
 
         private void checkEnableSound_CheckedChanged(object sender, EventArgs e)
         {
-            Properties.Settings.Default.EnableSound = checkBox1.Checked;
+            Properties.Settings.Default.EnableSound = checkEnableSound.Checked;
             Properties.Settings.Default.Save();
+        }
+
+        private void buttonSetTheme_Click(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.ThemeFile = themeFiles[listThemes.SelectedIndex];
+            Properties.Settings.Default.Save();
+
+            var o = this.Owner as formLauncher;
+            o.SetupTheme();
+            o.Refresh();
         }
     }
 }

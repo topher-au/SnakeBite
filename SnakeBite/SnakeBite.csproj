@@ -91,6 +91,7 @@
     </Compile>
     <Compile Include="GzsLib.cs" />
     <Compile Include="ProgressWindow.cs" />
+    <Compile Include="Classes\SBTheme.cs" />
     <Compile Include="Tools.cs" />
     <Compile Include="Classes\WebManager.cs" />
     <Compile Include="Forms\formMods.cs">
