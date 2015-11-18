@@ -5,6 +5,7 @@ SnakeBite is a mod manager/launcher for Metal Gear Solid V (PC/Steam).
 When you first run the application, you will be greeted by the setup wizard. This will walk you through the steps required to run SnakeBite.
 
 During the setup process you will be prompted to
+
 1. Select your MGSV installation directory
 2. Create a backup of the game data
 3. Modify game data to prepare for modding
