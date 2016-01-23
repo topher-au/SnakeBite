@@ -70,5 +70,17 @@ namespace SnakeBite.Properties {
                 this["ThemeFile"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.8.1.0")]
+        public string LastSBVersion {
+            get {
+                return ((string)(this["LastSBVersion"]));
+            }
+            set {
+                this["LastSBVersion"] = value;
+            }
+        }
     }
 }

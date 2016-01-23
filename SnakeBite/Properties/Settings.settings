@@ -14,5 +14,8 @@
     <Setting Name="ThemeFile" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
+    <Setting Name="LastSBVersion" Type="System.String" Scope="User">
+      <Value Profile="(Default)">0.8.1.0</Value>
+    </Setting>
   </Settings>
 </SettingsFile>

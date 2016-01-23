@@ -63,6 +63,16 @@ namespace SnakeBite.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        internal static System.Drawing.Bitmap close7 {
+            get {
+                object obj = ResourceManager.GetObject("close7", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         internal static System.Drawing.Bitmap LAUNCHERBG {
             get {
                 object obj = ResourceManager.GetObject("LAUNCHERBG", resourceCulture);
@@ -76,6 +86,16 @@ namespace SnakeBite.Properties {
         internal static System.Drawing.Bitmap loading_spiral {
             get {
                 object obj = ResourceManager.GetObject("loading_spiral", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap tick7 {
+            get {
+                object obj = ResourceManager.GetObject("tick7", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

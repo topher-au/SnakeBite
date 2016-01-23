@@ -198,127 +198,7 @@ namespace SnakeBite
             var metaData = Tools.ReadMetaData(ModFile);
             if (metaData == null) return;
 
-            if (!SettingsManager.DisableConflictCheck && !ignoreConflicts)
-            {
-                // check version conflicts
-                var SBVersion = ModManager.GetSBVersion();
-                var MGSVersion = ModManager.GetMGSVersion();
-
-                Version modSBVersion = new Version();
-                Version modMGSVersion = new Version();
-                try
-                {
-                    modSBVersion = metaData.SBVersion.AsVersion();
-                    modMGSVersion = metaData.MGSVersion.AsVersion();
-                } catch
-                {
-                    MessageBox.Show(String.Format("The selected version of {0} was created with an older version of SnakeBite and is no longer compatible, please download the latest version and try again.", metaData.Name), "Mod update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-                
-
-                // Check if mod requires SB update
-                if (modSBVersion > SBVersion)
-                {
-                    MessageBox.Show(String.Format("{0} requires a newer version of SnakeBite. Please follow the link on the Settings page to get the latest version.", metaData.Name), "Update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                if (modSBVersion < new Version(0,8,0,0)) // 0.8.0.0
-                {
-                    MessageBox.Show(String.Format("The selected version of {0} was created with an older version of SnakeBite and is no longer compatible, please download the latest version and try again.", metaData.Name), "Mod update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                // Check MGS version compatibility
-                if (MGSVersion != modMGSVersion && modMGSVersion != new Version(0,0,0,0))
-                {
-                    if (MGSVersion > modMGSVersion && modMGSVersion > new Version(0,0,0,0))
-                    {
-                        var contInstall = MessageBox.Show(String.Format("{0} appears to be for an older version of MGSV. It is recommended that you at least check for an updated version before installing.\n\nContinue installation?", metaData.Name, modMGSVersion, MGSVersion), "Game version mismatch", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-                        if (contInstall == DialogResult.No) return;
-                    }
-                    if (MGSVersion < modMGSVersion)
-                    {
-                        MessageBox.Show(String.Format("{0} requires MGSV version {1}, but your installation is version {2}. Please update MGSV and try again.", metaData.Name, modMGSVersion, MGSVersion), "Update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        return;
-                    }
-                }
-
-                Debug.LogLine(String.Format("[Mod] Checking conflicts for {0}", metaData.Name));
-                int confCounter = 0;
-                // search installed mods for conflicts
-                var mods = SettingsManager.GetInstalledMods();
-                List<string> conflictingMods = new List<string>();
-                int confIndex = -1;
-                foreach (ModEntry mod in mods) // iterate through installed mods
-                {
-                    foreach (ModQarEntry qarEntry in metaData.ModQarEntries) // iterate qar files from new mod
-                    {
-                        if (qarEntry.FilePath.Contains(".fpk")) continue;
-                        ModQarEntry conflicts = mod.ModQarEntries.FirstOrDefault(entry => Tools.CompareHashes(entry.FilePath, qarEntry.FilePath));
-                        if (conflicts != null)
-                        {
-                            if (confIndex == -1) confIndex = mods.IndexOf(mod);
-                            if(!conflictingMods.Contains(mod.Name)) conflictingMods.Add(mod.Name);
-                            Debug.LogLine(String.Format("[{0}] Conflict in 00.dat: {1}", mod.Name, conflicts.FilePath));
-                            confCounter++;
-                        }
-                    }
-
-                    foreach (ModFpkEntry fpkEntry in metaData.ModFpkEntries) // iterate fpk files from new mod
-                    {
-                        ModFpkEntry conflicts = mod.ModFpkEntries.FirstOrDefault(entry => Tools.CompareHashes(entry.FpkFile, fpkEntry.FpkFile) &&
-                                                                                               Tools.CompareHashes(entry.FilePath, fpkEntry.FilePath));
-                        if (conflicts != null)
-                        {
-                            if (confIndex == -1) confIndex = mods.IndexOf(mod);
-                            if (!conflictingMods.Contains(mod.Name)) conflictingMods.Add(mod.Name);
-                            Debug.LogLine(String.Format("[{0}] Conflict in {2}: {1}", mod.Name, conflicts.FilePath, Path.GetFileName(conflicts.FpkFile)));
-                            confCounter++;
-                        }
-                    }
-                }
-
-                // if the mod conflicts, display message
-
-                if (conflictingMods.Count > 0)
-                {
-                    Debug.LogLine(String.Format("[Mod] Found {0} conflicts", confCounter));
-                    string msgboxtext = "The selected mod conflicts with these mods:\n";
-                    foreach (string Conflict in conflictingMods)
-                    {
-                        msgboxtext += Conflict + "\n";
-                    }
-                    msgboxtext += "\nMore information regarding the conflicts has been output to the logfile. Double click the version number shown in the Launcher to view the current logfile.";
-                    this.Invoke((MethodInvoker)delegate { listInstalledMods.SelectedIndex = confIndex; });
-                    MessageBox.Show(msgboxtext, "Installation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                Debug.LogLine("[Mod] No conflicts found");
-
-                bool sysConflict = false;
-                // check for system file conflicts
-                var gameData = SettingsManager.GetGameData();
-                foreach (ModQarEntry gameQarFile in gameData.GameQarEntries.FindAll(entry => entry.SourceType == FileSource.System))
-                {
-                    if (metaData.ModQarEntries.Count(entry => Tools.ToQarPath(entry.FilePath) == Tools.ToQarPath(gameQarFile.FilePath)) > 0) sysConflict = true;
-                }
-
-                foreach (ModFpkEntry gameFpkFile in gameData.GameFpkEntries.FindAll(entry => entry.SourceType == FileSource.System))
-                {
-                    if (metaData.ModFpkEntries.Count(entry => entry.FilePath == gameFpkFile.FilePath && entry.FpkFile == gameFpkFile.FpkFile) > 0) sysConflict = true;
-                }
-                if (sysConflict)
-                {
-                    MessageBox.Show("The selected mod conflicts with existing MGSV system files.", "SnakeBite", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    return;
-                }
-
-                DialogResult confirmInstall = MessageBox.Show(String.Format("You are about to install {0}, continue?", metaData.Name), "SnakeBite", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-                if (confirmInstall == DialogResult.No) return;
-            }
+            if (!ModManager.CheckConflicts(ModFile, ignoreConflicts)) return;
 
             ProgressWindow.Show("Installing Mod", String.Format("Installing {0}, please wait...", metaData.Name), new Action((MethodInvoker)delegate { ModManager.InstallMod(ModFile); }));
 
@@ -418,6 +298,13 @@ namespace SnakeBite
                 tabControl.SelectedIndex = 0;
                 tabControl.TabPages.RemoveAt(1);
             }
+        }
+
+        private void buttonInstallZip_Click(object sender, EventArgs e)
+        {
+            QuickMod.formQuickMod qm = new QuickMod.formQuickMod();
+            qm.ShowDialog();
+            RefreshInstalledMods(true);
         }
     }
 }

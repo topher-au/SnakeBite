@@ -18,6 +18,12 @@ namespace SnakeBite
             Application.SetCompatibleTextRenderingDefault(false);
 
             SettingsManager.DisableConflictCheck = false;
+            if (Properties.Settings.Default.LastSBVersion == null || new Version(Properties.Settings.Default.LastSBVersion) < ModManager.GetSBVersion())
+            {
+                Properties.Settings.Default.Upgrade();
+            }
+
+            Properties.Settings.Default.LastSBVersion = ModManager.GetSBVersion().ToString();
             Properties.Settings.Default.Save();
 
             Debug.Clear();

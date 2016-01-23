@@ -156,18 +156,22 @@ namespace SnakeBite
         {
             if (!File.Exists(ModFile)) return null;
 
-            using (FileStream streamMod = new FileStream(ModFile, FileMode.Open))
-            using (ZipFile zipMod = new ZipFile(streamMod))
+            try
             {
-                var metaIndex = zipMod.FindEntry("metadata.xml", true);
-                if (metaIndex == -1) return null;
-                using (StreamReader metaReader = new StreamReader(zipMod.GetInputStream(metaIndex)))
+                using (FileStream streamMod = new FileStream(ModFile, FileMode.Open))
+                using (ZipFile zipMod = new ZipFile(streamMod))
                 {
-                    XmlSerializer x = new XmlSerializer(typeof(ModEntry));
-                    var metaData = (ModEntry)x.Deserialize(metaReader);
-                    return metaData;
+                    var metaIndex = zipMod.FindEntry("metadata.xml", true);
+                    if (metaIndex == -1) return null;
+                    using (StreamReader metaReader = new StreamReader(zipMod.GetInputStream(metaIndex)))
+                    {
+                        XmlSerializer x = new XmlSerializer(typeof(ModEntry));
+                        var metaData = (ModEntry)x.Deserialize(metaReader);
+                        return metaData;
+                    }
                 }
-            }
+            } catch { return null; }
+            
         }
 
         public static string ToWinPath(string Path)

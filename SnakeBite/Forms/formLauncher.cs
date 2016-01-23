@@ -355,5 +355,6 @@ namespace SnakeBite
             }
             UpdateModToggle();
         }
+
     }
 }

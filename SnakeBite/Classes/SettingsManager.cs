@@ -190,38 +190,31 @@ namespace SnakeBite
         public void Save()
         {
             // Write settings to XML
-
-            if (File.Exists(ModManager.GameDir + "\\snakebite.xml"))
+            using (FileStream s = new FileStream(Path.Combine(ModManager.GameDir, "snakebite.xml"), FileMode.Create))
             {
-                File.Delete(ModManager.GameDir + "\\snakebite.xml");
+                XmlSerializer x = new XmlSerializer(typeof(Settings), new[] { typeof(Settings) });
+                foreach (ModEntry mod in ModEntries)
+                {
+                    mod.Description = mod.Description.Replace("\r\n", "\n");
+                }
+                SbVersion.Version = ModManager.GetSBVersion().ToString();
+                x.Serialize(s, this);
             }
-
-            XmlSerializer x = new XmlSerializer(typeof(Settings), new[] { typeof(Settings) });
-            StreamWriter s = new StreamWriter(ModManager.GameDir + "\\snakebite.xml");
-            foreach (ModEntry mod in ModEntries)
-            {
-                mod.Description = mod.Description.Replace("\r\n", "\n");
-            }
-            SbVersion.Version = ModManager.GetSBVersion().ToString();
-            x.Serialize(s, this);
-            s.Close();
         }
 
-        public bool Load()
+        public void Load()
         {
             // Load settings from XML
 
             if (!File.Exists(ModManager.GameDir + "\\snakebite.xml"))
             {
-                return false;
+                return;
             }
 
-            try
+            using (FileStream s = new FileStream(Path.Combine(ModManager.GameDir, "snakebite.xml"), FileMode.Open))
             {
                 XmlSerializer x = new XmlSerializer(typeof(Settings));
-                StreamReader s = new StreamReader(ModManager.GameDir + "\\snakebite.xml");
                 Settings loaded = (Settings)x.Deserialize(s);
-                s.Close();
                 GameData = loaded.GameData;
                 ModEntries = loaded.ModEntries;
                 SbVersion = loaded.SbVersion;
@@ -229,12 +222,8 @@ namespace SnakeBite
                 {
                     mod.Description = mod.Description.Replace("\n", "\r\n");
                 }
-                return true;
-            } catch
-            {
-                return false;
             }
-            
+            return;
         }
     }
 
@@ -270,10 +259,10 @@ namespace SnakeBite
         }
 
         [XmlAttribute("Name")]
-        public string Name { get; set; }
+        public string Name { get; set; } = string.Empty;
 
         [XmlAttribute("Version")]
-        public string Version { get; set; }
+        public string Version { get; set; } = string.Empty;
 
         [XmlElement("MGSVersion")]
         public SerialVersion MGSVersion { get; set; } = new SerialVersion();
@@ -282,13 +271,13 @@ namespace SnakeBite
         public SerialVersion SBVersion { get; set; } = new SerialVersion();
 
         [XmlAttribute("Author")]
-        public string Author { get; set; }
+        public string Author { get; set; } = string.Empty;
 
         [XmlAttribute("Website")]
-        public string Website { get; set; }
+        public string Website { get; set; } = string.Empty;
 
         [XmlElement("Description")]
-        public string Description { get; set; }
+        public string Description { get; set; } = string.Empty;
 
         [XmlArray("QarEntries")]
         public List<ModQarEntry> ModQarEntries { get; set; } = new List<ModQarEntry>();

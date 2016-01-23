@@ -92,6 +92,25 @@
     <Compile Include="GzsLib.cs" />
     <Compile Include="ProgressWindow.cs" />
     <Compile Include="Classes\SBTheme.cs" />
+    <Compile Include="QuickMod\CreateModPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="QuickMod\CreateModPanel.Designer.cs">
+      <DependentUpon>CreateModPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="QuickMod\Methods.cs" />
+    <Compile Include="QuickMod\SelectZipPanel.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="QuickMod\SelectZipPanel.Designer.cs">
+      <DependentUpon>SelectZipPanel.cs</DependentUpon>
+    </Compile>
+    <Compile Include="QuickMod\formQuickMod.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="QuickMod\formQuickMod.Designer.cs">
+      <DependentUpon>formQuickMod.cs</DependentUpon>
+    </Compile>
     <Compile Include="Tools.cs" />
     <Compile Include="Classes\WebManager.cs" />
     <Compile Include="Forms\formMods.cs">
@@ -161,6 +180,15 @@
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
       <SubType>Designer</SubType>
     </EmbeddedResource>
+    <EmbeddedResource Include="QuickMod\CreateModPanel.resx">
+      <DependentUpon>CreateModPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="QuickMod\SelectZipPanel.resx">
+      <DependentUpon>SelectZipPanel.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="QuickMod\formQuickMod.resx">
+      <DependentUpon>formQuickMod.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="SetupWizard\Pages\CreateBackupPage.resx">
       <DependentUpon>CreateBackupPage.cs</DependentUpon>
     </EmbeddedResource>
@@ -177,6 +205,8 @@
       <DependentUpon>SetupWizard.cs</DependentUpon>
     </EmbeddedResource>
     <None Include="packages.config" />
+    <None Include="Properties\DataSources\SnakeBite.QuickMod.formQuickMod.datasource" />
+    <None Include="Properties\DataSources\SnakeBite.QuickMod.Methods.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -199,6 +229,8 @@
     <None Include="Resources\loading-spiral.gif" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\tick7.png" />
+    <None Include="Resources\close7.png" />
     <Content Include="Resources\fpk_dictionary.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>

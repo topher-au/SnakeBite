@@ -182,9 +182,6 @@ namespace SnakeBite.GzsTool
         // Load filename dictionaries
         public static void LoadDictionaries()
         {
-            if (File.Exists("mod_fpk_dict.txt")) File.Delete("mod_fpk_dict.txt");
-            if (File.Exists("mod_qar_dict.txt")) File.Delete("mod_qar_dict.txt");
-
             var FpkNames = SettingsManager.GetModFpkFiles();
             var QarNames = SettingsManager.GetModQarFiles(true);
 

@@ -54,6 +54,7 @@
             this.labelWebAuthor = new System.Windows.Forms.Label();
             this.labelWebName = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
+            this.buttonInstallZip = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tabInstalledMods.SuspendLayout();
             this.groupModInfo.SuspendLayout();
@@ -77,6 +78,7 @@
             // 
             // tabInstalledMods
             // 
+            this.tabInstalledMods.Controls.Add(this.buttonInstallZip);
             this.tabInstalledMods.Controls.Add(this.buttonInstallMod);
             this.tabInstalledMods.Controls.Add(this.listInstalledMods);
             this.tabInstalledMods.Controls.Add(this.groupModInfo);
@@ -93,9 +95,9 @@
             // 
             this.buttonInstallMod.Location = new System.Drawing.Point(3, 382);
             this.buttonInstallMod.Name = "buttonInstallMod";
-            this.buttonInstallMod.Size = new System.Drawing.Size(187, 23);
+            this.buttonInstallMod.Size = new System.Drawing.Size(94, 23);
             this.buttonInstallMod.TabIndex = 1;
-            this.buttonInstallMod.Text = "Install Mod...";
+            this.buttonInstallMod.Text = "Install .MGSV";
             this.buttonInstallMod.UseVisualStyleBackColor = true;
             this.buttonInstallMod.Click += new System.EventHandler(this.buttonInstallMod_Click);
             // 
@@ -107,7 +109,7 @@
             this.listInstalledMods.Location = new System.Drawing.Point(3, 12);
             this.listInstalledMods.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.listInstalledMods.Name = "listInstalledMods";
-            this.listInstalledMods.Size = new System.Drawing.Size(187, 368);
+            this.listInstalledMods.Size = new System.Drawing.Size(188, 368);
             this.listInstalledMods.TabIndex = 0;
             this.listInstalledMods.SelectedIndexChanged += new System.EventHandler(this.listInstalledMods_SelectedIndexChanged);
             // 
@@ -348,6 +350,16 @@
             this.label5.TabIndex = 2;
             this.label5.Text = "No mods installed";
             // 
+            // buttonInstallZip
+            // 
+            this.buttonInstallZip.Location = new System.Drawing.Point(97, 382);
+            this.buttonInstallZip.Name = "buttonInstallZip";
+            this.buttonInstallZip.Size = new System.Drawing.Size(94, 23);
+            this.buttonInstallZip.TabIndex = 2;
+            this.buttonInstallZip.Text = "Install .ZIP";
+            this.buttonInstallZip.UseVisualStyleBackColor = true;
+            this.buttonInstallZip.Click += new System.EventHandler(this.buttonInstallZip_Click);
+            // 
             // formMods
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -408,6 +420,7 @@
         private System.Windows.Forms.Label label5;
         private System.Windows.Forms.Label labelModAd;
         private System.Windows.Forms.Button buttonWebRemove;
+        private System.Windows.Forms.Button buttonInstallZip;
     }
 }
 
