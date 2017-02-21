@@ -7,6 +7,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace SnakeBite
@@ -21,7 +22,7 @@ namespace SnakeBite
         {
             CleanupFolders();
 
-            Debug.LogLine(String.Format("[Mod] Installation started: {0}", ModFile), Debug.LogLevel.Basic);
+            Debug.LogLine(String.Format("[Install] Installation started: {0}", ModFile), Debug.LogLevel.Basic);
 
             // Extract game archive
             var zeroFiles = GzsLib.ExtractArchive<QarFile>(ZeroPath, "_working");
@@ -43,7 +44,7 @@ namespace SnakeBite
             List<string> mergeFpks = new List<string>();
             List<ModQarEntry> MergeFiles = new List<ModQarEntry>();
 
-            Debug.LogLine("[Mod] Checking existing game data", Debug.LogLevel.Basic);
+            Debug.LogLine("[Install] Checking existing game data", Debug.LogLevel.Basic);
 
             // Check for FPKs in 00.dat
             foreach (string fpk in modFpks)
@@ -112,21 +113,27 @@ namespace SnakeBite
                 }
             }
 
-            Debug.LogLine(String.Format("[Mod] Merging {0} FPK files", MergeFiles.Count), Debug.LogLevel.Basic);
+            Debug.LogLine(String.Format("[Install] Merging {0} FPK files", MergeFiles.Count), Debug.LogLevel.Basic);
 
             var g = SettingsManager.GetGameData();
 
             // Merge FPK files
             foreach (ModQarEntry gf in MergeFiles)
             {
-                Debug.LogLine(String.Format("[Mod] Starting merge: {0} ({1})", gf.FilePath, gf.SourceName), Debug.LogLevel.Debug);
+                Debug.LogLine(String.Format("[Install] Starting merge: {0} ({1})", gf.FilePath, gf.SourceName), Debug.LogLevel.Debug);
                 // Extract game FPK
                 string fpkDatPath = zeroFiles.FirstOrDefault(file => Tools.CompareHashes(file, gf.FilePath));
                 string fpkPath = Path.Combine("_working", Tools.ToWinPath(fpkDatPath));
                 var gameFpk = GzsLib.ExtractArchive<FpkFile>(fpkPath, "_gamefpk");
 
                 // Extract mod FPK
-                var exFpk = GzsLib.ExtractArchive<FpkFile>(Path.Combine("_extr", Tools.ToWinPath(gf.FilePath)), "_modfpk");
+                List<string> exFpk = null;
+                try {
+                    exFpk = GzsLib.ExtractArchive<FpkFile>(Path.Combine("_extr", Tools.ToWinPath(gf.FilePath)), "_modfpk");
+                } catch (System.IO.FileNotFoundException e) {
+                    Debug.LogLine(String.Format("[Install] Possible mismatch between snakebite gztool dictionary mod {0} was packed with and current snakebite gztool dictionary.", ModFile));
+                    throw e;
+                }
 
                 // Add file to gamedata info
                 var q = g.GameQarEntries.FirstOrDefault(entry => entry.FilePath == gf.FilePath);
@@ -151,7 +158,7 @@ namespace SnakeBite
                     string sourceFile = Path.Combine("_modfpk", fileName);
                     string destFile = Path.Combine("_gamefpk", fileName);
 
-                    Debug.LogLine(String.Format("[Mod] Copying file: {0}", fileName), Debug.LogLevel.All);
+                    Debug.LogLine(String.Format("[Install] Copying file: {0}", fileName), Debug.LogLevel.All);
 
                     if (!Directory.Exists(fileDir)) Directory.CreateDirectory(fileDir);
                     File.Copy(sourceFile, destFile, true);
@@ -163,12 +170,12 @@ namespace SnakeBite
                 if (!zeroFiles.Contains(Tools.ToWinPath(gf.FilePath))) zeroFiles.Add(Tools.ToWinPath(gf.FilePath));
                 Directory.Delete("_modfpk", true);
                 Directory.Delete("_gamefpk", true);
-                Debug.LogLine(String.Format("[Mod] Merge complete"), Debug.LogLevel.Debug);
+                Debug.LogLine(String.Format("[Install] Merge complete"), Debug.LogLevel.Debug);
             }
 
             SettingsManager.SetGameData(g);
 
-            Debug.LogLine("[Mod] Copying remaining mod files", Debug.LogLevel.Basic);
+            Debug.LogLine("[Install] Copying remaining mod files", Debug.LogLevel.Basic);
 
             // Copy files for 01.dat, ignoring merged FPKs
             foreach (ModQarEntry modEntry in metaData.ModQarEntries)
@@ -183,85 +190,94 @@ namespace SnakeBite
                 string destFile = Path.Combine("_working", Tools.ToWinPath(modEntry.FilePath));
                 string destDir = Path.GetDirectoryName(destFile);
 
-                Debug.LogLine(String.Format("[Mod] Copying file: {0}", modEntry.FilePath), Debug.LogLevel.All);
+                Debug.LogLine(String.Format("[Install] Copying file: {0}", modEntry.FilePath), Debug.LogLevel.All);
                 if (!Directory.Exists(destDir)) Directory.CreateDirectory(destDir);
                 File.Copy(sourceFile, destFile, true);
             }
 
-            // Rebuild 01.dat
-            Debug.LogLine("[Mod] Rebuilding game archive", Debug.LogLevel.Basic);
+            // Rebuild 00.dat
+            Debug.LogLine("[Install] Rebuilding game archive", Debug.LogLevel.Basic);
             GzsLib.WriteQarArchive(ZeroPath, "_working", zeroFiles, 3150048);
 
             SettingsManager.UpdateDatHash();
 
             SettingsManager.AddMod(metaData);
 
-            Debug.LogLine("[Mod] Running database cleanup", Debug.LogLevel.Debug);
             CleanupDatabase();
 
             CleanupFolders();
 
-            Debug.LogLine("[Mod] Installation finished", Debug.LogLevel.Basic);
+            Debug.LogLine("[Install] Installation finished", Debug.LogLevel.Basic);
 
             return true;
         }
 
         public static bool UninstallMod(ModEntry mod)
         {
-            Debug.LogLine(String.Format("[Mod] Uninstall started: {0}", mod.Name), Debug.LogLevel.Basic);
+            Debug.LogLine(String.Format("[Uninstall] Uninstall started: {0}", mod.Name), Debug.LogLevel.Basic);
 
+            //allready logs
             CleanupFolders();
 
-            // Extract game archive
+            Debug.LogLine("[Uninstall] Extracting 00.dat to _working", Debug.LogLevel.Basic);
             var zeroFiles = GzsLib.ExtractArchive<QarFile>(ZeroPath, "_working");
 
-            // List all FPKs in mod
+            Debug.LogLine("[Uninstall] Building list of fpks in mod", Debug.LogLevel.Basic);
             List<string> modFpks = new List<string>();
             foreach (ModFpkEntry fpkEntry in mod.ModFpkEntries)
             {
                 if (!modFpks.Contains(fpkEntry.FpkFile)) modFpks.Add(fpkEntry.FpkFile);
             }
+            //tex: the above wont catch empty fpks (fpkds require a fpk, which can be empty)
+            foreach (ModQarEntry fpkEntry in mod.ModQarEntries) {
+                if (fpkEntry.FilePath.Contains(".fpk")) {
+                    if (!modFpks.Contains(fpkEntry.FilePath)) modFpks.Add(fpkEntry.FilePath);
+                }
+            }
 
+            Debug.LogLine("[Uninstall] Reading snakebite.xml", Debug.LogLevel.Basic);
             var gameData = SettingsManager.GetGameData();
 
-            // Extract FPK
+            Debug.LogLine("[Uninstall] Processing fpk entries", Debug.LogLevel.Basic);
             foreach (string fpk in modFpks)
             {
+                Debug.LogLine(String.Format("[Uninstall] Processing {0}", fpk), Debug.LogLevel.Basic);
+                //Extract fpk/d
                 string fpkName = Path.GetFileName(fpk);
-                string fpkDatPath = zeroFiles.FirstOrDefault(file => Tools.CompareHashes(file, fpk));
+                string fpkDatPath = zeroFiles.FirstOrDefault(file => Tools.CompareHashes(file, fpk));//NMC internal path
                 if (fpkDatPath == null) continue;
-                var fpkFile = GzsLib.ExtractArchive<FpkFile>(Path.Combine("_working", Tools.ToWinPath(fpkDatPath)), "_modfpk");
+                List<string> fpkFiles = GzsLib.ExtractArchive<FpkFile>(Path.Combine("_working", Tools.ToWinPath(fpkDatPath)), "_modfpk");
 
-                // Remove all mod fpk files from fpk
+                // Remove all mod fpk files from fpkFiles
                 foreach (ModFpkEntry fpkEntry in mod.ModFpkEntries)
                 {
-                    Debug.LogLine(String.Format("[Mod] Removing {1}\\{0}", Tools.ToWinPath(fpkEntry.FilePath), fpkName), Debug.LogLevel.Debug);
-                    fpkFile.RemoveAll(file => Tools.ToQarPath(file) == Tools.ToQarPath(fpkEntry.FilePath));
+                    //tex DEBUGNOW OFFDebug.LogLine(String.Format("[Uninstall] Removing {1}\\{0}", Tools.ToWinPath(fpkEntry.FilePath), fpkName), Debug.LogLevel.Debug);
+                    fpkFiles.RemoveAll(file => Tools.ToQarPath(file) == Tools.ToQarPath(fpkEntry.FilePath));
                 }
 
                 var gameFpks = gameData.GameFpkEntries.ToList();
 
-                // remove all merged files from fpk
+                // Remove all merged files from fpkFiles and gameData list
                 foreach (ModFpkEntry gameFpkFile in gameFpks)
                 {
                     if (Tools.ToQarPath(gameFpkFile.FpkFile) == Tools.ToQarPath(fpk) && gameFpkFile.SourceType == FileSource.Merged)
                     {
-                        Debug.LogLine(String.Format("[Mod] Removing merged file {0}", gameFpkFile.FilePath));
-                        fpkFile.RemoveAll(entry => entry == gameFpkFile.FilePath);
+                        // OFF Debug.LogLine(String.Format("[Uninstall] Removing merged file {0}", gameFpkFile.FilePath));
+                        fpkFiles.RemoveAll(entry => entry == gameFpkFile.FilePath);
                         gameData.GameFpkEntries.Remove(gameFpkFile);
                     }
                 }
 
                 // remove fpk if no files left
-                if (fpkFile.Count == 0)
+                if (fpkFiles.Count == 0)
                 {
-                    Debug.LogLine(String.Format("[Mod] {0} is empty, removing", fpkName), Debug.LogLevel.Debug);
+                    Debug.LogLine(String.Format("[Uninstall] {0} now has no modded files, removing from list", fpkName), Debug.LogLevel.Debug);
                     zeroFiles.RemoveAll(file => Tools.CompareHashes(file, fpk));
                     gameData.GameQarEntries.RemoveAll(file => Tools.CompareHashes(file.FilePath, fpk));
                 }
                 else
                 {
-                    Debug.LogLine(String.Format("[Mod] Rebuilding {0}", fpk), Debug.LogLevel.Debug);
+                    Debug.LogLine(String.Format("[Uninstall] Rebuilding {0}", fpk), Debug.LogLevel.Debug);
                     // rebuild fpk from base file
                     var baseData = GzsLib.ReadBaseData();
 
@@ -280,21 +296,21 @@ namespace SnakeBite
                         var mCount = 0;
                         foreach (var fpkF in gameFpk)
                         {
-                            if (!fpkFile.Contains(fpkF))
+                            if (!fpkFiles.Contains(fpkF))
                             {
                                 gameData.GameFpkEntries.Add(new ModFpkEntry() { FpkFile = fpk, FilePath = fpkF, SourceType = FileSource.Merged, SourceName = file.QarFile });
                                 mCount++;
                             }
                         }
 
-                        Debug.LogLine(String.Format("[Mod] {0} files restored from {1}", mCount, file.QarFile), Debug.LogLevel.Debug);
+                        Debug.LogLine(String.Format("[Uninstall] {0} files restored from {1}", mCount, file.QarFile), Debug.LogLevel.Debug);
 
                         // Copy remaining files over base FPK
-                        foreach (string mFile in fpkFile)
+                        foreach (string mFile in fpkFiles)
                         {
                             string fDir = Path.GetDirectoryName(mFile);
                             if (!Directory.Exists(Path.Combine("_gamefpk", fDir))) Directory.CreateDirectory(Path.Combine("_gamefpk", fDir));
-                            Debug.LogLine(String.Format("[Mod] Merging existing file: {0}", mFile));
+                            Debug.LogLine(String.Format("[Uninstall] Merging existing file: {0}", mFile));
                             File.Copy(Path.Combine("_modfpk", mFile), Path.Combine(Path.Combine("_gamefpk", mFile)), true);
                             if (!gameFpk.Contains(mFile)) gameFpk.Add(mFile);
                         }
@@ -318,20 +334,20 @@ namespace SnakeBite
                         var mCount = 0;
                         foreach (var fpkF in gameFpk)
                         {
-                            if (!fpkFile.Contains(fpkF))
+                            if (!fpkFiles.Contains(fpkF))
                             {
                                 gameData.GameFpkEntries.Add(new ModFpkEntry() { FpkFile = fpk, FilePath = fpkF, SourceType = FileSource.Merged, SourceName = file.QarFile });
                                 mCount++;
                             }
                         }
 
-                        Debug.LogLine(String.Format("[Mod] {0} files restored from {1}", mCount, file.QarFile), Debug.LogLevel.Debug);
+                        Debug.LogLine(String.Format("[Uninstall] {0} files restored from {1}", mCount, file.QarFile), Debug.LogLevel.Debug);
                         // Copy remaining files over base FPK
-                        foreach (string mFile in fpkFile)
+                        foreach (string mFile in fpkFiles)
                         {
                             string fDir = Path.GetDirectoryName(mFile);
                             if (!Directory.Exists(Path.Combine("_gamefpk", fDir))) Directory.CreateDirectory(Path.Combine("_gamefpk", fDir));
-                            Debug.LogLine(String.Format("[Mod] Merging existing file: {0}", mFile));
+                            Debug.LogLine(String.Format("[Uninstall] Merging existing file: {0}", mFile));
                             File.Copy(Path.Combine("_modfpk", mFile), Path.Combine(Path.Combine("_gamefpk", mFile)), true);
                             if (!gameFpk.Contains(mFile)) gameFpk.Add(mFile);
                         }
@@ -344,9 +360,11 @@ namespace SnakeBite
                 }
             }
 
+            //write out snakebite.xml, at this point the mods qar and fpk entries should have been removed, but the mods modentry is still there
+            Debug.LogLine("[Uninstall] Saving snakebite.xml", Debug.LogLevel.Debug);
             SettingsManager.SetGameData(gameData);
 
-            // Remove all mod files from 01.dat
+            Debug.LogLine("[Uninstall] Remove all mod files from 00.dat files list", Debug.LogLevel.Debug);
             foreach (ModQarEntry qarEntry in mod.ModQarEntries)
             {
                 string fExt = Path.GetExtension(qarEntry.FilePath);
@@ -356,17 +374,20 @@ namespace SnakeBite
                 }
             }
 
-            Debug.LogLine("[Mod] Rebuilding game archive", Debug.LogLevel.Basic);
-            // Rebuild 01.dat
+            Debug.LogLine("[Uninstall] Rebuilding 00.dat", Debug.LogLevel.Basic);
             GzsLib.WriteQarArchive(ZeroPath, "_working", zeroFiles, 3150048);
+
+            Debug.LogLine("[Uninstall] Updating 00.dat hash", Debug.LogLevel.Basic);
             SettingsManager.UpdateDatHash();
 
+            Debug.LogLine("[Uninstall] Removing mod entry from snakebite.xml", Debug.LogLevel.Basic);
             SettingsManager.RemoveMod(mod);
 
             CleanupDatabase();
 
+            //Debug.LogLine("CleanupFolders", Debug.LogLevel.Basic); //allready logs
             CleanupFolders();
-            Debug.LogLine("[Mod] Uninstall complete", Debug.LogLevel.Basic);
+            Debug.LogLine("[Uninstall] Uninstall complete", Debug.LogLevel.Basic);
 
             return true;
         }
@@ -381,29 +402,39 @@ namespace SnakeBite
         {
             Debug.LogLine("[DatMerge] System data merge started", Debug.LogLevel.Debug);
 
-            var zeroList = GzsLib.ListArchiveContents<QarFile>(ZeroPath);
+            List<string> zeroList = new List<string>();
+
+            try {
+                zeroList = GzsLib.ListArchiveContents<QarFile>(ZeroPath);
+            }
+            catch (Exception e) {
+                Debug.LogLine(String.Format("[Error] GzsLib.ListArchiveContents exception: {0}",e.Message), Debug.LogLevel.Debug);
+                throw e;
+            }
             var modQarFiles = SettingsManager.GetModQarFiles();
 
-            int mc = 0;
+            int moveCount = 0;
             foreach (string zeroFile in zeroList)
             {
                 if (zeroFile == "foxpatch.dat") continue;
                 if (modQarFiles.Contains(Tools.ToQarPath(zeroFile))) continue;
-                mc++;
+                moveCount++;
             }
 
-            if (mc > 0)
+            if (moveCount > 0)
             {
                 CleanupFolders();
 
+                Debug.LogLine("[DatMerge] Extracting 00.dat", Debug.LogLevel.Debug);
                 // Extract 00.dat
                 var zeroFiles = GzsLib.ExtractArchive<QarFile>(ZeroPath, "_extr");
+                Debug.LogLine("[DatMerge] Extracting 01.dat", Debug.LogLevel.Debug);
                 // Extract 01.dat
                 var oneFiles = GzsLib.ExtractArchive<QarFile>(OnePath, "_working");
 
                 var zeroOut = zeroFiles.ToList();
 
-                Debug.LogLine(string.Format("[DatMerge] Moving {0} system files", mc), Debug.LogLevel.Debug);
+                Debug.LogLine(string.Format("[DatMerge] Moving {0} system files", moveCount), Debug.LogLevel.Debug);
                 // Move files from 00 to 01 (excluding foxpatch.dat)
                 foreach (string zeroFile in zeroFiles)
                 {
@@ -535,6 +566,17 @@ namespace SnakeBite
             if (Directory.Exists("_extr")) Directory.Delete("_extr", true);
             if (Directory.Exists("_gamefpk")) Directory.Delete("_gamefpk", true);
             if (Directory.Exists("_modfpk")) Directory.Delete("_modfpk", true);
+            Debug.LogLine("[Mod] Cleaning up snakebite work folders.");
+
+            bool directoryExists = true;
+            while (directoryExists) {
+                Thread.Sleep(100);
+                directoryExists = false;
+                if (Directory.Exists("_working")) directoryExists = true;
+                if (Directory.Exists("_extr")) directoryExists = true;
+                if (Directory.Exists("_gamefpk")) directoryExists = true;
+                if (Directory.Exists("_modfpk")) directoryExists = true;
+            }
         }
 
         public static bool CheckConflicts(string ModFile, bool ignoreConflicts = false)
@@ -565,7 +607,7 @@ namespace SnakeBite
                 // Check if mod requires SB update
                 if (modSBVersion > SBVersion)
                 {
-                    MessageBox.Show(String.Format("{0} requires a newer version of SnakeBite. Please follow the link on the Settings page to get the latest version.", metaData.Name), "Update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(String.Format("{0} requires SnakeBite version {1} or newer. Please follow the link on the Settings page to get the latest version.", metaData.Name,metaData.Version), "Update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
 
@@ -656,7 +698,11 @@ namespace SnakeBite
                 }
                 if (sysConflict)
                 {
-                    MessageBox.Show("The selected mod conflicts with existing MGSV system files.", "SnakeBite", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    //tex TODO: figure out what it's actually checking and how this can be corrupted
+                    string msgboxtext = "The selected mod conflicts with existing MGSV system files,\n";
+                    msgboxtext += "or the snakebite.xml base entries has become corrupt.\n";
+                    msgboxtext += "Please use the Restore Original Game Files option in Snakebite settings and re-run snakebite\n";
+                    MessageBox.Show(msgboxtext, "SnakeBite", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
 

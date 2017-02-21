@@ -200,14 +200,14 @@ namespace SnakeBite
 
             if (!ModManager.CheckConflicts(ModFile, ignoreConflicts)) return;
 
-            ProgressWindow.Show("Installing Mod", String.Format("Installing {0}, please wait...", metaData.Name), new Action((MethodInvoker)delegate { ModManager.InstallMod(ModFile); }));
+            ProgressWindow.Show("Installing Mod", String.Format("Installing {0}...", metaData.Name), new Action((MethodInvoker)delegate { ModManager.InstallMod(ModFile); }));
 
             this.Invoke((MethodInvoker)delegate { RefreshInstalledMods(); });
         }
 
         public void ProcessUninstallMod(ModEntry mod)
         {
-            ProgressWindow.Show("Uninstalling Mod", String.Format("Uninstalling {0}, please wait...", mod.Name), new Action((MethodInvoker)delegate { ModManager.UninstallMod(mod); }));
+            ProgressWindow.Show("Uninstalling Mod", String.Format("Uninstalling {0}...", mod.Name), new Action((MethodInvoker)delegate { ModManager.UninstallMod(mod); }));
         }
 
         private void RefreshInstalledMods(bool resetSelection = false)

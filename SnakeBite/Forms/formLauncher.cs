@@ -43,6 +43,7 @@ namespace SnakeBite
             textInfo = cultureInfo.TextInfo;
 
             // Check for updates
+            /* //tex OFF since topher has left it
             Debug.LogLine("[Update] Checking for updates");
             UpdateFile updater = new UpdateFile();
             bool updateSuccess = updater.ReadXmlFromInterweb("http://www.xobanimot.com/snakebite/update/update.xml");
@@ -57,7 +58,10 @@ namespace SnakeBite
                 {
                     Debug.LogLine("No update found");
                 }
+            } else {
+                Debug.LogLine("Could not read update.xml");
             }
+            */
 
             // Retrieve and display version info
             var MGSVersionInfo = FileVersionInfo.GetVersionInfo(Properties.Settings.Default.InstallPath + "\\mgsvtpp.exe");
@@ -277,7 +281,7 @@ namespace SnakeBite
 
         private void labelVersion_DoubleClick(object sender, EventArgs e)
         {
-            Process.Start("log.txt");
+            Process.Start(Debug.LOG_FILE);
         }
 
         private void labelVersion_TextChanged(object sender, EventArgs e)

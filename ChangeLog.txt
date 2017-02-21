@@ -1,0 +1,34 @@
+Changelog
+0.8.4.0
+Version bump for version strings (still need to unify)
+
+All projects
+.net target dropped from v4.5.2 to v4.5 which gives windows 8 coverage by default.
+
+Makebite:
+1.0.7.1 added MGSV version box
+Will use metadata version even if it doesn't exist in version box.
+Packs files in fpkd by extension order:
+{ "fox2", "evf", "parts", "vfxlb", "vfx", "vfxlf", "veh", "frld", "des", "bnd", "tgt", "phsd", "ph", "sim", "clo", "fsd", "sdf", "lua", "lng" }
+Packs files in fpk by alphabetical order.
+
+Snakebite
+Fixed: No longer kills the steam cache verification window, was just on a  timer, now disabled completely and the user must judge when to continue. TODO: bring to front?
+Fixed: Uninstall not handling empty fpk files. Since they weren't removed they'd be marked as System, thus give 'conflicts with system files' error.
+
+Log window remain if ProcessWindow.Show backgroundworker throws exception.
+
+Changes to various messages to be more useful, or to explain around bugs lol
+
+Adjusted Logging during uninstall to be more usefull, and less spammy which should help performance a bit.
+
+Stoped updater check.
+Removed Download mods tab.
+Both relied on tophers server which he brought down.
+
+Changed settings link 'the latest version is here' to point to nexusmods snakebite page, which is better for average user (plus I don't know if topher would want to pull my butchered version of his project lol).
+
+Log now copies to log_pre.txt before it clears
+Added Open Logs button to settings
+
+Updated qar_dictionary to MGSV-QAR-Dictionary-Project 2016-11-08

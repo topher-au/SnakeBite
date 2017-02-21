@@ -15,9 +15,12 @@ namespace SnakeBite.SetupWizard
 
         private void buttonValidate_Click(object sender, EventArgs e)
         {
-            var doValidate = MessageBox.Show("SnakeBite will close the Steam validation window automatically when ready, please do not cancel or close the Steam window.", "SnakeBite", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            //var doValidate = MessageBox.Show("SnakeBite will close the Steam validation window automatically when ready, please do not cancel or close the Steam window.", "SnakeBite", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+            var doValidate = MessageBox.Show("Please wait until the Steam validation window says it's complete.", "SnakeBite", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
             if (doValidate == DialogResult.Cancel) return;
             System.Diagnostics.Process.Start("steam://validate/287700/");
+            //tex times out too early, just waiting for a period isn't robust.
+            /*
             BackgroundWorker bw = new BackgroundWorker();
             bw.DoWork += (obj, var) =>
             {
@@ -60,6 +63,7 @@ namespace SnakeBite.SetupWizard
                 bw.Dispose();
             };
             bw.RunWorkerAsync();
+            */        
             BackupManager.DeleteOriginals();
         }
 

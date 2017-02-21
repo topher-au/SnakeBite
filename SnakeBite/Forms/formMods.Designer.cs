@@ -30,6 +30,7 @@
         {
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabInstalledMods = new System.Windows.Forms.TabPage();
+            this.buttonInstallZip = new System.Windows.Forms.Button();
             this.buttonInstallMod = new System.Windows.Forms.Button();
             this.listInstalledMods = new System.Windows.Forms.ListBox();
             this.groupModInfo = new System.Windows.Forms.GroupBox();
@@ -54,7 +55,6 @@
             this.labelWebAuthor = new System.Windows.Forms.Label();
             this.labelWebName = new System.Windows.Forms.Label();
             this.label5 = new System.Windows.Forms.Label();
-            this.buttonInstallZip = new System.Windows.Forms.Button();
             this.tabControl.SuspendLayout();
             this.tabInstalledMods.SuspendLayout();
             this.groupModInfo.SuspendLayout();
@@ -67,7 +67,7 @@
             // tabControl
             // 
             this.tabControl.Controls.Add(this.tabInstalledMods);
-            this.tabControl.Controls.Add(this.tabPageDownloadMods);
+            //tex OFF this.tabControl.Controls.Add(this.tabPageDownloadMods);
             this.tabControl.Location = new System.Drawing.Point(14, 14);
             this.tabControl.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabControl.Name = "tabControl";
@@ -90,6 +90,16 @@
             this.tabInstalledMods.TabIndex = 0;
             this.tabInstalledMods.Text = "Installed Mods";
             this.tabInstalledMods.UseVisualStyleBackColor = true;
+            // 
+            // buttonInstallZip
+            // 
+            this.buttonInstallZip.Location = new System.Drawing.Point(97, 382);
+            this.buttonInstallZip.Name = "buttonInstallZip";
+            this.buttonInstallZip.Size = new System.Drawing.Size(94, 23);
+            this.buttonInstallZip.TabIndex = 2;
+            this.buttonInstallZip.Text = "Install .ZIP";
+            this.buttonInstallZip.UseVisualStyleBackColor = true;
+            this.buttonInstallZip.Click += new System.EventHandler(this.buttonInstallZip_Click);
             // 
             // buttonInstallMod
             // 
@@ -349,16 +359,6 @@
             this.label5.Size = new System.Drawing.Size(192, 30);
             this.label5.TabIndex = 2;
             this.label5.Text = "No mods installed";
-            // 
-            // buttonInstallZip
-            // 
-            this.buttonInstallZip.Location = new System.Drawing.Point(97, 382);
-            this.buttonInstallZip.Name = "buttonInstallZip";
-            this.buttonInstallZip.Size = new System.Drawing.Size(94, 23);
-            this.buttonInstallZip.TabIndex = 2;
-            this.buttonInstallZip.Text = "Install .ZIP";
-            this.buttonInstallZip.UseVisualStyleBackColor = true;
-            this.buttonInstallZip.Click += new System.EventHandler(this.buttonInstallZip_Click);
             // 
             // formMods
             // 

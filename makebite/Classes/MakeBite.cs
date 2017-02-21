@@ -5,11 +5,15 @@ using SnakeBite.GzsTool;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 namespace makebite
 {
     public static class Build
     {
+        public static string SnakeBiteVersionStr =  "0.8.4.0";
+        public static string MGSVVersionStr =       "1.0.7.1";
+
         public static List<string> ListFpkFolders(string PathName)
         {
             List<string> ListFpkFolders = new List<string>();
@@ -73,12 +77,54 @@ namespace makebite
                 fpkFiles.Add(xmlFileName);
             }
 
-            GzsLib.WriteFpkArchive(FpkFile, FpkFolder, fpkFiles);
+            List<string> fpkFilesSorted = fpkFiles.OrderBy(fileName => Path.GetExtension(fileName)).ThenBy(fileName => fileName).ToList();
+
+            //tex all positions reletively solid except for "bnd", analysis from my ExtensionOrder.lua puts it somewhere between veh and tgt.
+            //have put it between des and tgt in line with init.lua RegisterPackageExtensionInfo call
+            // RegisterPackageExtensionInfo call seems to mostly match my derived order in reverse - however clo doesnt fit the order and lng isn't in its table.
+			//snakebite seems to honor packed order.
+			List<string> fpkdExtensionsOrder = new List<string> { "fox2", "evf", "parts", "vfxlb", "vfx", "vfxlf", "veh", "frld", "des", "bnd", "tgt", "phsd", "ph", "sim", "clo", "fsd", "sdf", "lua", "lng" };
+
+            Dictionary<string, List<string>> filesByExtension = new Dictionary<string, List<string>>();
+
+            if (fpkFilesSorted.Count() > 1) {
+                if (FpkType == "fpkd") {
+                    foreach (var fileName in fpkFilesSorted) {
+                        var extension = Path.GetExtension(fileName).Substring(1);
+                        List<string> extensionFiles = null;
+                        filesByExtension.TryGetValue(extension, out extensionFiles);
+                        if (extensionFiles == null) {
+                            extensionFiles = new List<string>();
+                            filesByExtension.Add(extension, extensionFiles);
+                        }
+                        extensionFiles.Add(fileName);
+                    }
+
+                    //tex sorting by alphabetical just 'cause. I don't know if there's supposed to be some order within extension groupings.
+                    foreach (KeyValuePair<string, List<string>> entry in filesByExtension) {
+                        entry.Value.Sort();
+                    }
+
+                    fpkFilesSorted = new List<string>();
+                    foreach (var extension in fpkdExtensionsOrder) {
+                        List<string> extensionFiles = null;
+                        filesByExtension.TryGetValue(extension, out extensionFiles);
+                        if (extensionFiles != null) {
+                            foreach (var fileName in extensionFiles) {
+                                fpkFilesSorted.Add(fileName);
+                            }
+                        }
+                    }
+                }
+            }
+
+
+            GzsLib.WriteFpkArchive(FpkFile, FpkFolder, fpkFilesSorted);
 
             return fpkList;
         }
 
-        public static void BuildArchive(string SourceDir, ModEntry metaData, string OutputFile)
+        public static void BuildArchive(string SourceDir, ModEntry metaData, string outputFilePath)
         {
             string buildDir = Directory.GetCurrentDirectory() + "\\build";
             if (Directory.Exists(buildDir)) Directory.Delete(buildDir, true);
@@ -131,13 +177,13 @@ namespace makebite
                 metaData.ModQarEntries.Add(new ModQarEntry() { FilePath = qarFilePath, Compressed = qarFile.Substring(qarFile.LastIndexOf(".") + 1).Contains("fpk") ? true : false, ContentHash = Tools.GetMd5Hash(qarFile), Hash = hash });
             }
 
-            metaData.SBVersion.Version = "0.8.0.0";
+            metaData.SBVersion.Version = SnakeBiteVersionStr;
 
             metaData.SaveToFile("_build\\metadata.xml");
 
             // build archive
             FastZip zipper = new FastZip();
-            zipper.CreateZip(OutputFile, "_build", true, "(.*?)");
+            zipper.CreateZip(outputFilePath, "_build", true, "(.*?)");
 
             Directory.Delete("_build", true);
         }

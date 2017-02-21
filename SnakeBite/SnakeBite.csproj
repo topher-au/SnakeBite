@@ -9,9 +9,10 @@
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>SnakeBite</RootNamespace>
     <AssemblyName>SnakeBite</AssemblyName>
-    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
+    <TargetFrameworkProfile />
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -68,9 +69,18 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Classes\BackupManager.cs" />
+    <Compile Include="Classes\LogTextBoxWriter.cs" />
+    <Compile Include="Classes\ControlWriter.cs" />
     <Compile Include="Classes\DebugManager.cs" />
     <Compile Include="Classes\GameFiles.cs" />
+    <Compile Include="Classes\MultTextWriter.cs" />
     <Compile Include="Classes\UpdateFile.cs" />
+    <Compile Include="Forms\formLog.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\formLog.Designer.cs">
+      <DependentUpon>formLog.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\formSettings.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -162,6 +172,9 @@
     <EmbeddedResource Include="Forms\formLauncher.resx">
       <DependentUpon>formLauncher.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\formLog.resx">
+      <DependentUpon>formLog.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\formMods.resx">
       <DependentUpon>formMods.cs</DependentUpon>
       <SubType>Designer</SubType>
@@ -223,7 +236,9 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
+    <None Include="App.config">
+      <SubType>Designer</SubType>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\loading-spiral.gif" />

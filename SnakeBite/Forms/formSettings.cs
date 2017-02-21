@@ -141,5 +141,10 @@ namespace SnakeBite
             o.SetupTheme();
             o.Refresh();
         }
+
+        private void buttonOpenLog_Click(object sender, EventArgs e) {
+            Process.Start(Debug.LOG_FILE_PREV);
+            Process.Start(Debug.LOG_FILE);
+        }
     }
 }

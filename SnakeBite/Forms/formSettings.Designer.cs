@@ -33,6 +33,8 @@
             this.checkEnableSound = new System.Windows.Forms.CheckBox();
             this.checkConflicts = new System.Windows.Forms.CheckBox();
             this.groupBackup = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.buttonOpenLog = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.labelSetupWizard = new System.Windows.Forms.Label();
             this.buttonRestoreOriginals = new System.Windows.Forms.Button();
@@ -45,8 +47,8 @@
             this.textInstallPath = new System.Windows.Forms.TextBox();
             this.tabControl = new System.Windows.Forms.TabControl();
             this.tabThemes = new System.Windows.Forms.TabPage();
-            this.listThemes = new System.Windows.Forms.ListBox();
             this.buttonSetTheme = new System.Windows.Forms.Button();
+            this.listThemes = new System.Windows.Forms.ListBox();
             this.tabSettings.SuspendLayout();
             this.groupSettings.SuspendLayout();
             this.groupBackup.SuspendLayout();
@@ -66,7 +68,7 @@
             this.tabSettings.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.tabSettings.Name = "tabSettings";
             this.tabSettings.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.tabSettings.Size = new System.Drawing.Size(363, 382);
+            this.tabSettings.Size = new System.Drawing.Size(363, 426);
             this.tabSettings.TabIndex = 2;
             this.tabSettings.Text = "Settings";
             this.tabSettings.UseVisualStyleBackColor = true;
@@ -75,18 +77,18 @@
             // 
             this.groupSettings.Controls.Add(this.checkEnableSound);
             this.groupSettings.Controls.Add(this.checkConflicts);
-            this.groupSettings.Location = new System.Drawing.Point(6, 191);
+            this.groupSettings.Location = new System.Drawing.Point(6, 240);
             this.groupSettings.Name = "groupSettings";
             this.groupSettings.Size = new System.Drawing.Size(349, 76);
             this.groupSettings.TabIndex = 5;
             this.groupSettings.TabStop = false;
             this.groupSettings.Text = "Settings";
             // 
-            // checkBox1
+            // checkEnableSound
             // 
             this.checkEnableSound.AutoSize = true;
             this.checkEnableSound.Location = new System.Drawing.Point(12, 48);
-            this.checkEnableSound.Name = "checkBox1";
+            this.checkEnableSound.Name = "checkEnableSound";
             this.checkEnableSound.Size = new System.Drawing.Size(151, 19);
             this.checkEnableSound.TabIndex = 2;
             this.checkEnableSound.Text = "Enable launcher sounds";
@@ -106,16 +108,37 @@
             // 
             // groupBackup
             // 
+            this.groupBackup.Controls.Add(this.label1);
+            this.groupBackup.Controls.Add(this.buttonOpenLog);
             this.groupBackup.Controls.Add(this.label2);
             this.groupBackup.Controls.Add(this.labelSetupWizard);
             this.groupBackup.Controls.Add(this.buttonRestoreOriginals);
             this.groupBackup.Controls.Add(this.buttonSetupWizard);
             this.groupBackup.Location = new System.Drawing.Point(6, 65);
             this.groupBackup.Name = "groupBackup";
-            this.groupBackup.Size = new System.Drawing.Size(349, 120);
+            this.groupBackup.Size = new System.Drawing.Size(349, 169);
             this.groupBackup.TabIndex = 4;
             this.groupBackup.TabStop = false;
             this.groupBackup.Text = "Tools";
+            // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(23, 119);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(207, 44);
+            this.label1.TabIndex = 11;
+            this.label1.Text = "Opens SnakeBites debug logs";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // buttonOpenLog
+            // 
+            this.buttonOpenLog.Location = new System.Drawing.Point(236, 119);
+            this.buttonOpenLog.Name = "buttonOpenLog";
+            this.buttonOpenLog.Size = new System.Drawing.Size(107, 44);
+            this.buttonOpenLog.TabIndex = 10;
+            this.buttonOpenLog.Text = "Open Logs";
+            this.buttonOpenLog.UseVisualStyleBackColor = true;
+            this.buttonOpenLog.Click += new System.EventHandler(this.buttonOpenLog_Click);
             // 
             // label2
             // 
@@ -159,7 +182,7 @@
             // 
             this.groupAbout.Controls.Add(this.labelGithub);
             this.groupAbout.Controls.Add(this.labelThanks);
-            this.groupAbout.Location = new System.Drawing.Point(6, 273);
+            this.groupAbout.Location = new System.Drawing.Point(6, 322);
             this.groupAbout.Name = "groupAbout";
             this.groupAbout.Size = new System.Drawing.Size(349, 101);
             this.groupAbout.TabIndex = 3;
@@ -171,10 +194,10 @@
             this.labelGithub.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
             this.labelGithub.Location = new System.Drawing.Point(27, 36);
             this.labelGithub.Name = "labelGithub";
-            this.labelGithub.Size = new System.Drawing.Size(299, 15);
+            this.labelGithub.Size = new System.Drawing.Size(289, 15);
             this.labelGithub.TabIndex = 1;
             this.labelGithub.TabStop = true;
-            this.labelGithub.Text = "https://www.github.com/topher-au/SnakeBite/releases";
+            this.labelGithub.Text = "www.nexusmods.com/metalgearsolidvtpp/mods/106";
             this.labelGithub.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkGithub_LinkClicked);
             // 
             // labelThanks
@@ -217,14 +240,14 @@
             this.textInstallPath.Size = new System.Drawing.Size(306, 23);
             this.textInstallPath.TabIndex = 1;
             // 
-            // tabControl1
+            // tabControl
             // 
             this.tabControl.Controls.Add(this.tabSettings);
             this.tabControl.Controls.Add(this.tabThemes);
             this.tabControl.Location = new System.Drawing.Point(12, 12);
-            this.tabControl.Name = "tabControl1";
+            this.tabControl.Name = "tabControl";
             this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(371, 410);
+            this.tabControl.Size = new System.Drawing.Size(371, 454);
             this.tabControl.TabIndex = 0;
             // 
             // tabThemes
@@ -233,10 +256,20 @@
             this.tabThemes.Controls.Add(this.listThemes);
             this.tabThemes.Location = new System.Drawing.Point(4, 24);
             this.tabThemes.Name = "tabThemes";
-            this.tabThemes.Size = new System.Drawing.Size(363, 382);
+            this.tabThemes.Size = new System.Drawing.Size(363, 426);
             this.tabThemes.TabIndex = 3;
             this.tabThemes.Text = "Themes";
             this.tabThemes.UseVisualStyleBackColor = true;
+            // 
+            // buttonSetTheme
+            // 
+            this.buttonSetTheme.Location = new System.Drawing.Point(83, 324);
+            this.buttonSetTheme.Name = "buttonSetTheme";
+            this.buttonSetTheme.Size = new System.Drawing.Size(201, 23);
+            this.buttonSetTheme.TabIndex = 1;
+            this.buttonSetTheme.Text = "Set Theme";
+            this.buttonSetTheme.UseVisualStyleBackColor = true;
+            this.buttonSetTheme.Click += new System.EventHandler(this.buttonSetTheme_Click);
             // 
             // listThemes
             // 
@@ -249,20 +282,10 @@
             this.listThemes.Size = new System.Drawing.Size(201, 289);
             this.listThemes.TabIndex = 0;
             // 
-            // buttonSetTheme
-            // 
-            this.buttonSetTheme.Location = new System.Drawing.Point(83, 324);
-            this.buttonSetTheme.Name = "buttonSetTheme";
-            this.buttonSetTheme.Size = new System.Drawing.Size(201, 23);
-            this.buttonSetTheme.TabIndex = 1;
-            this.buttonSetTheme.Text = "Set Theme";
-            this.buttonSetTheme.UseVisualStyleBackColor = true;
-            this.buttonSetTheme.Click += new System.EventHandler(this.buttonSetTheme_Click);
-            // 
             // formSettings
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(392, 432);
+            this.ClientSize = new System.Drawing.Size(392, 472);
             this.Controls.Add(this.tabControl);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -309,5 +332,7 @@
         private System.Windows.Forms.TabPage tabThemes;
         private System.Windows.Forms.ListBox listThemes;
         private System.Windows.Forms.Button buttonSetTheme;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button buttonOpenLog;
     }
 }
