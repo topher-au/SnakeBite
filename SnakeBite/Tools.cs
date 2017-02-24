@@ -207,24 +207,24 @@ namespace SnakeBite
         {
             // regenerate hash for file
             string filePath = Tools.ToQarPath(FileName);
-            ulong hash;
-            if (!filePath.Substring(1).Contains("/"))
-            {
+            ulong hash = Hashing.HashFileNameWithExtension(filePath);
+            if (!filePath.Substring(1).Contains("/")) {
                 // try to parse hash from filename
                 string fileName = filePath.TrimStart('/');
                 string fileNoExt = fileName.Substring(0, fileName.IndexOf("."));
                 string fileExt = fileName.Substring(fileName.IndexOf(".") + 1);
 
+                //tex NMC aparently cant use HashFileNameWithExtension with undictionaried/files with hash names
+                // however BUG? because hexnumber is only 0-9, a-f thus tryParseHash will fail and return 0 for init.lua and foxpatch.dat
+                // see also duplicate function in makebite/classes/tools NameToHash
                 bool tryParseHash = ulong.TryParse(fileNoExt, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.CurrentCulture, out hash);
                 if (tryParseHash) // successfully parsed filename
                 {
                     ulong ExtHash = Hashing.HashFileName(fileExt, false) & 0x1FFF;
                     hash = (ExtHash << 51) | hash;
+                } else {//tex attempted fix for above
+                    hash = Hashing.HashFileNameWithExtension(filePath);
                 }
-            }
-            else
-            {
-                hash = Hashing.HashFileNameWithExtension(filePath);
             }
             return hash;
         }

@@ -251,7 +251,7 @@ namespace SnakeBite
                 // Remove all mod fpk files from fpkFiles
                 foreach (ModFpkEntry fpkEntry in mod.ModFpkEntries)
                 {
-                    //tex DEBUGNOW OFFDebug.LogLine(String.Format("[Uninstall] Removing {1}\\{0}", Tools.ToWinPath(fpkEntry.FilePath), fpkName), Debug.LogLevel.Debug);
+                    //tex OFF Debug.LogLine(String.Format("[Uninstall] Removing {1}\\{0}", Tools.ToWinPath(fpkEntry.FilePath), fpkName), Debug.LogLevel.Debug);
                     fpkFiles.RemoveAll(file => Tools.ToQarPath(file) == Tools.ToQarPath(fpkEntry.FilePath));
                 }
 

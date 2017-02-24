@@ -59,6 +59,18 @@ namespace SnakeBite
             return qarList;
         }
 
+        public static List<string> GetModExternalFiles() {
+            Settings settings = new Settings();
+            settings.Load();
+            List<string> fileList = new List<string>();
+            foreach (ModEntry mod in settings.ModEntries) {
+                foreach (ModFileEntry fpkFile in mod.ModFileEntries) {
+                    fileList.Add(Tools.ToQarPath(fpkFile.FilePath));
+                }
+            }
+            return fileList;
+        }
+
         public static bool SettingsExist()
         {
             return File.Exists(ModManager.GameDir + "\\snakebite.xml");
@@ -285,6 +297,9 @@ namespace SnakeBite
         [XmlArray("FpkEntries")]
         public List<ModFpkEntry> ModFpkEntries { get; set; } = new List<ModFpkEntry>();
 
+        [XmlArray("FileEntries")]
+        public List<ModFileEntry> ModFileEntries { get; set; } = new List<ModFileEntry>();
+
         public void ReadFromFile(string Filename)
         {
             // Read mod metadata from xml
@@ -370,5 +385,14 @@ namespace SnakeBite
 
         [XmlAttribute("SourceName")]
         public string SourceName { get; set; }
+    }
+
+    [XmlType("FileEntry")]
+    public class ModFileEntry {
+        [XmlAttribute("FilePath")]
+        public string FilePath { get; set; }
+
+        [XmlAttribute("ContentHash")]
+        public string ContentHash { get; set; }
     }
 }

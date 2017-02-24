@@ -11,7 +11,7 @@ namespace makebite
 {
     public static class Build
     {
-        public static string SnakeBiteVersionStr =  "0.8.4.0";
+        public static string SnakeBiteVersionStr =  "0.8.5.0";
         public static string MGSVVersionStr =       "1.0.7.1";
 
         public static List<string> ListFpkFolders(string PathName)
@@ -39,8 +39,10 @@ namespace makebite
             {
                 if (!Directory.Substring(PathName.Length).Contains("_fpk")) // ignore _fpk and _fpkd directories
                 {
+                    if (!Directory.Substring(PathName.Length).Contains("External")) {// tex KLUDGE ignore External 
                     ListQarFolders.Add(Directory);
                 }
+            }
             }
             ListQarFolders.Add(PathName);
             // Check all folders for files
@@ -56,6 +58,34 @@ namespace makebite
             }
 
             return ListQarFiles;
+        }
+
+        //tex
+        public static List<string> ListExternalFiles(string PathName) {
+            List<string> ListFolders = new List<string>();
+            List<string> ListFiles = new List<string>();
+
+            // Get a list of all folders to check for files (no _fpk/_fpkd)
+            foreach (string Directory in Directory.GetDirectories(PathName, "*.*", SearchOption.AllDirectories)) {
+                if (!Directory.Substring(PathName.Length).Contains("_fpk")) // ignore _fpk and _fpkd directories
+                {
+                    if (Directory.Substring(PathName.Length).Contains("External")) {// tex KLUDGE only External 
+                        ListFolders.Add(Directory);
+                    }
+                }
+            }
+
+            // Check all folders for files
+            foreach (string Folder in ListFolders) {
+                foreach (string FileName in Directory.GetFiles(Folder)) {
+                    string FilePath = FileName.Substring(Folder.Length);
+                    if (!FilePath.Contains("metadata.xml") && // ignore xml metadata
+                        Tools.IsValidFile(FilePath)) // only add valid files
+                        ListFiles.Add(FileName);
+                }
+            }
+
+            return ListFiles;
         }
 
         public static List<ModFpkEntry> BuildFpk(string FpkFolder, string rootDir)
@@ -175,6 +205,18 @@ namespace makebite
 
                 ulong hash = Tools.NameToHash(qarFilePath);
                 metaData.ModQarEntries.Add(new ModQarEntry() { FilePath = qarFilePath, Compressed = qarFile.Substring(qarFile.LastIndexOf(".") + 1).Contains("fpk") ? true : false, ContentHash = Tools.GetMd5Hash(qarFile), Hash = hash });
+            }
+
+            //tex build external entries WIP
+            metaData.ModFileEntries = new List<ModFileEntry>();
+            foreach (string externalFile in ListExternalFiles(SourceDir)) {
+                string subDir = externalFile.Substring(0, externalFile.LastIndexOf("\\")).Substring(SourceDir.Length).TrimStart('\\'); // the subdirectory for XML output
+                string externalFilePath = Tools.ToQarPath(externalFile.Substring(SourceDir.Length));
+                if (!Directory.Exists(Path.Combine("_build", subDir))) Directory.CreateDirectory(Path.Combine("_build", subDir)); // create file structure
+                File.Copy(externalFile, Path.Combine("_build", Tools.ToWinPath(externalFilePath)), true);
+
+                //ulong hash = Tools.NameToHash(qarFilePath);
+                metaData.ModFileEntries.Add(new ModFileEntry() { FilePath = externalFilePath, ContentHash = Tools.GetMd5Hash(externalFile) });
             }
 
             metaData.SBVersion.Version = SnakeBiteVersionStr;

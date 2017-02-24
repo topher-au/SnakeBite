@@ -63,6 +63,9 @@ namespace SnakeBite
         [XmlArray("FpkEntries")]
         public List<ModFpkEntry> ModFpkEntries { get; set; } = new List<ModFpkEntry>();
 
+        [XmlArray("FileEntries")]
+        public List<ModFileEntry> ModFileEntries { get; set; } = new List<ModFileEntry>();
+
         public void ReadFromFile(string Filename)
         {
             // Read mod metadata from xml
@@ -141,6 +144,15 @@ namespace SnakeBite
         [XmlAttribute("FpkFile")]
         public string FpkFile { get; set; }
 
+        [XmlAttribute("FilePath")]
+        public string FilePath { get; set; }
+
+        [XmlAttribute("ContentHash")]
+        public string ContentHash { get; set; }
+    }
+
+    [XmlType("FileEntry")]
+    public class ModFileEntry {
         [XmlAttribute("FilePath")]
         public string FilePath { get; set; }
 
