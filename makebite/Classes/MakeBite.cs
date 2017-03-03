@@ -176,6 +176,11 @@ namespace makebite
             // check for other FPKs and build fpkentry data
             foreach (string SourceFile in Directory.GetFiles(SourceDir, "*.fpk*", SearchOption.AllDirectories))
             {
+                //tex chunk0\Assets\tpp\pack\collectible\common\col_common_tpp_fpk\Assets\tpp\pack\resident\resident00.fpkl is the only fpkl, don't know what a fpkl is, but gzcore crashes on it.
+                if (SourceFile.Contains(".fpkl")) {
+                    continue;
+                }
+
                 string FileName = Tools.ToQarPath(SourceFile.Substring(SourceDir.Length));
                 if (!builtFpks.Contains(FileName))
                 {

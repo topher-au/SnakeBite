@@ -1,6 +1,7 @@
 Changelog
 0.8.5.0
 Fixed: NameToHash returning 0 for files in root, side effect of which would remove foxpatch.dat from 00.dat when uninstalling a mod that had such a file - thanks Summerfag for narrowing down the issue.
+Fixed: OutOfMemory exception when using makebite on col_common_tpp.fpk - thanks VenomOfAChin for the report.
 
 0.8.4.0
 Version bump for version strings (still need to unify)

@@ -35,6 +35,11 @@ namespace makebite
             // unpack existing fpks if extracted folders don't exist
             foreach (string fpkFile in Directory.GetFiles(modPath, "*.fpk*", SearchOption.AllDirectories))
             {
+                //tex chunk0\Assets\tpp\pack\collectible\common\col_common_tpp_fpk\Assets\tpp\pack\resident\resident00.fpkl is the only fpkl, don't know what a fpkl is, but gzcore crashes on it.
+                if (fpkFile.Contains(".fpkl")) {
+                    continue;
+                }
+
                 string fpkDir = Path.Combine(Path.GetDirectoryName(fpkFile), Path.GetFileName(fpkFile).Replace(".", "_"));
                 if (!Directory.Exists(fpkDir))
                 {
