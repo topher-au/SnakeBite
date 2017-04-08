@@ -246,6 +246,7 @@ namespace SnakeBite
         {
             GameQarEntries = new List<ModQarEntry>();
             GameFpkEntries = new List<ModFpkEntry>();
+            GameFileEntries = new List<ModFileEntry>();
         }
 
         [XmlAttribute("DatHash")]
@@ -256,6 +257,9 @@ namespace SnakeBite
 
         [XmlArray("FpkEntries")]
         public List<ModFpkEntry> GameFpkEntries { get; set; } = new List<ModFpkEntry>();
+
+        [XmlArray("FileEntries")]
+        public List<ModFileEntry> GameFileEntries { get; set; } = new List<ModFileEntry>();
     }
 
     [XmlType("ModEntry")]
@@ -322,6 +326,7 @@ namespace SnakeBite
 
             ModQarEntries = loaded.ModQarEntries;
             ModFpkEntries = loaded.ModFpkEntries;
+            ModFileEntries = loaded.ModFileEntries;
 
             s.Close();
         }

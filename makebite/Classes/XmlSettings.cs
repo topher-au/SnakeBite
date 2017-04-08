@@ -105,6 +105,7 @@ namespace SnakeBite
 
             ModQarEntries = loaded.ModQarEntries;
             ModFpkEntries = loaded.ModFpkEntries;
+            ModFileEntries = loaded.ModFileEntries;
 
             s.Close();
         }

@@ -193,14 +193,14 @@ namespace SnakeBite
             }
         }
 
-        public void ProcessInstallMod(string ModFile, bool ignoreConflicts = false)
+        public void ProcessInstallMod(string ModFile, bool ignoreConflicts = false,bool skipCleanup=false)
         {
             var metaData = Tools.ReadMetaData(ModFile);
             if (metaData == null) return;
 
             if (!ModManager.CheckConflicts(ModFile, ignoreConflicts)) return;
 
-            ProgressWindow.Show("Installing Mod", String.Format("Installing {0}...", metaData.Name), new Action((MethodInvoker)delegate { ModManager.InstallMod(ModFile); }));
+            ProgressWindow.Show("Installing Mod", String.Format("Installing {0}...", metaData.Name), new Action((MethodInvoker)delegate { ModManager.InstallMod(ModFile,skipCleanup); }));
 
             this.Invoke((MethodInvoker)delegate { RefreshInstalledMods(); });
         }

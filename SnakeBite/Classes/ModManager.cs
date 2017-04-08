@@ -18,9 +18,38 @@ namespace SnakeBite
         internal static string ZeroPath { get { return Properties.Settings.Default.InstallPath + "\\master\\0\\00.dat"; } }
         internal static string GameDir { get { return Properties.Settings.Default.InstallPath; } }
 
-        public static bool InstallMod(string ModFile)
+        // SYNC makebite
+        static string ExternalDirName = "GameDir";
+        internal static List<string> ignoreFileList = new List<string>(new string[] {
+            "mgsvtpp.exe",
+            "mgsvmgo.exe",
+            "steam_api64.dll",
+            "steam_appid.txt",
+            "version_info.txt",
+            "chunk0.dat",
+            "chunk1.dat",
+            "chunk2.dat",
+            "chunk3.dat",
+            "chunk0.dat",
+            "texture0.dat",
+            "texture1.dat",
+            "texture2.dat",
+            "texture3.dat",
+            "texture4.dat",
+            "00.dat",
+            "01.dat",
+            "snakebite.xml"
+        });
+
+        internal static List<string> ignoreExtList = new List<string>(new string[] {
+            ".exe",
+            ".dll",
+            ".dat",
+        });
+
+        public static bool InstallMod(string ModFile,bool skipCleanup=false)
         {
-            CleanupFolders();
+            CleanupFolders(skipCleanup);
 
             Debug.LogLine(String.Format("[Install] Installation started: {0}", ModFile), Debug.LogLevel.Basic);
 
@@ -173,6 +202,33 @@ namespace SnakeBite
                 Debug.LogLine(String.Format("[Install] Merge complete"), Debug.LogLevel.Debug);
             }
 
+            Debug.LogLine("[Install] Copying game dir files", Debug.LogLevel.Basic);
+            foreach (ModFileEntry fileEntry in metaData.ModFileEntries) {
+                bool skipFile = false;
+                foreach (string ignoreFile in ignoreFileList) {
+                    if (fileEntry.FilePath.Contains(ignoreFile)) {
+                        skipFile = true;
+                    }
+                }
+                foreach (string ignoreExt in ignoreExtList) {
+                    if (fileEntry.FilePath.Contains(ignoreExt)) {
+                        skipFile = true;
+                    }
+                }
+
+                if (skipFile == false) {
+                    string sourceFile = Path.Combine("_extr", ExternalDirName, Tools.ToWinPath(fileEntry.FilePath));
+                    string destFile = Path.Combine(GameDir, Tools.ToWinPath(fileEntry.FilePath));
+
+                    Debug.LogLine(String.Format("[Install] Copying file: {0}", destFile), Debug.LogLevel.All);
+
+                    Directory.CreateDirectory(Path.GetDirectoryName(destFile));
+                    File.Copy(sourceFile, destFile, true);
+
+                    g.GameFileEntries.Add(fileEntry);
+                }
+            }
+
             SettingsManager.SetGameData(g);
 
             Debug.LogLine("[Install] Copying remaining mod files", Debug.LogLevel.Basic);
@@ -203,9 +259,13 @@ namespace SnakeBite
 
             SettingsManager.AddMod(metaData);
 
+            if (!skipCleanup) {
             CleanupDatabase();
+            }
 
-            CleanupFolders();
+            if (!skipCleanup) {
+                CleanupFolders(skipCleanup);
+            }
 
             Debug.LogLine("[Install] Installation finished", Debug.LogLevel.Basic);
 
@@ -237,6 +297,52 @@ namespace SnakeBite
 
             Debug.LogLine("[Uninstall] Reading snakebite.xml", Debug.LogLevel.Basic);
             var gameData = SettingsManager.GetGameData();
+
+            Debug.LogLine("[Uninstall] Removing game dir file entries", Debug.LogLevel.Basic);
+            List<string> fileEntryDirs = new List<string>();
+            foreach (ModFileEntry fileEntry in mod.ModFileEntries) {
+                bool skipFile = false;
+                foreach (string ignoreFile in ignoreFileList) {
+                    if (fileEntry.FilePath.Contains(ignoreFile)) {
+                        skipFile = true;
+                    }
+                }
+                foreach (string ignoreExt in ignoreExtList) {
+                    if (fileEntry.FilePath.Contains(ignoreExt)) {
+                        skipFile = true;
+                    }
+                }
+                if (skipFile == false) {
+                    //tex TODO hash check?
+                    string destFile = Path.Combine(GameDir, Tools.ToWinPath(fileEntry.FilePath));
+                    string dir = Path.GetDirectoryName(destFile);
+                    if (!fileEntryDirs.Contains(dir)) {
+                        fileEntryDirs.Add(dir);
+                    }
+                    if (File.Exists(destFile)) {
+                        Debug.LogLine(String.Format("[Uninstall] deleting file: {0}", destFile), Debug.LogLevel.All);
+                        try {
+                            File.Delete(destFile);
+                        } catch (IOException e) {
+                            Console.WriteLine("[Uninstall] Could not delete: " + e.Message);
+                        }
+                    }
+                }
+                foreach (string dir in fileEntryDirs) {
+                    if (Directory.Exists(dir) && Directory.GetFiles(dir).Length==0) {
+                        Debug.LogLine(String.Format("[Uninstall] deleting folder: {0}", dir), Debug.LogLevel.All);
+                        try {
+                            Directory.Delete(dir, true);
+                        } catch (IOException e) {
+                            Console.WriteLine("[Uninstall] Could not delete: " + e.Message);
+                        }
+                    }
+                }
+                gameData.GameFileEntries.RemoveAll(file => Tools.CompareHashes(file.FilePath, fileEntry.FilePath));
+            }
+            foreach (string dir in fileEntryDirs) {
+
+            }
 
             Debug.LogLine("[Uninstall] Processing fpk entries", Debug.LogLevel.Basic);
             foreach (string fpk in modFpks)
@@ -520,7 +626,7 @@ namespace SnakeBite
             }
 
             Debug.LogLine("[Cleanup] Checking installed mods", Debug.LogLevel.Debug);
-            // Remove all installed mod data from game data list
+            Debug.LogLine("[Cleanup] Removing all installed mod data from game data list", Debug.LogLevel.Debug);
             foreach (var mod in mods)
             {
                 foreach (var qarEntry in mod.ModQarEntries)
@@ -534,7 +640,7 @@ namespace SnakeBite
                 }
             }
 
-            // Check mod QAR files against game files
+            Debug.LogLine("[Cleanup] Checking mod QAR files against game files", Debug.LogLevel.Debug);
             foreach (var s in cleanFiles)
             {
                 if (game.GameQarEntries.Count(entry => Tools.CompareHashes(entry.FilePath, s)) == 0)
@@ -560,7 +666,7 @@ namespace SnakeBite
             return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
         }
 
-        private static void CleanupFolders()
+        private static void CleanupFolders(bool skipCleanup=false)
         {
             if (Directory.Exists("_working")) Directory.Delete("_working", true);
             if (Directory.Exists("_extr")) Directory.Delete("_extr", true);
@@ -640,6 +746,17 @@ namespace SnakeBite
                 int confIndex = -1;
                 foreach (ModEntry mod in mods) // iterate through installed mods
                 {
+                    foreach (ModFileEntry fileEntry in metaData.ModFileEntries) // iterate external files from new mod
+                    {
+                        ModFileEntry conflicts = mod.ModFileEntries.FirstOrDefault(entry => Tools.CompareHashes(entry.FilePath, fileEntry.FilePath));
+                        if (conflicts != null) {
+                            if (confIndex == -1) confIndex = mods.IndexOf(mod);
+                            if (!conflictingMods.Contains(mod.Name)) conflictingMods.Add(mod.Name);
+                            Debug.LogLine(String.Format("[{0}] Conflict in 00.dat: {1}", mod.Name, conflicts.FilePath));
+                            confCounter++;
+                        }
+                    }
+
                     foreach (ModQarEntry qarEntry in metaData.ModQarEntries) // iterate qar files from new mod
                     {
                         if (qarEntry.FilePath.Contains(".fpk")) continue;

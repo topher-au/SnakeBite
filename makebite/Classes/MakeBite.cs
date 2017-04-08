@@ -11,8 +11,36 @@ namespace makebite
 {
     public static class Build
     {
-        public static string SnakeBiteVersionStr =  "0.8.5.0";
+        public static string SnakeBiteVersionStr =  "0.8.6.0";
         public static string MGSVVersionStr =       "1.0.7.1";
+
+        static string ExternalDirName = "GameDir";
+        internal static List<string> ignoreFileList = new List<string>(new string[] {
+            "mgsvtpp.exe",
+            "mgsvmgo.exe",
+            "steam_api64.dll",
+            "steam_appid.txt",
+            "version_info.txt",
+            "chunk0.dat",
+            "chunk1.dat",
+            "chunk2.dat",
+            "chunk3.dat",
+            "chunk0.dat",
+            "texture0.dat",
+            "texture1.dat",
+            "texture2.dat",
+            "texture3.dat",
+            "texture4.dat",
+            "00.dat",
+            "01.dat",
+            "snakebite.xml"
+        });
+
+        internal static List<string> ignoreExtList = new List<string>(new string[] {
+            ".exe",
+            ".dll",
+            ".dat",
+        });
 
         public static List<string> ListFpkFolders(string PathName)
         {
@@ -39,7 +67,7 @@ namespace makebite
             {
                 if (!Directory.Substring(PathName.Length).Contains("_fpk")) // ignore _fpk and _fpkd directories
                 {
-                    if (!Directory.Substring(PathName.Length).Contains("External")) {// tex KLUDGE ignore External 
+                    if (!Directory.Substring(PathName.Length).Contains(ExternalDirName)) {// tex KLUDGE ignore MGS_TPP 
                     ListQarFolders.Add(Directory);
                 }
             }
@@ -60,7 +88,6 @@ namespace makebite
             return ListQarFiles;
         }
 
-        //tex
         public static List<string> ListExternalFiles(string PathName) {
             List<string> ListFolders = new List<string>();
             List<string> ListFiles = new List<string>();
@@ -69,7 +96,7 @@ namespace makebite
             foreach (string Directory in Directory.GetDirectories(PathName, "*.*", SearchOption.AllDirectories)) {
                 if (!Directory.Substring(PathName.Length).Contains("_fpk")) // ignore _fpk and _fpkd directories
                 {
-                    if (Directory.Substring(PathName.Length).Contains("External")) {// tex KLUDGE only External 
+                    if (Directory.Substring(PathName.Length).Contains(ExternalDirName)) {// tex KLUDGE ignore MGS_TPP 
                         ListFolders.Add(Directory);
                     }
                 }
@@ -78,6 +105,18 @@ namespace makebite
             // Check all folders for files
             foreach (string Folder in ListFolders) {
                 foreach (string FileName in Directory.GetFiles(Folder)) {
+                    bool skipFile = false;
+                    foreach (string ignoreFile in ignoreFileList) {
+                        if (FileName.Contains(ignoreFile)) {
+                            skipFile = true;
+                        }
+                    }
+                    foreach (string ignoreExt in ignoreExtList) {
+                        if (FileName.Contains(ignoreExt)) {
+                            skipFile = true;
+                        }
+                    }
+
                     string FilePath = FileName.Substring(Folder.Length);
                     if (!FilePath.Contains("metadata.xml") && // ignore xml metadata
                         Tools.IsValidFile(FilePath)) // only add valid files
@@ -212,14 +251,18 @@ namespace makebite
                 metaData.ModQarEntries.Add(new ModQarEntry() { FilePath = qarFilePath, Compressed = qarFile.Substring(qarFile.LastIndexOf(".") + 1).Contains("fpk") ? true : false, ContentHash = Tools.GetMd5Hash(qarFile), Hash = hash });
             }
 
-            //tex build external entries WIP
+            //tex build external entries
             metaData.ModFileEntries = new List<ModFileEntry>();
             foreach (string externalFile in ListExternalFiles(SourceDir)) {
                 string subDir = externalFile.Substring(0, externalFile.LastIndexOf("\\")).Substring(SourceDir.Length).TrimStart('\\'); // the subdirectory for XML output
                 string externalFilePath = Tools.ToQarPath(externalFile.Substring(SourceDir.Length));
+                
                 if (!Directory.Exists(Path.Combine("_build", subDir))) Directory.CreateDirectory(Path.Combine("_build", subDir)); // create file structure
                 File.Copy(externalFile, Path.Combine("_build", Tools.ToWinPath(externalFilePath)), true);
-
+                string strip = "/"+ExternalDirName;
+                if (externalFilePath.StartsWith(strip)) {
+                    externalFilePath = externalFilePath.Substring(strip.Length);
+                }
                 //ulong hash = Tools.NameToHash(qarFilePath);
                 metaData.ModFileEntries.Add(new ModFileEntry() { FilePath = externalFilePath, ContentHash = Tools.GetMd5Hash(externalFile) });
             }

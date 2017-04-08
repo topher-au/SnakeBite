@@ -96,6 +96,7 @@ namespace SnakeBite
             bool install = false;               // Install = true, uninstall = false
             bool ignoreConflicts = false;       // Bypass conflict check
             bool resetDatHash = false;          // Rehash dat file
+            bool skipCleanup = true;            // Skip CleanupDatabase
             string installFile = String.Empty;
             if (args.Length > 0)
             {
@@ -122,6 +123,9 @@ namespace SnakeBite
 
                         case "-x":
                             closeApp = true;
+                            break;
+                        case "-s":
+                            skipCleanup = true;
                             break;
 
                         default:
@@ -157,7 +161,7 @@ namespace SnakeBite
                 if (install)
                 {
                     // install
-                    ModForm.ProcessInstallMod(installFile, ignoreConflicts); // install mod
+                    ModForm.ProcessInstallMod(installFile, ignoreConflicts,skipCleanup); // install mod
                 }
                 else
                 {
