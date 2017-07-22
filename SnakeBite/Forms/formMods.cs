@@ -22,11 +22,22 @@ namespace SnakeBite
             InitializeComponent();
         }
 
+        private void formMain_Load(object sender, EventArgs e)
+        {
+
+            // Refresh button state
+            RefreshInstalledMods(true);
+
+            // Show form before continuing
+            this.Show();
+
+        }
+
         private delegate void GoToModListDelegate();
 
-        private void checkBoxMarkAll_Click(object sender, EventArgs e)
+        private void checkBoxMarkAll_Click(object sender, EventArgs e) //Checks all mods if one or more are unchecked, and unchecks all mods if they're all checked.
         {
-            checkBoxMarkAll.CheckState = CheckState.Checked; // keep checked aesthetic. using _Click avoids infinite recursion.
+            checkBoxMarkAll.CheckState = CheckState.Checked; // Keeps the checkbox checked, even after the user has clicked it. using _Click avoids infinite recursion.
             bool isAllChecked = true; // assume all are checked
 
             for (int i = 0; i < listInstalledMods.Items.Count; i++)
@@ -46,9 +57,9 @@ namespace SnakeBite
             }
         }
 
-        private void buttonInstall_Click(object sender, EventArgs e)//todo
+        private void buttonInstall_Click(object sender, EventArgs e) //opens directory browser for .mgsv mods, and sends the selected mods to formInstallOrder.
         {
-            // Show open file dialog for mod file
+            // Show 'open files' dialog for mod files
             OpenFileDialog openModFile = new OpenFileDialog();
             List<string> ModNames = new List<string>();
 
@@ -60,15 +71,15 @@ namespace SnakeBite
                 ModNames.Add(filename);
 
             formInstallOrder installer = new formInstallOrder();
-            installer.ShowDialog(ModNames);
+            installer.ShowDialog(ModNames); // send to formInstallOrder for installation prep.
             RefreshInstalledMods();
 
             listInstalledMods.SelectedIndex = listInstalledMods.Items.Count - 1;
         }
 
-        private void buttonUninstall_Click(object sender, EventArgs e) //todo
+        private void buttonUninstall_Click(object sender, EventArgs e) //sends checked indices to ModManager for uninstallation.
         {
-            // Get selected mod indices and names
+            // Get the indices of all checked mods, and their names.
             CheckedListBox.CheckedIndexCollection checkedModIndices = listInstalledMods.CheckedIndices;
             CheckedListBox.CheckedItemCollection checkedModItems = listInstalledMods.CheckedItems;
             string markedModNames = "";
@@ -78,9 +89,8 @@ namespace SnakeBite
                 markedModNames += "\n" + mod.ToString();
             }
             if (!(MessageBox.Show("The following mods will be uninstalled:\n" + markedModNames , "SnakeBite", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)) return;
-
-            ProcessUninstallMod(checkedModIndices); // Morbid: To uninstall multiple mods at once, the method will now pass a collection of indices rather than a single modEntry.
-
+            
+            ProgressWindow.Show("Uninstalling Mod(s)", "Uninstalling...\n\nNote:\nThe uninstall time depends greatly\nonthe size and number of mods being uninstalled,\nas well as the mods that are still installed.", new Action((MethodInvoker)delegate { ModManager.UninstallMod(checkedModIndices); }));
             // Update installed mod list
             RefreshInstalledMods(true);
         } 
@@ -91,7 +101,7 @@ namespace SnakeBite
             Process.Start(Debug.LOG_FILE);
         }
 
-        private void labelModWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void labelModWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) //inspired by Nexus Mod Manager, the version number doubles as a link to the webpage.
         {
             
             var mods = manager.GetInstalledMods();
@@ -103,20 +113,9 @@ namespace SnakeBite
             catch { }
         }
 
-        private void formMain_Load(object sender, EventArgs e)
+        private void listInstalledMods_SelectedIndexChanged(object sender, EventArgs e)// Populate mod details pane
         {
-
-            // Refresh button state
-            RefreshInstalledMods(true);
-
-            // Show form before continuing
-            this.Show();
             
-        }
-
-        private void listInstalledMods_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            // Populate mod details pane
             if (listInstalledMods.SelectedIndex >= 0)
             {
                 var mods = manager.GetInstalledMods();
@@ -144,8 +143,8 @@ namespace SnakeBite
 
         }
 
-        internal void ProcessInstallMod(string installFile, bool skipCleanup)
-        { // command line install.
+        internal void ProcessInstallMod(string installFile, bool skipCleanup)// command-line install. The command-line feature is likely unpopular and ought to be removed altogether imo, to help clean up SnakeBite.
+        { 
             var metaData = Tools.ReadMetaData(installFile);
             if (metaData == null) return;
             List<string> InstallFileList = new List<string>();
@@ -158,14 +157,9 @@ namespace SnakeBite
             this.Invoke((MethodInvoker)delegate { RefreshInstalledMods(); });
         }
 
-        public void ProcessUninstallMod(CheckedListBox.CheckedIndexCollection modIndices)
-        {
-            ProgressWindow.Show("Uninstalling Mod(s)", "Uninstalling...\n\nNote: The uninstall time depends greatly\nonthe size and number of mods being uninstalled,\nas well as the mods that are still installed.", new Action((MethodInvoker)delegate { ModManager.UninstallMod(modIndices); }));
-        }
-
-        public void ProcessUninstallMod(ModEntry mod)
+        public void ProcessUninstallMod(ModEntry mod)// command-line uninstall. This checks the mod it was passed, and puts it in a 1-item list to be uninstalled.
         { 
-            // command line uninstall. This method only checks the mod it was passed, and puts it in a 1-item list to be uninstalled.
+            
             for (int i = 0; i < listInstalledMods.Items.Count; i++)
             {
                 listInstalledMods.SetItemCheckState(i, CheckState.Unchecked);
@@ -176,7 +170,7 @@ namespace SnakeBite
             ProgressWindow.Show("Uninstalling Mod", "Uninstalling...", new Action((MethodInvoker)delegate { ModManager.UninstallMod(checkedModIndex); }));
         }
 
-        private void RefreshInstalledMods(bool resetSelection = false)
+        private void RefreshInstalledMods(bool resetSelection = false) // Clears and then repopulates the installed mod list
         {
             var mods = manager.GetInstalledMods();
             listInstalledMods.Items.Clear();
@@ -213,20 +207,7 @@ namespace SnakeBite
             }
         }
 
-        private void showProgressWindow(string Text = "Processing...")
-        {
-            this.Invoke((MethodInvoker)delegate
-            {
-                progWindow.Owner = this;
-                progWindow.StatusText.Text = Text;
-
-                progWindow.ShowInTaskbar = false;
-                progWindow.Show();
-                this.Enabled = false;
-            });
-        }
-
-        private void linkLabelSnakeBiteModsList_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void linkLabelSnakeBiteModsList_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) // opens the [SBWM] search filter on nexus mods, randomly sorted.
         {
             Process.Start("http://www.nexusmods.com/metalgearsolidvtpp/mods/searchresults/?src_order=7&src_sort=0&src_view=1&src_tab=1&src_language=0&src_descr=SBWM&src_showadult=1&ignoreCF=0&page=1&pUp=1"); 
         }

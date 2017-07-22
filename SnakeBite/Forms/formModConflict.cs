@@ -28,8 +28,7 @@ namespace SnakeBite.Forms
         private void labelInstallWarning_Click(object sender, EventArgs e)
         {
             MessageBox.Show("Choosing to install this mod will overwrite existing mod or game data.\n" +
-       "This may cause issues with some mods - or cause the game to hang, crash or worse. It is recommended that you make a seperate backup before continuing.\n\n" +
-       "Install at your own risk. \n\n" +
+       "Warning: overwriting a mod's data may cause significant problems in-game, which could affect your enjoyment. Install at your own risk.\n\n" +
        "If you are installing multiple mods, cancelling this installation will not affect the other installation processes.", "Installing a mod with conflicts", MessageBoxButtons.OK, MessageBoxIcon.Question);
         }
 

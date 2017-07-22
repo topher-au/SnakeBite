@@ -35,7 +35,6 @@
             this.buttonExit = new System.Windows.Forms.Label();
             this.labelVersion = new System.Windows.Forms.Label();
             this.labelClose = new System.Windows.Forms.Label();
-            this.labelUpdate = new System.Windows.Forms.LinkLabel();
             this.picModToggle = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.picModToggle)).BeginInit();
             this.SuspendLayout();
@@ -43,7 +42,8 @@
             // buttonStartGame
             // 
             this.buttonStartGame.BackColor = System.Drawing.Color.Transparent;
-            this.buttonStartGame.Location = new System.Drawing.Point(66, 239);
+            this.buttonStartGame.ForeColor = System.Drawing.Color.Black;
+            this.buttonStartGame.Location = new System.Drawing.Point(52, 219);
             this.buttonStartGame.Margin = new System.Windows.Forms.Padding(3, 0, 3, 4);
             this.buttonStartGame.Name = "buttonStartGame";
             this.buttonStartGame.Size = new System.Drawing.Size(165, 32);
@@ -56,7 +56,8 @@
             // buttonMods
             // 
             this.buttonMods.BackColor = System.Drawing.Color.Transparent;
-            this.buttonMods.Location = new System.Drawing.Point(66, 275);
+            this.buttonMods.ForeColor = System.Drawing.Color.Black;
+            this.buttonMods.Location = new System.Drawing.Point(52, 255);
             this.buttonMods.Margin = new System.Windows.Forms.Padding(3, 0, 3, 4);
             this.buttonMods.Name = "buttonMods";
             this.buttonMods.Size = new System.Drawing.Size(165, 32);
@@ -69,7 +70,8 @@
             // buttonSettings
             // 
             this.buttonSettings.BackColor = System.Drawing.Color.Transparent;
-            this.buttonSettings.Location = new System.Drawing.Point(66, 311);
+            this.buttonSettings.ForeColor = System.Drawing.Color.Black;
+            this.buttonSettings.Location = new System.Drawing.Point(52, 291);
             this.buttonSettings.Margin = new System.Windows.Forms.Padding(3, 0, 3, 4);
             this.buttonSettings.Name = "buttonSettings";
             this.buttonSettings.Size = new System.Drawing.Size(165, 32);
@@ -82,7 +84,8 @@
             // buttonExit
             // 
             this.buttonExit.BackColor = System.Drawing.Color.Transparent;
-            this.buttonExit.Location = new System.Drawing.Point(66, 347);
+            this.buttonExit.ForeColor = System.Drawing.Color.Black;
+            this.buttonExit.Location = new System.Drawing.Point(52, 327);
             this.buttonExit.Margin = new System.Windows.Forms.Padding(3, 0, 3, 4);
             this.buttonExit.Name = "buttonExit";
             this.buttonExit.Size = new System.Drawing.Size(165, 32);
@@ -97,7 +100,8 @@
             this.labelVersion.AutoSize = true;
             this.labelVersion.BackColor = System.Drawing.Color.Transparent;
             this.labelVersion.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelVersion.Location = new System.Drawing.Point(682, 408);
+            this.labelVersion.ForeColor = System.Drawing.Color.Black;
+            this.labelVersion.Location = new System.Drawing.Point(12, 408);
             this.labelVersion.Name = "labelVersion";
             this.labelVersion.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.labelVersion.Size = new System.Drawing.Size(75, 15);
@@ -111,7 +115,7 @@
             // 
             this.labelClose.AutoSize = true;
             this.labelClose.BackColor = System.Drawing.Color.Transparent;
-            this.labelClose.ForeColor = System.Drawing.Color.DimGray;
+            this.labelClose.ForeColor = System.Drawing.Color.White;
             this.labelClose.Location = new System.Drawing.Point(741, -5);
             this.labelClose.Name = "labelClose";
             this.labelClose.Size = new System.Drawing.Size(28, 32);
@@ -119,26 +123,11 @@
             this.labelClose.Text = "x";
             this.labelClose.Click += new System.EventHandler(this.labelClose_Click);
             // 
-            // labelUpdate
-            // 
-            this.labelUpdate.AutoSize = true;
-            this.labelUpdate.BackColor = System.Drawing.Color.Transparent;
-            this.labelUpdate.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelUpdate.LinkColor = System.Drawing.Color.Yellow;
-            this.labelUpdate.Location = new System.Drawing.Point(12, 408);
-            this.labelUpdate.Name = "labelUpdate";
-            this.labelUpdate.Size = new System.Drawing.Size(111, 15);
-            this.labelUpdate.TabIndex = 7;
-            this.labelUpdate.TabStop = true;
-            this.labelUpdate.Text = "Update Notification";
-            this.labelUpdate.Visible = false;
-            this.labelUpdate.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.labelUpdate_LinkClicked);
-            // 
             // picModToggle
             // 
             this.picModToggle.BackColor = System.Drawing.Color.Transparent;
-            this.picModToggle.Image = global::SnakeBite.Properties.Resources.toggleoff;
-            this.picModToggle.Location = new System.Drawing.Point(164, 276);
+            this.picModToggle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.picModToggle.Location = new System.Drawing.Point(134, 256);
             this.picModToggle.Name = "picModToggle";
             this.picModToggle.Size = new System.Drawing.Size(92, 39);
             this.picModToggle.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -149,10 +138,9 @@
             // formLauncher
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.BackgroundImage = global::SnakeBite.Properties.Resources.LAUNCHERBG;
+            this.BackgroundImage = global::SnakeBite.Properties.Resources.LAUNCHERBGv2;
             this.ClientSize = new System.Drawing.Size(768, 432);
             this.Controls.Add(this.picModToggle);
-            this.Controls.Add(this.labelUpdate);
             this.Controls.Add(this.labelClose);
             this.Controls.Add(this.labelVersion);
             this.Controls.Add(this.buttonExit);
@@ -185,7 +173,6 @@
         private System.Windows.Forms.Label buttonExit;
         private System.Windows.Forms.Label labelVersion;
         private System.Windows.Forms.Label labelClose;
-        private System.Windows.Forms.LinkLabel labelUpdate;
         private System.Windows.Forms.PictureBox picModToggle;
     }
 }

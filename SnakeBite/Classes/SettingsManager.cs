@@ -7,7 +7,7 @@ using System.Xml.Serialization;
 namespace SnakeBite
 {
     public class SettingsManager
-    {
+    { // originally static, now modified to support the needs of PreinstallManager.RefreshXml
         public string directory;
         public string filename;
         public SettingsManager(string dir, string file = "snakebite.xml")

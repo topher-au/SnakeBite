@@ -124,7 +124,7 @@ namespace SnakeBite
                             exitColour = Color.FromArgb(theme.ExitColour.alpha, theme.ExitColour.red, theme.ExitColour.green, theme.ExitColour.blue);
                         }
                     }
-                    var bgEntry = themeFile.FindEntry("launcherbg.png", true);
+                    var bgEntry = themeFile.FindEntry("LAUNCHERBGv2.png", true);
                     if (bgEntry >= 0)
                     {
                         BackgroundImage = Image.FromStream(themeFile.GetInputStream(themeFile[bgEntry]));
@@ -148,10 +148,10 @@ namespace SnakeBite
             } else
             {
                 // Setup default theme
-                BackgroundImage = Properties.Resources.LAUNCHERBG;
-                baseColour = Color.White;
+                BackgroundImage = Properties.Resources.LAUNCHERBGv2;
+                baseColour = Color.Black;
                 hoverColour = Color.Red;
-                exitColour = Color.DarkGray;
+                exitColour = Color.White;
                 playerMove = new SoundPlayer(Properties.Resources.ui_move);
                 playerSelect = new SoundPlayer(Properties.Resources.ui_select);
             }
@@ -293,10 +293,10 @@ namespace SnakeBite
         private void UpdateVersionLabel()
         {
             labelVersion.Refresh();
-            labelVersion.Left = Width - labelVersion.Width - 8;
-            labelVersion.Top = Height - labelVersion.Height - 8;
-            labelUpdate.Left = 8;
-            labelUpdate.Top = Height - labelUpdate.Height - 8;
+           // labelVersion.Left = Width - labelVersion.Width - 8;
+           // labelVersion.Top = Height - labelVersion.Height - 8;
+           //labelUpdate.Left = 8;
+           // labelUpdate.Top = Height - labelUpdate.Height - 8;
         }
 
         private void UpdateModToggle()
@@ -321,7 +321,7 @@ namespace SnakeBite
             ExitLauncher(true);
         }
 
-        private void labelUpdate_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        /*private void labelUpdate_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             var launchUpdate = MessageBox.Show(String.Format("A new version of SnakeBite is available!\n\nWould you like to update now?"), "SnakeBite Update", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
             if (launchUpdate == DialogResult.Yes)
@@ -336,7 +336,7 @@ namespace SnakeBite
                     MessageBox.Show("SnakeBite updater appears to be missing!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
-        }
+        }*/
 
         private void formLauncher_MouseDown(object sender, MouseEventArgs e)
         {
@@ -356,7 +356,7 @@ namespace SnakeBite
             }
             else
             {
-                ProgressWindow.Show("Working","Disabling mods, please wait...", new Action(BackupManager.SwitchToOriginal));
+                ProgressWindow.Show("Working", "Disabling mods, please wait...\n\nNote:\n You will not have access to the Mod Menu\nwhile mods are disabled.", new Action(BackupManager.SwitchToOriginal));
             }
             UpdateModToggle();
         }

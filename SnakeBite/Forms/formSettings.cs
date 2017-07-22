@@ -62,19 +62,6 @@ namespace SnakeBite
             Process.Start(this.labelGithub.Text);
         }
 
-        /*
-        private void checkConflicts_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkConflicts.Checked && manager.DisableConflictCheck == false)
-            {
-                MessageBox.Show("Enabling this option completely disables any warnings when installing mods, and may overwrite existing mod or game data.\n\n"+
-                                "This may cause issues with some mods - or cause the game to hang, crash or worse - and it is recommended that you make a seperate backup before continuing.\n\n"+
-                                "This option will only persist until you exit SnakeBite.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            manager.DisableConflictCheck = checkConflicts.Checked;
-        }
-        */
-
         private void buttonFindMGSV_Click(object sender, EventArgs e)
         {
             OpenFileDialog findMGSV = new OpenFileDialog();
@@ -98,7 +85,6 @@ namespace SnakeBite
         {
             // Set installation path textbox
             textInstallPath.Text = Properties.Settings.Default.InstallPath;
-            //checkConflicts.Checked = manager.DisableConflictCheck;
             checkEnableSound.Checked = Properties.Settings.Default.EnableSound;
             listThemes.SelectedIndex = 0;
 

@@ -14,19 +14,28 @@ namespace SnakeBite.Forms
 {
     public partial class formInstallOrder : Form
     {
+        /*
+         * formInstallOrder
+         * Designed to preview and organize mods for installation. Largely inspired by the Nexus Mod Manager.
+         * The user can add/remove multiple mods to the install list, preview their metadatas, check for conflicts (with other installing mods)
+         * and organize the install order for conflict control.
+         * 
+         * Greatest concerns: A lot of globals, resulting in ugly code. 
+         * Excessive mods and conflicts will result in slower refresh times and list "flickering"
+         */
         public formInstallOrder()
         {
             InitializeComponent();
             
         }
 
-        List<List<string>> ModConflictLists;
-        List<string> ModConflicts;
-        List<ModEntry> ModInfo;
-        ModEntry selectedMod;
-        List<string> ModFiles;
-        string filename;        //add string historicFilename to ModEntry? It would cut down on globals and clean up some code.
-        int selectedIndex;
+        private List<List<string>> ModConflictLists; // Holds unique lists of mod names which conflict with the mod at the correlating index.
+        private List<string> ModConflicts;
+        private List<ModEntry> ModInfo; // list of unique modentries which contains each mod's metadata
+        private ModEntry selectedMod;
+        private List<string> ModFiles; // list of unique mod filenames (ex: C:/Users/John/modname.mgsv/). This list is the "foundation stone" for formInstallOrder.
+        private string filename;
+        private int selectedIndex;
 
         public void ShowDialog(List<string> Filenames)
         {
@@ -35,14 +44,14 @@ namespace SnakeBite.Forms
             this.ShowDialog();
         }
 
-        private void refreshInstallList()
+        private void refreshInstallList() // Populates install list with updated information, updates globals. Depends greatly on ModFiles list.
         {
             PreinstallManager.RefreshXml(ModFiles);
             listInstallOrder.Items.Clear();
             ModInfo = PreinstallManager.getModEntries();
             int modCount = ModInfo.Count;
             
-            if (modCount > 0)
+            if (modCount > 0) // 1 or more mods to install. refresh install list and conflicts.
             {
                 buttonRemove.Enabled = true;
                 groupBoxNoModsNotice.Visible = false;
@@ -56,11 +65,8 @@ namespace SnakeBite.Forms
                 this.updateModConflicts();
                 listInstallOrder.Items[selectedIndex].Selected = true;
                 this.updateModDescription();
-
-
-
             }
-            else
+            else // no mods in list, do nothing
             {
                 buttonRemove.Enabled = false;
                 groupBoxNoModsNotice.Visible = true;
@@ -79,7 +85,7 @@ namespace SnakeBite.Forms
             }
         }
 
-        private void updateModDescription()
+        private void updateModDescription() //refreshes description panel with current index's metadata.
         {
             if (selectedIndex >= 0)
             {
@@ -90,7 +96,7 @@ namespace SnakeBite.Forms
                 textModDescription.Text = selectedMod.Description;
                 
                 string conflictDescription;
-                    if (ModConflicts.Count > 0) {
+                    if (ModConflicts.Count > 0) { //builds string of conflicting mods to be displayed for the user
                     conflictDescription = string.Format("\r\nThis mod conflicts with: \r\n\r\n", selectedMod.Name);
                     foreach (string modname in ModConflictLists[selectedIndex])
                     {
@@ -103,11 +109,11 @@ namespace SnakeBite.Forms
                     conflictDescription = "\r\nThis mod does not conflict with any other mods being installed.";
                 }
                 textConflictDescription.Text = conflictDescription;
-                showConflictColors();
+                showConflictColors(); // updates the conflict visualization
             }
         }
 
-        private void showConflictColors()
+        private void showConflictColors() // Inspired by Nexus Mod Manager, a nice way of visualizing conflicts for the user.
         {
             int lowestIndex = 0;
             for (int i = 0; i < listInstallOrder.Items.Count; i++)
@@ -115,22 +121,22 @@ namespace SnakeBite.Forms
                 if (ModConflicts.Contains(listInstallOrder.Items[i].Text))
                     if (i < selectedIndex) {
                         listInstallOrder.Items[i].BackColor = Color.IndianRed;
-                    }
+                    }//if the conflicting mod installs before the selected mod, the contents are overwritten (visualized by a red backcolor)
                     else
                     {
                         listInstallOrder.Items[i].BackColor = Color.MediumSeaGreen;
-                        lowestIndex = i;
-                    }
+                        lowestIndex = i;//the last index checked will always be lowest on the list.
+                    }//if the conflicting mod installs after the selected mod, the selected mod is overwriten (visualized by a green backcolor)
                 else
                     listInstallOrder.Items[i].BackColor = Color.Silver;
             }
-            if (lowestIndex > selectedIndex)
+            if (lowestIndex > selectedIndex) //check against the lowest index to determine the selected mod's color.
                 listInstallOrder.Items[selectedIndex].BackColor = Color.IndianRed;
             else
                 listInstallOrder.Items[selectedIndex].BackColor = Color.MediumSeaGreen;
         }
 
-        private void updateModConflicts()
+        private void updateModConflicts() // Very computation-heavy, used sparingly. Checks current install list for conflicts.
         {
             int conflictCounter = 0;
             ModConflictLists = PreinstallManager.getConflictList(ModInfo);
@@ -147,7 +153,7 @@ namespace SnakeBite.Forms
                 labelConflictCount.Text = conflictCounter.ToString() + " Mods With Conflicts";
         }
 
-        private void buttonUp_Click(object sender, EventArgs e)
+        private void buttonUp_Click(object sender, EventArgs e) //moves the selected mod up one on the list. Installs earlier.
         {
             if (selectedIndex > 0)
             {
@@ -158,7 +164,7 @@ namespace SnakeBite.Forms
             }
         }
 
-        private void buttonDown_Click(object sender, EventArgs e)
+        private void buttonDown_Click(object sender, EventArgs e) //moves the selected mod down one on the list. installs later.
         {
             if (selectedIndex < listInstallOrder.Items.Count - 1)
             {
@@ -171,7 +177,7 @@ namespace SnakeBite.Forms
 
         }
 
-        private void buttonAdd_Click(object sender, EventArgs e)
+        private void buttonAdd_Click(object sender, EventArgs e) //adds unique filenames to the list and refreshes list.
         {
             OpenFileDialog openModFile = new OpenFileDialog();
             openModFile.Filter = "MGSV Mod Files|*.mgsv|All Files|*.*";
@@ -186,7 +192,7 @@ namespace SnakeBite.Forms
             this.refreshInstallList();
         }
 
-        private void buttonRemove_Click(object sender, EventArgs e)
+        private void buttonRemove_Click(object sender, EventArgs e) // removes one filename from the list and refreshes list.
         {
             if (listInstallOrder.SelectedItems != null)
             {
@@ -195,12 +201,12 @@ namespace SnakeBite.Forms
             this.refreshInstallList();
         }
 
-        private void buttonContinue_Click(object sender, EventArgs e)
+        private void buttonContinue_Click(object sender, EventArgs e) // the listed mods are checked against installed mods/gamefiles for conflicts.
         {
 
-            ModFiles = ModManager.FilterModValidity(ModFiles);
-            if (ModFiles.Count == 0) { this.refreshInstallList(); return; }//no valid mods. no mods will be installed }
-            ModFiles = ModManager.FilterModConflicts(ModFiles);
+            ModFiles = PreinstallManager.FilterModValidity(ModFiles);
+            if (ModFiles.Count == 0) { this.refreshInstallList(); return; }//no valid mods. no mods will be installed
+            ModFiles = PreinstallManager.FilterModConflicts(ModFiles);
             if (ModFiles.Count == 0) { this.refreshInstallList(); return; } //remaining mods had conflicts, user chose to install none.
 
             string modsToInstall = "";
@@ -211,22 +217,22 @@ namespace SnakeBite.Forms
             DialogResult confirmInstall = MessageBox.Show(String.Format("The following mods will be installed:\n" + modsToInstall), "SnakeBite", MessageBoxButtons.OKCancel);
             if (confirmInstall == DialogResult.OK)
             {
-                ProgressWindow.Show("Installing Mod(s)", String.Format("Installing...\n\nNote: The install time depends greatly\non the size and number of mods being installed,\nas well as the mods that are already installed."), new Action((MethodInvoker)delegate { ModManager.InstallMod(ModFiles); }));
-                this.Close();
+                ProgressWindow.Show("Installing Mod(s)", String.Format("Installing...\n\nNote:\nThe install time depends greatly\non the size and number of mods being installed,\nas well as the mods that are already installed."), new Action((MethodInvoker)delegate { ModManager.InstallMod(ModFiles); }));
+                this.Close(); // the form closes upon installation. If the install is cancelled, the form remains open.
             }
         }
       
         private void labelInstallWarning_Click(object sender, EventArgs e)
         {
             MessageBox.Show("A conflict occurs when two or more mods attempt to modify the same game file. Whichever mod installs last on the list will overwrite any conflicting game files of the mods above it. " +
-       "In other words: The lower the mod, the higher the priority.\n\nThe user can choose the installation order by dragging the mod name or using the arrow buttons. " +
+       "In other words: The lower the mod, the higher the priority.\n\nThe user can adjust the installation order by using the arrow buttons. " +
        "Conflicts can also be resolved by removing mods from the list (removed mods will not be installed). \n\n" +
        "Warning: overwriting a mod's data may cause significant problems in-game, which could affect your enjoyment. Install at your own risk.", "Resolving Mod Conflicts", MessageBoxButtons.OK, MessageBoxIcon.Question);
         }
 
         private void labelModWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            try
+            try //if the mod author didn't include a website, an exception occurs.
             {
                 Process.Start(selectedMod.Website);
             }

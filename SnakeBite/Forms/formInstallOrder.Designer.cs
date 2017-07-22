@@ -267,6 +267,7 @@
             this.listInstallOrder.Cursor = System.Windows.Forms.Cursors.Hand;
             this.listInstallOrder.FullRowSelect = true;
             this.listInstallOrder.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
+            this.listInstallOrder.HideSelection = false;
             this.listInstallOrder.Location = new System.Drawing.Point(12, 36);
             this.listInstallOrder.MultiSelect = false;
             this.listInstallOrder.Name = "listInstallOrder";

@@ -36,30 +36,32 @@
             // 
             // StatusText
             // 
-            this.StatusText.AutoSize = true;
-            this.StatusText.Location = new System.Drawing.Point(60, 21);
+            this.StatusText.Location = new System.Drawing.Point(50, 9);
             this.StatusText.Name = "StatusText";
-            this.StatusText.Size = new System.Drawing.Size(188, 15);
+            this.StatusText.Size = new System.Drawing.Size(291, 97);
             this.StatusText.TabIndex = 0;
             this.StatusText.Text = "SnakeBite is working, please wait...\r\n";
             this.StatusText.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.StatusText.UseWaitCursor = true;
             // 
             // pictureSpiral
             // 
             this.pictureSpiral.BackColor = System.Drawing.Color.Transparent;
             this.pictureSpiral.Image = ((System.Drawing.Image)(resources.GetObject("pictureSpiral.Image")));
-            this.pictureSpiral.Location = new System.Drawing.Point(12, 12);
+            this.pictureSpiral.Location = new System.Drawing.Point(12, 9);
             this.pictureSpiral.Name = "pictureSpiral";
             this.pictureSpiral.Size = new System.Drawing.Size(32, 32);
             this.pictureSpiral.TabIndex = 1;
             this.pictureSpiral.TabStop = false;
+            this.pictureSpiral.UseWaitCursor = true;
             // 
             // formProgress
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.BackColor = System.Drawing.Color.LightGray;
-            this.ClientSize = new System.Drawing.Size(298, 105);
+            this.ClientSize = new System.Drawing.Size(353, 104);
             this.ControlBox = false;
             this.Controls.Add(this.pictureSpiral);
             this.Controls.Add(this.StatusText);
@@ -70,10 +72,10 @@
             this.Name = "formProgress";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Processing";
+            this.UseWaitCursor = true;
             this.VisibleChanged += new System.EventHandler(this.formProgress_VisibleChanged);
             ((System.ComponentModel.ISupportInitialize)(this.pictureSpiral)).EndInit();
             this.ResumeLayout(false);
-            this.PerformLayout();
 
         }
 

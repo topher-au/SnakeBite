@@ -41,7 +41,7 @@
             this.buttonInstall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonInstall.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonInstall.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonInstall.Location = new System.Drawing.Point(143, 190);
+            this.buttonInstall.Location = new System.Drawing.Point(132, 176);
             this.buttonInstall.Name = "buttonInstall";
             this.buttonInstall.Size = new System.Drawing.Size(283, 30);
             this.buttonInstall.TabIndex = 0;
@@ -55,7 +55,7 @@
             this.buttonDontInstall.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonDontInstall.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonDontInstall.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.buttonDontInstall.Location = new System.Drawing.Point(432, 189);
+            this.buttonDontInstall.Location = new System.Drawing.Point(421, 175);
             this.buttonDontInstall.Name = "buttonDontInstall";
             this.buttonDontInstall.Size = new System.Drawing.Size(154, 31);
             this.buttonDontInstall.TabIndex = 1;
@@ -71,7 +71,7 @@
             this.labelHeader.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelHeader.Location = new System.Drawing.Point(111, 9);
             this.labelHeader.Name = "labelHeader";
-            this.labelHeader.Size = new System.Drawing.Size(442, 177);
+            this.labelHeader.Size = new System.Drawing.Size(431, 163);
             this.labelHeader.TabIndex = 2;
             this.labelHeader.Text = "[Examplemod1] conflicts with the following mods: ";
             this.labelHeader.TextAlign = System.Drawing.ContentAlignment.TopCenter;
@@ -94,7 +94,7 @@
             this.labelInstallWarning.Cursor = System.Windows.Forms.Cursors.Help;
             this.labelInstallWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelInstallWarning.ForeColor = System.Drawing.Color.Blue;
-            this.labelInstallWarning.Location = new System.Drawing.Point(559, 9);
+            this.labelInstallWarning.Location = new System.Drawing.Point(548, 9);
             this.labelInstallWarning.Name = "labelInstallWarning";
             this.labelInstallWarning.Size = new System.Drawing.Size(27, 29);
             this.labelInstallWarning.TabIndex = 5;
@@ -109,9 +109,9 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.BackColor = System.Drawing.Color.Silver;
+            this.BackColor = System.Drawing.Color.DarkGray;
             this.CancelButton = this.buttonDontInstall;
-            this.ClientSize = new System.Drawing.Size(598, 232);
+            this.ClientSize = new System.Drawing.Size(587, 218);
             this.ControlBox = false;
             this.Controls.Add(this.labelInstallWarning);
             this.Controls.Add(this.buttonDontInstall);
