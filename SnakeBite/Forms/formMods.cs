@@ -1,5 +1,7 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
+using SnakeBite.Forms;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -12,7 +14,8 @@ namespace SnakeBite
     public partial class formMods : Form
     {
         private formProgress progWindow = new formProgress();
-        private List<WebMod> webMods;
+        private int countCheckedMods = 0;
+        private SettingsManager manager = new SettingsManager(ModManager.GameDir);
 
         public formMods()
         {
@@ -21,204 +24,170 @@ namespace SnakeBite
 
         private delegate void GoToModListDelegate();
 
-        private void buttonInstallMod_Click(object sender, EventArgs e)
+        private void checkBoxMarkAll_Click(object sender, EventArgs e)
+        {
+            checkBoxMarkAll.CheckState = CheckState.Checked; // keep checked aesthetic. using _Click avoids infinite recursion.
+            bool isAllChecked = true; // assume all are checked
+
+            for (int i = 0; i < listInstalledMods.Items.Count; i++)
+            {
+                if (listInstalledMods.GetItemCheckState(i) == CheckState.Unchecked)
+                {
+                    isAllChecked = false;
+                    listInstalledMods.SetItemCheckState(i, CheckState.Checked);
+                }
+            }
+            if (isAllChecked == true) // if still true after the first loop, all boxes are checked. Second loop will uncheck all boxes.
+            {
+                for (int i = 0; i < listInstalledMods.Items.Count; i++)
+                {
+                    listInstalledMods.SetItemCheckState(i, CheckState.Unchecked);
+                }
+            }
+        }
+
+        private void buttonInstall_Click(object sender, EventArgs e)//todo
         {
             // Show open file dialog for mod file
             OpenFileDialog openModFile = new OpenFileDialog();
+            List<string> ModNames = new List<string>();
+
             openModFile.Filter = "MGSV Mod Files|*.mgsv|All Files|*.*";
+            openModFile.Multiselect = true;
             DialogResult ofdResult = openModFile.ShowDialog();
             if (ofdResult != DialogResult.OK) return;
+            foreach (string filename in openModFile.FileNames)
+                ModNames.Add(filename);
 
-            ProcessInstallMod(openModFile.FileName);
-
+            formInstallOrder installer = new formInstallOrder();
+            installer.ShowDialog(ModNames);
             RefreshInstalledMods();
 
             listInstalledMods.SelectedIndex = listInstalledMods.Items.Count - 1;
         }
 
-        private void buttonLaunch_Click(object sender, EventArgs e)
+        private void buttonUninstall_Click(object sender, EventArgs e) //todo
         {
-            Process.Start("steam://run/287700/");
-            Application.Exit();
-        }
+            // Get selected mod indices and names
+            CheckedListBox.CheckedIndexCollection checkedModIndices = listInstalledMods.CheckedIndices;
+            CheckedListBox.CheckedItemCollection checkedModItems = listInstalledMods.CheckedItems;
+            string markedModNames = "";
 
+            foreach (object mod in checkedModItems)
+            {
+                markedModNames += "\n" + mod.ToString();
+            }
+            if (!(MessageBox.Show("The following mods will be uninstalled:\n" + markedModNames , "SnakeBite", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)) return;
 
-
-        private void buttonUninstallMod_Click(object sender, EventArgs e)
-        {
-            if (!(listInstalledMods.SelectedIndex >= 0)) return;
-
-            // Get selected mod
-            var mods = SettingsManager.GetInstalledMods();
-            ModEntry mod = mods[listInstalledMods.SelectedIndex];
-            if (!(MessageBox.Show(String.Format("{0} will be uninstalled.", mod.Name), "SnakeBite", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)) return;
-
-            ProcessUninstallMod(mod);
+            ProcessUninstallMod(checkedModIndices); // Morbid: To uninstall multiple mods at once, the method will now pass a collection of indices rather than a single modEntry.
 
             // Update installed mod list
             RefreshInstalledMods(true);
+        } 
+
+        private void buttonOpenLogs_Click(object sender, EventArgs e)
+        {
+            Process.Start(Debug.LOG_FILE_PREV);
+            Process.Start(Debug.LOG_FILE);
         }
 
-        private void buttonWebRemove_Click(object sender, EventArgs e)
+        private void labelModWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            var dl = webMods[listWebMods.SelectedIndex];
-            var file = Path.Combine("downloaded", dl.DownloadUrl.Substring(dl.DownloadUrl.LastIndexOf("/") + 1));
-
-            if (File.Exists(file)) File.Delete(file);
-            buttonWebInstall.Text = (File.Exists(file)) ? "Install" : "Download";
-            buttonWebRemove.Visible = (File.Exists(file)) ? true : false;
-        }
-
-
-
-        private void DownloadAndInstallMod(WebMod mod)
-        {
-            string dlName = Path.Combine("downloaded", mod.DownloadUrl.Substring(mod.DownloadUrl.LastIndexOf("/") + 1));
-
-            // download mod
-            if (!File.Exists(dlName))
+            
+            var mods = manager.GetInstalledMods();
+            ModEntry selectedMod = mods[listInstalledMods.SelectedIndex];
+            try
             {
-                showProgressWindow(String.Format("{0} is being downloaded...", mod.Name));
-                if (!Directory.Exists("downloaded")) Directory.CreateDirectory("downloaded");
-                BackgroundWorker downloader = new BackgroundWorker();
-                downloader.DoWork += (obj, e) => WebManager.DownloadModFile(mod.DownloadUrl, dlName);
-                downloader.RunWorkerAsync();
-                while (downloader.IsBusy)
-                {
-                    Application.DoEvents();
-                }
-                hideProgressWindow();
+                Process.Start(selectedMod.Website);
             }
-            else
-            {
-                GoToModList();
-                ProcessInstallMod(dlName);
-                this.Invoke((MethodInvoker)delegate
-                {
-                    RefreshInstalledMods();
-                    listInstalledMods.SelectedIndex = listInstalledMods.Items.Count - 1;
-                });
-            }
-
-            this.Invoke((MethodInvoker)delegate
-            {
-                // update buttons
-                buttonWebInstall.Text = (File.Exists(dlName)) ? "Install" : "Download";
-                buttonWebRemove.Visible = (File.Exists(dlName)) ? true : false;
-            });
+            catch { }
         }
 
         private void formMain_Load(object sender, EventArgs e)
         {
 
             // Refresh button state
-            UpdateModToggle();
             RefreshInstalledMods(true);
 
             // Show form before continuing
             this.Show();
-
-            if (BackupManager.ModsDisabled())
-                MessageBox.Show("Mods are currently disabled. To install or uninstall mods, please click Enable Mods in the Settings menu.", "SnakeBite", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-
+            
         }
-
-        private void GoToModList()
-        {
-            if (tabControl.InvokeRequired)
-            {
-                tabControl.Invoke(new GoToModListDelegate(GoToModList));
-            }
-            else
-            {
-                tabControl.SelectedIndex = 0;
-            }
-        }
-
-        private void hideProgressWindow()
-        {
-            this.Invoke((MethodInvoker)delegate
-            {
-                this.Enabled = true;
-                progWindow.Hide();
-            });
-        }
-
-        private void labelModWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            Process.Start(this.labelModWebsite.Text);
-        }
-
-
 
         private void listInstalledMods_SelectedIndexChanged(object sender, EventArgs e)
         {
             // Populate mod details pane
             if (listInstalledMods.SelectedIndex >= 0)
             {
-                var mods = SettingsManager.GetInstalledMods();
+                var mods = manager.GetInstalledMods();
                 ModEntry selectedMod = mods[listInstalledMods.SelectedIndex];
-                labelModName.Text = selectedMod.Name;
-                labelModVersion.Text = selectedMod.Version;
-                labelModAuthor.Text = "by " + selectedMod.Author;
-                labelModAuthor.Left = labelModName.Left + labelModName.Width + 4;
-                labelModWebsite.Text = selectedMod.Website;
-                textDescription.Text = selectedMod.Description;
+               labelModName.Text = selectedMod.Name;
+               labelModAuthor.Text = "By " + selectedMod.Author;
+               labelModWebsite.Text = selectedMod.Version;
+               textDescription.Text = selectedMod.Description;
             }
         }
 
-        private void listWebMods_SelectedIndexChanged(object sender, EventArgs e)
+        private void listInstalledMods_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            // Populate online mod details pane
-            if (listWebMods.SelectedIndex >= 0)
+            if (e.NewValue == CheckState.Checked)
             {
-                WebMod selectedWebMod = webMods[listWebMods.SelectedIndex];
-                labelWebName.Text = selectedWebMod.Name;
-                labelWebVersion.Text = selectedWebMod.Version;
-                labelWebAuthor.Text = "by " + selectedWebMod.Author;
-                labelWebAuthor.Left = labelWebName.Left + labelWebName.Width + 4;
-                labelWebWebsite.Text = selectedWebMod.Website;
-                textWebDescription.Text = selectedWebMod.Description;
-                string modUrl = selectedWebMod.DownloadUrl;
-                if(modUrl == "browse:")
-                {
-                    buttonWebInstall.Text = "Website";
-                    buttonWebRemove.Visible = false;
-                } else
-                {
-                    string dlName = Path.Combine("downloaded", selectedWebMod.DownloadUrl.Substring(selectedWebMod.DownloadUrl.LastIndexOf("/") + 1));
-                    buttonWebInstall.Text = (File.Exists(dlName)) ? "Install" : "Download";
-                    buttonWebRemove.Visible = (File.Exists(dlName)) ? true : false;
-                }
+                countCheckedMods++;
+                buttonUninstall.Enabled = true;
             }
+            else
+            {
+                countCheckedMods--;
+                if (countCheckedMods == 0)
+                    buttonUninstall.Enabled = false;
+            }
+
         }
 
-        public void ProcessInstallMod(string ModFile, bool ignoreConflicts = false,bool skipCleanup=false)
-        {
-            var metaData = Tools.ReadMetaData(ModFile);
+        internal void ProcessInstallMod(string installFile, bool skipCleanup)
+        { // command line install.
+            var metaData = Tools.ReadMetaData(installFile);
             if (metaData == null) return;
+            List<string> InstallFileList = new List<string>();
+            InstallFileList.Add(installFile);
 
-            if (!ModManager.CheckConflicts(ModFile, ignoreConflicts)) return;
+            if (!ModManager.CheckConflicts(installFile)) return;
 
-            ProgressWindow.Show("Installing Mod", String.Format("Installing {0}...", metaData.Name), new Action((MethodInvoker)delegate { ModManager.InstallMod(ModFile,skipCleanup); }));
+            ProgressWindow.Show("Installing Mod", String.Format("Installing {0}...", metaData.Name), new Action((MethodInvoker)delegate { ModManager.InstallMod(InstallFileList, skipCleanup); }));
 
             this.Invoke((MethodInvoker)delegate { RefreshInstalledMods(); });
         }
 
-        public void ProcessUninstallMod(ModEntry mod)
+        public void ProcessUninstallMod(CheckedListBox.CheckedIndexCollection modIndices)
         {
-            ProgressWindow.Show("Uninstalling Mod", String.Format("Uninstalling {0}...", mod.Name), new Action((MethodInvoker)delegate { ModManager.UninstallMod(mod); }));
+            ProgressWindow.Show("Uninstalling Mod(s)", "Uninstalling...\n\nNote: The uninstall time depends greatly\nonthe size and number of mods being uninstalled,\nas well as the mods that are still installed.", new Action((MethodInvoker)delegate { ModManager.UninstallMod(modIndices); }));
+        }
+
+        public void ProcessUninstallMod(ModEntry mod)
+        { 
+            // command line uninstall. This method only checks the mod it was passed, and puts it in a 1-item list to be uninstalled.
+            for (int i = 0; i < listInstalledMods.Items.Count; i++)
+            {
+                listInstalledMods.SetItemCheckState(i, CheckState.Unchecked);
+            }
+            var mods = manager.GetInstalledMods();
+            listInstalledMods.SetItemCheckState(mods.IndexOf(mod), CheckState.Checked);
+            CheckedListBox.CheckedIndexCollection checkedModIndex = listInstalledMods.CheckedIndices;
+            ProgressWindow.Show("Uninstalling Mod", "Uninstalling...", new Action((MethodInvoker)delegate { ModManager.UninstallMod(checkedModIndex); }));
         }
 
         private void RefreshInstalledMods(bool resetSelection = false)
         {
-            var mods = SettingsManager.GetInstalledMods();
+            var mods = manager.GetInstalledMods();
             listInstalledMods.Items.Clear();
+            countCheckedMods = 0;
+            buttonUninstall.Enabled = false;
 
             if (mods.Count > 0)
             {
-                panelModDetails.Visible = true;
-                labelNoMods.Visible = false;
+                groupBoxNoModsNotice.Visible = false;
+                panelModDescription.Visible = true;
+
                 foreach (ModEntry mod in mods)
                 {
                     listInstalledMods.Items.Add(mod.Name);
@@ -238,73 +207,35 @@ namespace SnakeBite
             }
             else
             {
-                panelModDetails.Visible = false;
-                labelNoMods.Visible = true;
+
+                groupBoxNoModsNotice.Visible = true;
+                panelModDescription.Visible = false;
             }
         }
 
         private void showProgressWindow(string Text = "Processing...")
         {
             this.Invoke((MethodInvoker)delegate
-           {
-               progWindow.Owner = this;
-               progWindow.StatusText.Text = Text;
-
-               progWindow.ShowInTaskbar = false;
-               progWindow.Show();
-               this.Enabled = false;
-           });
-        }
-
-        private void textWebInstall_Click(object sender, EventArgs e)
-        {
-            var dl = webMods[listWebMods.SelectedIndex];
-            if(dl.DownloadUrl == "browse:")
             {
-                Process.Start(dl.Website);
-            } else
-            {
-                BackgroundWorker webInstaller = new System.ComponentModel.BackgroundWorker();
-                webInstaller.DoWork += (obj, var) => DownloadAndInstallMod(dl);
-                webInstaller.RunWorkerAsync();
-            }
+                progWindow.Owner = this;
+                progWindow.StatusText.Text = Text;
+
+                progWindow.ShowInTaskbar = false;
+                progWindow.Show();
+                this.Enabled = false;
+            });
         }
 
-        private void UpdateModToggle()
+        private void linkLabelSnakeBiteModsList_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            bool enabled = !BackupManager.ModsDisabled();
-            buttonInstallMod.Enabled = enabled;
-            buttonUninstallMod.Enabled = enabled;
-            buttonWebInstall.Enabled = enabled;
+            Process.Start("http://www.nexusmods.com/metalgearsolidvtpp/mods/searchresults/?src_order=7&src_sort=0&src_view=1&src_tab=1&src_language=0&src_descr=SBWM&src_showadult=1&ignoreCF=0&page=1&pUp=1"); 
         }
 
-        private void tabControl_SelectedIndexChanged(object sender, EventArgs e)
+        private void buttonLaunchGame_Click(object sender, EventArgs e)
         {
-            // Check if web mods have already been loaded
-            if (webMods != null) return;
-
-            // Download and populate mod list
-            webMods = WebManager.GetOnlineMods();
-            if (webMods.Count > 0)
-            {
-                foreach (WebMod webMod in webMods)
-                {
-                    listWebMods.Items.Add(webMod.Name);
-                }
-                listWebMods.SelectedIndex = 0;
-            }
-            else
-            {
-                tabControl.SelectedIndex = 0;
-                tabControl.TabPages.RemoveAt(1);
-            }
+            Process.Start("steam://run/287700/");
+            Application.Exit();
         }
 
-        private void buttonInstallZip_Click(object sender, EventArgs e)
-        {
-            QuickMod.formQuickMod qm = new QuickMod.formQuickMod();
-            qm.ShowDialog();
-            RefreshInstalledMods(true);
-        }
     }
 }

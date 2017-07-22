@@ -42,6 +42,7 @@
             this.StatusText.Size = new System.Drawing.Size(188, 15);
             this.StatusText.TabIndex = 0;
             this.StatusText.Text = "SnakeBite is working, please wait...\r\n";
+            this.StatusText.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // pictureSpiral
             // 
@@ -57,7 +58,8 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(262, 56);
+            this.BackColor = System.Drawing.Color.LightGray;
+            this.ClientSize = new System.Drawing.Size(298, 105);
             this.ControlBox = false;
             this.Controls.Add(this.pictureSpiral);
             this.Controls.Add(this.StatusText);

@@ -224,7 +224,8 @@ namespace SnakeBite
 
         private void StartGame(bool silent = false)
         {
-            if (SettingsManager.ValidInstallPath)
+            SettingsManager manager = new SettingsManager(ModManager.GameDir);
+            if (manager.ValidInstallPath)
             {
                 Process.Start(ModManager.GameDir + "\\mgsvtpp.exe");
                 ExitLauncher(silent);

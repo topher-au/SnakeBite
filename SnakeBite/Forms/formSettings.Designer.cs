@@ -31,7 +31,6 @@
             this.tabSettings = new System.Windows.Forms.TabPage();
             this.groupSettings = new System.Windows.Forms.GroupBox();
             this.checkEnableSound = new System.Windows.Forms.CheckBox();
-            this.checkConflicts = new System.Windows.Forms.CheckBox();
             this.groupBackup = new System.Windows.Forms.GroupBox();
             this.label1 = new System.Windows.Forms.Label();
             this.buttonOpenLog = new System.Windows.Forms.Button();
@@ -76,10 +75,9 @@
             // groupSettings
             // 
             this.groupSettings.Controls.Add(this.checkEnableSound);
-            this.groupSettings.Controls.Add(this.checkConflicts);
             this.groupSettings.Location = new System.Drawing.Point(6, 240);
             this.groupSettings.Name = "groupSettings";
-            this.groupSettings.Size = new System.Drawing.Size(349, 76);
+            this.groupSettings.Size = new System.Drawing.Size(349, 50);
             this.groupSettings.TabIndex = 5;
             this.groupSettings.TabStop = false;
             this.groupSettings.Text = "Settings";
@@ -87,24 +85,13 @@
             // checkEnableSound
             // 
             this.checkEnableSound.AutoSize = true;
-            this.checkEnableSound.Location = new System.Drawing.Point(12, 48);
+            this.checkEnableSound.Location = new System.Drawing.Point(6, 22);
             this.checkEnableSound.Name = "checkEnableSound";
             this.checkEnableSound.Size = new System.Drawing.Size(151, 19);
             this.checkEnableSound.TabIndex = 2;
             this.checkEnableSound.Text = "Enable launcher sounds";
             this.checkEnableSound.UseVisualStyleBackColor = true;
             this.checkEnableSound.CheckedChanged += new System.EventHandler(this.checkEnableSound_CheckedChanged);
-            // 
-            // checkConflicts
-            // 
-            this.checkConflicts.AutoSize = true;
-            this.checkConflicts.Location = new System.Drawing.Point(12, 23);
-            this.checkConflicts.Name = "checkConflicts";
-            this.checkConflicts.Size = new System.Drawing.Size(171, 19);
-            this.checkConflicts.TabIndex = 1;
-            this.checkConflicts.Text = "Disable compatibility check";
-            this.checkConflicts.UseVisualStyleBackColor = true;
-            this.checkConflicts.CheckedChanged += new System.EventHandler(this.checkConflicts_CheckedChanged);
             // 
             // groupBackup
             // 
@@ -182,30 +169,30 @@
             // 
             this.groupAbout.Controls.Add(this.labelGithub);
             this.groupAbout.Controls.Add(this.labelThanks);
-            this.groupAbout.Location = new System.Drawing.Point(6, 322);
+            this.groupAbout.Location = new System.Drawing.Point(6, 296);
             this.groupAbout.Name = "groupAbout";
-            this.groupAbout.Size = new System.Drawing.Size(349, 101);
+            this.groupAbout.Size = new System.Drawing.Size(349, 127);
             this.groupAbout.TabIndex = 3;
             this.groupAbout.TabStop = false;
             // 
             // labelGithub
             // 
-            this.labelGithub.AutoSize = true;
             this.labelGithub.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.labelGithub.Location = new System.Drawing.Point(27, 36);
+            this.labelGithub.Location = new System.Drawing.Point(0, 47);
             this.labelGithub.Name = "labelGithub";
-            this.labelGithub.Size = new System.Drawing.Size(289, 15);
+            this.labelGithub.Size = new System.Drawing.Size(349, 15);
             this.labelGithub.TabIndex = 1;
             this.labelGithub.TabStop = true;
             this.labelGithub.Text = "www.nexusmods.com/metalgearsolidvtpp/mods/106";
+            this.labelGithub.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.labelGithub.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkGithub_LinkClicked);
             // 
             // labelThanks
             // 
             this.labelThanks.AutoSize = true;
-            this.labelThanks.Location = new System.Drawing.Point(15, 19);
+            this.labelThanks.Location = new System.Drawing.Point(14, 26);
             this.labelThanks.Name = "labelThanks";
-            this.labelThanks.Size = new System.Drawing.Size(325, 75);
+            this.labelThanks.Size = new System.Drawing.Size(326, 75);
             this.labelThanks.TabIndex = 0;
             this.labelThanks.Text = "The latest version of SnakeBite is available here:\r\n\r\n\r\nSpecial thanks to Atvaark" +
     " for GzsTool and emoose and many\r\nmore for all their hard work!";
@@ -322,7 +309,6 @@
         private System.Windows.Forms.GroupBox groupAbout;
         private System.Windows.Forms.LinkLabel labelGithub;
         private System.Windows.Forms.Label labelThanks;
-        private System.Windows.Forms.CheckBox checkConflicts;
         private System.Windows.Forms.GroupBox groupMGSVDir;
         private System.Windows.Forms.Button buttonFindMGSV;
         private System.Windows.Forms.TextBox textInstallPath;

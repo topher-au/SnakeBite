@@ -1,13 +1,21 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Windows.Forms;
 using System.Xml.Serialization;
 
 namespace SnakeBite
 {
-    public static class SettingsManager
+    public class SettingsManager
     {
-        public static bool DisableConflictCheck
+        public string directory;
+        public string filename;
+        public SettingsManager(string dir, string file = "snakebite.xml")
+        {
+            directory = dir;
+            filename = file;
+        }
+        public bool DisableConflictCheck
         {
             get
             {
@@ -20,10 +28,10 @@ namespace SnakeBite
             }
         }
 
-        public static List<string> GetModFpkFiles()
+        public List<string> GetModFpkFiles()
         {
             Settings settings = new Settings();
-            settings.Load();
+            settings.LoadFrom(directory, filename);
             List<string> fpkList = new List<string>();
             foreach (ModEntry mod in settings.ModEntries)
             {
@@ -35,10 +43,10 @@ namespace SnakeBite
             return fpkList;
         }
 
-        public static List<string> GetModQarFiles(bool HideExtension = false)
+        public List<string> GetModQarFiles(bool HideExtension = false)
         {
             Settings settings = new Settings();
-            settings.Load();
+            settings.LoadFrom(directory, filename);
             List<string> qarList = new List<string>();
             foreach (ModEntry mod in settings.ModEntries)
             {
@@ -59,9 +67,9 @@ namespace SnakeBite
             return qarList;
         }
 
-        public static List<string> GetModExternalFiles() {
+        public List<string> GetModExternalFiles() {
             Settings settings = new Settings();
-            settings.Load();
+            settings.LoadFrom(directory, filename);
             List<string> fileList = new List<string>();
             foreach (ModEntry mod in settings.ModEntries) {
                 foreach (ModFileEntry fpkFile in mod.ModFileEntries) {
@@ -71,20 +79,20 @@ namespace SnakeBite
             return fileList;
         }
 
-        public static bool SettingsExist()
+        public bool SettingsExist()
         {
-            return File.Exists(ModManager.GameDir + "\\snakebite.xml");
+            return File.Exists(directory + "\\" + filename); // was ModManager.GameDir + "\\snakebite.xml"
         }
 
-        public static void DeleteSettings()
+        public void DeleteSettings()
         {
-            File.Delete(ModManager.GameDir + "\\snakebite.xml");
+            File.Delete(directory + "\\" + filename); // was ModManager.GameDir + "\\snakebite.xml"
         }
 
-        public static void AddMod(ModEntry Mod)
+        public void AddMod(ModEntry Mod)
         {
             Settings settings = new Settings();
-            settings.Load();
+            settings.LoadFrom(directory, filename);
 
             foreach (ModFpkEntry f in Mod.ModFpkEntries)
             {
@@ -100,77 +108,77 @@ namespace SnakeBite
             }
 
             settings.ModEntries.Add(Mod);
-            settings.Save();
+            settings.SaveTo(directory, filename);
         }
 
-        public static void RemoveMod(ModEntry Mod)
+        public void RemoveMod(ModEntry Mod)
         {
             Settings settings = new Settings();
-            settings.Load();
+            settings.LoadFrom(directory, filename);
             ModEntry remMod = settings.ModEntries.Find(entry => entry.Name == Mod.Name);
             settings.ModEntries.Remove(remMod);
-            settings.Save();
+            settings.SaveTo(directory, filename);
         }
 
-        public static List<ModEntry> GetInstalledMods()
+        public List<ModEntry> GetInstalledMods()
         {
             Settings settings = new Settings();
-            settings.Load();
+            settings.LoadFrom(directory, filename);
             return settings.ModEntries;
         }
 
-        public static GameData GetGameData()
+        public GameData GetGameData()
         {
             Settings settings = new Settings();
-            settings.Load();
+            settings.LoadFrom(directory, filename);
             return settings.GameData;
         }
 
-        public static void SetGameData(GameData NewGameData)
+        public void SetGameData(GameData NewGameData)
         {
             Settings settings = new Settings();
-            settings.Load();
+            settings.LoadFrom(directory, filename);
             settings.GameData = NewGameData;
-            settings.Save();
+            settings.SaveTo(directory, filename);
         }
 
-        public static Version GetSettingsVersion()
+        public Version GetSettingsVersion()
         {
             Settings settings = new Settings();
-            settings.Load();
+            settings.LoadFrom(directory, filename);
             return settings.SbVersion.AsVersion();
         }
 
-        public static void UpdateDatHash()
+        public void UpdateDatHash()
         {
             Settings settings = new Settings();
-            settings.Load();
+            settings.LoadFrom(directory, filename);
 
             // Hash 01.dat and update settings file
             string datHash = Tools.GetMd5Hash(ModManager.ZeroPath);
             settings.GameData.DatHash = datHash;
 
-            settings.Save();
+            settings.SaveTo(directory, filename);
         }
 
-        public static void ClearAllMods()
+        public void ClearAllMods()
         {
             Settings settings = new Settings();
-            settings.Load();
+            settings.LoadFrom(directory, filename);
             settings.ModEntries = new List<ModEntry>();
-            settings.Save();
+            settings.SaveTo(directory, filename);
         }
 
-        internal static bool ValidateDatHash()
+        internal bool ValidateDatHash()
         {
             string datHash = Tools.GetMd5Hash(ModManager.ZeroPath);
-            string hashOld = SettingsManager.GetGameData().DatHash;
+            string hashOld = this.GetGameData().DatHash;
             if (datHash != hashOld) return false;
             return true;
         }
 
         // Checks the saved InstallPath variable for the existence of MGSVTPP.exe
-        public static bool ValidInstallPath
+        public bool ValidInstallPath
         {
             get
             {
@@ -199,10 +207,11 @@ namespace SnakeBite
         [XmlArray("Mods")]
         public List<ModEntry> ModEntries { get; set; } = new List<ModEntry>();
 
-        public void Save()
+        public void SaveTo(string directory, string filename)
         {
             // Write settings to XML
-            using (FileStream s = new FileStream(Path.Combine(ModManager.GameDir, "snakebite.xml"), FileMode.Create))
+            Directory.CreateDirectory(directory);
+            using (FileStream s = new FileStream(Path.Combine(directory, filename), FileMode.Create)) // was ModManager.GameDir, "snakebite.xml"
             {
                 XmlSerializer x = new XmlSerializer(typeof(Settings), new[] { typeof(Settings) });
                 foreach (ModEntry mod in ModEntries)
@@ -214,16 +223,16 @@ namespace SnakeBite
             }
         }
 
-        public void Load()
+        public void LoadFrom(string directory, string filename)
         {
             // Load settings from XML
 
-            if (!File.Exists(ModManager.GameDir + "\\snakebite.xml"))
+            if (!File.Exists(directory + "\\" + filename)) // was ModManager.GameDir + "\\snakebite.xml"
             {
                 return;
             }
 
-            using (FileStream s = new FileStream(Path.Combine(ModManager.GameDir, "snakebite.xml"), FileMode.Open))
+            using (FileStream s = new FileStream(Path.Combine(directory, filename), FileMode.Open)) // was ModManager.GameDir, "snakebite.xml"
             {
                 XmlSerializer x = new XmlSerializer(typeof(Settings));
                 Settings loaded = (Settings)x.Deserialize(s);

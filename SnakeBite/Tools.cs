@@ -5,6 +5,7 @@ using System.Security.Cryptography;
 using System.Text;
 using ICSharpCode.SharpZipLib.Zip;
 using System.Xml.Serialization;
+using System.Collections;
 
 namespace SnakeBite
 {
@@ -170,8 +171,9 @@ namespace SnakeBite
                         return metaData;
                     }
                 }
-            } catch { return null; }
-            
+            }
+            catch { return null; }
+
         }
 
         public static string ToWinPath(string Path)

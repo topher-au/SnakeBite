@@ -55,7 +55,8 @@ namespace SnakeBite
                 File.Copy(OriginalZero, GameZero, true);
                 File.Copy(OriginalOne, GameOne, true);
 
-                SettingsManager.UpdateDatHash();
+                SettingsManager manager = new SettingsManager(ModManager.GameDir);
+                manager.UpdateDatHash();
             }
         }
 
@@ -70,8 +71,8 @@ namespace SnakeBite
                 // delete mod backup
                 File.Delete(ModZero);
                 File.Delete(ModOne);
-
-                SettingsManager.UpdateDatHash();
+                SettingsManager manager = new SettingsManager(ModManager.GameDir);
+                manager.UpdateDatHash();
             }
         }
 

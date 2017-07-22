@@ -100,7 +100,7 @@
             this.labelVersion.Location = new System.Drawing.Point(682, 408);
             this.labelVersion.Name = "labelVersion";
             this.labelVersion.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.labelVersion.Size = new System.Drawing.Size(74, 15);
+            this.labelVersion.Size = new System.Drawing.Size(75, 15);
             this.labelVersion.TabIndex = 5;
             this.labelVersion.Text = "Version Info";
             this.labelVersion.TextAlign = System.Drawing.ContentAlignment.BottomRight;

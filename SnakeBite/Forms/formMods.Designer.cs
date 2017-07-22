@@ -28,399 +28,279 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tabControl = new System.Windows.Forms.TabControl();
-            this.tabInstalledMods = new System.Windows.Forms.TabPage();
-            this.buttonInstallZip = new System.Windows.Forms.Button();
-            this.buttonInstallMod = new System.Windows.Forms.Button();
-            this.listInstalledMods = new System.Windows.Forms.ListBox();
-            this.groupModInfo = new System.Windows.Forms.GroupBox();
-            this.panelModDetails = new System.Windows.Forms.Panel();
+            this.listInstalledMods = new System.Windows.Forms.CheckedListBox();
+            this.buttonInstall = new System.Windows.Forms.Button();
+            this.buttonUninstall = new System.Windows.Forms.Button();
+            this.labelInstalledMods = new System.Windows.Forms.Label();
+            this.checkBoxMarkAll = new System.Windows.Forms.CheckBox();
+            this.buttonOpenLogs = new System.Windows.Forms.Button();
+            this.panelModDescription = new System.Windows.Forms.Panel();
             this.labelModWebsite = new System.Windows.Forms.LinkLabel();
-            this.buttonUninstallMod = new System.Windows.Forms.Button();
             this.textDescription = new System.Windows.Forms.TextBox();
-            this.labelModVersion = new System.Windows.Forms.Label();
             this.labelModAuthor = new System.Windows.Forms.Label();
             this.labelModName = new System.Windows.Forms.Label();
-            this.labelNoMods = new System.Windows.Forms.Label();
-            this.tabPageDownloadMods = new System.Windows.Forms.TabPage();
-            this.listWebMods = new System.Windows.Forms.ListBox();
-            this.groupBox1 = new System.Windows.Forms.GroupBox();
-            this.panelWebMod = new System.Windows.Forms.Panel();
-            this.buttonWebRemove = new System.Windows.Forms.Button();
-            this.labelModAd = new System.Windows.Forms.Label();
-            this.labelWebWebsite = new System.Windows.Forms.LinkLabel();
-            this.buttonWebInstall = new System.Windows.Forms.Button();
-            this.textWebDescription = new System.Windows.Forms.TextBox();
-            this.labelWebVersion = new System.Windows.Forms.Label();
-            this.labelWebAuthor = new System.Windows.Forms.Label();
-            this.labelWebName = new System.Windows.Forms.Label();
-            this.label5 = new System.Windows.Forms.Label();
-            this.tabControl.SuspendLayout();
-            this.tabInstalledMods.SuspendLayout();
-            this.groupModInfo.SuspendLayout();
-            this.panelModDetails.SuspendLayout();
-            this.tabPageDownloadMods.SuspendLayout();
-            this.groupBox1.SuspendLayout();
-            this.panelWebMod.SuspendLayout();
+            this.groupBoxNoModsNotice = new System.Windows.Forms.GroupBox();
+            this.linkLabelSnakeBiteModsList = new System.Windows.Forms.LinkLabel();
+            this.labelNoMod = new System.Windows.Forms.Label();
+            this.labelNoModInstruction = new System.Windows.Forms.Label();
+            this.buttonLaunchGame = new System.Windows.Forms.Button();
+            this.linkBrowseMods = new System.Windows.Forms.LinkLabel();
+            this.panelModDescription.SuspendLayout();
+            this.groupBoxNoModsNotice.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // tabControl
-            // 
-            this.tabControl.Controls.Add(this.tabInstalledMods);
-            //tex OFF this.tabControl.Controls.Add(this.tabPageDownloadMods);
-            this.tabControl.Location = new System.Drawing.Point(14, 14);
-            this.tabControl.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.tabControl.Name = "tabControl";
-            this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(578, 438);
-            this.tabControl.TabIndex = 0;
-            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tabControl_SelectedIndexChanged);
-            // 
-            // tabInstalledMods
-            // 
-            this.tabInstalledMods.Controls.Add(this.buttonInstallZip);
-            this.tabInstalledMods.Controls.Add(this.buttonInstallMod);
-            this.tabInstalledMods.Controls.Add(this.listInstalledMods);
-            this.tabInstalledMods.Controls.Add(this.groupModInfo);
-            this.tabInstalledMods.Location = new System.Drawing.Point(4, 24);
-            this.tabInstalledMods.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.tabInstalledMods.Name = "tabInstalledMods";
-            this.tabInstalledMods.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.tabInstalledMods.Size = new System.Drawing.Size(570, 410);
-            this.tabInstalledMods.TabIndex = 0;
-            this.tabInstalledMods.Text = "Installed Mods";
-            this.tabInstalledMods.UseVisualStyleBackColor = true;
-            // 
-            // buttonInstallZip
-            // 
-            this.buttonInstallZip.Location = new System.Drawing.Point(97, 382);
-            this.buttonInstallZip.Name = "buttonInstallZip";
-            this.buttonInstallZip.Size = new System.Drawing.Size(94, 23);
-            this.buttonInstallZip.TabIndex = 2;
-            this.buttonInstallZip.Text = "Install .ZIP";
-            this.buttonInstallZip.UseVisualStyleBackColor = true;
-            this.buttonInstallZip.Click += new System.EventHandler(this.buttonInstallZip_Click);
-            // 
-            // buttonInstallMod
-            // 
-            this.buttonInstallMod.Location = new System.Drawing.Point(3, 382);
-            this.buttonInstallMod.Name = "buttonInstallMod";
-            this.buttonInstallMod.Size = new System.Drawing.Size(94, 23);
-            this.buttonInstallMod.TabIndex = 1;
-            this.buttonInstallMod.Text = "Install .MGSV";
-            this.buttonInstallMod.UseVisualStyleBackColor = true;
-            this.buttonInstallMod.Click += new System.EventHandler(this.buttonInstallMod_Click);
             // 
             // listInstalledMods
             // 
+            this.listInstalledMods.BackColor = System.Drawing.Color.Gray;
             this.listInstalledMods.FormattingEnabled = true;
             this.listInstalledMods.IntegralHeight = false;
-            this.listInstalledMods.ItemHeight = 15;
-            this.listInstalledMods.Location = new System.Drawing.Point(3, 12);
+            this.listInstalledMods.Location = new System.Drawing.Point(8, 39);
             this.listInstalledMods.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.listInstalledMods.Name = "listInstalledMods";
-            this.listInstalledMods.Size = new System.Drawing.Size(188, 368);
-            this.listInstalledMods.TabIndex = 0;
+            this.listInstalledMods.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.listInstalledMods.Size = new System.Drawing.Size(187, 351);
+            this.listInstalledMods.TabIndex = 3;
+            this.listInstalledMods.Tag = "";
+            this.listInstalledMods.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listInstalledMods_ItemCheck);
             this.listInstalledMods.SelectedIndexChanged += new System.EventHandler(this.listInstalledMods_SelectedIndexChanged);
             // 
-            // groupModInfo
+            // buttonInstall
             // 
-            this.groupModInfo.Controls.Add(this.panelModDetails);
-            this.groupModInfo.Controls.Add(this.labelNoMods);
-            this.groupModInfo.Location = new System.Drawing.Point(196, 4);
-            this.groupModInfo.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupModInfo.Name = "groupModInfo";
-            this.groupModInfo.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupModInfo.Size = new System.Drawing.Size(367, 401);
-            this.groupModInfo.TabIndex = 1;
-            this.groupModInfo.TabStop = false;
+            this.buttonInstall.BackColor = System.Drawing.Color.Transparent;
+            this.buttonInstall.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.buttonInstall.Location = new System.Drawing.Point(8, 397);
+            this.buttonInstall.Name = "buttonInstall";
+            this.buttonInstall.Size = new System.Drawing.Size(187, 23);
+            this.buttonInstall.TabIndex = 4;
+            this.buttonInstall.Text = "Install .MGSV Files";
+            this.buttonInstall.UseVisualStyleBackColor = false;
+            this.buttonInstall.Click += new System.EventHandler(this.buttonInstall_Click);
             // 
-            // panelModDetails
+            // buttonUninstall
             // 
-            this.panelModDetails.Controls.Add(this.labelModWebsite);
-            this.panelModDetails.Controls.Add(this.buttonUninstallMod);
-            this.panelModDetails.Controls.Add(this.textDescription);
-            this.panelModDetails.Controls.Add(this.labelModVersion);
-            this.panelModDetails.Controls.Add(this.labelModAuthor);
-            this.panelModDetails.Controls.Add(this.labelModName);
-            this.panelModDetails.Location = new System.Drawing.Point(6, 13);
-            this.panelModDetails.Name = "panelModDetails";
-            this.panelModDetails.Size = new System.Drawing.Size(354, 381);
-            this.panelModDetails.TabIndex = 6;
+            this.buttonUninstall.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.buttonUninstall.Enabled = false;
+            this.buttonUninstall.Location = new System.Drawing.Point(8, 426);
+            this.buttonUninstall.Name = "buttonUninstall";
+            this.buttonUninstall.Size = new System.Drawing.Size(187, 23);
+            this.buttonUninstall.TabIndex = 5;
+            this.buttonUninstall.Text = "Uninstall";
+            this.buttonUninstall.UseVisualStyleBackColor = true;
+            this.buttonUninstall.Click += new System.EventHandler(this.buttonUninstall_Click);
+            // 
+            // labelInstalledMods
+            // 
+            this.labelInstalledMods.BackColor = System.Drawing.Color.Gray;
+            this.labelInstalledMods.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.labelInstalledMods.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.labelInstalledMods.Location = new System.Drawing.Point(8, 13);
+            this.labelInstalledMods.Name = "labelInstalledMods";
+            this.labelInstalledMods.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.labelInstalledMods.Size = new System.Drawing.Size(187, 22);
+            this.labelInstalledMods.TabIndex = 6;
+            this.labelInstalledMods.Text = "Installed Mods";
+            this.labelInstalledMods.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
+            // checkBoxMarkAll
+            // 
+            this.checkBoxMarkAll.AutoSize = true;
+            this.checkBoxMarkAll.Checked = true;
+            this.checkBoxMarkAll.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxMarkAll.Location = new System.Drawing.Point(11, 17);
+            this.checkBoxMarkAll.Name = "checkBoxMarkAll";
+            this.checkBoxMarkAll.Size = new System.Drawing.Size(15, 14);
+            this.checkBoxMarkAll.TabIndex = 7;
+            this.checkBoxMarkAll.UseVisualStyleBackColor = true;
+            this.checkBoxMarkAll.Click += new System.EventHandler(this.checkBoxMarkAll_Click);
+            // 
+            // buttonOpenLogs
+            // 
+            this.buttonOpenLogs.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.buttonOpenLogs.Location = new System.Drawing.Point(8, 455);
+            this.buttonOpenLogs.Name = "buttonOpenLogs";
+            this.buttonOpenLogs.Size = new System.Drawing.Size(207, 23);
+            this.buttonOpenLogs.TabIndex = 9;
+            this.buttonOpenLogs.Text = "Open Debug Logs";
+            this.buttonOpenLogs.UseVisualStyleBackColor = true;
+            this.buttonOpenLogs.Click += new System.EventHandler(this.buttonOpenLogs_Click);
+            // 
+            // panelModDescription
+            // 
+            this.panelModDescription.BackColor = System.Drawing.Color.DimGray;
+            this.panelModDescription.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panelModDescription.Controls.Add(this.labelModWebsite);
+            this.panelModDescription.Controls.Add(this.textDescription);
+            this.panelModDescription.Controls.Add(this.labelModAuthor);
+            this.panelModDescription.Controls.Add(this.labelModName);
+            this.panelModDescription.Location = new System.Drawing.Point(201, 13);
+            this.panelModDescription.Name = "panelModDescription";
+            this.panelModDescription.Size = new System.Drawing.Size(371, 434);
+            this.panelModDescription.TabIndex = 10;
             // 
             // labelModWebsite
             // 
-            this.labelModWebsite.AutoSize = true;
-            this.labelModWebsite.Location = new System.Drawing.Point(5, 32);
+            this.labelModWebsite.Location = new System.Drawing.Point(3, 408);
             this.labelModWebsite.Name = "labelModWebsite";
-            this.labelModWebsite.Size = new System.Drawing.Size(240, 15);
-            this.labelModWebsite.TabIndex = 9;
+            this.labelModWebsite.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.labelModWebsite.Size = new System.Drawing.Size(361, 22);
+            this.labelModWebsite.TabIndex = 4;
             this.labelModWebsite.TabStop = true;
-            this.labelModWebsite.Text = "http://mod.website.com/path/to/mod.html";
+            this.labelModWebsite.Text = "Mod Version Link To Website";
             this.labelModWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.labelModWebsite_LinkClicked);
-            // 
-            // buttonUninstallMod
-            // 
-            this.buttonUninstallMod.Location = new System.Drawing.Point(276, 355);
-            this.buttonUninstallMod.Name = "buttonUninstallMod";
-            this.buttonUninstallMod.Size = new System.Drawing.Size(75, 23);
-            this.buttonUninstallMod.TabIndex = 5;
-            this.buttonUninstallMod.Text = "Uninstall";
-            this.buttonUninstallMod.UseVisualStyleBackColor = true;
-            this.buttonUninstallMod.Click += new System.EventHandler(this.buttonUninstallMod_Click);
             // 
             // textDescription
             // 
-            this.textDescription.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.textDescription.Location = new System.Drawing.Point(8, 61);
+            this.textDescription.BackColor = System.Drawing.Color.Gray;
+            this.textDescription.Cursor = System.Windows.Forms.Cursors.Default;
+            this.textDescription.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
+            this.textDescription.Location = new System.Drawing.Point(3, 46);
             this.textDescription.Multiline = true;
             this.textDescription.Name = "textDescription";
             this.textDescription.ReadOnly = true;
             this.textDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textDescription.Size = new System.Drawing.Size(343, 288);
-            this.textDescription.TabIndex = 8;
-            // 
-            // labelModVersion
-            // 
-            this.labelModVersion.AutoSize = true;
-            this.labelModVersion.Location = new System.Drawing.Point(5, 359);
-            this.labelModVersion.Name = "labelModVersion";
-            this.labelModVersion.Size = new System.Drawing.Size(37, 15);
-            this.labelModVersion.TabIndex = 7;
-            this.labelModVersion.Text = "v1234";
+            this.textDescription.Size = new System.Drawing.Size(361, 359);
+            this.textDescription.TabIndex = 6;
             // 
             // labelModAuthor
             // 
             this.labelModAuthor.AutoSize = true;
-            this.labelModAuthor.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelModAuthor.Location = new System.Drawing.Point(154, 15);
+            this.labelModAuthor.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Italic);
+            this.labelModAuthor.Location = new System.Drawing.Point(31, 24);
             this.labelModAuthor.Name = "labelModAuthor";
-            this.labelModAuthor.Size = new System.Drawing.Size(59, 15);
-            this.labelModAuthor.TabIndex = 6;
-            this.labelModAuthor.Text = "by Author";
+            this.labelModAuthor.Size = new System.Drawing.Size(83, 19);
+            this.labelModAuthor.TabIndex = 3;
+            this.labelModAuthor.Text = "Mod Author";
             // 
             // labelModName
             // 
             this.labelModName.AutoSize = true;
-            this.labelModName.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelModName.Location = new System.Drawing.Point(3, 7);
+            this.labelModName.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold);
+            this.labelModName.Location = new System.Drawing.Point(3, 2);
             this.labelModName.Name = "labelModName";
-            this.labelModName.Size = new System.Drawing.Size(145, 25);
-            this.labelModName.TabIndex = 5;
-            this.labelModName.Text = "Mod Title Here";
+            this.labelModName.Size = new System.Drawing.Size(111, 25);
+            this.labelModName.TabIndex = 2;
+            this.labelModName.Text = "Mod Name";
             // 
-            // labelNoMods
+            // groupBoxNoModsNotice
             // 
-            this.labelNoMods.AutoSize = true;
-            this.labelNoMods.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelNoMods.Location = new System.Drawing.Point(95, 178);
-            this.labelNoMods.Name = "labelNoMods";
-            this.labelNoMods.Size = new System.Drawing.Size(192, 30);
-            this.labelNoMods.TabIndex = 2;
-            this.labelNoMods.Text = "No mods installed";
+            this.groupBoxNoModsNotice.Controls.Add(this.linkLabelSnakeBiteModsList);
+            this.groupBoxNoModsNotice.Controls.Add(this.labelNoMod);
+            this.groupBoxNoModsNotice.Controls.Add(this.labelNoModInstruction);
+            this.groupBoxNoModsNotice.Location = new System.Drawing.Point(201, 5);
+            this.groupBoxNoModsNotice.Name = "groupBoxNoModsNotice";
+            this.groupBoxNoModsNotice.Size = new System.Drawing.Size(371, 442);
+            this.groupBoxNoModsNotice.TabIndex = 1;
+            this.groupBoxNoModsNotice.TabStop = false;
+            this.groupBoxNoModsNotice.Visible = false;
             // 
-            // tabPageDownloadMods
+            // linkLabelSnakeBiteModsList
             // 
-            this.tabPageDownloadMods.Controls.Add(this.listWebMods);
-            this.tabPageDownloadMods.Controls.Add(this.groupBox1);
-            this.tabPageDownloadMods.Location = new System.Drawing.Point(4, 24);
-            this.tabPageDownloadMods.Name = "tabPageDownloadMods";
-            this.tabPageDownloadMods.Size = new System.Drawing.Size(570, 410);
-            this.tabPageDownloadMods.TabIndex = 2;
-            this.tabPageDownloadMods.Text = "Download Mods";
-            this.tabPageDownloadMods.UseVisualStyleBackColor = true;
+            this.linkLabelSnakeBiteModsList.BackColor = System.Drawing.Color.DimGray;
+            this.linkLabelSnakeBiteModsList.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
+            this.linkLabelSnakeBiteModsList.Location = new System.Drawing.Point(5, 93);
+            this.linkLabelSnakeBiteModsList.Name = "linkLabelSnakeBiteModsList";
+            this.linkLabelSnakeBiteModsList.Size = new System.Drawing.Size(361, 51);
+            this.linkLabelSnakeBiteModsList.TabIndex = 2;
+            this.linkLabelSnakeBiteModsList.TabStop = true;
+            this.linkLabelSnakeBiteModsList.Text = "Browse SnakeBite Compatible Mods";
+            this.linkLabelSnakeBiteModsList.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.linkLabelSnakeBiteModsList.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelSnakeBiteModsList_LinkClicked);
             // 
-            // listWebMods
+            // labelNoMod
             // 
-            this.listWebMods.FormattingEnabled = true;
-            this.listWebMods.IntegralHeight = false;
-            this.listWebMods.ItemHeight = 15;
-            this.listWebMods.Location = new System.Drawing.Point(3, 12);
-            this.listWebMods.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.listWebMods.Name = "listWebMods";
-            this.listWebMods.Size = new System.Drawing.Size(187, 392);
-            this.listWebMods.TabIndex = 2;
-            this.listWebMods.SelectedIndexChanged += new System.EventHandler(this.listWebMods_SelectedIndexChanged);
+            this.labelNoMod.BackColor = System.Drawing.Color.DimGray;
+            this.labelNoMod.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold);
+            this.labelNoMod.Location = new System.Drawing.Point(5, 12);
+            this.labelNoMod.Name = "labelNoMod";
+            this.labelNoMod.Size = new System.Drawing.Size(361, 55);
+            this.labelNoMod.TabIndex = 1;
+            this.labelNoMod.Text = "No Mods Installed";
+            this.labelNoMod.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
-            // groupBox1
+            // labelNoModInstruction
             // 
-            this.groupBox1.Controls.Add(this.panelWebMod);
-            this.groupBox1.Controls.Add(this.label5);
-            this.groupBox1.Location = new System.Drawing.Point(196, 4);
-            this.groupBox1.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.groupBox1.Size = new System.Drawing.Size(367, 401);
-            this.groupBox1.TabIndex = 3;
-            this.groupBox1.TabStop = false;
+            this.labelNoModInstruction.BackColor = System.Drawing.Color.DimGray;
+            this.labelNoModInstruction.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
+            this.labelNoModInstruction.Location = new System.Drawing.Point(5, 63);
+            this.labelNoModInstruction.Name = "labelNoModInstruction";
+            this.labelNoModInstruction.Size = new System.Drawing.Size(361, 30);
+            this.labelNoModInstruction.TabIndex = 0;
+            this.labelNoModInstruction.Text = "To install mods, click \"Install .MGSV Files\"";
+            this.labelNoModInstruction.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // panelWebMod
+            // buttonLaunchGame
             // 
-            this.panelWebMod.Controls.Add(this.buttonWebRemove);
-            this.panelWebMod.Controls.Add(this.labelModAd);
-            this.panelWebMod.Controls.Add(this.labelWebWebsite);
-            this.panelWebMod.Controls.Add(this.buttonWebInstall);
-            this.panelWebMod.Controls.Add(this.textWebDescription);
-            this.panelWebMod.Controls.Add(this.labelWebVersion);
-            this.panelWebMod.Controls.Add(this.labelWebAuthor);
-            this.panelWebMod.Controls.Add(this.labelWebName);
-            this.panelWebMod.Location = new System.Drawing.Point(6, 13);
-            this.panelWebMod.Name = "panelWebMod";
-            this.panelWebMod.Size = new System.Drawing.Size(354, 381);
-            this.panelWebMod.TabIndex = 6;
+            this.buttonLaunchGame.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.buttonLaunchGame.Location = new System.Drawing.Point(423, 455);
+            this.buttonLaunchGame.Name = "buttonLaunchGame";
+            this.buttonLaunchGame.Size = new System.Drawing.Size(149, 49);
+            this.buttonLaunchGame.TabIndex = 11;
+            this.buttonLaunchGame.Text = "Launch Game";
+            this.buttonLaunchGame.UseVisualStyleBackColor = true;
+            this.buttonLaunchGame.Click += new System.EventHandler(this.buttonLaunchGame_Click);
             // 
-            // buttonWebRemove
+            // linkBrowseMods
             // 
-            this.buttonWebRemove.Location = new System.Drawing.Point(190, 340);
-            this.buttonWebRemove.Name = "buttonWebRemove";
-            this.buttonWebRemove.Size = new System.Drawing.Size(62, 23);
-            this.buttonWebRemove.TabIndex = 11;
-            this.buttonWebRemove.Text = "Delete";
-            this.buttonWebRemove.UseVisualStyleBackColor = true;
-            this.buttonWebRemove.Click += new System.EventHandler(this.buttonWebRemove_Click);
-            // 
-            // labelModAd
-            // 
-            this.labelModAd.Enabled = false;
-            this.labelModAd.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelModAd.Location = new System.Drawing.Point(0, 366);
-            this.labelModAd.Name = "labelModAd";
-            this.labelModAd.Size = new System.Drawing.Size(354, 15);
-            this.labelModAd.TabIndex = 10;
-            this.labelModAd.Text = "Want your mod listed here? Contact me!";
-            this.labelModAd.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
-            // labelWebWebsite
-            // 
-            this.labelWebWebsite.AutoSize = true;
-            this.labelWebWebsite.Location = new System.Drawing.Point(5, 32);
-            this.labelWebWebsite.Name = "labelWebWebsite";
-            this.labelWebWebsite.Size = new System.Drawing.Size(240, 15);
-            this.labelWebWebsite.TabIndex = 9;
-            this.labelWebWebsite.TabStop = true;
-            this.labelWebWebsite.Text = "http://mod.website.com/path/to/mod.html";
-            // 
-            // buttonWebInstall
-            // 
-            this.buttonWebInstall.Location = new System.Drawing.Point(258, 340);
-            this.buttonWebInstall.Name = "buttonWebInstall";
-            this.buttonWebInstall.Size = new System.Drawing.Size(96, 23);
-            this.buttonWebInstall.TabIndex = 5;
-            this.buttonWebInstall.Text = "Install";
-            this.buttonWebInstall.UseVisualStyleBackColor = true;
-            this.buttonWebInstall.Click += new System.EventHandler(this.textWebInstall_Click);
-            // 
-            // textWebDescription
-            // 
-            this.textWebDescription.BackColor = System.Drawing.SystemColors.ControlLightLight;
-            this.textWebDescription.Location = new System.Drawing.Point(8, 61);
-            this.textWebDescription.Multiline = true;
-            this.textWebDescription.Name = "textWebDescription";
-            this.textWebDescription.ReadOnly = true;
-            this.textWebDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textWebDescription.Size = new System.Drawing.Size(343, 273);
-            this.textWebDescription.TabIndex = 8;
-            // 
-            // labelWebVersion
-            // 
-            this.labelWebVersion.AutoSize = true;
-            this.labelWebVersion.Location = new System.Drawing.Point(5, 344);
-            this.labelWebVersion.Name = "labelWebVersion";
-            this.labelWebVersion.Size = new System.Drawing.Size(37, 15);
-            this.labelWebVersion.TabIndex = 7;
-            this.labelWebVersion.Text = "v1234";
-            // 
-            // labelWebAuthor
-            // 
-            this.labelWebAuthor.AutoSize = true;
-            this.labelWebAuthor.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelWebAuthor.Location = new System.Drawing.Point(154, 15);
-            this.labelWebAuthor.Name = "labelWebAuthor";
-            this.labelWebAuthor.Size = new System.Drawing.Size(59, 15);
-            this.labelWebAuthor.TabIndex = 6;
-            this.labelWebAuthor.Text = "by Author";
-            // 
-            // labelWebName
-            // 
-            this.labelWebName.AutoSize = true;
-            this.labelWebName.Font = new System.Drawing.Font("Segoe UI", 14.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelWebName.Location = new System.Drawing.Point(3, 7);
-            this.labelWebName.Name = "labelWebName";
-            this.labelWebName.Size = new System.Drawing.Size(145, 25);
-            this.labelWebName.TabIndex = 5;
-            this.labelWebName.Text = "Mod Title Here";
-            // 
-            // label5
-            // 
-            this.label5.AutoSize = true;
-            this.label5.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.label5.Location = new System.Drawing.Point(95, 178);
-            this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(192, 30);
-            this.label5.TabIndex = 2;
-            this.label5.Text = "No mods installed";
+            this.linkBrowseMods.BackColor = System.Drawing.Color.LightGray;
+            this.linkBrowseMods.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.linkBrowseMods.Location = new System.Drawing.Point(9, 485);
+            this.linkBrowseMods.Name = "linkBrowseMods";
+            this.linkBrowseMods.Size = new System.Drawing.Size(204, 17);
+            this.linkBrowseMods.TabIndex = 12;
+            this.linkBrowseMods.TabStop = true;
+            this.linkBrowseMods.Text = "Browse SnakeBite Compatible Mods";
+            this.linkBrowseMods.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.linkBrowseMods.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelSnakeBiteModsList_LinkClicked);
             // 
             // formMods
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
-            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(605, 467);
-            this.Controls.Add(this.tabControl);
-            this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
+            this.BackColor = System.Drawing.Color.DimGray;
+            this.ClientSize = new System.Drawing.Size(584, 510);
+            this.Controls.Add(this.linkBrowseMods);
+            this.Controls.Add(this.buttonLaunchGame);
+            this.Controls.Add(this.buttonOpenLogs);
+            this.Controls.Add(this.groupBoxNoModsNotice);
+            this.Controls.Add(this.checkBoxMarkAll);
+            this.Controls.Add(this.labelInstalledMods);
+            this.Controls.Add(this.buttonUninstall);
+            this.Controls.Add(this.buttonInstall);
+            this.Controls.Add(this.listInstalledMods);
+            this.Controls.Add(this.panelModDescription);
+            this.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "formMods";
             this.ShowIcon = false;
-            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Text = "Mod Manager";
+            this.Text = "SnakeBite Mod Manager";
             this.Load += new System.EventHandler(this.formMain_Load);
-            this.tabControl.ResumeLayout(false);
-            this.tabInstalledMods.ResumeLayout(false);
-            this.groupModInfo.ResumeLayout(false);
-            this.groupModInfo.PerformLayout();
-            this.panelModDetails.ResumeLayout(false);
-            this.panelModDetails.PerformLayout();
-            this.tabPageDownloadMods.ResumeLayout(false);
-            this.groupBox1.ResumeLayout(false);
-            this.groupBox1.PerformLayout();
-            this.panelWebMod.ResumeLayout(false);
-            this.panelWebMod.PerformLayout();
+            this.panelModDescription.ResumeLayout(false);
+            this.panelModDescription.PerformLayout();
+            this.groupBoxNoModsNotice.ResumeLayout(false);
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
         #endregion
-
-        private System.Windows.Forms.TabControl tabControl;
-        private System.Windows.Forms.TabPage tabInstalledMods;
-        private System.Windows.Forms.ListBox listInstalledMods;
-        private System.Windows.Forms.GroupBox groupModInfo;
-        private System.Windows.Forms.Button buttonInstallMod;
-        private System.Windows.Forms.Button buttonUninstallMod;
-        private System.Windows.Forms.Panel panelModDetails;
-        private System.Windows.Forms.LinkLabel labelModWebsite;
-        private System.Windows.Forms.TextBox textDescription;
-        private System.Windows.Forms.Label labelModVersion;
-        private System.Windows.Forms.Label labelModAuthor;
+        private System.Windows.Forms.CheckedListBox listInstalledMods;
+        private System.Windows.Forms.Button buttonInstall;
+        private System.Windows.Forms.Button buttonUninstall;
+        private System.Windows.Forms.Label labelInstalledMods;
+        private System.Windows.Forms.CheckBox checkBoxMarkAll;
+        private System.Windows.Forms.Button buttonOpenLogs;
+        private System.Windows.Forms.Panel panelModDescription;
+        private System.Windows.Forms.Label labelNoModInstruction;
+        private System.Windows.Forms.GroupBox groupBoxNoModsNotice;
+        private System.Windows.Forms.LinkLabel linkLabelSnakeBiteModsList;
+        private System.Windows.Forms.Label labelNoMod;
         private System.Windows.Forms.Label labelModName;
-        private System.Windows.Forms.Label labelNoMods;
-        private System.Windows.Forms.TabPage tabPageDownloadMods;
-        private System.Windows.Forms.ListBox listWebMods;
-        private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Panel panelWebMod;
-        private System.Windows.Forms.LinkLabel labelWebWebsite;
-        private System.Windows.Forms.Button buttonWebInstall;
-        private System.Windows.Forms.TextBox textWebDescription;
-        private System.Windows.Forms.Label labelWebVersion;
-        private System.Windows.Forms.Label labelWebAuthor;
-        private System.Windows.Forms.Label labelWebName;
-        private System.Windows.Forms.Label label5;
-        private System.Windows.Forms.Label labelModAd;
-        private System.Windows.Forms.Button buttonWebRemove;
-        private System.Windows.Forms.Button buttonInstallZip;
+        private System.Windows.Forms.TextBox textDescription;
+        private System.Windows.Forms.Label labelModAuthor;
+        private System.Windows.Forms.Button buttonLaunchGame;
+        private System.Windows.Forms.LinkLabel linkBrowseMods;
+        private System.Windows.Forms.LinkLabel labelModWebsite;
     }
 }
-

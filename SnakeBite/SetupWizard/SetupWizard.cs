@@ -12,6 +12,7 @@ namespace SnakeBite.SetupWizard
         private CreateBackupPage createBackupPage = new CreateBackupPage();
         private MergeDatPage mergeDatPage = new MergeDatPage();
         private int displayPage = 0;
+        private SettingsManager manager = new SettingsManager(ModManager.GameDir);
 
         public SetupWizard()
         {
@@ -52,7 +53,7 @@ namespace SnakeBite.SetupWizard
                     break;
 
                 case 1:
-                    if (!SettingsManager.ValidInstallPath)
+                    if (!manager.ValidInstallPath)
                     {
                         MessageBox.Show("Please select a valid installation directory.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
@@ -123,7 +124,7 @@ namespace SnakeBite.SetupWizard
                         Thread.Sleep(10);
                     }
 
-                    SettingsManager.UpdateDatHash();
+                    manager.UpdateDatHash();
 
                     mergeDatPage.panelProcessing.Visible = false;
                     mergeDatPage.labelWelcome.Text = "Setup complete";

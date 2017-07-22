@@ -182,8 +182,9 @@ namespace SnakeBite.GzsTool
         // Load filename dictionaries
         public static void LoadDictionaries()
         {
-            var FpkNames = SettingsManager.GetModFpkFiles();
-            var QarNames = SettingsManager.GetModQarFiles(true);
+            SettingsManager manager = new SettingsManager(ModManager.GameDir);
+            var FpkNames = manager.GetModFpkFiles();
+            var QarNames = manager.GetModQarFiles(true);
 
             File.WriteAllLines("mod_fpk_dict.txt", FpkNames);
             File.WriteAllLines("mod_qar_dict.txt", QarNames);

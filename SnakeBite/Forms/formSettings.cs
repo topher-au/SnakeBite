@@ -17,7 +17,7 @@ namespace SnakeBite
     public partial class formSettings : Form
     {
         List<string> themeFiles = new List<string>() { "" };
-
+        SettingsManager manager = new SettingsManager(ModManager.GameDir);
         public formSettings()
         {
             InitializeComponent();
@@ -39,7 +39,7 @@ namespace SnakeBite
             if (BackupManager.OriginalsExist())
             {
                 BackupManager.RestoreOriginals();
-                SettingsManager.DeleteSettings();
+                manager.DeleteSettings();
                 Application.Exit();
             }
         }
@@ -62,16 +62,18 @@ namespace SnakeBite
             Process.Start(this.labelGithub.Text);
         }
 
+        /*
         private void checkConflicts_CheckedChanged(object sender, EventArgs e)
         {
-            if (checkConflicts.Checked && SettingsManager.DisableConflictCheck == false)
+            if (checkConflicts.Checked && manager.DisableConflictCheck == false)
             {
                 MessageBox.Show("Enabling this option completely disables any warnings when installing mods, and may overwrite existing mod or game data.\n\n"+
                                 "This may cause issues with some mods - or cause the game to hang, crash or worse - and it is recommended that you make a seperate backup before continuing.\n\n"+
                                 "This option will only persist until you exit SnakeBite.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-            SettingsManager.DisableConflictCheck = checkConflicts.Checked;
+            manager.DisableConflictCheck = checkConflicts.Checked;
         }
+        */
 
         private void buttonFindMGSV_Click(object sender, EventArgs e)
         {
@@ -96,7 +98,7 @@ namespace SnakeBite
         {
             // Set installation path textbox
             textInstallPath.Text = Properties.Settings.Default.InstallPath;
-            checkConflicts.Checked = SettingsManager.DisableConflictCheck;
+            //checkConflicts.Checked = manager.DisableConflictCheck;
             checkEnableSound.Checked = Properties.Settings.Default.EnableSound;
             listThemes.SelectedIndex = 0;
 

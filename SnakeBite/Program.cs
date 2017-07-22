@@ -16,8 +16,8 @@ namespace SnakeBite
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-            SettingsManager.DisableConflictCheck = false;
+            SettingsManager manager = new SettingsManager(ModManager.GameDir);
+            manager.DisableConflictCheck = false;
             if (Properties.Settings.Default.LastSBVersion == null || new Version(Properties.Settings.Default.LastSBVersion) < ModManager.GetSBVersion())
             {
                 Properties.Settings.Default.Upgrade();
@@ -45,7 +45,7 @@ namespace SnakeBite
 
             bool showSetupWizard = false;
 
-            if (!SettingsManager.SettingsExist() || !SettingsManager.ValidInstallPath)
+            if (!manager.SettingsExist() || !manager.ValidInstallPath)
             {
                 showSetupWizard = true;
             }
@@ -84,7 +84,7 @@ namespace SnakeBite
                 {
                     Debug.LogLine("Complete uninstall");
                     // Restore backup and remove settings
-                    SettingsManager.DeleteSettings();
+                    manager.DeleteSettings();
                     BackupManager.RestoreOriginals();
                     return;
                 }
@@ -140,10 +140,10 @@ namespace SnakeBite
             if (resetDatHash)
             {
                 Debug.LogLine("Resetting dat hash");
-                SettingsManager.UpdateDatHash();
+                manager.UpdateDatHash();
             }
 
-            var checkDat = SettingsManager.ValidateDatHash();
+            var checkDat = manager.ValidateDatHash();
 
             if (!checkDat)
             {
@@ -161,12 +161,12 @@ namespace SnakeBite
                 if (install)
                 {
                     // install
-                    ModForm.ProcessInstallMod(installFile, ignoreConflicts,skipCleanup); // install mod
+                    ModForm.ProcessInstallMod(installFile, skipCleanup); // install mod
                 }
                 else
                 {
                     // uninstall
-                    var mods = SettingsManager.GetInstalledMods();
+                    var mods = manager.GetInstalledMods();
                     ModEntry mod = mods.FirstOrDefault(entry => entry.Name == installFile); // select mod
 
                     if (mod != null)
