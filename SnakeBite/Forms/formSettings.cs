@@ -25,21 +25,10 @@ namespace SnakeBite
 
         private void CheckBackupState()
         {
-            bool allFilesExist = BackupManager.BackupExists();
-
-            buttonRestoreOriginals.Enabled = allFilesExist;
             if (BackupManager.OriginalsExist())
             {
-                if (BackupManager.texture1Exists())
-                {
-                    buttonRestoreOriginals.Enabled = true;
-                    labelNoBackups.Text = "";
-                }
-                else
-                {
-                    labelNoBackups.Text = "texture1.dat Backup Not Found.\nOriginal files cannot be restored.";
-                    buttonRestoreOriginals.Enabled = false;
-                }
+                labelNoBackups.Text = "";
+                buttonRestoreOriginals.Enabled = true;
             }
             else
             {
@@ -81,6 +70,7 @@ namespace SnakeBite
             SetupWizard.SetupWizard setupWizard = new SetupWizard.SetupWizard();
             setupWizard.Tag = "closable";
             setupWizard.ShowDialog();
+            UpdateModToggle();
             CheckBackupState();
         }
 

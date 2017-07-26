@@ -640,14 +640,55 @@ namespace SnakeBite
             return false;
         }
 
-        public static void MergeAndCleanup() // move vanilla 00 files to 01, moves vanilla 01 textures to texture1, cleans snakebite.xml 
+        public static void MergeAndCleanup() // move vanilla 00 files to 01, moves vanilla 01 textures to texture7, cleans snakebite.xml 
         {
+            ModifyFoxfs(); // adds lines to foxfs in chunk0.
             MoveDatFiles(); //moves vanilla 00 files into 01, excluding foxpatch.
-            MoveLooseFtexs(); //moves 01 texture files into texture1
+            MoveLooseFtexs(); //moves 01 texture files into texture7
             CleanupDatabase();
         }
 
-        public static void MoveDatFiles() // moves vanilla 00 files, excluding foxpatch.dat, to 01.
+        public static void ModifyFoxfs() // adds 3 lines to foxfs.dat to accommodate texture5, MGO and GZs data.
+        {
+            CleanupFolders();
+            Debug.LogLine("[ModifyChunk0] Beginning modification of Chunk0.dat", Debug.LogLevel.Debug);
+
+            string foxfsInPath = "foxfs.dat";
+            string foxfsOutPath = "_extr\\foxfs.dat";
+            string chunk0Path = Properties.Settings.Default.InstallPath + "\\master\\chunk0.dat";
+
+            Debug.LogLine("[ModifyChunk0] Checking foxfs.dat", Debug.LogLevel.Debug);
+            if (GzsLib.ExtractFile<QarFile>(chunk0Path, foxfsInPath, foxfsOutPath)) //extract foxfs alone, to save time if the changes are already made
+            {
+                if (!File.ReadAllText(foxfsOutPath).Contains("chunk5_mgo0.dat")) // checks if there's an obvious indication that it has been modified
+                {
+                    Debug.LogLine("[ModifyChunk0] Extracting Chunk0.dat", Debug.LogLevel.Debug);
+                    List<string> chunk0Files = GzsLib.ExtractArchive<QarFile>(chunk0Path, "_extr"); //extract chunk0 into _extr
+
+                    string startLine = "		<chunk id=\"5\" label=\"mgo\"/>";
+                    string[] linesToAdd = new string[3]
+                    {
+                    "		<chunk id=\"5\" label =\"mgo\" qar =\"chunk5_mgo0.dat\" textures =\"texture5_mgo0.dat\"/>",
+                    "		<chunk id=\"6\" label=\"gzs\" qar=\"chunk6_gzs0.dat\" textures=\"texture6_gzs0.dat\"/>",
+                    "		<chunk id=\"7\" label=\"old\" textures=\"texture7.dat\"/>"
+                    };
+                    Debug.LogLine("[ModifyChunk0] Updating foxfs.dat", Debug.LogLevel.Debug);
+                    var foxfsLine = File.ReadAllLines(foxfsOutPath).ToList();   // read the file
+                    foxfsLine.InsertRange(foxfsLine.IndexOf(startLine) + 1, linesToAdd);
+                    foxfsLine.RemoveAt(foxfsLine.IndexOf(startLine));  // remove the vanilla chunk id for mgo
+                    File.WriteAllLines(foxfsOutPath, foxfsLine); // write to file
+
+                    Debug.LogLine("[ModifyChunk0] repacking chunk0.dat", Debug.LogLevel.Debug); //repack chunk0 with modified foxfs
+                    GzsLib.WriteQarArchive(chunk0Path, "_extr", chunk0Files, 3146208);
+                }
+            }
+            else Debug.LogLine("[ModifyChunk0] Process failed. Could not check foxfs.dat", Debug.LogLevel.Debug);
+
+            Debug.LogLine("[ModifyChunk0] Modification Complete.", Debug.LogLevel.Debug);
+            CleanupFolders();
+        }
+
+        public static void MoveDatFiles() // moves all vanilla 00.dat files, excluding foxpatch.dat, to 01.dat
         {
             Debug.LogLine("[DatMerge] System data merge started", Debug.LogLevel.Debug);
 
@@ -719,6 +760,81 @@ namespace SnakeBite
             else
             {
                 Debug.LogLine("[DatMerge] No files to merge, aborting", Debug.LogLevel.Debug);
+            }
+        }
+
+        public static void MoveLooseFtexs() // moves textures from 01.dat to texture7.dat. Uses Texture7.dat, because it's the smallest of the vanilla texture archives.
+        {   // just a modified version of MoveDatFiles. 
+
+            string tex7Path = Properties.Settings.Default.InstallPath + "\\master\\texture7.dat";
+            Debug.LogLine("[FtexsRelocation] Beginning texture relocation", Debug.LogLevel.Debug);
+
+            List<string> OneList = new List<string>();
+
+            try
+            {
+                OneList = GzsLib.ListArchiveContents<QarFile>(OnePath);
+            }
+            catch (Exception e)
+            {
+                Debug.LogLine(String.Format("[Error] GzsLib.ListArchiveContents exception: {0}", e.Message), Debug.LogLevel.Debug);
+                throw e;
+            }
+
+            bool move = false;
+            foreach (string file in OneList)
+            {
+                if (file.Contains(".ftex"))
+                {
+                    move = true; break;
+                }
+            }
+
+            if (move)
+            {
+                CleanupFolders();
+
+                Debug.LogLine("[FtexsRelocation] Extracting 01.dat", Debug.LogLevel.Debug);
+                // Extract 00.dat
+                var oneFiles = GzsLib.ExtractArchive<QarFile>(OnePath, "_extr");
+                List<string> tex7Files = new List<string>();
+
+                var oneOut = oneFiles.ToList();
+
+                Debug.LogLine(string.Format("[FtexsRelocation] Moving textures..."), Debug.LogLevel.Debug);
+                // Move any ftex/ftexs from 01 to texture7
+                foreach (string file in oneFiles)
+                {
+                    if (file.Contains(".ftex"))
+                    {
+
+                        string sourceName = Path.Combine("_extr", Tools.ToWinPath(file));
+                        string destName = Path.Combine("_working", Tools.ToWinPath(file));
+                        string destFolder = Path.GetDirectoryName(destName);
+
+                        if (!Directory.Exists(destFolder)) Directory.CreateDirectory(destFolder);
+                        File.Move(sourceName, destName);
+
+                        oneOut.Remove(file);
+                        tex7Files.Add(file);
+                    }
+                }
+
+                Debug.LogLine("[FtexsRelocation] Rebuilding game archives", Debug.LogLevel.Debug);
+
+                // Rebuild 01.dat with files
+                GzsLib.WriteQarArchive(OnePath, "_extr", oneOut, 3150048);
+
+                // Rebuild 00.dat
+                GzsLib.WriteQarArchive(tex7Path, "_working", tex7Files, 3145952);
+
+                CleanupFolders();
+
+                Debug.LogLine("[FtexsRelocation] relocation complete.", Debug.LogLevel.Debug);
+            }
+            else
+            {
+                Debug.LogLine("[FtexsRelocation] No files to relocate, aborting", Debug.LogLevel.Debug);
             }
         }
 
@@ -796,81 +912,6 @@ namespace SnakeBite
 
             game.GameFpkEntries = GameFpks;
             manager.SetGameData(game);
-        }
-
-        public static void MoveLooseFtexs() // moves textures from 01.dat to texture1.dat. Uses Texture1.dat, because it's the smallest of the vanilla texture archives.
-        {   // just a modified version of MoveDatFiles. 
-            string tex1Path = Properties.Settings.Default.InstallPath + "\\master\\texture1.dat";
-            Debug.LogLine("[FtexsRelocation] Beginning texture relocation", Debug.LogLevel.Debug);
-
-            List<string> OneList = new List<string>();
-
-            try
-            {
-                OneList = GzsLib.ListArchiveContents<QarFile>(OnePath);
-            }
-            catch (Exception e)
-            {
-                Debug.LogLine(String.Format("[Error] GzsLib.ListArchiveContents exception: {0}", e.Message), Debug.LogLevel.Debug);
-                throw e;
-            }
-
-            bool move = false;
-            foreach (string file in OneList)
-            {
-                if (file.Contains(".ftex")) {
-                    move = true; break;
-                }
-            }
-
-            if (move)
-            {
-                CleanupFolders();
-
-                Debug.LogLine("[FtexsRelocation] Extracting 01.dat", Debug.LogLevel.Debug);
-                // Extract 00.dat
-                var oneFiles = GzsLib.ExtractArchive<QarFile>(OnePath, "_extr");
-                Debug.LogLine("[FtexsRelocation] Extracting texture1.dat", Debug.LogLevel.Debug);
-                // Extract 01.dat
-                var tex1Files = GzsLib.ExtractArchive<QarFile>(tex1Path, "_working");
-
-                var oneOut = oneFiles.ToList();
-
-                Debug.LogLine(string.Format("[FtexsRelocation] Moving textures..."), Debug.LogLevel.Debug);
-                // Move any ftex/ftexs from 01 to texture1
-                foreach (string file in oneFiles)
-                {
-                    if (file.Contains(".ftex"))
-                    {
-
-                        string sourceName = Path.Combine("_extr", Tools.ToWinPath(file));
-                        string destName = Path.Combine("_working", Tools.ToWinPath(file));
-                        string destFolder = Path.GetDirectoryName(destName);
-
-                        if (!Directory.Exists(destFolder)) Directory.CreateDirectory(destFolder);
-                        File.Move(sourceName, destName);
-
-                        oneOut.Remove(file);
-                        tex1Files.Add(file);
-                    }
-                }
-
-                Debug.LogLine("[FtexsRelocation] Rebuilding game archives", Debug.LogLevel.Debug);
-
-                // Rebuild 01.dat with files
-                GzsLib.WriteQarArchive(OnePath, "_extr", oneOut, 3150048);
-
-                // Rebuild 00.dat
-                GzsLib.WriteQarArchive(tex1Path, "_working", tex1Files, 3145952);
-
-                CleanupFolders();
-
-                Debug.LogLine("[FtexsRelocation] relocation complete.", Debug.LogLevel.Debug);
-            }
-            else
-            {
-                Debug.LogLine("[FtexsRelocation] No files to relocate, aborting", Debug.LogLevel.Debug);
-            }
         }
 
         internal static Version GetMGSVersion()
