@@ -39,19 +39,19 @@ namespace SnakeBite
             return new SettingsManager("_extr", "buildInfo.xml").GetInstalledMods();
         }
 
-        public static List<List<string>> getConflictList(List<ModEntry> ModFiles) // checks each mod against one another for conflicts, and adds conflicting mods to a list.
+        public static List<List<string>> getConflictList(List<ModEntry> ModInfos) // checks each mod against one another for conflicts, and adds conflicting mods to a list.
         {
             List<List<string>> conflictingModLists= new List<List<string>>();
 
-            for (int i = 0; i < ModFiles.Count; i++)
+            for (int i = 0; i < ModInfos.Count; i++)
             {
                 conflictingModLists.Add(new List<string>());
-                for (int j = 0; j < ModFiles.Count; j++)
+                for (int j = 0; j < ModInfos.Count; j++)
                 {
-                    if (hasConflict(ModFiles[i], ModFiles[j]))
+                    if (hasConflict(ModInfos[i], ModInfos[j]))
                     {
-                        if ((i != j) && (!conflictingModLists[i].Contains(ModFiles[j].Name)))
-                            conflictingModLists[i].Add(ModFiles[j].Name);
+                        if ((i != j) && (!conflictingModLists[i].Contains(ModInfos[j].Name)))
+                            conflictingModLists[i].Add(ModInfos[j].Name);
                     }
                 }//the list of names is saved to a list. The conflictingModLists' index corresponds with ModFile's index, allowing snakebite to easily look up any given mod's conflicts.
             }

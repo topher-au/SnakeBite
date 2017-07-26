@@ -6,19 +6,27 @@ namespace SnakeBite
     {
         private static string GameZero { get { return Path.Combine(ModManager.GameDir, "master\\0\\00.dat"); } }
         private static string GameOne { get { return Path.Combine(ModManager.GameDir, "master\\0\\01.dat"); } }
+        private static string GameTexture1 { get { return Path.Combine(ModManager.GameDir, "master\\texture1.dat"); } }
         private static string ModZero { get { return Path.Combine(ModManager.GameDir, "master\\0\\00.dat.modded"); } }
         private static string ModOne { get { return Path.Combine(ModManager.GameDir, "master\\0\\01.dat.modded"); } }
+        private static string ModTexture1 { get { return Path.Combine(ModManager.GameDir, "master\\texture1.dat.modded"); } }
         private static string OriginalZero { get { return Path.Combine(ModManager.GameDir, "master\\0\\00.dat.original"); } }
         private static string OriginalOne { get { return Path.Combine(ModManager.GameDir, "master\\0\\01.dat.original"); } }
+        private static string OriginalTexture1 { get { return Path.Combine(ModManager.GameDir, "master\\texture1.dat.original"); } }
 
         public static bool OriginalsExist()
         {
-            return (File.Exists(OriginalZero) || File.Exists(OriginalOne));
+            return (File.Exists(OriginalZero) && File.Exists(OriginalOne));
+        }
+
+        public static bool texture1Exists()
+        {
+            return (File.Exists(OriginalTexture1));
         }
 
         public static bool ModsDisabled()
         {
-            return (File.Exists(ModZero) || File.Exists(ModOne));
+            return (File.Exists(ModZero) && File.Exists(ModOne));
         }
 
         public static void RestoreOriginals()
@@ -26,14 +34,17 @@ namespace SnakeBite
             // delete existing data
             if (File.Exists(GameZero)) File.Delete(GameZero);
             if (File.Exists(GameOne)) File.Delete(GameOne);
+            if (File.Exists(GameTexture1)) File.Delete(GameTexture1);
 
             // delete mod data
             if (File.Exists(ModZero)) File.Delete(ModZero);
             if (File.Exists(ModOne)) File.Delete(ModOne);
+            if (File.Exists(ModTexture1)) File.Delete(ModTexture1);
 
             // restore backups
             File.Move(OriginalZero, GameZero);
             File.Move(OriginalOne, GameOne);
+            File.Move(OriginalTexture1, GameTexture1);
         }
 
         public static void DeleteOriginals()
@@ -45,7 +56,7 @@ namespace SnakeBite
 
         public static void SwitchToOriginal()
         {
-            if (File.Exists(OriginalZero) && File.Exists(OriginalOne))
+            if (OriginalsExist())
             {
                 // copy mod files to backup
                 File.Copy(GameZero, ModZero, true);
@@ -62,7 +73,7 @@ namespace SnakeBite
 
         public static void SwitchToMods()
         {
-            if (File.Exists(ModZero) && File.Exists(ModOne))
+            if (ModsDisabled())
             {
                 // restore mod backup
                 File.Copy(ModZero, GameZero, true);
@@ -88,20 +99,21 @@ namespace SnakeBite
                 // copy one
                 File.Copy(GameZero, OriginalZero, true);
             }
+            if (!File.Exists(OriginalTexture1) || Overwrite)
+            {
+                // copy one
+                File.Copy(GameTexture1, OriginalTexture1, true);
+            }
         }
 
         public static bool BackupExists()
         {
-            if (File.Exists(OriginalZero) || File.Exists(OriginalOne))
-            {
-                return true;
-            }
-            return false;
+            return (OriginalsExist() && texture1Exists());
         }
 
         public static bool GameFilesExist()
         {
-            return (File.Exists(GameZero) && File.Exists(GameOne));
+            return (File.Exists(GameZero) && File.Exists(GameOne) && File.Exists(GameTexture1));
         }
     }
 

@@ -133,6 +133,16 @@ namespace SnakeBite.Properties {
         /// <summary>
         ///   Looks up a localized resource of type System.Drawing.Bitmap.
         /// </summary>
+        public static System.Drawing.Bitmap toggledisabled {
+            get {
+                object obj = ResourceManager.GetObject("toggledisabled", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
         public static System.Drawing.Bitmap toggleoff {
             get {
                 object obj = ResourceManager.GetObject("toggleoff", resourceCulture);

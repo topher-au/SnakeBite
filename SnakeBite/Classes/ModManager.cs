@@ -47,11 +47,19 @@ namespace SnakeBite
             ".dat",
         });
 
-        public static bool InstallMod(List<string> ModFiles, bool skipCleanup = false) // Installs a list of mod filenames with a single 00 extraction/repacking
+        public static bool InstallMod(List<string> ModFiles, bool skipCleanup = false) // Installs a list of mod filenames
         {
             CleanupFolders(skipCleanup);
             // Extract game archive
             var zeroFiles = GzsLib.ExtractArchive<QarFile>(ZeroPath, "_working");
+            
+            List<string> oneFilesList = null;
+            bool hasFtexs = foundLooseFtexs(ModFiles);
+            if (hasFtexs)
+            {
+                oneFilesList = GzsLib.ExtractArchive<QarFile>(OnePath, "_looseftexs");
+            }
+
             SettingsManager manager = new SettingsManager(GameDir);
             // end of extraction
 
@@ -211,7 +219,7 @@ namespace SnakeBite
                     catch { }
                     Debug.LogLine(String.Format("[Install] Merge complete"), Debug.LogLevel.Debug);
                 }
-
+                //move external files to game directory
                 Debug.LogLine("[Install] Copying game dir files", Debug.LogLevel.Basic);
                 foreach (ModFileEntry fileEntry in metaData.ModFileEntries)
                 {
@@ -246,33 +254,60 @@ namespace SnakeBite
                 }
 
                 manager.SetGameData(g);
-
-                Debug.LogLine("[Install] Copying remaining mod files", Debug.LogLevel.Basic);
-
-                // Copy files for 01.dat, ignoring merged FPKs
+                
+                // copy loose texture files to 01.dat
+                Debug.LogLine("[Install] Copying loose textures to 01.", Debug.LogLevel.Basic);
                 foreach (ModQarEntry modEntry in metaData.ModQarEntries)
                 {
-                    if (!zeroFiles.Contains(Tools.ToWinPath(modEntry.FilePath))) zeroFiles.Add(Tools.ToWinPath(modEntry.FilePath));
+                    if (modEntry.FilePath.Contains(".ftex"))
+                    {
+                        if (!oneFilesList.Contains(Tools.ToWinPath(modEntry.FilePath)))
+                            oneFilesList.Add(Tools.ToWinPath(modEntry.FilePath));
 
-                    if (modEntry.FilePath.Contains(".fpk"))
-                        if (mergeFpks.Count(fpk => Tools.CompareHashes(fpk, modEntry.FilePath)) > 0)
-                            continue;
+                        string sourceFile = Path.Combine("_extr", Tools.ToWinPath(modEntry.FilePath));
+                        string destFile = Path.Combine("_looseftexs", Tools.ToWinPath(modEntry.FilePath));
+                        string destDir = Path.GetDirectoryName(destFile);
 
-                    string sourceFile = Path.Combine("_extr", Tools.ToWinPath(modEntry.FilePath));
-                    string destFile = Path.Combine("_working", Tools.ToWinPath(modEntry.FilePath));
-                    string destDir = Path.GetDirectoryName(destFile);
+                        Debug.LogLine(String.Format("[Install] Copying texture file: {0}", modEntry.FilePath), Debug.LogLevel.All);
+                        if (!Directory.Exists(destDir)) Directory.CreateDirectory(destDir);
+                        File.Copy(sourceFile, destFile, true);
+                    }
+                }
 
-                    Debug.LogLine(String.Format("[Install] Copying file: {0}", modEntry.FilePath), Debug.LogLevel.All);
-                    if (!Directory.Exists(destDir)) Directory.CreateDirectory(destDir);
-                    File.Copy(sourceFile, destFile, true);
+                // Copy (non-texture) files for 01.dat, ignoring merged FPKs
+                Debug.LogLine("[Install] Copying remaining mod files", Debug.LogLevel.Basic);
+                foreach (ModQarEntry modEntry in metaData.ModQarEntries)
+                {
+                    if (!modEntry.FilePath.Contains(".ftex"))
+                    {
+                        if (!zeroFiles.Contains(Tools.ToWinPath(modEntry.FilePath))) zeroFiles.Add(Tools.ToWinPath(modEntry.FilePath));
+
+                        if (modEntry.FilePath.Contains(".fpk"))
+                            if (mergeFpks.Count(fpk => Tools.CompareHashes(fpk, modEntry.FilePath)) > 0)
+                                continue;
+
+                        string sourceFile = Path.Combine("_extr", Tools.ToWinPath(modEntry.FilePath));
+                        string destFile = Path.Combine("_working", Tools.ToWinPath(modEntry.FilePath));
+                        string destDir = Path.GetDirectoryName(destFile);
+
+                        Debug.LogLine(String.Format("[Install] Copying file: {0}", modEntry.FilePath), Debug.LogLevel.All);
+                        if (!Directory.Exists(destDir)) Directory.CreateDirectory(destDir);
+                        File.Copy(sourceFile, destFile, true);
+                    }
                 }
                 manager.UpdateDatHash();
                 metaData = new ModEntry("_extr\\metadata.xml");
                 manager.AddMod(metaData);
             }
             // Rebuild 00.dat
-            Debug.LogLine("[Install] Rebuilding game archive", Debug.LogLevel.Basic);
+            Debug.LogLine("[Install] Rebuilding 00.dat", Debug.LogLevel.Basic);
             GzsLib.WriteQarArchive(ZeroPath, "_working", zeroFiles, 3150048);
+
+            if (hasFtexs)
+            {
+                Debug.LogLine("[Install] Rebuilding 01.dat", Debug.LogLevel.Basic);
+                GzsLib.WriteQarArchive(OnePath, "_looseftexs", oneFilesList, 3150048);
+            }
 
             if (!skipCleanup) {
             CleanupDatabase();
@@ -287,16 +322,23 @@ namespace SnakeBite
             return true;
         }
 
-        public static bool UninstallMod(CheckedListBox.CheckedIndexCollection modIndices) // Uninstalls mods based on their indices in the list with a single 00 extraction/repacking
+        public static bool UninstallMod(CheckedListBox.CheckedIndexCollection modIndices) // Uninstalls mods based on their indices in the list
         {
             SettingsManager manager = new SettingsManager(GameDir);
-            var mods = manager.GetInstalledMods();
+            List<ModEntry> mods = manager.GetInstalledMods();
 
             //allready logs
             CleanupFolders();
 
             Debug.LogLine("[Uninstall] Extracting 00.dat to _working", Debug.LogLevel.Basic);
-            var zeroFiles = GzsLib.ExtractArchive<QarFile>(ZeroPath, "_working");
+            var zeroFiles = GzsLib.ExtractArchive<QarFile>(ZeroPath, "_working"); // extracts 00.dat and creates a list of filenames, which is pruned throughout the uninstall process and repacked at the end.
+            List<string> oneFilesList = null;
+            bool hasFtexs = foundLooseFtexs(modIndices);
+            
+            if (hasFtexs)
+            {
+                oneFilesList = GzsLib.ExtractArchive<QarFile>(OnePath, "_looseftexs"); // if necessary, extracts 01.dat and creates a list of filenames similar to zeroFiles. only textures are pruned from the list.
+            }
             //end of qar extraction
 
             foreach (int index in modIndices)
@@ -315,19 +357,19 @@ namespace SnakeBite
                 {
                     if (fpkEntry.FilePath.Contains(".fpk"))
                     {
-                        if (!modFpks.Contains(fpkEntry.FilePath)) modFpks.Add(fpkEntry.FilePath);
+                        if (!modFpks.Contains(fpkEntry.FilePath)) modFpks.Add(fpkEntry.FilePath);//modfkps now has every fpk file and filepath for the current mod
                     }
                 }
 
                 Debug.LogLine("[Uninstall] Reading snakebite.xml", Debug.LogLevel.Basic);
-                var gameData = manager.GetGameData();
+                GameData gameData = manager.GetGameData(); //retrieves snakebite.xml information for lists of current installed
 
                 Debug.LogLine("[Uninstall] Removing game dir file entries", Debug.LogLevel.Basic);
                 List<string> fileEntryDirs = new List<string>();
-                foreach (ModFileEntry fileEntry in mod.ModFileEntries)
+                foreach (ModFileEntry fileEntry in mod.ModFileEntries) //checks all of current mod's files
                 {
                     bool skipFile = false;
-                    foreach (string ignoreFile in ignoreFileList)
+                    foreach (string ignoreFile in ignoreFileList) //marks files that shouldn't be added to the uninstallation list
                     {
                         if (fileEntry.FilePath.Contains(ignoreFile))
                         {
@@ -341,21 +383,21 @@ namespace SnakeBite
                             skipFile = true;
                         }
                     }
-                    if (skipFile == false)
+                    if (skipFile == false) //if it hasn't been flagged to be skipped:
                     {
                         //tex TODO hash check?
-                        string destFile = Path.Combine(GameDir, Tools.ToWinPath(fileEntry.FilePath));
-                        string dir = Path.GetDirectoryName(destFile);
+                        string destFile = Path.Combine(GameDir, Tools.ToWinPath(fileEntry.FilePath)); //create the filepath to the file in question
+                        string dir = Path.GetDirectoryName(destFile); //filepath of the directory containing the file
                         if (!fileEntryDirs.Contains(dir))
                         {
-                            fileEntryDirs.Add(dir);
+                            fileEntryDirs.Add(dir); //the directory is added to the list of fileentrydirectories
                         }
-                        if (File.Exists(destFile))
+                        if (File.Exists(destFile)) // attempt to delete the file in question
                         {
                             Debug.LogLine(String.Format("[Uninstall] deleting file: {0}", destFile), Debug.LogLevel.All);
                             try
                             {
-                                File.Delete(destFile);
+                                File.Delete(destFile); // deletes the specified file
                             }
                             catch (IOException e)
                             {
@@ -363,14 +405,14 @@ namespace SnakeBite
                             }
                         }
                     }
-                    foreach (string dir in fileEntryDirs)
+                    foreach (string dir in fileEntryDirs) //all the directories that have had files deleted within them
                     {
-                        if (Directory.Exists(dir) && Directory.GetFiles(dir).Length == 0)
+                        if (Directory.Exists(dir) && Directory.GetFiles(dir).Length == 0) // if the directory has not yet been deleted and there are no more files inside the directory
                         {
                             Debug.LogLine(String.Format("[Uninstall] deleting folder: {0}", dir), Debug.LogLevel.All);
                             try
                             {
-                                Directory.Delete(dir, true);
+                                Directory.Delete(dir, true); //attempt to delete the empty directory
                             }
                             catch (IOException e)
                             {
@@ -378,14 +420,32 @@ namespace SnakeBite
                             }
                         }
                     }
-                    gameData.GameFileEntries.RemoveAll(file => Tools.CompareHashes(file.FilePath, fileEntry.FilePath));
+                    gameData.GameFileEntries.RemoveAll(file => Tools.CompareHashes(file.FilePath, fileEntry.FilePath)); //remove all mentions of the destFile from snakebite.xml
                 }
-                foreach (string dir in fileEntryDirs)
+
+                Debug.LogLine(String.Format("[Uninstall] Removing any loose textures in {0}", mod.Name), Debug.LogLevel.Basic); // begin loose texture check for current mod.
+                fileEntryDirs = new List<string>();
+                foreach (ModQarEntry qarEntry in mod.ModQarEntries) // check all qar entries in current mod
                 {
-
+                    if(qarEntry.FilePath.Contains(".ftex")) { // if the file is an ftex or ftexs
+                        string destFile = Path.Combine("_looseftexs", qarEntry.FilePath);
+                        if (File.Exists(destFile)) // check if the file exists in the extracted 01
+                        {
+                            try
+                            {
+                                File.Delete(destFile); // deletes the specified file
+                            }
+                            catch (IOException e)
+                            {
+                                Console.WriteLine("[Uninstall] Could not delete: " + e.Message);
+                            }
+                        }
+                        gameData.GameQarEntries.RemoveAll(file => Tools.CompareHashes(file.FilePath, qarEntry.FilePath)); //remove all mentions of the deleted texture from snakebite.xml
+                        oneFilesList.RemoveAll(file => Tools.CompareHashes(file, qarEntry.FilePath)); // removes all mentions of deleted texture from 01.dat's repack list
+                    }
                 }
 
-                Debug.LogLine("[Uninstall] Processing fpk entries", Debug.LogLevel.Basic);
+                    Debug.LogLine("[Uninstall] Processing fpk entries", Debug.LogLevel.Basic);
                 foreach (string fpk in modFpks)
                 {
                     Debug.LogLine(String.Format("[Uninstall] Processing {0}", fpk), Debug.LogLevel.Basic);
@@ -523,6 +583,12 @@ namespace SnakeBite
             }
             Debug.LogLine("[Uninstall] Rebuilding 00.dat", Debug.LogLevel.Basic);
             GzsLib.WriteQarArchive(ZeroPath, "_working", zeroFiles, 3150048);
+
+            if (hasFtexs)
+            {
+                Debug.LogLine("[Install] Rebuilding 01.dat", Debug.LogLevel.Basic);
+                GzsLib.WriteQarArchive(OnePath, "_looseftexs", oneFilesList, 3150048);
+            }
             // end of qar repacking
 
             Debug.LogLine("[Uninstall] Updating 00.dat hash", Debug.LogLevel.Basic);
@@ -544,13 +610,44 @@ namespace SnakeBite
             return true;
         }
 
-        public static void MergeAndCleanup()
+        public static bool foundLooseFtexs(List<string> ModFiles) // returns true if any mods in the list contain a loose texture file which was installed to 01
         {
-            MoveDatFiles();
+            ModEntry metaData;
+            foreach (string modfile in ModFiles)
+            {
+                metaData = Tools.ReadMetaData(modfile);
+                foreach (ModQarEntry qarFile in metaData.ModQarEntries)
+                {
+                    if (qarFile.FilePath.Contains(".ftex"))
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool foundLooseFtexs(CheckedListBox.CheckedIndexCollection modIndices) // returns true if any mods at the indices contain a loose texture file which was installed to 01
+        {
+            var mods = new SettingsManager(GameDir).GetInstalledMods();
+            foreach (int index in modIndices)
+            {
+                ModEntry mod = mods[index];
+                foreach (ModQarEntry qarFile in mod.ModQarEntries)
+                {
+                    if (qarFile.FilePath.Contains(".ftex"))
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        public static void MergeAndCleanup() // move vanilla 00 files to 01, moves vanilla 01 textures to texture1, cleans snakebite.xml 
+        {
+            MoveDatFiles(); //moves vanilla 00 files into 01, excluding foxpatch.
+            MoveLooseFtexs(); //moves 01 texture files into texture1
             CleanupDatabase();
         }
 
-        public static void MoveDatFiles()
+        public static void MoveDatFiles() // moves vanilla 00 files, excluding foxpatch.dat, to 01.
         {
             Debug.LogLine("[DatMerge] System data merge started", Debug.LogLevel.Debug);
 
@@ -701,6 +798,81 @@ namespace SnakeBite
             manager.SetGameData(game);
         }
 
+        public static void MoveLooseFtexs() // moves textures from 01.dat to texture1.dat. Uses Texture1.dat, because it's the smallest of the vanilla texture archives.
+        {   // just a modified version of MoveDatFiles. 
+            string tex1Path = Properties.Settings.Default.InstallPath + "\\master\\texture1.dat";
+            Debug.LogLine("[FtexsRelocation] Beginning texture relocation", Debug.LogLevel.Debug);
+
+            List<string> OneList = new List<string>();
+
+            try
+            {
+                OneList = GzsLib.ListArchiveContents<QarFile>(OnePath);
+            }
+            catch (Exception e)
+            {
+                Debug.LogLine(String.Format("[Error] GzsLib.ListArchiveContents exception: {0}", e.Message), Debug.LogLevel.Debug);
+                throw e;
+            }
+
+            bool move = false;
+            foreach (string file in OneList)
+            {
+                if (file.Contains(".ftex")) {
+                    move = true; break;
+                }
+            }
+
+            if (move)
+            {
+                CleanupFolders();
+
+                Debug.LogLine("[FtexsRelocation] Extracting 01.dat", Debug.LogLevel.Debug);
+                // Extract 00.dat
+                var oneFiles = GzsLib.ExtractArchive<QarFile>(OnePath, "_extr");
+                Debug.LogLine("[FtexsRelocation] Extracting texture1.dat", Debug.LogLevel.Debug);
+                // Extract 01.dat
+                var tex1Files = GzsLib.ExtractArchive<QarFile>(tex1Path, "_working");
+
+                var oneOut = oneFiles.ToList();
+
+                Debug.LogLine(string.Format("[FtexsRelocation] Moving textures..."), Debug.LogLevel.Debug);
+                // Move any ftex/ftexs from 01 to texture1
+                foreach (string file in oneFiles)
+                {
+                    if (file.Contains(".ftex"))
+                    {
+
+                        string sourceName = Path.Combine("_extr", Tools.ToWinPath(file));
+                        string destName = Path.Combine("_working", Tools.ToWinPath(file));
+                        string destFolder = Path.GetDirectoryName(destName);
+
+                        if (!Directory.Exists(destFolder)) Directory.CreateDirectory(destFolder);
+                        File.Move(sourceName, destName);
+
+                        oneOut.Remove(file);
+                        tex1Files.Add(file);
+                    }
+                }
+
+                Debug.LogLine("[FtexsRelocation] Rebuilding game archives", Debug.LogLevel.Debug);
+
+                // Rebuild 01.dat with files
+                GzsLib.WriteQarArchive(OnePath, "_extr", oneOut, 3150048);
+
+                // Rebuild 00.dat
+                GzsLib.WriteQarArchive(tex1Path, "_working", tex1Files, 3145952);
+
+                CleanupFolders();
+
+                Debug.LogLine("[FtexsRelocation] relocation complete.", Debug.LogLevel.Debug);
+            }
+            else
+            {
+                Debug.LogLine("[FtexsRelocation] No files to relocate, aborting", Debug.LogLevel.Debug);
+            }
+        }
+
         internal static Version GetMGSVersion()
         {
             // Get MGSV executable version
@@ -713,9 +885,10 @@ namespace SnakeBite
             return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
         }
 
-        private static void CleanupFolders(bool skipCleanup=false)
+        private static void CleanupFolders(bool skipCleanup=false) // deletes the work folders which contain extracted files from 00/01
         {
             if (Directory.Exists("_working")) Directory.Delete("_working", true);
+            if (Directory.Exists("_looseftexs")) Directory.Delete("_looseftexs", true);
             if (Directory.Exists("_extr")) Directory.Delete("_extr", true);
             if (Directory.Exists("_gamefpk")) Directory.Delete("_gamefpk", true);
             if (Directory.Exists("_modfpk")) Directory.Delete("_modfpk", true);
@@ -726,6 +899,7 @@ namespace SnakeBite
                 Thread.Sleep(100);
                 directoryExists = false;
                 if (Directory.Exists("_working")) directoryExists = true;
+                if (Directory.Exists("_looseftexs")) directoryExists = true;
                 if (Directory.Exists("_extr")) directoryExists = true;
                 if (Directory.Exists("_gamefpk")) directoryExists = true;
                 if (Directory.Exists("_modfpk")) directoryExists = true;
@@ -733,8 +907,8 @@ namespace SnakeBite
         }      
 
         public static bool CheckConflicts(string ModFile)
-        { //Morbid: Conflict check has been revamped as of 0.8.7. CheckConflicts has been split into PreinstallManager.FilterModValidity and PreinstallManager.FilterModConflicts.
-          //        CheckConflicts is only used for command-line installation, which ought to be removed altogether imo, to make SnakeBite cleaner.
+        { //Morbid: Conflict check has been reworked as of 0.8.7. CheckConflicts is now split into PreinstallManager.FilterModValidity and PreinstallManager.FilterModConflicts.
+          //        CheckConflicts is only used for command-line installation, which ought to be removed altogether imo, to clean up snakebite.
             ModEntry metaData = Tools.ReadMetaData(ModFile);
             if (metaData == null) return false;
             // check version conflicts
@@ -843,7 +1017,7 @@ namespace SnakeBite
                 {
                     msgboxtext += Conflict + "\n";
                 }
-                msgboxtext += "\nMore information regarding the conflicts has been output to the logfile. Double click the version number shown in the Launcher to view the current logfile.";
+                msgboxtext += "\nMore information regarding the conflicts has been output to the logfile.";
                 MessageBox.Show(msgboxtext, "Installation Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }

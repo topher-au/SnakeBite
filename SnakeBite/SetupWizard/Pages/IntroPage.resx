@@ -118,8 +118,7 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="labelWelcomeText.Text" xml:space="preserve">
-    <value>Thankyou for choosing SnakeBite for your MGSV modding needs.
-
+    <value>
 For the application to work correctly, we need to gather some information about your installation and perform some minor modification to the game files.
 
 During this process, you will have the opportunity to reset your game data and create a backup.</value>

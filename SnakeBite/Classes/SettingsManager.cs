@@ -171,6 +171,7 @@ namespace SnakeBite
 
         internal bool ValidateDatHash()
         {
+            // Morbid TODO: validate 01
             string datHash = Tools.GetMd5Hash(ModManager.ZeroPath);
             string hashOld = this.GetGameData().DatHash;
             if (datHash != hashOld) return false;

@@ -28,13 +28,13 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreateBackupPage));
             this.panelContent = new System.Windows.Forms.Panel();
             this.panelProcessing = new System.Windows.Forms.Panel();
             this.labelWorking = new System.Windows.Forms.Label();
             this.pictureWorkingSpiral = new System.Windows.Forms.PictureBox();
             this.labelSelectDir = new System.Windows.Forms.Label();
             this.labelHeader = new System.Windows.Forms.Label();
+            this.labelNoInstallNote = new System.Windows.Forms.Label();
             this.panelContent.SuspendLayout();
             this.panelProcessing.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureWorkingSpiral)).BeginInit();
@@ -42,6 +42,7 @@
             // 
             // panelContent
             // 
+            this.panelContent.Controls.Add(this.labelNoInstallNote);
             this.panelContent.Controls.Add(this.panelProcessing);
             this.panelContent.Controls.Add(this.labelSelectDir);
             this.panelContent.Controls.Add(this.labelHeader);
@@ -64,7 +65,7 @@
             this.labelWorking.AutoSize = true;
             this.labelWorking.Location = new System.Drawing.Point(43, 14);
             this.labelWorking.Name = "labelWorking";
-            this.labelWorking.Size = new System.Drawing.Size(168, 15);
+            this.labelWorking.Size = new System.Drawing.Size(169, 15);
             this.labelWorking.TabIndex = 7;
             this.labelWorking.Text = "Your backup is being created...";
             // 
@@ -81,9 +82,10 @@
             // 
             this.labelSelectDir.Location = new System.Drawing.Point(5, 51);
             this.labelSelectDir.Name = "labelSelectDir";
-            this.labelSelectDir.Size = new System.Drawing.Size(432, 67);
+            this.labelSelectDir.Size = new System.Drawing.Size(432, 24);
             this.labelSelectDir.TabIndex = 5;
-            this.labelSelectDir.Text = resources.GetString("labelSelectDir.Text");
+            this.labelSelectDir.Text = "Next, some game files need to be backed up in case they are required later.";
+            this.labelSelectDir.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // labelHeader
             // 
@@ -94,6 +96,17 @@
             this.labelHeader.Size = new System.Drawing.Size(218, 30);
             this.labelHeader.TabIndex = 4;
             this.labelHeader.Text = "Backup existing data";
+            // 
+            // labelNoInstallNote
+            // 
+            this.labelNoInstallNote.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelNoInstallNote.Location = new System.Drawing.Point(38, 75);
+            this.labelNoInstallNote.Name = "labelNoInstallNote";
+            this.labelNoInstallNote.Size = new System.Drawing.Size(364, 68);
+            this.labelNoInstallNote.TabIndex = 8;
+            this.labelNoInstallNote.Text = "Note:\r\nIf you do not create a backup file, you will not be able to use the Toggle" +
+    " feature or restore your game files to their default state.\r\n";
+            this.labelNoInstallNote.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // CreateBackupPage
             // 
@@ -120,5 +133,6 @@
         private System.Windows.Forms.Label labelWorking;
         private System.Windows.Forms.PictureBox pictureWorkingSpiral;
         public System.Windows.Forms.Panel panelProcessing;
+        private System.Windows.Forms.Label labelNoInstallNote;
     }
 }

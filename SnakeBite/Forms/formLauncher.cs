@@ -74,7 +74,7 @@ namespace SnakeBite
             labelVersion.Text = VersionText;
             UpdateVersionLabel();
 
-            UpdateModToggle();
+            buttonMods.Enabled = !BackupManager.ModsDisabled();
 
             SetupTheme();
 
@@ -249,6 +249,7 @@ namespace SnakeBite
             formSettings Settings = new formSettings();
             Settings.Owner = this;
             Settings.ShowDialog();
+            buttonMods.Enabled = !BackupManager.ModsDisabled();
         }
 
         private void ExitLauncher(bool silent = false)
@@ -272,7 +273,6 @@ namespace SnakeBite
         private void buttonSettings_Click(object sender, EventArgs e)
         {
             ShowConfiguration();
-            UpdateModToggle();
         }
 
         private void buttonExit_Click(object sender, EventArgs e)
@@ -292,28 +292,11 @@ namespace SnakeBite
 
         private void UpdateVersionLabel()
         {
-            labelVersion.Refresh();
-           // labelVersion.Left = Width - labelVersion.Width - 8;
-           // labelVersion.Top = Height - labelVersion.Height - 8;
+           labelVersion.Refresh();
+           labelVersion.Left = 8;
+           labelVersion.Top = Height - labelVersion.Height - 8;
            //labelUpdate.Left = 8;
-           // labelUpdate.Top = Height - labelUpdate.Height - 8;
-        }
-
-        private void UpdateModToggle()
-        {
-            // Enable/disable mods button
-
-            if(BackupManager.ModsDisabled())
-            {
-                buttonMods.Enabled = false;
-                picModToggle.Image = Properties.Resources.toggleoff;
-            } else
-            {
-                buttonMods.Enabled = true;
-                picModToggle.Image = Properties.Resources.toggleon;
-            }
-            
-
+           //labelUpdate.Top = Height - labelUpdate.Height - 8;
         }
 
         private void labelClose_Click(object sender, EventArgs e)
@@ -345,20 +328,6 @@ namespace SnakeBite
                 ReleaseCapture();
                 SendMessage(Handle, WM_NCLBUTTONDOWN, HTCAPTION, 0);
             }
-        }
-
-        private void picModToggle_Click(object sender, EventArgs e)
-        {
-            PlaySound("ui_select");
-            if (BackupManager.ModsDisabled())
-            {
-                ProgressWindow.Show("Working","Enabling mods, please wait...", new Action(BackupManager.SwitchToMods));
-            }
-            else
-            {
-                ProgressWindow.Show("Working", "Disabling mods, please wait...\n\nNote:\n You will not have access to the Mod Menu\nwhile mods are disabled.", new Action(BackupManager.SwitchToOriginal));
-            }
-            UpdateModToggle();
         }
 
     }

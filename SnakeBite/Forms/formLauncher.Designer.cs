@@ -35,8 +35,6 @@
             this.buttonExit = new System.Windows.Forms.Label();
             this.labelVersion = new System.Windows.Forms.Label();
             this.labelClose = new System.Windows.Forms.Label();
-            this.picModToggle = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.picModToggle)).BeginInit();
             this.SuspendLayout();
             // 
             // buttonStartGame
@@ -123,24 +121,11 @@
             this.labelClose.Text = "x";
             this.labelClose.Click += new System.EventHandler(this.labelClose_Click);
             // 
-            // picModToggle
-            // 
-            this.picModToggle.BackColor = System.Drawing.Color.Transparent;
-            this.picModToggle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
-            this.picModToggle.Location = new System.Drawing.Point(134, 256);
-            this.picModToggle.Name = "picModToggle";
-            this.picModToggle.Size = new System.Drawing.Size(92, 39);
-            this.picModToggle.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
-            this.picModToggle.TabIndex = 8;
-            this.picModToggle.TabStop = false;
-            this.picModToggle.Click += new System.EventHandler(this.picModToggle_Click);
-            // 
             // formLauncher
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackgroundImage = global::SnakeBite.Properties.Resources.LAUNCHERBGv2;
             this.ClientSize = new System.Drawing.Size(768, 432);
-            this.Controls.Add(this.picModToggle);
             this.Controls.Add(this.labelClose);
             this.Controls.Add(this.labelVersion);
             this.Controls.Add(this.buttonExit);
@@ -159,7 +144,6 @@
             this.Load += new System.EventHandler(this.formLauncher_Load);
             this.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.formLauncher_KeyPress);
             this.MouseDown += new System.Windows.Forms.MouseEventHandler(this.formLauncher_MouseDown);
-            ((System.ComponentModel.ISupportInitialize)(this.picModToggle)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -173,6 +157,5 @@
         private System.Windows.Forms.Label buttonExit;
         private System.Windows.Forms.Label labelVersion;
         private System.Windows.Forms.Label labelClose;
-        private System.Windows.Forms.PictureBox picModToggle;
     }
 }
