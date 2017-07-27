@@ -6,16 +6,20 @@ namespace SnakeBite
     {
         private static string GameZero { get { return Path.Combine(ModManager.GameDir, "master\\0\\00.dat"); } }
         private static string GameOne { get { return Path.Combine(ModManager.GameDir, "master\\0\\01.dat"); } }
-        private static string GameTexture5 { get { return Path.Combine(ModManager.GameDir, "master\\texture5.dat"); } }
+        private static string GameTexture7 { get { return Path.Combine(ModManager.GameDir, "master\\a_texture7.dat"); } }
+        private static string GameChunk7 { get { return Path.Combine(ModManager.GameDir, "master\\a_chunk7.dat"); } }
         private static string ModZero { get { return Path.Combine(ModManager.GameDir, "master\\0\\00.dat.modded"); } }
         private static string ModOne { get { return Path.Combine(ModManager.GameDir, "master\\0\\01.dat.modded"); } }
-        private static string ModTexture5 { get { return Path.Combine(ModManager.GameDir, "master\\texture5.dat.modded"); } }
         private static string OriginalZero { get { return Path.Combine(ModManager.GameDir, "master\\0\\00.dat.original"); } }
         private static string OriginalOne { get { return Path.Combine(ModManager.GameDir, "master\\0\\01.dat.original"); } }
 
         public static bool OriginalsExist()
         {
             return (File.Exists(OriginalZero) && File.Exists(OriginalOne));
+        }
+        public static bool c7t7Exist()
+        {
+            return (File.Exists(GameTexture7) && File.Exists(GameChunk7));
         }
 
         public static bool ModsDisabled()
@@ -28,12 +32,10 @@ namespace SnakeBite
             // delete existing data
             if (File.Exists(GameZero)) File.Delete(GameZero);
             if (File.Exists(GameOne)) File.Delete(GameOne);
-            if (File.Exists(GameTexture5)) File.Delete(GameTexture5);
 
             // delete mod data
             if (File.Exists(ModZero)) File.Delete(ModZero);
             if (File.Exists(ModOne)) File.Delete(ModOne);
-            if (File.Exists(ModTexture5)) File.Delete(ModTexture5);
 
             // restore backups
             File.Move(OriginalZero, GameZero);

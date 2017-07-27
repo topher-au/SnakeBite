@@ -90,7 +90,7 @@ namespace SnakeBite
             }
             if (!(MessageBox.Show("The following mods will be uninstalled:\n" + markedModNames , "SnakeBite", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)) return;
             
-            ProgressWindow.Show("Uninstalling Mod(s)", "Uninstalling...\n\nNote:\nThe uninstall time depends greatly\nonthe size and number of mods being uninstalled,\nas well as the mods that are still installed.", new Action((MethodInvoker)delegate { ModManager.UninstallMod(checkedModIndices); }));
+            ProgressWindow.Show("Uninstalling Mod(s)", "Uninstalling...\n\nNote:\nThe uninstall time depends greatly on\nthe mod's contents, the number of mods being uninstalled\nand the mods that are still installed.", new Action((MethodInvoker)delegate { ModManager.UninstallMod(checkedModIndices); }));
             // Update installed mod list
             RefreshInstalledMods(true);
         } 
@@ -218,5 +218,13 @@ namespace SnakeBite
             Application.Exit();
         }
 
+        private void buttonOpenGameDir_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Process.Start(Properties.Settings.Default.InstallPath);
+            }
+            catch { }
+        }
     }
 }

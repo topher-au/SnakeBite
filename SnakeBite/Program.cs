@@ -152,6 +152,11 @@ namespace SnakeBite
                 setupWizard.ShowDialog();
             }
 
+            if (!BackupManager.c7t7Exist())
+            {
+                MessageBox.Show("Important SnakeBite files, \"a_texture7.dat\" and/or \"a_chunk7.dat\", appear to be missing from the master directory. Please verify the integrity of the game through Steam.", "Important Data is Missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
             if (doCmdLine)
             {
                 Debug.LogLine("Doing cmd line args");

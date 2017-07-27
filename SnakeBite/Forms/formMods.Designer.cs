@@ -45,6 +45,7 @@
             this.labelNoModInstruction = new System.Windows.Forms.Label();
             this.buttonLaunchGame = new System.Windows.Forms.Button();
             this.linkBrowseMods = new System.Windows.Forms.LinkLabel();
+            this.buttonOpenGameDir = new System.Windows.Forms.Button();
             this.panelModDescription.SuspendLayout();
             this.groupBoxNoModsNotice.SuspendLayout();
             this.SuspendLayout();
@@ -58,7 +59,7 @@
             this.listInstalledMods.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.listInstalledMods.Name = "listInstalledMods";
             this.listInstalledMods.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.listInstalledMods.Size = new System.Drawing.Size(187, 351);
+            this.listInstalledMods.Size = new System.Drawing.Size(187, 355);
             this.listInstalledMods.TabIndex = 3;
             this.listInstalledMods.Tag = "";
             this.listInstalledMods.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listInstalledMods_ItemCheck);
@@ -68,7 +69,7 @@
             // 
             this.buttonInstall.BackColor = System.Drawing.Color.Transparent;
             this.buttonInstall.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.buttonInstall.Location = new System.Drawing.Point(8, 397);
+            this.buttonInstall.Location = new System.Drawing.Point(8, 401);
             this.buttonInstall.Name = "buttonInstall";
             this.buttonInstall.Size = new System.Drawing.Size(187, 23);
             this.buttonInstall.TabIndex = 4;
@@ -80,7 +81,7 @@
             // 
             this.buttonUninstall.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonUninstall.Enabled = false;
-            this.buttonUninstall.Location = new System.Drawing.Point(8, 426);
+            this.buttonUninstall.Location = new System.Drawing.Point(8, 428);
             this.buttonUninstall.Name = "buttonUninstall";
             this.buttonUninstall.Size = new System.Drawing.Size(187, 23);
             this.buttonUninstall.TabIndex = 5;
@@ -118,7 +119,7 @@
             this.buttonOpenLogs.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonOpenLogs.Location = new System.Drawing.Point(8, 455);
             this.buttonOpenLogs.Name = "buttonOpenLogs";
-            this.buttonOpenLogs.Size = new System.Drawing.Size(207, 23);
+            this.buttonOpenLogs.Size = new System.Drawing.Size(202, 23);
             this.buttonOpenLogs.TabIndex = 9;
             this.buttonOpenLogs.Text = "Open Debug Logs";
             this.buttonOpenLogs.UseVisualStyleBackColor = true;
@@ -242,22 +243,34 @@
             // 
             // linkBrowseMods
             // 
-            this.linkBrowseMods.BackColor = System.Drawing.Color.LightGray;
+            this.linkBrowseMods.BackColor = System.Drawing.Color.Silver;
             this.linkBrowseMods.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.linkBrowseMods.Location = new System.Drawing.Point(9, 485);
+            this.linkBrowseMods.Location = new System.Drawing.Point(248, 483);
             this.linkBrowseMods.Name = "linkBrowseMods";
-            this.linkBrowseMods.Size = new System.Drawing.Size(204, 17);
+            this.linkBrowseMods.Size = new System.Drawing.Size(139, 19);
             this.linkBrowseMods.TabIndex = 12;
             this.linkBrowseMods.TabStop = true;
-            this.linkBrowseMods.Text = "Browse SnakeBite Compatible Mods";
+            this.linkBrowseMods.Text = "Browse SnakeBite Mods";
             this.linkBrowseMods.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.linkBrowseMods.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelSnakeBiteModsList_LinkClicked);
+            // 
+            // buttonOpenGameDir
+            // 
+            this.buttonOpenGameDir.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.buttonOpenGameDir.Location = new System.Drawing.Point(8, 481);
+            this.buttonOpenGameDir.Name = "buttonOpenGameDir";
+            this.buttonOpenGameDir.Size = new System.Drawing.Size(202, 23);
+            this.buttonOpenGameDir.TabIndex = 13;
+            this.buttonOpenGameDir.Text = "Open Game Directory";
+            this.buttonOpenGameDir.UseVisualStyleBackColor = true;
+            this.buttonOpenGameDir.Click += new System.EventHandler(this.buttonOpenGameDir_Click);
             // 
             // formMods
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.DimGray;
             this.ClientSize = new System.Drawing.Size(584, 510);
+            this.Controls.Add(this.buttonOpenGameDir);
             this.Controls.Add(this.linkBrowseMods);
             this.Controls.Add(this.buttonLaunchGame);
             this.Controls.Add(this.buttonOpenLogs);
@@ -303,5 +316,6 @@
         private System.Windows.Forms.Button buttonLaunchGame;
         private System.Windows.Forms.LinkLabel linkBrowseMods;
         private System.Windows.Forms.LinkLabel labelModWebsite;
+        private System.Windows.Forms.Button buttonOpenGameDir;
     }
 }

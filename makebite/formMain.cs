@@ -194,5 +194,11 @@ namespace makebite
         private void comboForVersion_SelectedIndexChanged(object sender, EventArgs e)
         {
         }
+
+        private void labelToggleHelp_Click(object sender, EventArgs e)
+        {
+            formHelp help = new formHelp();
+            help.Show();
+        }
     }
 }

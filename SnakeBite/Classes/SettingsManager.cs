@@ -153,12 +153,17 @@ namespace SnakeBite
         {
             Settings settings = new Settings();
             settings.LoadFrom(directory, filename);
-
+             
             // Hash 01.dat and update settings file
-            string datHash = Tools.GetMd5Hash(ModManager.ZeroPath);
+            string datHash = Tools.GetMd5Hash(ModManager.ZeroPath) + Tools.GetMd5Hash(ModManager.OnePath);
             settings.GameData.DatHash = datHash;
 
             settings.SaveTo(directory, filename);
+        }
+        public bool isOriginalDatHash()
+        {
+            string vanillaDatHash = "53AB696C882860E5D3B19C53384448682C584B00A891474343D7BD5FD0F1552E";
+            return vanillaDatHash.Equals(Tools.GetMd5Hash(ModManager.ZeroPath) + Tools.GetMd5Hash(ModManager.OnePath));
         }
 
         public void ClearAllMods()
@@ -172,8 +177,9 @@ namespace SnakeBite
         internal bool ValidateDatHash()
         {
             // Morbid TODO: validate 01
-            string datHash = Tools.GetMd5Hash(ModManager.ZeroPath);
+            string datHash = Tools.GetMd5Hash(ModManager.ZeroPath) + Tools.GetMd5Hash(ModManager.OnePath);
             string hashOld = this.GetGameData().DatHash;
+            Console.WriteLine(datHash);
             if (datHash != hashOld) return false;
             return true;
         }

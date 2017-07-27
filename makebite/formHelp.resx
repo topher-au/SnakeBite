@@ -117,14 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="labelWelcomeText.Text" xml:space="preserve">
-    <value>SnakeBite will now take any non-SnakeBite data contained within 00.dat and move it to 01.dat. 
-
-As of update 0.8.7, a significant amount of data, originally contained in 01.dat, will be moved to a_texture7.dat and a_chunk7.dat. Due to this change, you should expect the setup to take slightly longer than previously.
-
-This procedure may affect any mods you have installed into 00.dat/01.dat yourself, as SnakeBite will not show any conflicts and any mods installed with SnakeBite may supercede part (or all) of the files for your mod, leading to inconsistencies.
-
-It is strongly recommended that you do not modify 00.dat/01.dat after installing SnakeBite.
+  <data name="labelLooseTextureNote.Text" xml:space="preserve">
+    <value>• SnakeBite can install files directly into your MGSTPP file directory, outside of the .dat files.
+        Place a file into a folder titled "GameDir" to install it into the MGSTPP game directory.
+        It should appear like the following:</value>
+  </data>
+  <data name="labelGameDirNote.Text" xml:space="preserve">
+    <value>• If your mod contains files that are not in the Assets folder, they will typically look like a string of 
+         numbers and letters, preceded by "/". These files are called "hashed" files.
+         Here are some examples of hashed files in the mod list:
 </value>
   </data>
 </root>
