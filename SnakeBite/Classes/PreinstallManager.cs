@@ -147,7 +147,7 @@ namespace SnakeBite
                 {
                     if (MGSVersion > modMGSVersion && modMGSVersion > new Version(0, 0, 0, 0))
                     {
-                        var contInstall = MessageBox.Show(String.Format("{0} appears to be for an older version of MGSV. It is recommended that you at least check for an updated version before installing.\n\nWould you still like to install this mod?", metaData.Name, modMGSVersion, MGSVersion), "Game version mismatch", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                        var contInstall = MessageBox.Show(String.Format("{0} appears to be for an older version of MGSV. It is recommended that you at least check for an updated version before installing.\n\nWould you still like to install this mod?", metaData.Name), "Game version mismatch", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                         if (contInstall == DialogResult.No)
                         {
                             ModFiles.RemoveAt(i);

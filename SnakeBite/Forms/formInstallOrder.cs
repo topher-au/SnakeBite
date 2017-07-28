@@ -97,7 +97,7 @@ namespace SnakeBite.Forms
                 
                 string conflictDescription;
                     if (ModConflicts.Count > 0) { //builds string of conflicting mods to be displayed for the user
-                    conflictDescription = string.Format("\r\nThis mod conflicts with: \r\n\r\n", selectedMod.Name);
+                    conflictDescription = "\r\nThis mod conflicts with: \r\n\r\n";
                     foreach (string modname in ModConflictLists[selectedIndex])
                     {
                         

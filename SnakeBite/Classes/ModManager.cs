@@ -827,9 +827,12 @@ namespace SnakeBite
                     }
                 case 2: // tex7/chunk7 is missing and the modified 00/01 are in proper 0.8.7 formatting. game may require steam revalidation.
                     {
-                        MessageBox.Show("Important SnakeBite files, \"a_texture7.dat\" and/or \"a_chunk7.dat\", appear to be missing from the master directory. Please verify the integrity of the game through Steam.", "Important Data is Missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("Important SnakeBite files, \"a_texture7.dat\" and/or \"a_chunk7.dat\", appear to be missing from the master directory.\n\n" +
+                            "If you have backups, please Restore Original Game Files in the Settings menu, and then run the Setup Wizard.\n" + 
+                            "Otherwise, open Steam, right-click on MGSV:TPP and open Properties. Then, click on the Local Files tab and select \"Verify Integrity of Game Files\".",
+                            "Important Data is Missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         successful = false;
-                        break; // TODO handle this. check if backups exist, and use those to rebuild archives
+                        break;
                     }
                 case 3: // 0.8.6 -> 0.8.7 format update.
                     {   // 00 unchanged,  01 lua files unchanged,   01 textures -> t7,   01 chunkfiles -> c7, 
@@ -904,7 +907,7 @@ namespace SnakeBite
             else if (filesRelocated)
                     return 1; // game files have been modified by the user since the 0.8.7 update, or perhaps snakebite.xml was deleted. Do the same as 1.
 
-            else
+            else 
                 return 3; // 0.8.6 -> 0.8.7 format update required. (ValidateDatHash was modified in 0.8.7 to include 01, and c7/t7 didn't exist prior to 0.8.7)
 
         }
@@ -1020,7 +1023,7 @@ namespace SnakeBite
 
         public static bool CheckConflicts(string ModFile)
         { //Morbid: Conflict check has been reworked as of 0.8.7. CheckConflicts is now split into PreinstallManager.FilterModValidity and PreinstallManager.FilterModConflicts.
-          //        CheckConflicts is only used for command-line installation, which ought to be removed altogether imo, to clean up snakebite.
+          //        CheckConflicts is only used for command-line installation.
             ModEntry metaData = Tools.ReadMetaData(ModFile);
             if (metaData == null) return false;
             // check version conflicts
@@ -1059,7 +1062,7 @@ namespace SnakeBite
             {
                 if (MGSVersion > modMGSVersion && modMGSVersion > new Version(0, 0, 0, 0))
                 {
-                    var contInstall = MessageBox.Show(String.Format("{0} appears to be for an older version of MGSV. It is recommended that you at least check for an updated version before installing.\n\nContinue installation?", metaData.Name, modMGSVersion, MGSVersion), "Game version mismatch", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    var contInstall = MessageBox.Show(String.Format("{0} appears to be for an older version of MGSV. It is recommended that you at least check for an updated version before installing.\n\nContinue installation?", metaData.Name), "Game version mismatch", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (contInstall == DialogResult.No) return false;
                 }
                 if (MGSVersion < modMGSVersion)
