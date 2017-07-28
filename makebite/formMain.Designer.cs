@@ -45,12 +45,12 @@
             this.labelModAuthor = new System.Windows.Forms.Label();
             this.labelModName = new System.Windows.Forms.Label();
             this.groupFiles = new System.Windows.Forms.GroupBox();
+            this.labelToggleHelp = new System.Windows.Forms.Label();
             this.buttonBuild = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
             this.listModFiles = new System.Windows.Forms.ListBox();
             this.buttonSelectPath = new System.Windows.Forms.Button();
             this.textModPath = new System.Windows.Forms.TextBox();
-            this.labelToggleHelp = new System.Windows.Forms.Label();
             this.groupModInfo.SuspendLayout();
             this.groupFiles.SuspendLayout();
             this.SuspendLayout();
@@ -234,6 +234,17 @@
             this.groupFiles.TabStop = false;
             this.groupFiles.Text = "Mod Files";
             // 
+            // labelToggleHelp
+            // 
+            this.labelToggleHelp.Cursor = System.Windows.Forms.Cursors.Help;
+            this.labelToggleHelp.ForeColor = System.Drawing.Color.MidnightBlue;
+            this.labelToggleHelp.Location = new System.Drawing.Point(12, 453);
+            this.labelToggleHelp.Name = "labelToggleHelp";
+            this.labelToggleHelp.Size = new System.Drawing.Size(98, 19);
+            this.labelToggleHelp.TabIndex = 11;
+            this.labelToggleHelp.Text = "Formatting Help";
+            this.labelToggleHelp.Click += new System.EventHandler(this.labelToggleHelp_Click);
+            // 
             // buttonBuild
             // 
             this.buttonBuild.Cursor = System.Windows.Forms.Cursors.Hand;
@@ -265,7 +276,7 @@
             this.listModFiles.ItemHeight = 15;
             this.listModFiles.Location = new System.Drawing.Point(15, 66);
             this.listModFiles.Name = "listModFiles";
-            this.listModFiles.Size = new System.Drawing.Size(600, 364);
+            this.listModFiles.Size = new System.Drawing.Size(600, 379);
             this.listModFiles.TabIndex = 9;
             this.listModFiles.SelectedIndexChanged += new System.EventHandler(this.listModFiles_SelectedIndexChanged);
             // 
@@ -291,17 +302,6 @@
             this.textModPath.Size = new System.Drawing.Size(563, 23);
             this.textModPath.TabIndex = 7;
             this.textModPath.Text = "Please select a directory containing your mod files";
-            // 
-            // labelToggleHelp
-            // 
-            this.labelToggleHelp.Cursor = System.Windows.Forms.Cursors.Help;
-            this.labelToggleHelp.ForeColor = System.Drawing.Color.MidnightBlue;
-            this.labelToggleHelp.Location = new System.Drawing.Point(12, 453);
-            this.labelToggleHelp.Name = "labelToggleHelp";
-            this.labelToggleHelp.Size = new System.Drawing.Size(98, 19);
-            this.labelToggleHelp.TabIndex = 11;
-            this.labelToggleHelp.Text = "Formatting Help";
-            this.labelToggleHelp.Click += new System.EventHandler(this.labelToggleHelp_Click);
             // 
             // formMain
             // 

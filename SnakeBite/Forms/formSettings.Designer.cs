@@ -249,7 +249,7 @@
             this.picModToggle.BackColor = System.Drawing.Color.Transparent;
             this.picModToggle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.picModToggle.Image = global::SnakeBite.Properties.Resources.toggledisabled;
-            this.picModToggle.Location = new System.Drawing.Point(246, 46);
+            this.picModToggle.Location = new System.Drawing.Point(246, 43);
             this.picModToggle.Name = "picModToggle";
             this.picModToggle.Size = new System.Drawing.Size(92, 39);
             this.picModToggle.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;

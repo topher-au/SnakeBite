@@ -81,12 +81,12 @@ namespace SnakeBite
 
         public bool SettingsExist()
         {
-            return File.Exists(directory + "\\" + filename); // was ModManager.GameDir + "\\snakebite.xml"
+            return File.Exists(directory + "\\" + filename);
         }
 
         public void DeleteSettings()
         {
-            File.Delete(directory + "\\" + filename); // was ModManager.GameDir + "\\snakebite.xml"
+            File.Delete(directory + "\\" + filename);
         }
 
         public void AddMod(ModEntry Mod)
@@ -162,7 +162,8 @@ namespace SnakeBite
         }
         public bool isOriginalDatHash()
         {
-            string vanillaDatHash = "53AB696C882860E5D3B19C53384448682C584B00A891474343D7BD5FD0F1552E";
+                                     
+            string vanillaDatHash = "53AB696C882860E5D3B19C5338444868A61F5717754E4D28F094F0F9DF51656A";
             return vanillaDatHash.Equals(Tools.GetMd5Hash(ModManager.ZeroPath) + Tools.GetMd5Hash(ModManager.OnePath));
         }
 
@@ -176,11 +177,13 @@ namespace SnakeBite
 
         internal bool ValidateDatHash()
         {
-            // Morbid TODO: validate 01
             string datHash = Tools.GetMd5Hash(ModManager.ZeroPath) + Tools.GetMd5Hash(ModManager.OnePath);
             string hashOld = this.GetGameData().DatHash;
-            Console.WriteLine(datHash);
-            if (datHash != hashOld) return false;
+            if (datHash != hashOld)
+            {
+                Debug.LogLine(String.Format("[ValidateDatHash] 00/01 dat hash mismatch:\n{0} != {1}", datHash, hashOld), Debug.LogLevel.All);
+                return false;
+            }
             return true;
         }
 
@@ -218,7 +221,7 @@ namespace SnakeBite
         {
             // Write settings to XML
             Directory.CreateDirectory(directory);
-            using (FileStream s = new FileStream(Path.Combine(directory, filename), FileMode.Create)) // was ModManager.GameDir, "snakebite.xml"
+            using (FileStream s = new FileStream(Path.Combine(directory, filename), FileMode.Create))
             {
                 XmlSerializer x = new XmlSerializer(typeof(Settings), new[] { typeof(Settings) });
                 foreach (ModEntry mod in ModEntries)
@@ -234,12 +237,12 @@ namespace SnakeBite
         {
             // Load settings from XML
 
-            if (!File.Exists(directory + "\\" + filename)) // was ModManager.GameDir + "\\snakebite.xml"
+            if (!File.Exists(directory + "\\" + filename))
             {
                 return;
             }
 
-            using (FileStream s = new FileStream(Path.Combine(directory, filename), FileMode.Open)) // was ModManager.GameDir, "snakebite.xml"
+            using (FileStream s = new FileStream(Path.Combine(directory, filename), FileMode.Open))
             {
                 XmlSerializer x = new XmlSerializer(typeof(Settings));
                 Settings loaded = (Settings)x.Deserialize(s);
