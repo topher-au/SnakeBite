@@ -94,7 +94,6 @@ namespace SnakeBite
             bool doCmdLine = false;             // Process command line args?
             bool closeApp = false;              // Close app after?
             bool install = false;               // Install = true, uninstall = false
-            bool ignoreConflicts = false;       // Bypass conflict check
             bool resetDatHash = false;          // Rehash dat file
             bool skipCleanup = true;            // Skip CleanupDatabase
             string installFile = String.Empty;
@@ -111,10 +110,6 @@ namespace SnakeBite
                         case "-u":
                             install = false;
 
-                            break;
-
-                        case "-c":
-                            ignoreConflicts = true;
                             break;
 
                         case "-d":

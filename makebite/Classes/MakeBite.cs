@@ -116,7 +116,7 @@ namespace makebite
                             skipFile = true;
                         }
                     }
-
+                    if (skipFile) continue;
                     string FilePath = FileName.Substring(Folder.Length);
                     if (!FilePath.Contains("metadata.xml") && // ignore xml metadata
                         Tools.IsValidFile(FilePath)) // only add valid files

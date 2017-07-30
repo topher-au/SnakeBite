@@ -150,7 +150,7 @@ namespace SnakeBite
             List<string> InstallFileList = new List<string>();
             InstallFileList.Add(installFile);
 
-            if (!ModManager.CheckConflicts(installFile)) return;
+            if (!PreinstallManager.CheckConflicts(installFile)) return;
 
             ProgressWindow.Show("Installing Mod", String.Format("Installing {0}...", metaData.Name), new Action((MethodInvoker)delegate { ModManager.InstallMod(InstallFileList, skipCleanup); }));
 

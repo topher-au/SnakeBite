@@ -70,7 +70,7 @@ namespace SnakeBite.QuickMod
                     if (Directory.Exists("_temp")) Directory.Delete("_temp", true);
                     Methods.ExtractFiles(wp.textZipFile.Text, "_temp");
                     Methods.GenerateMgsv(exportFileName, cm.textModName.Text, "_temp");
-                    if (ModManager.CheckConflicts(exportFileName))
+                    if (PreinstallManager.CheckConflicts(exportFileName))
                     {
                         DoInstall(exportFileName);
                         

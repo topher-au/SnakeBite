@@ -66,7 +66,6 @@
             "/GameDir/Reshade/CustomFX.undef"});
             this.listBox3.Location = new System.Drawing.Point(9, 362);
             this.listBox3.Name = "listBox3";
-            this.listBox3.ScrollAlwaysVisible = true;
             this.listBox3.Size = new System.Drawing.Size(481, 79);
             this.listBox3.TabIndex = 5;
             // 
@@ -85,7 +84,6 @@
             "/30708b7517f09.pftxs"});
             this.listBox2.Location = new System.Drawing.Point(9, 191);
             this.listBox2.Name = "listBox2";
-            this.listBox2.ScrollAlwaysVisible = true;
             this.listBox2.Size = new System.Drawing.Size(481, 109);
             this.listBox2.TabIndex = 4;
             // 
@@ -102,7 +100,6 @@
             "/Assets/tpp/pack/common_source/chara/cm_head/face/cm_f0_h0_v000_eye0.fpkd"});
             this.listBox1.Location = new System.Drawing.Point(9, 47);
             this.listBox1.Name = "listBox1";
-            this.listBox1.ScrollAlwaysVisible = true;
             this.listBox1.Size = new System.Drawing.Size(481, 79);
             this.listBox1.TabIndex = 3;
             // 
