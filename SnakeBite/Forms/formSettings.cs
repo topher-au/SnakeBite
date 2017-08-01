@@ -32,10 +32,18 @@ namespace SnakeBite
             }
             else
             {
-                labelNoBackups.Text = "No Backups Detected.\nCertain features are unavailable.";
-                buttonRestoreOriginals.Enabled = false;
-                picModToggle.Enabled = false;
-                picModToggle.Image = Properties.Resources.toggledisabled;
+                if (BackupManager.OriginalZeroOneExist()) {
+                    labelNoBackups.Text = "chunk0 backup not detected.\nCannot restore original game files.";
+                    buttonRestoreOriginals.Enabled = false;
+                    buttonRestoreOriginals.Enabled = true;
+                }
+                else
+                {
+                    labelNoBackups.Text = "No backups detected.\nCertain features are unavailable.";
+                    buttonRestoreOriginals.Enabled = false;
+                    picModToggle.Enabled = false;
+                    picModToggle.Image = Properties.Resources.toggledisabled;
+                }
             }
         }
 

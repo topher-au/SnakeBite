@@ -146,8 +146,7 @@ namespace SnakeBite
                 SetupWizard.SetupWizard setupWizard = new SetupWizard.SetupWizard();
                 setupWizard.ShowDialog();
             }
-
-            if (!BackupManager.c7t7Exist())
+            if (!BackupManager.c7t7Exist()) // 00 and 01 are confirmed unmodified since last session, but chunk7 and/or texture7 are missing.
             {
                 MessageBox.Show("Two critical SnakeBite files, \"a_texture7.dat\" and/or \"a_chunk7.dat\", appear to be missing from the master directory.\n\n" +
                             "If you have backups, please Restore Original Game Files in the Settings menu, and then run the Setup Wizard.\n\n" +

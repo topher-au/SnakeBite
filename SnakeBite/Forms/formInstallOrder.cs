@@ -51,6 +51,7 @@ namespace SnakeBite.Forms
             
             if (modCount > 0) // 1 or more mods to install. refresh install list and conflicts.
             {
+                buttonContinue.Enabled = true;
                 buttonRemove.Enabled = true;
                 groupBoxNoModsNotice.Visible = false;
                 panelInfo.Visible = true;
@@ -65,6 +66,7 @@ namespace SnakeBite.Forms
             }
             else // no mods in list, do nothing
             {
+                buttonContinue.Enabled = false;
                 buttonRemove.Enabled = false;
                 groupBoxNoModsNotice.Visible = true;
                 panelInfo.Visible = false;
@@ -89,7 +91,7 @@ namespace SnakeBite.Forms
                 PreinstallEntry selectedMod = Mods[selectedIndex];
                 labelModName.Text = selectedMod.modInfo.Name;
                 labelModAuthor.Text = "By " + selectedMod.modInfo.Author;
-                labelModWebsite.Text = selectedMod.modInfo.Website;
+                labelModWebsite.Text = selectedMod.modInfo.Version;
                 textModDescription.Text = selectedMod.modInfo.Description;
 
                 string conflictDescription;
