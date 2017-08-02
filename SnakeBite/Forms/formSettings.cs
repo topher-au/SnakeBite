@@ -35,7 +35,7 @@ namespace SnakeBite
                 if (BackupManager.OriginalZeroOneExist()) {
                     labelNoBackups.Text = "chunk0 backup not detected.\nCannot restore original game files.";
                     buttonRestoreOriginals.Enabled = false;
-                    buttonRestoreOriginals.Enabled = true;
+                    picModToggle.Enabled = true;
                 }
                 else
                 {

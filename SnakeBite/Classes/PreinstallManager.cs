@@ -276,7 +276,7 @@ namespace SnakeBite
         }
 
         public static bool CheckConflicts(string ModFile)
-        { //Morbid: Conflict check has been reworked as of 0.8.7. CheckConflicts is now split into PreinstallManager.FilterModValidity and PreinstallManager.FilterModConflicts.
+        { //Morbid: Conflict check has been reworked as of 0.9.0. CheckConflicts is now split into PreinstallManager.FilterModValidity and PreinstallManager.FilterModConflicts.
           //        CheckConflicts is only used for command-line installation.
             ModEntry metaData = Tools.ReadMetaData(ModFile);
             if (metaData == null) return false;

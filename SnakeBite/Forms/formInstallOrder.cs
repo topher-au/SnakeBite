@@ -209,7 +209,7 @@ namespace SnakeBite.Forms
         {
             if (listInstallOrder.SelectedItems != null)
             {
-                Mods.RemoveAt(listInstallOrder.SelectedIndices[0]);
+                Mods.RemoveAt(selectedIndex);
             }
             this.refreshInstallList();
         }

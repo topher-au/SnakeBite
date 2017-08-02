@@ -781,7 +781,7 @@ namespace SnakeBite
                         break;
 
                     }
-                case 1: // game files are in proper SnakeBite formatting, or game files have been modified by the user since the 0.8.7 update.
+                case 1: // game files are in proper SnakeBite formatting, or game files have been modified by the user since the 0.9.0 update.
                     {   // non-Snakebite Files 00 -> 01
                         
                         Debug.LogLine("[DatMerge] Merging non-SnakeBite files from 00.dat to 01.dat", Debug.LogLevel.Debug);
@@ -836,7 +836,7 @@ namespace SnakeBite
                         successful = true;
                         break;
                     }
-                case 2: // tex7/chunk7 is missing but the modified 00/01 are in proper 0.8.7 formatting. game may require steam revalidation.
+                case 2: // tex7/chunk7 is missing but the modified 00/01 are in proper 0.9.0 formatting. game may require steam revalidation.
                     {
                         MessageBox.Show("Important SnakeBite files, \"a_texture7.dat\" and/or \"a_chunk7.dat\", appear to be missing from the master directory.\n\n" +
                             "If you have backups, please Restore Original Game Files in the Settings menu, and then run the Setup Wizard.\n" + 
@@ -852,7 +852,7 @@ namespace SnakeBite
                         List<string> oneFiles = GzsLib.ExtractArchive<QarFile>(OnePath, "_extr");
                         List<string> zeroList = new List<string>();
                         int moveCount = 0;
-                        int textureCount = 0;
+                        
 
                         try
                         {
@@ -867,7 +867,7 @@ namespace SnakeBite
                         foreach (string zeroFile in zeroList)
                         {
                             if (zeroFile == "foxpatch.dat") continue;
-                            if (modQarFiles.Contains(Tools.ToQarPath(zeroFile))) continue; // there shouldn't be any non-snakebite files if this is 0.8.6 -> 0.8.7, checking just in case.
+                            if (modQarFiles.Contains(Tools.ToQarPath(zeroFile))) continue; // there shouldn't be any non-snakebite files if this is 0.8.6 -> 0.9.0, checking just in case.
                             moveCount++;
                         }
                         if (moveCount > 0) //if any non-snakebite files exist in 00, move them to 01.
@@ -879,7 +879,6 @@ namespace SnakeBite
                             {
                                 if (zeroFile == "foxpatch.dat") continue;
                                 if (modQarFiles.Contains(Tools.ToQarPath(zeroFile))) continue;
-                                if (zeroFile.Contains(".ftex")) textureCount++; // checks if snakebite has to unpack texture7
 
                                 sourceName = Path.Combine("_working1", Tools.ToWinPath(zeroFile));
                                 destName = Path.Combine("_extr", Tools.ToWinPath(zeroFile)); 
@@ -893,19 +892,20 @@ namespace SnakeBite
 
                             GzsLib.WriteQarArchive(ZeroPath, "_working1", zeroOut, 3150304); // rebuild 00 archive
 
-                            if (textureCount > 0)
-                            {
-                                Directory.Delete("_working1", true); // clean up _working1, to be used by texture7
-                                while (Directory.Exists("_working1"))
-                                    Thread.Sleep(100);
-                            }
+
+                            Directory.Delete("_working1", true); // clean up _working1, to be used by texture7
+                            while (Directory.Exists("_working1"))
+                                Thread.Sleep(100);
                         }
 
                         moveCount = 0; // check if any files need to be moved to C7/T7
+                        int textureCount = 0;
+
                         foreach (string oneFile in oneFiles)
                         {
                             if (modQarFiles.Contains(Tools.ToQarPath(oneFile))) continue;
                             if (oneFile.Contains(".lua")) continue; // lua files must stay in 01
+                            if (oneFile.Contains(".ftex")) textureCount++;
                             moveCount++;
                         }
                         if (moveCount > 0)

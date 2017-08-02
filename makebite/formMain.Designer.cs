@@ -106,11 +106,11 @@
             // 
             this.buttonMetaLoad.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonMetaLoad.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonMetaLoad.Location = new System.Drawing.Point(275, 451);
+            this.buttonMetaLoad.Location = new System.Drawing.Point(235, 449);
             this.buttonMetaLoad.Name = "buttonMetaLoad";
-            this.buttonMetaLoad.Size = new System.Drawing.Size(75, 23);
+            this.buttonMetaLoad.Size = new System.Drawing.Size(95, 23);
             this.buttonMetaLoad.TabIndex = 6;
-            this.buttonMetaLoad.Text = "Load";
+            this.buttonMetaLoad.Text = "Load Mod Info";
             this.buttonMetaLoad.UseVisualStyleBackColor = false;
             this.buttonMetaLoad.Click += new System.EventHandler(this.buttonMetaLoad_Click);
             // 
@@ -118,11 +118,11 @@
             // 
             this.buttonMetaSave.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonMetaSave.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonMetaSave.Location = new System.Drawing.Point(356, 451);
+            this.buttonMetaSave.Location = new System.Drawing.Point(336, 449);
             this.buttonMetaSave.Name = "buttonMetaSave";
-            this.buttonMetaSave.Size = new System.Drawing.Size(75, 23);
+            this.buttonMetaSave.Size = new System.Drawing.Size(95, 23);
             this.buttonMetaSave.TabIndex = 5;
-            this.buttonMetaSave.Text = "Save";
+            this.buttonMetaSave.Text = "Save Mod Info";
             this.buttonMetaSave.UseVisualStyleBackColor = false;
             this.buttonMetaSave.Click += new System.EventHandler(this.buttonMetaSave_Click);
             // 
