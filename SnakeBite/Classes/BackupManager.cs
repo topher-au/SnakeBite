@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Threading;
 
 namespace SnakeBite
 {
@@ -41,12 +42,26 @@ namespace SnakeBite
             if (File.Exists(GameZero)) File.Delete(GameZero);
             if (File.Exists(GameOne)) File.Delete(GameOne);
             if (File.Exists(GameChunkZero)) File.Delete(GameChunkZero);
+            if (File.Exists(GameChunk7)) File.Delete(GameChunk7);
+            if (File.Exists(GameTexture7)) File.Delete(GameTexture7);
 
             // delete mod data
             if (File.Exists(ModZero)) File.Delete(ModZero);
             if (File.Exists(ModOne)) File.Delete(ModOne);
 
             // restore backups
+            bool fileExists = true;
+            while (fileExists)
+            {
+                Thread.Sleep(100);
+                fileExists = false;
+                if (File.Exists(GameZero)) fileExists = true;
+                if (File.Exists(GameOne)) fileExists = true;
+                if (File.Exists(GameChunkZero)) fileExists = true;
+                if (File.Exists(GameChunk7)) fileExists = true;
+                if (File.Exists(GameTexture7)) fileExists = true;
+            }
+
             File.Move(OriginalZero, GameZero);
             File.Move(OriginalOne, GameOne);
             File.Move(OriginalChunkZero, GameChunkZero);

@@ -157,7 +157,7 @@ namespace SnakeBite
             // Hash 01.dat and update settings file
             string datHash = Tools.GetMd5Hash(ModManager.ZeroPath) + Tools.GetMd5Hash(ModManager.OnePath);
             settings.GameData.DatHash = datHash;
-
+            Debug.LogLine(String.Format("[UpdateDatHash] Updated 00/01 dat hash to: {0}", datHash), Debug.LogLevel.All);
             settings.SaveTo(directory, filename);
         }
         public bool IsExpected0001DatHash()

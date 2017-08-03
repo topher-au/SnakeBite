@@ -60,8 +60,7 @@ namespace SnakeBite
                 if (wizResult == DialogResult.Cancel) return;
                 if (wizResult == DialogResult.OK) showSetupWizard = false;
             }
-
-
+            
 
             string InitLog = String.Format(
                 "MGS Install Folder: {0}\n" +
@@ -109,7 +108,6 @@ namespace SnakeBite
 
                         case "-u":
                             install = false;
-
                             break;
 
                         case "-d":
@@ -139,7 +137,6 @@ namespace SnakeBite
             }
 
             var checkDat = manager.ValidateDatHash();
-
             if (!checkDat)
             {
                 MessageBox.Show("Game archive has been modified. The setup wizard will now run.", "Game data hash mismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);

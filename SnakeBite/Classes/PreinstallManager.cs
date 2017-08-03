@@ -414,9 +414,6 @@ namespace SnakeBite
                 MessageBox.Show(msgboxtext, "SnakeBite", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }
-
-            DialogResult confirmInstall = MessageBox.Show(String.Format("You are about to install {0}, continue?", metaData.Name), "SnakeBite", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
-            if (confirmInstall == DialogResult.No) return false;
             return true;
         }
     }

@@ -143,7 +143,7 @@ namespace SnakeBite
 
         }
 
-        internal void ProcessInstallMod(string installFile, bool skipCleanup)// command-line install. The command-line feature is likely unpopular and ought to be removed altogether imo, to help clean up SnakeBite.
+        internal void ProcessInstallMod(string installFile, bool skipCleanup)// command-line install.
         { 
             var metaData = Tools.ReadMetaData(installFile);
             if (metaData == null) return;
