@@ -139,16 +139,15 @@ namespace SnakeBite
             var checkDat = manager.ValidateDatHash();
             if (!checkDat)
             {
-                MessageBox.Show("Game archive has been modified. The setup wizard will now run.", "Game data hash mismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("Game archive has been modified. The setup wizard will now run.", "Game data hash mismatch", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 SetupWizard.SetupWizard setupWizard = new SetupWizard.SetupWizard();
                 setupWizard.ShowDialog();
             }
-            if (!BackupManager.c7t7Exist()) // 00 and 01 are confirmed unmodified since last session, but chunk7 and/or texture7 are missing.
+            if (!BackupManager.c7t7Exist()) // chunk7 and/or texture7 are missing, despite the dathash validating.
             {
-                MessageBox.Show("Two critical SnakeBite files, \"a_texture7.dat\" and/or \"a_chunk7.dat\", appear to be missing from the master directory.\n\n" +
-                            "If you have backups, please Restore Original Game Files in the Settings menu, and then run the Setup Wizard.\n\n" +
-                            "Otherwise, open Steam, right-click on MGSV:TPP and open Properties. Then, click on the Local Files tab and select \"Verify Integrity of Game Files\".",
-                            "Important Data is Missing", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show("To continue, SnakeBite must build a_chunk7.dat and a_texture7.dat from your current archives. The setup wizard will now run.", "Setup required", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                SetupWizard.SetupWizard setupWizard = new SetupWizard.SetupWizard();
+                setupWizard.ShowDialog();
             }
 
             if (doCmdLine)
