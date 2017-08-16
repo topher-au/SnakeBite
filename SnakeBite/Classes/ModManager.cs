@@ -730,7 +730,7 @@ namespace SnakeBite
                 Debug.LogLine("[DatMerge] First Time Setup Started", Debug.LogLevel.Debug);
 
                 bool c7t7Exists = true;
-                if (manager.SettingsExist()) manager.DeleteSettings();
+                if (manager.SettingsExist()) manager.ClearAllMods();
                 if (File.Exists(c7Path)) File.Delete(c7Path);
                 if (File.Exists(t7Path)) File.Delete(t7Path);
                 while (c7t7Exists)
@@ -920,6 +920,7 @@ namespace SnakeBite
                     GzsLib.WriteQarArchive(OnePath, "_extr", oneOut, 3150048); // rebuild 01 archive
                 }
             }
+
             if (File.Exists(c7Path)) // check if chunk7/texture7 is at least the proper filesize to run the game, warn the player if otherwise.
                 if (new System.IO.FileInfo(c7Path).Length < 345000000)
                 {

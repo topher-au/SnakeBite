@@ -121,11 +121,11 @@ namespace SnakeBite.SetupWizard
                     while (mergeProcessor.IsBusy)
                     {
                         Application.DoEvents();
-                        Thread.Sleep(10);
+                        Thread.Sleep(40);
                     }
 
                     manager.UpdateDatHash();
-
+                    Debug.LogLine("[Setup Wizard] Setup Complete. Snakebite is configured and ready to use.");
                     mergeDatPage.panelProcessing.Visible = false;
                     mergeDatPage.labelWelcome.Text = "Setup complete";
                     mergeDatPage.labelWelcomeText.Text = "SnakeBite is configured and ready to use.";

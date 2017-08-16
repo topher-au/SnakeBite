@@ -82,7 +82,7 @@
             "/1d5440a85b9df.ftex",
             "/3c7809fefe1ec.fpk",
             "/30708b7517f09.pftxs"});
-            this.listBox2.Location = new System.Drawing.Point(9, 191);
+            this.listBox2.Location = new System.Drawing.Point(9, 204);
             this.listBox2.Name = "listBox2";
             this.listBox2.Size = new System.Drawing.Size(481, 109);
             this.listBox2.TabIndex = 4;
@@ -95,12 +95,15 @@
             this.listBox1.ItemHeight = 15;
             this.listBox1.Items.AddRange(new object[] {
             "/Assets/tpp/pack/mission2/common/mis_com_dd_soldier_swim_suit.pftxs",
-            "/Assets/tpp/pack/player/parts/plparts_ddf_swimwear.pftxs",
             "/Assets/tpp/pack/common_source/chara/cm_head/face/cm_f0_h0_v000_eye0.fpk",
-            "/Assets/tpp/pack/common_source/chara/cm_head/face/cm_f0_h0_v000_eye0.fpkd"});
+            "/Assets/tpp/pack/common_source/chara/cm_head/face/cm_f0_h0_v000_eye0.fpkd",
+            "/Assets/tpp/chara/qui/Pictures/qui0_body0_def_bsm.1.ftexs",
+            "/Assets/tpp/chara/qui/Pictures/qui0_body0_def_bsm.2.ftexs",
+            "/Assets/tpp/chara/qui/Pictures/qui0_body0_def_bsm.3.ftexs",
+            "/Assets/tpp/chara/qui/Pictures/qui0_body0_def_bsm.ftex"});
             this.listBox1.Location = new System.Drawing.Point(9, 47);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(481, 79);
+            this.listBox1.Size = new System.Drawing.Size(481, 109);
             this.listBox1.TabIndex = 3;
             // 
             // labelLooseTextureNote
@@ -118,7 +121,7 @@
             // 
             this.labelGameDirNote.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelGameDirNote.ForeColor = System.Drawing.Color.Black;
-            this.labelGameDirNote.Location = new System.Drawing.Point(6, 149);
+            this.labelGameDirNote.Location = new System.Drawing.Point(6, 162);
             this.labelGameDirNote.Name = "labelGameDirNote";
             this.labelGameDirNote.Size = new System.Drawing.Size(484, 39);
             this.labelGameDirNote.TabIndex = 1;
