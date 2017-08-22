@@ -141,8 +141,9 @@ namespace SnakeBite
                     continue;
                 }
 
-                // Check MGS version compatibility
-                if (MGSVersion != modMGSVersion && modMGSVersion != new Version(0, 0, 0, 0))
+                // Check MGS version compatibility 
+                 
+               /* if (MGSVersion != modMGSVersion && modMGSVersion != new Version(0, 0, 0, 0))
                 {
                     if (MGSVersion > modMGSVersion && modMGSVersion > new Version(0, 0, 0, 0))
                     {
@@ -157,9 +158,10 @@ namespace SnakeBite
                     {
                         MessageBox.Show(String.Format("{0} requires MGSV version {1}, but your installation is version {2}. Please update MGSV and try again.", metaData.Name, modMGSVersion, MGSVersion), "Update required", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         ModFiles.RemoveAt(i);
-                        continue;
+                       continue;
                     }
                 }
+                */
             }
         }
 

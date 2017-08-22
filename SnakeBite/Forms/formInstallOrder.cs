@@ -94,6 +94,16 @@ namespace SnakeBite.Forms
                 labelModWebsite.Text = selectedMod.modInfo.Version;
                 textModDescription.Text = selectedMod.modInfo.Description;
 
+                if (ModManager.GetMGSVersion() != selectedMod.modInfo.MGSVersion.AsVersion() && selectedMod.modInfo.MGSVersion.AsVersion() != new Version(0, 0, 0, 0))
+                {
+                    labelVersionWarning.ForeColor = Color.Yellow; labelVersionWarning.BackColor = Color.Chocolate; labelVersionWarning.Text = "!";
+                }
+                else
+                {
+                    labelVersionWarning.ForeColor = Color.MediumSeaGreen; labelVersionWarning.BackColor = Color.Gainsboro; labelVersionWarning.Text = "✔";
+                }
+
+
                 string conflictDescription;
                 if (Mods[selectedIndex].ModConflicts.Count > 0)
                 {
@@ -256,5 +266,28 @@ namespace SnakeBite.Forms
             catch {}
         }
 
+        private void labelVersionWarning_Click(object sender, EventArgs e)
+        {
+            PreinstallEntry selectedMod = Mods[selectedIndex];
+            var currentMGSVersion = ModManager.GetMGSVersion();
+            var modMGSVersion = selectedMod.modInfo.MGSVersion.AsVersion();
+            if (currentMGSVersion != modMGSVersion && modMGSVersion != new Version(0, 0, 0, 0))
+            {
+                if (currentMGSVersion > modMGSVersion && modMGSVersion > new Version(0, 0, 0, 0))
+                {
+                    MessageBox.Show(String.Format("{0} appears to be for MGSV Version {1}.\n\nIt is recommended that you at least check for an updated version before installing.", selectedMod.modInfo.Name, modMGSVersion), "Game version mismatch", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+                if (currentMGSVersion < modMGSVersion)
+                {
+                    MessageBox.Show(String.Format("{0} is intended for MGSV version {1}, but your installation is version {2}. This mod may not be compatible with MGSV version {2}", selectedMod.modInfo.Name, modMGSVersion, currentMGSVersion), "Update recommended", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                }
+
+            }
+            else
+            {
+                MessageBox.Show(String.Format("This mod is up to date with the current MGSV version {0}", currentMGSVersion), "Mod is up to date", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+
+        }
     }
 }

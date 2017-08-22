@@ -162,13 +162,8 @@ namespace SnakeBite
         }
         public bool IsExpected0001DatHash()
         {
-            string ExpectedDatHash = "44D0DF57AFC0726C1ED608F6A3EE3ADFE65A9157F2E2FCB4AAF4E2152C676F9B";
+            string ExpectedDatHash = "73C577266F28835BDDDFCB9BE4A4D780E65A9157F2E2FCB4AAF4E2152C676F9B"; //expected original hash for 1.0.12.0
             return ExpectedDatHash.Equals(Tools.GetMd5Hash(ModManager.ZeroPath) + Tools.GetMd5Hash(ModManager.OnePath));
-        }
-        public bool IsExpectedC7T7DatHash()
-        {
-            string ExpectedDatHash = "1E30A2E317843E9EA65EC17EADA7FD15FF851FB9E28BEDAFFCFD36F537E96052"; // These are the expected hashes for chunk7 and texture7 for 1.0.11.0
-            return ExpectedDatHash.Equals(Tools.GetMd5Hash(ModManager.c7Path) + Tools.GetMd5Hash(ModManager.t7Path));
         }
 
         public void ClearAllMods()

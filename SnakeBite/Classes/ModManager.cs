@@ -725,7 +725,7 @@ namespace SnakeBite
             CleanupFolders();
 
             if (manager.IsExpected0001DatHash())
-            {   // first time setup or files have been revalidated.
+            {   // first time setup or files have been revalidated
                 // lua files 00 -> 01,    texture files 01 -> texture7,   foxpatch 00 -> 00,   chunkfiles 00 -> chunk7
                 Debug.LogLine("[DatMerge] First Time Setup Started", Debug.LogLevel.Debug);
 
@@ -1042,6 +1042,7 @@ namespace SnakeBite
             var versionInfo = FileVersionInfo.GetVersionInfo(Properties.Settings.Default.InstallPath + "\\mgsvtpp.exe");
             return new Version(versionInfo.ProductVersion);
         }
+
 
         internal static Version GetSBVersion()
         {

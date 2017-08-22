@@ -46,6 +46,7 @@
             this.buttonLaunchGame = new System.Windows.Forms.Button();
             this.linkBrowseMods = new System.Windows.Forms.LinkLabel();
             this.buttonOpenGameDir = new System.Windows.Forms.Button();
+            this.labelVersionWarning = new System.Windows.Forms.Label();
             this.panelModDescription.SuspendLayout();
             this.groupBoxNoModsNotice.SuspendLayout();
             this.SuspendLayout();
@@ -53,6 +54,7 @@
             // listInstalledMods
             // 
             this.listInstalledMods.BackColor = System.Drawing.Color.DarkGray;
+            this.listInstalledMods.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.listInstalledMods.FormattingEnabled = true;
             this.listInstalledMods.IntegralHeight = false;
             this.listInstalledMods.Location = new System.Drawing.Point(8, 39);
@@ -128,7 +130,8 @@
             // panelModDescription
             // 
             this.panelModDescription.BackColor = System.Drawing.Color.Gray;
-            this.panelModDescription.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panelModDescription.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelModDescription.Controls.Add(this.labelVersionWarning);
             this.panelModDescription.Controls.Add(this.labelModWebsite);
             this.panelModDescription.Controls.Add(this.textDescription);
             this.panelModDescription.Controls.Add(this.labelModAuthor);
@@ -140,19 +143,23 @@
             // 
             // labelModWebsite
             // 
-            this.labelModWebsite.BackColor = System.Drawing.Color.Gray;
-            this.labelModWebsite.Location = new System.Drawing.Point(3, 408);
+            this.labelModWebsite.BackColor = System.Drawing.Color.DarkGray;
+            this.labelModWebsite.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelModWebsite.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.labelModWebsite.Location = new System.Drawing.Point(3, 404);
             this.labelModWebsite.Name = "labelModWebsite";
             this.labelModWebsite.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.labelModWebsite.Size = new System.Drawing.Size(361, 22);
+            this.labelModWebsite.Size = new System.Drawing.Size(322, 25);
             this.labelModWebsite.TabIndex = 4;
             this.labelModWebsite.TabStop = true;
             this.labelModWebsite.Text = "Mod Version Link To Website";
+            this.labelModWebsite.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.labelModWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.labelModWebsite_LinkClicked);
             // 
             // textDescription
             // 
             this.textDescription.BackColor = System.Drawing.Color.DarkGray;
+            this.textDescription.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.textDescription.Cursor = System.Windows.Forms.Cursors.Default;
             this.textDescription.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F);
             this.textDescription.Location = new System.Drawing.Point(3, 46);
@@ -188,7 +195,7 @@
             this.groupBoxNoModsNotice.Controls.Add(this.linkLabelSnakeBiteModsList);
             this.groupBoxNoModsNotice.Controls.Add(this.labelNoMod);
             this.groupBoxNoModsNotice.Controls.Add(this.labelNoModInstruction);
-            this.groupBoxNoModsNotice.Location = new System.Drawing.Point(201, 4);
+            this.groupBoxNoModsNotice.Location = new System.Drawing.Point(201, 6);
             this.groupBoxNoModsNotice.Name = "groupBoxNoModsNotice";
             this.groupBoxNoModsNotice.Size = new System.Drawing.Size(371, 445);
             this.groupBoxNoModsNotice.TabIndex = 1;
@@ -265,6 +272,21 @@
             this.buttonOpenGameDir.UseVisualStyleBackColor = true;
             this.buttonOpenGameDir.Click += new System.EventHandler(this.buttonOpenGameDir_Click);
             // 
+            // labelVersionWarning
+            // 
+            this.labelVersionWarning.BackColor = System.Drawing.Color.Silver;
+            this.labelVersionWarning.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelVersionWarning.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.labelVersionWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelVersionWarning.ForeColor = System.Drawing.Color.MediumSeaGreen;
+            this.labelVersionWarning.Location = new System.Drawing.Point(323, 404);
+            this.labelVersionWarning.Name = "labelVersionWarning";
+            this.labelVersionWarning.Size = new System.Drawing.Size(42, 25);
+            this.labelVersionWarning.TabIndex = 15;
+            this.labelVersionWarning.Text = "✔";
+            this.labelVersionWarning.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelVersionWarning.Click += new System.EventHandler(this.labelVersionWarning_Click);
+            // 
             // formMods
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
@@ -317,5 +339,6 @@
         private System.Windows.Forms.LinkLabel linkBrowseMods;
         private System.Windows.Forms.LinkLabel labelModWebsite;
         private System.Windows.Forms.Button buttonOpenGameDir;
+        private System.Windows.Forms.Label labelVersionWarning;
     }
 }

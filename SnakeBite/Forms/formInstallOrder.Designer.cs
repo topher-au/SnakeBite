@@ -47,6 +47,7 @@
             this.labelInstallOrder = new System.Windows.Forms.Label();
             this.listInstallOrder = new System.Windows.Forms.ListView();
             this.columnModNames = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.labelVersionWarning = new System.Windows.Forms.Label();
             this.panelInfo.SuspendLayout();
             this.groupBoxNoModsNotice.SuspendLayout();
             this.SuspendLayout();
@@ -136,6 +137,7 @@
             // panelInfo
             // 
             this.panelInfo.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panelInfo.Controls.Add(this.labelVersionWarning);
             this.panelInfo.Controls.Add(this.labelInstallWarning);
             this.panelInfo.Controls.Add(this.labelConflictCount);
             this.panelInfo.Controls.Add(this.textConflictDescription);
@@ -193,15 +195,18 @@
             // 
             // labelModWebsite
             // 
+            this.labelModWebsite.BackColor = System.Drawing.Color.Silver;
+            this.labelModWebsite.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.labelModWebsite.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.labelModWebsite.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelModWebsite.Location = new System.Drawing.Point(24, 189);
+            this.labelModWebsite.Font = new System.Drawing.Font("Segoe UI", 10F);
+            this.labelModWebsite.Location = new System.Drawing.Point(3, 185);
             this.labelModWebsite.Name = "labelModWebsite";
             this.labelModWebsite.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.labelModWebsite.Size = new System.Drawing.Size(325, 22);
+            this.labelModWebsite.Size = new System.Drawing.Size(306, 26);
             this.labelModWebsite.TabIndex = 12;
             this.labelModWebsite.TabStop = true;
             this.labelModWebsite.Text = "Mod Version Link To Website";
+            this.labelModWebsite.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.labelModWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.labelModWebsite_LinkClicked);
             // 
             // labelModName
@@ -282,6 +287,21 @@
             // 
             this.columnModNames.Width = 226;
             // 
+            // labelVersionWarning
+            // 
+            this.labelVersionWarning.BackColor = System.Drawing.Color.Gainsboro;
+            this.labelVersionWarning.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelVersionWarning.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.labelVersionWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelVersionWarning.ForeColor = System.Drawing.Color.MediumSeaGreen;
+            this.labelVersionWarning.Location = new System.Drawing.Point(308, 185);
+            this.labelVersionWarning.Name = "labelVersionWarning";
+            this.labelVersionWarning.Size = new System.Drawing.Size(42, 26);
+            this.labelVersionWarning.TabIndex = 14;
+            this.labelVersionWarning.Text = "✔";
+            this.labelVersionWarning.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.labelVersionWarning.Click += new System.EventHandler(this.labelVersionWarning_Click);
+            // 
             // formInstallOrder
             // 
             this.AcceptButton = this.buttonContinue;
@@ -334,5 +354,6 @@
         private System.Windows.Forms.Label labelInstallOrder;
         private System.Windows.Forms.ListView listInstallOrder;
         private System.Windows.Forms.ColumnHeader columnModNames;
+        private System.Windows.Forms.Label labelVersionWarning;
     }
 }
