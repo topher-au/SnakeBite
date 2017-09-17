@@ -11,7 +11,7 @@ namespace SnakeBite
 {
     public static class Tools
     {
-        private static readonly List<string> FileExtensions = new List<string>
+        private static readonly List<string> DatFileExtensions = new List<string>
         {
             "1.ftexs",
             "1.nav2",
@@ -245,7 +245,7 @@ namespace SnakeBite
         internal static bool IsValidFile(string FilePath)
         {
             string ext = FilePath.Substring(FilePath.IndexOf("."));
-            if (FileExtensions.Contains(ext)) return true;
+            if (DatFileExtensions.Contains(ext)) return true;
             return false;
         }
     }

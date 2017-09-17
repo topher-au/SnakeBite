@@ -8,7 +8,7 @@ namespace SnakeBite
 {
     public static class Tools
     {
-        private static readonly List<string> FileExtensions = new List<string>
+        private static readonly List<string> DatFileExtensions = new List<string>
         {
             "1.ftexs",
             "1.nav2",
@@ -27,18 +27,13 @@ namespace SnakeBite
             "aip",
             "ait",
             "atsh",
-            "bmp",
             "bnd",
             "bnk",
             "cc.evf",
-            "cfg",
             "clo",
             "csnav",
             "dat",
-            "db",
-            "dds",
             "des",
-            "dll",
             "dnav",
             "dnav2",
             "eng.lng",
@@ -78,7 +73,6 @@ namespace SnakeBite
             "ftex",
             "fv2",
             "fx.evf",
-            "fx",
             "fxp",
             "gani",
             "geom",
@@ -87,13 +81,9 @@ namespace SnakeBite
             "grxla",
             "grxoc",
             "gskl",
-            "h",
-            "hlsl",
             "htre",
             "info",
-            "ini",
             "ita.lng",
-            "jpg",
             "jpn.lng",
             "json",
             "lad",
@@ -119,7 +109,6 @@ namespace SnakeBite
             "ph",
             "phep",
             "phsd",
-            "png",
             "por.lng",
             "qar",
             "rbs",
@@ -149,7 +138,6 @@ namespace SnakeBite
             "uigb",
             "uil",
             "uilb",
-            "undef",
             "utxl",
             "veh",
             "vfx",
@@ -217,7 +205,7 @@ namespace SnakeBite
         internal static bool IsValidFile(string FilePath)
         {
             string ext = FilePath.Substring(FilePath.IndexOf(".") + 1);
-            if (FileExtensions.Contains(ext)) return true;
+            if (DatFileExtensions.Contains(ext)) return true;
             return false;
         }
     }

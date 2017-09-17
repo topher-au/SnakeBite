@@ -45,7 +45,9 @@ namespace SnakeBite
         });
 
         internal static List<string> ignoreExtList = new List<string>(new string[] {
+            ".exe",
             ".dat",
+            ".dll",
         });
 
         public static bool InstallMod(List<string> ModFiles, bool skipCleanup = false) // Installs a list of mod filenames
@@ -235,6 +237,7 @@ namespace SnakeBite
                             skipFile = true;
                         }
                     }
+                    /*
                     foreach (string ignoreExt in ignoreExtList)
                     {
                         if (fileEntry.FilePath.Contains(ignoreExt))
@@ -242,7 +245,7 @@ namespace SnakeBite
                             skipFile = true;
                         }
                     }
-
+                    */
                     if (skipFile == false)
                     {
                         string sourceFile = Path.Combine("_extr", ExternalDirName, Tools.ToWinPath(fileEntry.FilePath));
@@ -380,6 +383,7 @@ namespace SnakeBite
                             skipFile = true;
                         }
                     }
+                    /*
                     foreach (string ignoreExt in ignoreExtList)
                     {
                         if (fileEntry.FilePath.Contains(ignoreExt))
@@ -387,6 +391,7 @@ namespace SnakeBite
                             skipFile = true;
                         }
                     }
+                    */
                     if (skipFile == false) //if it hasn't been flagged to be skipped:
                     {
                         //tex TODO hash check?

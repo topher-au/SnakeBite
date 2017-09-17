@@ -51,7 +51,8 @@ namespace makebite
             foreach (string modFile in Directory.GetFiles(modPath, "*.*", SearchOption.AllDirectories))
             {
                 string filePath = modFile.Substring(modPath.Length).Replace("\\", "/");
-                if (Tools.IsValidFile(filePath) && filePath != "/metadata.xml") listModFiles.Items.Add(filePath);
+                if ((Tools.IsValidFile(filePath) || filePath.Contains("/GameDir")) && filePath != "/metadata.xml")
+                    listModFiles.Items.Add(filePath);
             }
 
             if (File.Exists(Path.Combine(modPath, "metadata.xml")))
