@@ -45,7 +45,6 @@ namespace SnakeBite
         });
 
         internal static List<string> ignoreExtList = new List<string>(new string[] {
-            ".exe",
             ".dat",
         });
 

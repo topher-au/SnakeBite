@@ -210,6 +210,9 @@ namespace SnakeBite
         [XmlElement("SbVersion")]
         public SerialVersion SbVersion { get; set; } = new SerialVersion();
 
+        [XmlElement("MGSVersion")]
+        public SerialVersion MGSVersion { get; set; } = new SerialVersion();
+
         [XmlElement("GameData")]
         public GameData GameData { get; set; } = new GameData();
 
@@ -228,6 +231,7 @@ namespace SnakeBite
                     mod.Description = mod.Description.Replace("\r\n", "\n");
                 }
                 SbVersion.Version = ModManager.GetSBVersion().ToString();
+                MGSVersion.Version = ModManager.GetMGSVersion().ToString();
                 x.Serialize(s, this);
             }
         }
