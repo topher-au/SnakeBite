@@ -5,12 +5,13 @@ using System.Security.Cryptography;
 using System.Text;
 using ICSharpCode.SharpZipLib.Zip;
 using System.Xml.Serialization;
+using System.Collections;
 
 namespace SnakeBite
 {
     public static class Tools
     {
-        private static readonly List<string> FileExtensions = new List<string>
+        private static readonly List<string> DatFileExtensions = new List<string>
         {
             "1.ftexs",
             "1.nav2",
@@ -170,8 +171,9 @@ namespace SnakeBite
                         return metaData;
                     }
                 }
-            } catch { return null; }
-            
+            }
+            catch { return null; }
+
         }
 
         public static string ToWinPath(string Path)
@@ -243,7 +245,7 @@ namespace SnakeBite
         internal static bool IsValidFile(string FilePath)
         {
             string ext = FilePath.Substring(FilePath.IndexOf("."));
-            if (FileExtensions.Contains(ext)) return true;
+            if (DatFileExtensions.Contains(ext)) return true;
             return false;
         }
     }

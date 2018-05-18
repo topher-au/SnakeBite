@@ -121,25 +121,37 @@
   <data name="loading_spiral" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\loading-spiral.gif;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="LAUNCHERBG" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\LAUNCHERBG.jpg;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
-  </data>
-  <data name="ui_move" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ui_move.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="ui_select" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\ui_select.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
-  </data>
-  <data name="toggleoff" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\toggleoff.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="close7" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\close7.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="toggleon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\toggleon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
-  <data name="close7" type="System.Resources.ResXFileRef, System.Windows.Forms">
-    <value>..\Resources\close7.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  <data name="ui_select" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ui_select.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="mgsexclamation" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\mgsexclamation.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="ui_move" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\ui_move.wav;System.IO.MemoryStream, mscorlib, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </data>
+  <data name="LAUNCHERBGv2" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\LAUNCHERBGv2.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="toggleoff" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\toggleoff.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
   <data name="tick7" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\tick7.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="exclmIcon" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\exclmIcon.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="phantompain_icon_128" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\phantompain_icon_128.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="toggledisabled" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\toggledisabled.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
 </root>

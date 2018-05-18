@@ -13,6 +13,22 @@
     <FileAlignment>512</FileAlignment>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <TargetFrameworkProfile />
+    <IsWebBootstrapper>false</IsWebBootstrapper>
+    <PublishUrl>C:\Users\Joe\Desktop\</PublishUrl>
+    <Install>true</Install>
+    <InstallFrom>Disk</InstallFrom>
+    <UpdateEnabled>false</UpdateEnabled>
+    <UpdateMode>Foreground</UpdateMode>
+    <UpdateInterval>7</UpdateInterval>
+    <UpdateIntervalUnits>Days</UpdateIntervalUnits>
+    <UpdatePeriodically>false</UpdatePeriodically>
+    <UpdateRequired>false</UpdateRequired>
+    <MapFileExtensions>true</MapFileExtensions>
+    <ApplicationRevision>0</ApplicationRevision>
+    <ApplicationVersion>0.8.7.0</ApplicationVersion>
+    <UseApplicationTrust>false</UseApplicationTrust>
+    <PublishWizardCompleted>true</PublishWizardCompleted>
+    <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -34,9 +50,38 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>Resources\phantompain_icon_128.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\exclmIcon.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup />
+  <PropertyGroup>
+    <ManifestCertificateThumbprint>943B7F28359E645EBA9724152C887FD95459DCDB</ManifestCertificateThumbprint>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ManifestKeyFile>SnakeBite_TemporaryKey.pfx</ManifestKeyFile>
+  </PropertyGroup>
+  <PropertyGroup>
+    <GenerateManifests>true</GenerateManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <TargetZone>LocalIntranet</TargetZone>
+  </PropertyGroup>
+  <PropertyGroup />
+  <PropertyGroup>
+    <SignManifests>true</SignManifests>
+  </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Prerelease|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Prerelease\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="CityHash, Version=0.1.1.0, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\CityHash.Net.Legacy.0.1.1\lib\net45\CityHash.dll</HintPath>
@@ -44,7 +89,7 @@
     </Reference>
     <Reference Include="GzsTool.Core, Version=0.5.2.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\GzsTool\GzsTool\bin\Release\GzsTool.Core.dll</HintPath>
+      <HintPath>E:\ZZZ\Bob GzsTool\GzsTool.Core.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -74,12 +119,31 @@
     <Compile Include="Classes\DebugManager.cs" />
     <Compile Include="Classes\GameFiles.cs" />
     <Compile Include="Classes\MultTextWriter.cs" />
+    <Compile Include="Classes\PreinstallManager.cs" />
     <Compile Include="Classes\UpdateFile.cs" />
+    <Compile Include="Forms\formInstallOrder.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\formInstallOrder.Designer.cs">
+      <DependentUpon>formInstallOrder.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\formLog.cs">
       <SubType>Form</SubType>
     </Compile>
     <Compile Include="Forms\formLog.Designer.cs">
       <DependentUpon>formLog.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\formModConflict.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\formModConflict.Designer.cs">
+      <DependentUpon>formModConflict.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\formMods.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\formMods.Designer.cs">
+      <DependentUpon>formMods.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\formSettings.cs">
       <SubType>Form</SubType>
@@ -102,6 +166,11 @@
     <Compile Include="GzsLib.cs" />
     <Compile Include="ProgressWindow.cs" />
     <Compile Include="Classes\SBTheme.cs" />
+    <Compile Include="Properties\Resources.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Resources.resx</DependentUpon>
+    </Compile>
     <Compile Include="QuickMod\CreateModPanel.cs">
       <SubType>UserControl</SubType>
     </Compile>
@@ -123,12 +192,6 @@
     </Compile>
     <Compile Include="Tools.cs" />
     <Compile Include="Classes\WebManager.cs" />
-    <Compile Include="Forms\formMods.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\formMods.Designer.cs">
-      <DependentUpon>formMods.cs</DependentUpon>
-    </Compile>
     <Compile Include="Classes\SettingsManager.cs" />
     <Compile Include="Forms\formProgress.cs">
       <SubType>Form</SubType>
@@ -169,18 +232,25 @@
     <Compile Include="SetupWizard\SetupWizard.Designer.cs">
       <DependentUpon>SetupWizard.cs</DependentUpon>
     </Compile>
+    <EmbeddedResource Include="Forms\formInstallOrder.resx">
+      <DependentUpon>formInstallOrder.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\formLauncher.resx">
       <DependentUpon>formLauncher.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\formLog.resx">
       <DependentUpon>formLog.cs</DependentUpon>
     </EmbeddedResource>
+    <EmbeddedResource Include="Forms\formModConflict.resx">
+      <DependentUpon>formModConflict.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\formMods.resx">
       <DependentUpon>formMods.cs</DependentUpon>
-      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\formProgress.resx">
       <DependentUpon>formProgress.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\formSelectModelTarget.resx">
       <DependentUpon>formSelectModelTarget.cs</DependentUpon>
@@ -189,9 +259,9 @@
       <DependentUpon>formSettings.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <Generator>PublicResXFileCodeGenerator</Generator>
       <SubType>Designer</SubType>
+      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="QuickMod\CreateModPanel.resx">
       <DependentUpon>CreateModPanel.cs</DependentUpon>
@@ -210,30 +280,30 @@
     </EmbeddedResource>
     <EmbeddedResource Include="SetupWizard\Pages\MergeDatPage.resx">
       <DependentUpon>MergeDatPage.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="SetupWizard\Pages\IntroPage.resx">
       <DependentUpon>IntroPage.cs</DependentUpon>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <EmbeddedResource Include="SetupWizard\SetupWizard.resx">
       <DependentUpon>SetupWizard.cs</DependentUpon>
     </EmbeddedResource>
+    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
+    <None Include="Properties\app.manifest" />
     <None Include="Properties\DataSources\SnakeBite.QuickMod.formQuickMod.datasource" />
     <None Include="Properties\DataSources\SnakeBite.QuickMod.Methods.datasource" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
     </None>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
     <Compile Include="Properties\Settings.Designer.cs">
       <AutoGen>True</AutoGen>
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <None Include="SnakeBite_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -244,8 +314,10 @@
     <None Include="Resources\loading-spiral.gif" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\toggledisabled.png" />
     <None Include="Resources\tick7.png" />
     <None Include="Resources\close7.png" />
+    <None Include="Resources\exclmIcon.ico" />
     <Content Include="Resources\fpk_dictionary.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -253,11 +325,23 @@
     <None Include="Resources\toggleoff.png" />
     <None Include="Resources\ui_select.wav" />
     <None Include="Resources\ui_move.wav" />
-    <None Include="Resources\LAUNCHERBG.jpg" />
-    <Content Include="Resources\phantompain_icon_128.ico" />
+    <None Include="Resources\mgsExclamation.png" />
+    <None Include="Resources\LAUNCHERBGv2.png" />
     <Content Include="Resources\qar_dictionary.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <BootstrapperPackage Include=".NETFramework,Version=v4.5">
+      <Visible>False</Visible>
+      <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
+      <Install>true</Install>
+    </BootstrapperPackage>
+    <BootstrapperPackage Include="Microsoft.Net.Framework.3.5.SP1">
+      <Visible>False</Visible>
+      <ProductName>.NET Framework 3.5 SP1</ProductName>
+      <Install>false</Install>
+    </BootstrapperPackage>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

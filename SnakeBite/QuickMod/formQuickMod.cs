@@ -70,7 +70,7 @@ namespace SnakeBite.QuickMod
                     if (Directory.Exists("_temp")) Directory.Delete("_temp", true);
                     Methods.ExtractFiles(wp.textZipFile.Text, "_temp");
                     Methods.GenerateMgsv(exportFileName, cm.textModName.Text, "_temp");
-                    if (ModManager.CheckConflicts(exportFileName))
+                    if (PreinstallManager.CheckConflicts(exportFileName))
                     {
                         DoInstall(exportFileName);
                         
@@ -93,7 +93,9 @@ namespace SnakeBite.QuickMod
 
         private void DoInstall(string OutputFile)
         {
-            ProgressWindow.Show("Installing Mod", String.Format("Installing {0}, please wait...", cm.textModName.Text), new Action((MethodInvoker)delegate { ModManager.InstallMod(OutputFile); }));
+            List<string> InstallFileList = new List<string>();
+            InstallFileList.Add(OutputFile);
+            ProgressWindow.Show("Installing Mod", String.Format("Installing {0}, please wait...", cm.textModName.Text), new Action((MethodInvoker)delegate { ModManager.InstallMod(InstallFileList); }));
         }
 
         private void buttonNext_Click(object sender, EventArgs e)

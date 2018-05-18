@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.25420.1
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SnakeBite", "SnakeBite\SnakeBite.csproj", "{F2251833-A9F0-4786-BCAF-E9E91BD1239A}"
 EndProject
@@ -12,19 +12,27 @@ EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
+		Prerelease|Any CPU = Prerelease|Any CPU
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
 		{F2251833-A9F0-4786-BCAF-E9E91BD1239A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{F2251833-A9F0-4786-BCAF-E9E91BD1239A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F2251833-A9F0-4786-BCAF-E9E91BD1239A}.Prerelease|Any CPU.ActiveCfg = Prerelease|Any CPU
+		{F2251833-A9F0-4786-BCAF-E9E91BD1239A}.Prerelease|Any CPU.Build.0 = Prerelease|Any CPU
 		{F2251833-A9F0-4786-BCAF-E9E91BD1239A}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{F2251833-A9F0-4786-BCAF-E9E91BD1239A}.Release|Any CPU.Build.0 = Release|Any CPU
 		{A85F4E49-1FCB-4FD2-8242-0FE13450FF0E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{A85F4E49-1FCB-4FD2-8242-0FE13450FF0E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A85F4E49-1FCB-4FD2-8242-0FE13450FF0E}.Prerelease|Any CPU.ActiveCfg = Prerelease|Any CPU
+		{A85F4E49-1FCB-4FD2-8242-0FE13450FF0E}.Prerelease|Any CPU.Build.0 = Prerelease|Any CPU
 		{A85F4E49-1FCB-4FD2-8242-0FE13450FF0E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A85F4E49-1FCB-4FD2-8242-0FE13450FF0E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A85F4E49-1FCB-4FD2-8242-0FE13450FF0E}.Release|Any CPU.Deploy.0 = Release|Any CPU
 		{5472FEE1-912F-4957-92E4-91066BE6473D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{5472FEE1-912F-4957-92E4-91066BE6473D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5472FEE1-912F-4957-92E4-91066BE6473D}.Prerelease|Any CPU.ActiveCfg = Prerelease|Any CPU
+		{5472FEE1-912F-4957-92E4-91066BE6473D}.Prerelease|Any CPU.Build.0 = Prerelease|Any CPU
 		{5472FEE1-912F-4957-92E4-91066BE6473D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5472FEE1-912F-4957-92E4-91066BE6473D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection

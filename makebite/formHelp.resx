@@ -117,4 +117,15 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="labelLooseTextureNote.Text" xml:space="preserve">
+    <value>• SnakeBite can install files directly into your MGSTPP file directory, outside of the .dat files.
+        Place a file into a folder titled "GameDir" to install it into the MGSTPP game directory.
+        It should appear like the following:</value>
+  </data>
+  <data name="labelGameDirNote.Text" xml:space="preserve">
+    <value>• If your mod contains files that are not in the Assets folder, they will typically look like a string of 
+         numbers and letters, preceded by "/". These files are called "hashed" files.
+         Here are some examples of hashed files in the mod list:
+</value>
+  </data>
 </root>

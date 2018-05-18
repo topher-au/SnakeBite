@@ -30,11 +30,11 @@
         {
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MergeDatPage));
             this.panelContent = new System.Windows.Forms.Panel();
-            this.labelWelcomeText = new System.Windows.Forms.Label();
-            this.labelWelcome = new System.Windows.Forms.Label();
             this.panelProcessing = new System.Windows.Forms.Panel();
             this.labelWorking = new System.Windows.Forms.Label();
             this.pictureWorkingSpiral = new System.Windows.Forms.PictureBox();
+            this.labelWelcomeText = new System.Windows.Forms.Label();
+            this.labelWelcome = new System.Windows.Forms.Label();
             this.panelContent.SuspendLayout();
             this.panelProcessing.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureWorkingSpiral)).BeginInit();
@@ -50,29 +50,11 @@
             this.panelContent.Size = new System.Drawing.Size(440, 340);
             this.panelContent.TabIndex = 3;
             // 
-            // labelWelcomeText
-            // 
-            this.labelWelcomeText.Location = new System.Drawing.Point(5, 51);
-            this.labelWelcomeText.Name = "labelWelcomeText";
-            this.labelWelcomeText.Size = new System.Drawing.Size(429, 256);
-            this.labelWelcomeText.TabIndex = 5;
-            this.labelWelcomeText.Text = resources.GetString("labelWelcomeText.Text");
-            // 
-            // labelWelcome
-            // 
-            this.labelWelcome.AutoSize = true;
-            this.labelWelcome.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelWelcome.Location = new System.Drawing.Point(3, 0);
-            this.labelWelcome.Name = "labelWelcome";
-            this.labelWelcome.Size = new System.Drawing.Size(139, 30);
-            this.labelWelcome.TabIndex = 4;
-            this.labelWelcome.Text = "Almost done";
-            // 
             // panelProcessing
             // 
             this.panelProcessing.Controls.Add(this.labelWorking);
             this.panelProcessing.Controls.Add(this.pictureWorkingSpiral);
-            this.panelProcessing.Location = new System.Drawing.Point(90, 250);
+            this.panelProcessing.Location = new System.Drawing.Point(90, 259);
             this.panelProcessing.Name = "panelProcessing";
             this.panelProcessing.Size = new System.Drawing.Size(249, 43);
             this.panelProcessing.TabIndex = 8;
@@ -94,6 +76,24 @@
             this.pictureWorkingSpiral.Size = new System.Drawing.Size(32, 32);
             this.pictureWorkingSpiral.TabIndex = 6;
             this.pictureWorkingSpiral.TabStop = false;
+            // 
+            // labelWelcomeText
+            // 
+            this.labelWelcomeText.Location = new System.Drawing.Point(5, 51);
+            this.labelWelcomeText.Name = "labelWelcomeText";
+            this.labelWelcomeText.Size = new System.Drawing.Size(429, 256);
+            this.labelWelcomeText.TabIndex = 5;
+            this.labelWelcomeText.Text = resources.GetString("labelWelcomeText.Text");
+            // 
+            // labelWelcome
+            // 
+            this.labelWelcome.AutoSize = true;
+            this.labelWelcome.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelWelcome.Location = new System.Drawing.Point(3, 0);
+            this.labelWelcome.Name = "labelWelcome";
+            this.labelWelcome.Size = new System.Drawing.Size(139, 30);
+            this.labelWelcome.TabIndex = 4;
+            this.labelWelcome.Text = "Almost done";
             // 
             // MergeDatPage
             // 

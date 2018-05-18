@@ -11,8 +11,8 @@ namespace makebite
 {
     public static class Build
     {
-        public static string SnakeBiteVersionStr =  "0.8.6.0";
-        public static string MGSVVersionStr =       "1.0.7.1";
+        public static string SnakeBiteVersionStr =  "0.9.0.3";
+        public static string MGSVVersionStr =       "1.0.12.0";
 
         static string ExternalDirName = "GameDir";
         internal static List<string> ignoreFileList = new List<string>(new string[] {
@@ -38,8 +38,8 @@ namespace makebite
 
         internal static List<string> ignoreExtList = new List<string>(new string[] {
             ".exe",
-            ".dll",
             ".dat",
+            ".dll"
         });
 
         public static List<string> ListFpkFolders(string PathName)
@@ -66,11 +66,9 @@ namespace makebite
             foreach (string Directory in Directory.GetDirectories(PathName, "*.*", SearchOption.AllDirectories))
             {
                 if (!Directory.Substring(PathName.Length).Contains("_fpk")) // ignore _fpk and _fpkd directories
-                {
-                    if (!Directory.Substring(PathName.Length).Contains(ExternalDirName)) {// tex KLUDGE ignore MGS_TPP 
-                    ListQarFolders.Add(Directory);
-                }
-            }
+                    if (!Directory.Substring(PathName.Length).Contains(ExternalDirName)) // tex KLUDGE ignore MGS_TPP 
+                        ListQarFolders.Add(Directory);
+
             }
             ListQarFolders.Add(PathName);
             // Check all folders for files
@@ -79,9 +77,11 @@ namespace makebite
                 foreach (string FileName in Directory.GetFiles(Folder))
                 {
                     string FilePath = FileName.Substring(Folder.Length);
-                    if (!FilePath.Contains("metadata.xml") && !FilePath.Contains("readme.txt") && // ignore xml metadata and readme
-                        Tools.IsValidFile(FilePath)) // only add valid files
-                        ListQarFiles.Add(FileName);
+
+                    if (!FilePath.Contains("metadata.xml") && !FilePath.Contains("readme.txt")) // ignore xml metadata and readme
+                        if (Tools.IsValidFile(FilePath))
+                            ListQarFiles.Add(FileName);
+                    
                 }
             }
 
@@ -111,15 +111,16 @@ namespace makebite
                             skipFile = true;
                         }
                     }
+                    /*
                     foreach (string ignoreExt in ignoreExtList) {
                         if (FileName.Contains(ignoreExt)) {
                             skipFile = true;
                         }
                     }
-
+                    */
+                    if (skipFile) continue;
                     string FilePath = FileName.Substring(Folder.Length);
-                    if (!FilePath.Contains("metadata.xml") && // ignore xml metadata
-                        Tools.IsValidFile(FilePath)) // only add valid files
+                    if (!FilePath.Contains("metadata.xml")) // ignore xml metadata
                         ListFiles.Add(FileName);
                 }
             }

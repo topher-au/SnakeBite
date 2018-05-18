@@ -182,8 +182,9 @@ namespace SnakeBite.GzsTool
         // Load filename dictionaries
         public static void LoadDictionaries()
         {
-            var FpkNames = SettingsManager.GetModFpkFiles();
-            var QarNames = SettingsManager.GetModQarFiles(true);
+            SettingsManager manager = new SettingsManager(ModManager.GameDir);
+            var FpkNames = manager.GetModFpkFiles();
+            var QarNames = manager.GetModQarFiles(true);
 
             File.WriteAllLines("mod_fpk_dict.txt", FpkNames);
             File.WriteAllLines("mod_qar_dict.txt", QarNames);
@@ -203,10 +204,23 @@ namespace SnakeBite.GzsTool
             string dataDir = Path.Combine(ModManager.GameDir, "master");
             string dataDat = "data{0}.dat";
             string chunkDat = "chunk{0}.dat";
+            string a_c7Dat = "a_chunk7.dat";
             string oneDat = "0\\{0:X2}.dat";
 
             Dictionary<ulong, string> BaseData = new Dictionary<ulong, string>();
             LoadDictionaries();
+
+            // read a_chunk7
+            var a_c7Files = ListArchiveHashes<QarFile>(Path.Combine(dataDir, a_c7Dat));
+            foreach (GameFile file in a_c7Files)
+            {
+                try
+                {
+                    ReadBaseData.Add(file);
+                }
+                catch { }
+            }
+
             // read data1
             var dataFiles = ListArchiveHashes<QarFile>(Path.Combine(dataDir, String.Format(dataDat, 1)));
             foreach (GameFile file in dataFiles)

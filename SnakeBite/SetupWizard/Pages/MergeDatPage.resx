@@ -118,7 +118,9 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="labelWelcomeText.Text" xml:space="preserve">
-    <value>SnakeBite will now take any non-SnakeBite data contained within 00.dat and move it to 01.dat.
+    <value>SnakeBite will now take any non-SnakeBite data contained within 00.dat and move it to 01.dat. 
+
+As of update 0.9.0, a significant amount of data originally contained in 01.dat will be moved to a_texture7.dat and a_chunk7.dat, and a modification must be made to chunk0.dat. Due to these changes, you should expect the setup to take noticeably longer than previously.
 
 This procedure may affect any mods you have installed into 00.dat/01.dat yourself, as SnakeBite will not show any conflicts and any mods installed with SnakeBite may supercede part (or all) of the files for your mod, leading to inconsistencies.
 

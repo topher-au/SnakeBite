@@ -16,8 +16,8 @@ namespace SnakeBite
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-
-            SettingsManager.DisableConflictCheck = false;
+            SettingsManager manager = new SettingsManager(ModManager.GameDir);
+            manager.DisableConflictCheck = false;
             if (Properties.Settings.Default.LastSBVersion == null || new Version(Properties.Settings.Default.LastSBVersion) < ModManager.GetSBVersion())
             {
                 Properties.Settings.Default.Upgrade();
@@ -45,7 +45,7 @@ namespace SnakeBite
 
             bool showSetupWizard = false;
 
-            if (!SettingsManager.SettingsExist() || !SettingsManager.ValidInstallPath)
+            if (!manager.SettingsExist() || !manager.ValidInstallPath)
             {
                 showSetupWizard = true;
             }
@@ -60,8 +60,7 @@ namespace SnakeBite
                 if (wizResult == DialogResult.Cancel) return;
                 if (wizResult == DialogResult.OK) showSetupWizard = false;
             }
-
-
+            
 
             string InitLog = String.Format(
                 "MGS Install Folder: {0}\n" +
@@ -84,7 +83,7 @@ namespace SnakeBite
                 {
                     Debug.LogLine("Complete uninstall");
                     // Restore backup and remove settings
-                    SettingsManager.DeleteSettings();
+                    manager.DeleteSettings();
                     BackupManager.RestoreOriginals();
                     return;
                 }
@@ -94,7 +93,6 @@ namespace SnakeBite
             bool doCmdLine = false;             // Process command line args?
             bool closeApp = false;              // Close app after?
             bool install = false;               // Install = true, uninstall = false
-            bool ignoreConflicts = false;       // Bypass conflict check
             bool resetDatHash = false;          // Rehash dat file
             bool skipCleanup = true;            // Skip CleanupDatabase
             string installFile = String.Empty;
@@ -110,11 +108,6 @@ namespace SnakeBite
 
                         case "-u":
                             install = false;
-
-                            break;
-
-                        case "-c":
-                            ignoreConflicts = true;
                             break;
 
                         case "-d":
@@ -140,14 +133,24 @@ namespace SnakeBite
             if (resetDatHash)
             {
                 Debug.LogLine("Resetting dat hash");
-                SettingsManager.UpdateDatHash();
+                manager.UpdateDatHash();
             }
-
-            var checkDat = SettingsManager.ValidateDatHash();
-
-            if (!checkDat)
+            if(ModManager.GetMGSVersion() > new Version(1,0,12,0))
             {
-                MessageBox.Show("Game archive has been modified. The setup wizard will now run.", "Game data hash mismatch", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                var contSB = MessageBox.Show("Due to a recent game update, this version of SnakeBite is outdated, and some features will not function properly.\n\nIt is highly recommended that you do not continue, and update to the latest version of Snakebite when it becomes available.\n\nWould you still like to continue? ", "Game Version Update", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                if (contSB == DialogResult.No)
+                    return;
+            }
+            var checkDat = manager.ValidateDatHash();
+            if (!checkDat || manager.IsExpected0001DatHash())
+            {
+                MessageBox.Show("Game archive has been modified. The setup wizard will now run.", "Game data hash mismatch", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                SetupWizard.SetupWizard setupWizard = new SetupWizard.SetupWizard();
+                setupWizard.ShowDialog();
+            }
+            else if (!BackupManager.c7t7Exist()) // chunk7 and/or texture7 are missing, despite the dathash validating.
+            {
+                MessageBox.Show("To continue, SnakeBite must build a_chunk7.dat and a_texture7.dat from your current archives. The setup wizard will now run.", "Setup required", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 SetupWizard.SetupWizard setupWizard = new SetupWizard.SetupWizard();
                 setupWizard.ShowDialog();
             }
@@ -161,12 +164,12 @@ namespace SnakeBite
                 if (install)
                 {
                     // install
-                    ModForm.ProcessInstallMod(installFile, ignoreConflicts,skipCleanup); // install mod
+                    ModForm.ProcessInstallMod(installFile, skipCleanup); // install mod
                 }
                 else
                 {
                     // uninstall
-                    var mods = SettingsManager.GetInstalledMods();
+                    var mods = manager.GetInstalledMods();
                     ModEntry mod = mods.FirstOrDefault(entry => entry.Name == installFile); // select mod
 
                     if (mod != null)

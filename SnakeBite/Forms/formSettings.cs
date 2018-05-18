@@ -17,7 +17,7 @@ namespace SnakeBite
     public partial class formSettings : Form
     {
         List<string> themeFiles = new List<string>() { "" };
-
+        SettingsManager manager = new SettingsManager(ModManager.GameDir);
         public formSettings()
         {
             InitializeComponent();
@@ -25,27 +25,52 @@ namespace SnakeBite
 
         private void CheckBackupState()
         {
-            bool backupExists = BackupManager.OriginalsExist();
+            if (BackupManager.OriginalsExist())
             {
-                buttonRestoreOriginals.Enabled = backupExists;
+                labelNoBackups.Text = "";
+                buttonRestoreOriginals.Enabled = true;
+            }
+            else
+            {
+                if (BackupManager.OriginalZeroOneExist()) {
+                    labelNoBackups.Text = "chunk0 backup not detected.\nCannot restore original game files.";
+                    buttonRestoreOriginals.Enabled = false;
+                    picModToggle.Enabled = true;
+                }
+                else
+                {
+                    labelNoBackups.Text = "No backups detected.\nCertain features are unavailable.";
+                    buttonRestoreOriginals.Enabled = false;
+                    picModToggle.Enabled = false;
+                    picModToggle.Image = Properties.Resources.toggledisabled;
+                }
             }
         }
 
         private void buttonRestoreOriginals_Click(object sender, EventArgs e)
         {
             var restoreData = MessageBox.Show("Your original backup files will be restored, and any SnakeBite settings and mods will be completely removed.\n\nAre you sure you want to continue?", "SnakeBite", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-            if (restoreData == DialogResult.No) return;
+            if (restoreData != DialogResult.Yes) return;
 
-            if (BackupManager.OriginalsExist())
-            {
                 BackupManager.RestoreOriginals();
-                SettingsManager.DeleteSettings();
+                manager.DeleteSettings();
                 Application.Exit();
-            }
         }
 
-        private void buttonToggleMods_Click(object sender, EventArgs e)
+        private void UpdateModToggle()
         {
+            // Enable/disable mods button
+
+            if (BackupManager.ModsDisabled())
+            {
+                picModToggle.Image = Properties.Resources.toggleoff;
+                picModToggle.Enabled = true;
+            }
+            else
+            {
+                picModToggle.Image = Properties.Resources.toggleon;
+                picModToggle.Enabled = true;
+            }
         }
 
         private void buttonSetup(object sender, EventArgs e)
@@ -53,24 +78,13 @@ namespace SnakeBite
             SetupWizard.SetupWizard setupWizard = new SetupWizard.SetupWizard();
             setupWizard.Tag = "closable";
             setupWizard.ShowDialog();
+            UpdateModToggle();
             CheckBackupState();
         }
-
 
         private void linkGithub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             Process.Start(this.labelGithub.Text);
-        }
-
-        private void checkConflicts_CheckedChanged(object sender, EventArgs e)
-        {
-            if (checkConflicts.Checked && SettingsManager.DisableConflictCheck == false)
-            {
-                MessageBox.Show("Enabling this option completely disables any warnings when installing mods, and may overwrite existing mod or game data.\n\n"+
-                                "This may cause issues with some mods - or cause the game to hang, crash or worse - and it is recommended that you make a seperate backup before continuing.\n\n"+
-                                "This option will only persist until you exit SnakeBite.", "Warning", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-            }
-            SettingsManager.DisableConflictCheck = checkConflicts.Checked;
         }
 
         private void buttonFindMGSV_Click(object sender, EventArgs e)
@@ -96,11 +110,13 @@ namespace SnakeBite
         {
             // Set installation path textbox
             textInstallPath.Text = Properties.Settings.Default.InstallPath;
-            checkConflicts.Checked = SettingsManager.DisableConflictCheck;
             checkEnableSound.Checked = Properties.Settings.Default.EnableSound;
             listThemes.SelectedIndex = 0;
+            UpdateModToggle();
+            CheckBackupState();
+            
 
-            if(Directory.Exists("Themes"))
+            if (Directory.Exists("Themes"))
             {
                 foreach(string file in Directory.GetFiles("Themes", "*.sbtheme"))
                 {
@@ -145,6 +161,19 @@ namespace SnakeBite
         private void buttonOpenLog_Click(object sender, EventArgs e) {
             Process.Start(Debug.LOG_FILE_PREV);
             Process.Start(Debug.LOG_FILE);
+        }
+
+        private void picModToggle_Click(object sender, EventArgs e)
+        {
+            if (BackupManager.ModsDisabled())
+            {
+                ProgressWindow.Show("Working", "Enabling mods, please wait...", new Action(BackupManager.SwitchToMods));
+            }
+            else
+            {
+                ProgressWindow.Show("Working", "Disabling mods, please wait...\n\nNote:\n You will not have access to the Mod Menu\nwhile mods are disabled.", new Action(BackupManager.SwitchToOriginal));
+            }
+            UpdateModToggle();
         }
     }
 }
