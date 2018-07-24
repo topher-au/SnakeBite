@@ -52,18 +52,6 @@
   <PropertyGroup>
     <ApplicationIcon>folder289.ico</ApplicationIcon>
   </PropertyGroup>
-  <PropertyGroup>
-    <ManifestCertificateThumbprint>3571A1A3D8282272D1B47FC9E13E164F77464577</ManifestCertificateThumbprint>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestKeyFile>makebite_TemporaryKey.pfx</ManifestKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignManifests>true</SignManifests>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Prerelease|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
     <OutputPath>bin\Prerelease\</OutputPath>
@@ -79,9 +67,9 @@
       <HintPath>..\packages\CityHash.Net.Legacy.0.1.1\lib\net45\CityHash.dll</HintPath>
       <Private>True</Private>
     </Reference>
-    <Reference Include="GzsTool.Core, Version=0.5.2.1, Culture=neutral, processorArchitecture=MSIL">
+    <Reference Include="GzsTool.Core, Version=0.5.3.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\GzsTool\GzsTool\bin\Debug\GzsTool.Core.dll</HintPath>
+      <HintPath>..\lib\GzsTool.Core.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -100,6 +88,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Classes\DebugManager.cs" />
     <Compile Include="Classes\UpdateFile.cs" />
     <Compile Include="FolderSelectDialog\FolderSelectDialog.cs" />
     <Compile Include="formHelp.cs">
@@ -138,7 +127,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
       <DesignTime>True</DesignTime>
     </Compile>
-    <None Include="makebite_TemporaryKey.pfx" />
     <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>

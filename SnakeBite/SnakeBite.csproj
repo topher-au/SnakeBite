@@ -54,15 +54,6 @@
   </PropertyGroup>
   <PropertyGroup />
   <PropertyGroup>
-    <ManifestCertificateThumbprint>943B7F28359E645EBA9724152C887FD95459DCDB</ManifestCertificateThumbprint>
-  </PropertyGroup>
-  <PropertyGroup>
-    <ManifestKeyFile>SnakeBite_TemporaryKey.pfx</ManifestKeyFile>
-  </PropertyGroup>
-  <PropertyGroup>
-    <GenerateManifests>true</GenerateManifests>
-  </PropertyGroup>
-  <PropertyGroup>
     <TargetZone>LocalIntranet</TargetZone>
   </PropertyGroup>
   <PropertyGroup />
@@ -89,7 +80,7 @@
     </Reference>
     <Reference Include="GzsTool.Core, Version=0.5.2.1, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>E:\ZZZ\Bob GzsTool\GzsTool.Core.dll</HintPath>
+      <HintPath>..\lib\GzsTool.Core.dll</HintPath>
     </Reference>
     <Reference Include="ICSharpCode.SharpZipLib, Version=0.86.0.518, Culture=neutral, PublicKeyToken=1b03e6acf1164f73, processorArchitecture=MSIL">
       <HintPath>..\packages\SharpZipLib.0.86.0\lib\20\ICSharpCode.SharpZipLib.dll</HintPath>
@@ -163,7 +154,7 @@
     <Compile Include="Forms\formSelectModelTarget.Designer.cs">
       <DependentUpon>formSelectModelTarget.cs</DependentUpon>
     </Compile>
-    <Compile Include="GzsLib.cs" />
+    <Compile Include="Classes\GzsLib.cs" />
     <Compile Include="ProgressWindow.cs" />
     <Compile Include="Classes\SBTheme.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -190,8 +181,7 @@
     <Compile Include="QuickMod\formQuickMod.Designer.cs">
       <DependentUpon>formQuickMod.cs</DependentUpon>
     </Compile>
-    <Compile Include="Tools.cs" />
-    <Compile Include="Classes\WebManager.cs" />
+    <Compile Include="Classes\Tools.cs" />
     <Compile Include="Classes\SettingsManager.cs" />
     <Compile Include="Forms\formProgress.cs">
       <SubType>Form</SubType>
@@ -303,7 +293,6 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
-    <None Include="SnakeBite_TemporaryKey.pfx" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config">
@@ -318,18 +307,12 @@
     <None Include="Resources\tick7.png" />
     <None Include="Resources\close7.png" />
     <None Include="Resources\exclmIcon.ico" />
-    <Content Include="Resources\fpk_dictionary.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <None Include="Resources\toggleon.png" />
     <None Include="Resources\toggleoff.png" />
     <None Include="Resources\ui_select.wav" />
     <None Include="Resources\ui_move.wav" />
     <None Include="Resources\mgsExclamation.png" />
     <None Include="Resources\LAUNCHERBGv2.png" />
-    <Content Include="Resources\qar_dictionary.txt">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
   </ItemGroup>
   <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
@@ -342,6 +325,14 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="fpk_dictionary.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="qar_dictionary.txt">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

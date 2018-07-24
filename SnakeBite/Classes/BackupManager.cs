@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.ComponentModel;
+using System.IO;
 using System.Threading;
 
 namespace SnakeBite
@@ -108,7 +109,28 @@ namespace SnakeBite
             }
         }
 
-        public static void CopyBackupFiles(bool Overwrite = false)
+        /// <summary>
+        /// Back up dat files
+        /// as DoWorkEventHandler
+        /// </summary>
+        public static void backgroundWorker_CopyBackupFiles(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker backupProcessor = (BackgroundWorker)sender;
+
+            object param = Path.GetFileName(GameZero); //TODO: append filesize
+            backupProcessor.ReportProgress(0, param);
+            File.Copy(GameZero, OriginalZero, true);
+
+            param = Path.GetFileName(GameOne);
+            backupProcessor.ReportProgress(0, param);
+            File.Copy(GameOne, OriginalOne, true);
+
+            param = Path.GetFileName(GameChunkZero);
+            backupProcessor.ReportProgress(0, param);
+            File.Copy(GameChunkZero, OriginalChunkZero, true);
+        }
+
+        public static void CopyBackupFiles(bool Overwrite = true)
         {
             if (!File.Exists(OriginalOne) || Overwrite)
             {

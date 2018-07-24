@@ -1,4 +1,5 @@
 ﻿// SYNC to makebite
+#define SNAKEBITE //TODO bad
 using GzsTool.Core.Common;
 using GzsTool.Core.Common.Interfaces;
 using GzsTool.Core.Fpk;
@@ -121,6 +122,12 @@ namespace SnakeBite.GzsTool
                 "lua",
                 "lng",
             }},
+        };
+
+        static Dictionary<string, string> extensionToType = new Dictionary<string, string> {
+            {"dat", "QarFile"},
+            {"fpk", "FpkFile" },
+            {"fpkd", "FpkFile" },
         };
 
         // Extract full archive
@@ -498,14 +505,11 @@ namespace SnakeBite.GzsTool
             }
             return fpkFilesSorted;
         }// SortFpksFiles
-
-
+        
         public static bool IsExtensionValidForArchive(string fileName, string archiveName)
         {
             var archiveExtension = Path.GetExtension(archiveName).TrimStart('.');
-
             var validExtensions = archiveExtensions[archiveExtension];
-
             var ext = Path.GetExtension(fileName).TrimStart('.');
             bool isValid = false;
             foreach (var validExt in validExtensions)
@@ -516,12 +520,10 @@ namespace SnakeBite.GzsTool
                     break;
                 }
             }
-
             if (!isValid)
             {
                 return false;
             }
-
             return true;
         }
     }

@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
 using System.Text;
+using ICSharpCode.SharpZipLib.Zip;
+using System.Xml.Serialization;
+using System.Collections;
 
 namespace SnakeBite
 {
@@ -156,6 +159,29 @@ namespace SnakeBite
             //"xml"
         };
 
+        public static ModEntry ReadMetaData(string ModFile)
+        {
+            if (!File.Exists(ModFile)) return null;
+
+            try
+            {
+                using (FileStream streamMod = new FileStream(ModFile, FileMode.Open))
+                using (ZipFile zipMod = new ZipFile(streamMod))
+                {
+                    var metaIndex = zipMod.FindEntry("metadata.xml", true);
+                    if (metaIndex == -1) return null;
+                    using (StreamReader metaReader = new StreamReader(zipMod.GetInputStream(metaIndex)))
+                    {
+                        XmlSerializer x = new XmlSerializer(typeof(ModEntry));
+                        var metaData = (ModEntry)x.Deserialize(metaReader);
+                        return metaData;
+                    }
+                }
+            }
+            catch { return null; }
+
+        }
+
         public static string ToWinPath(string Path)
         {
             return Path.Replace("/", "\\").TrimStart('\\');
@@ -187,7 +213,6 @@ namespace SnakeBite
 
         internal static ulong NameToHash(string FileName)
         {
-            // regenerate hash for file
             string filePath = Tools.ToQarPath(FileName);
             ulong hash = Hashing.HashFileNameWithExtension(filePath);
             // find hashed names, which will be in root
@@ -196,10 +221,8 @@ namespace SnakeBite
                 string fileName = filePath.TrimStart('/');
                 string fileNoExt = fileName.Substring(0, fileName.IndexOf("."));
                 string fileExt = fileName.Substring(fileName.IndexOf(".") + 1);
-
                 //tex NMC aparently cant use HashFileNameWithExtension with undictionaried/files with hash names
                 // tryParseHash will fail for non hashed files in root (currently only init.lua and foxpatch.dat)
-                // see also duplicate function in makebite/classes/tools NameToHash
                 bool tryParseHash = ulong.TryParse(fileNoExt, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.CurrentCulture, out hash);
                 if (tryParseHash) // successfully parsed filename
                 {

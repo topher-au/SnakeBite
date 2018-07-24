@@ -42,27 +42,6 @@ namespace SnakeBite
         {
             textInfo = cultureInfo.TextInfo;
 
-            // Check for updates
-            /* //tex OFF since topher has left it
-            Debug.LogLine("[Update] Checking for updates");
-            UpdateFile updater = new UpdateFile();
-            bool updateSuccess = updater.ReadXmlFromInterweb("http://www.xobanimot.com/snakebite/update/update.xml");
-            if (updateSuccess)
-            {
-                if (updater.SnakeBite.Version.AsVersion() > ModManager.GetSBVersion())
-                {
-                    Debug.LogLine(String.Format("Update found! Version {0} is available", updater.SnakeBite.Version.AsVersion()));
-                    labelUpdate.Text = String.Format("SnakeBite version {0} now available!", updater.SnakeBite.Version.AsString());
-                    labelUpdate.Show();
-                } else
-                {
-                    Debug.LogLine("No update found");
-                }
-            } else {
-                Debug.LogLine("Could not read update.xml");
-            }
-            */
-
             // Retrieve and display version info
             var MGSVersionInfo = FileVersionInfo.GetVersionInfo(Properties.Settings.Default.InstallPath + "\\mgsvtpp.exe");
 
@@ -295,31 +274,12 @@ namespace SnakeBite
            labelVersion.Refresh();
            labelVersion.Left = 8;
            labelVersion.Top = Height - labelVersion.Height - 8;
-           //labelUpdate.Left = 8;
-           //labelUpdate.Top = Height - labelUpdate.Height - 8;
         }
 
         private void labelClose_Click(object sender, EventArgs e)
         {
             ExitLauncher(true);
         }
-
-        /*private void labelUpdate_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            var launchUpdate = MessageBox.Show(String.Format("A new version of SnakeBite is available!\n\nWould you like to update now?"), "SnakeBite Update", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-            if (launchUpdate == DialogResult.Yes)
-            {
-                if (File.Exists("sbupdater.exe"))
-                {
-                    Process.Start("sbupdater.exe", "-u");
-                    Application.Exit();
-                }
-                else
-                {
-                    MessageBox.Show("SnakeBite updater appears to be missing!", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
-            }
-        }*/
 
         private void formLauncher_MouseDown(object sender, MouseEventArgs e)
         {

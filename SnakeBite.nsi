@@ -66,7 +66,6 @@ Section "SnakeBite" SecMain
   ;ADD YOUR OWN FILES HERE...
   File "SnakeBite.exe"
   File "MakeBite.exe"
-  File "sbupdater.exe"
   File "CityHash.dll"
   File "GzsTool.Core.dll"
   File "ICSharpCode.SharpZipLib.dll"
@@ -75,6 +74,7 @@ Section "SnakeBite" SecMain
   File "qar_dictionary.txt"
   File "README.md"
   File "ChangeLog.txt"
+  File "license.txt"
   
   ;Store installation folder
   WriteRegStr HKCU "Software\SnakeBite" "" $INSTDIR
@@ -113,13 +113,15 @@ Section "Uninstall"
   ;ADD YOUR OWN FILES HERE...
   Delete "$INSTDIR\SnakeBite.exe"
   Delete "$INSTDIR\MakeBite.exe"
-  Delete "$INSTDIR\sbupdater.exe"
   Delete "$INSTDIR\CityHash.dll"
   Delete "$INSTDIR\GzsTool.Core.dll"
   Delete "$INSTDIR\ICSharpCode.SharpZipLib.dll"
   Delete "$INSTDIR\Zlib.Portable.dll"
   Delete "$INSTDIR\fpk_dictionary.txt"
   Delete "$INSTDIR\qar_dictionary.txt"
+  Delete "$INSTDIR\README.md"
+  Delete "$INSTDIR\ChangeLog.txt"
+  Delete "$INSTDIR\license.txt"
 
   Delete "$INSTDIR\Uninstall.exe"
 

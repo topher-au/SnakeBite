@@ -89,7 +89,9 @@ namespace SnakeBite.SetupWizard
 
                     // do backup processing
                     BackgroundWorker backupProcessor = new BackgroundWorker();
-                    backupProcessor.DoWork += (obj, var) => BackupManager.CopyBackupFiles(true);
+                    backupProcessor.DoWork += new DoWorkEventHandler(BackupManager.backgroundWorker_CopyBackupFiles);
+                    backupProcessor.WorkerReportsProgress = true;
+                    backupProcessor.ProgressChanged += new ProgressChangedEventHandler(backupProcessor_ProgressChanged);
                     backupProcessor.RunWorkerAsync();
 
                     while (backupProcessor.IsBusy)
@@ -108,14 +110,16 @@ namespace SnakeBite.SetupWizard
                     break;
 
                 case 3:
-                    // do cleanup processing
+                    // move 00/01 to a_chunk/a_texture
                     buttonNext.Enabled = false;
                     buttonBack.Visible = false;
                     Tag = "noclose";
                     mergeDatPage.panelProcessing.Visible = true;
 
                     BackgroundWorker mergeProcessor = new BackgroundWorker();
-                    mergeProcessor.DoWork += (obj, var) => ModManager.MergeAndCleanup();
+                    mergeProcessor.DoWork += new DoWorkEventHandler(ModManager.backgroundWorker_MergeAndCleanup);
+                    mergeProcessor.WorkerReportsProgress = true;
+                    mergeProcessor.ProgressChanged += new ProgressChangedEventHandler(mergeProcessor_ProgressChanged);
                     mergeProcessor.RunWorkerAsync();
 
                     while (mergeProcessor.IsBusy)
@@ -160,6 +164,16 @@ namespace SnakeBite.SetupWizard
             buttonNext.Enabled = true;
 
             displayPage = 3;
+        }
+
+        private void backupProcessor_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            createBackupPage.labelWorking.Text = "Backing up " + (string)e.UserState;
+        }
+
+        private void mergeProcessor_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            mergeDatPage.labelWorking.Text = (string)e.UserState;
         }
     }
 }

@@ -54,7 +54,7 @@
             // 
             this.panelProcessing.Controls.Add(this.labelWorking);
             this.panelProcessing.Controls.Add(this.pictureWorkingSpiral);
-            this.panelProcessing.Location = new System.Drawing.Point(90, 259);
+            this.panelProcessing.Location = new System.Drawing.Point(95, 277);
             this.panelProcessing.Name = "panelProcessing";
             this.panelProcessing.Size = new System.Drawing.Size(249, 43);
             this.panelProcessing.TabIndex = 8;
@@ -79,9 +79,9 @@
             // 
             // labelWelcomeText
             // 
-            this.labelWelcomeText.Location = new System.Drawing.Point(5, 51);
+            this.labelWelcomeText.Location = new System.Drawing.Point(5, 46);
             this.labelWelcomeText.Name = "labelWelcomeText";
-            this.labelWelcomeText.Size = new System.Drawing.Size(429, 256);
+            this.labelWelcomeText.Size = new System.Drawing.Size(429, 228);
             this.labelWelcomeText.TabIndex = 5;
             this.labelWelcomeText.Text = resources.GetString("labelWelcomeText.Text");
             // 
@@ -116,7 +116,7 @@
 
         private System.Windows.Forms.Panel panelContent;
         public System.Windows.Forms.Panel panelProcessing;
-        private System.Windows.Forms.Label labelWorking;
+        public System.Windows.Forms.Label labelWorking;
         private System.Windows.Forms.PictureBox pictureWorkingSpiral;
         public System.Windows.Forms.Label labelWelcomeText;
         public System.Windows.Forms.Label labelWelcome;

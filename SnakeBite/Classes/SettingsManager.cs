@@ -162,7 +162,7 @@ namespace SnakeBite
         }
         public bool IsExpected0001DatHash()
         {
-            string ExpectedDatHash = "73C577266F28835BDDDFCB9BE4A4D780E65A9157F2E2FCB4AAF4E2152C676F9B"; //expected original hash for 1.0.12.0
+            string ExpectedDatHash = "73C577266F28835BDDDFCB9BE4A4D780E65A9157F2E2FCB4AAF4E2152C676F9B"; //expected original hash for 1.0.12.0 //GAMEVERSION:
             return ExpectedDatHash.Equals(Tools.GetMd5Hash(ModManager.ZeroPath) + Tools.GetMd5Hash(ModManager.OnePath));
         }
 
@@ -274,12 +274,15 @@ namespace SnakeBite
         [XmlAttribute("DatHash")]
         public string DatHash { get; set; }
 
+        //Entries of files in mod qar (ex 00,01.dat)
         [XmlArray("QarEntries")]
         public List<ModQarEntry> GameQarEntries { get; set; } = new List<ModQarEntry>();
 
+        //Entries of files inside fpks
         [XmlArray("FpkEntries")]
         public List<ModFpkEntry> GameFpkEntries { get; set; } = new List<ModFpkEntry>();
 
+        //Entries of files in GameDir (ex MGS_TPP)
         [XmlArray("FileEntries")]
         public List<ModFileEntry> GameFileEntries { get; set; } = new List<ModFileEntry>();
     }
@@ -385,6 +388,7 @@ namespace SnakeBite
         [XmlAttribute("Compressed")]
         public bool Compressed { get; set; }
 
+        //Added by makebite, currently unused
         [XmlAttribute("ContentHash")]
         public string ContentHash { get; set; }
 
@@ -404,9 +408,11 @@ namespace SnakeBite
         [XmlAttribute("FilePath")]
         public string FilePath { get; set; }
 
+        //Added by makebite, currently unused
         [XmlAttribute("ContentHash")]
         public string ContentHash { get; set; }
 
+        //TODO: currently inaccurate
         [XmlAttribute("SourceType")]
         public FileSource SourceType { get; set; }
 

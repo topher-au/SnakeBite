@@ -89,12 +89,12 @@ namespace SnakeBite
             {
                 markedModNames += "\n" + mod.ToString();
             }
-            if (!(MessageBox.Show("The following mods will be uninstalled:\n" + markedModNames , "SnakeBite", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)) return;
-            
+            if (!(MessageBox.Show("The following mods will be uninstalled:\n" + markedModNames, "SnakeBite", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)) return;
+
             ProgressWindow.Show("Uninstalling Mod(s)", "Uninstalling...\n\nNote:\nThe uninstall time depends greatly on\nthe mod's contents, the number of mods being uninstalled\nand the mods that are still installed.", new Action((MethodInvoker)delegate { ModManager.UninstallMod(checkedModIndices); }));
             // Update installed mod list
             RefreshInstalledMods(true);
-        } 
+        }
 
         private void buttonOpenLogs_Click(object sender, EventArgs e)
         {
@@ -104,35 +104,33 @@ namespace SnakeBite
 
         private void labelModWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) //inspired by Nexus Mod Manager, the version number doubles as a link to the webpage.
         {
-            
+
             var mods = manager.GetInstalledMods();
             ModEntry selectedMod = mods[listInstalledMods.SelectedIndex];
             try
             {
                 Process.Start(selectedMod.Website);
-            }
-            catch { }
+            } catch { }
         }
 
         private void listInstalledMods_SelectedIndexChanged(object sender, EventArgs e)// Populate mod details pane
         {
-            
+
             if (listInstalledMods.SelectedIndex >= 0)
             {
                 var mods = manager.GetInstalledMods();
                 ModEntry selectedMod = mods[listInstalledMods.SelectedIndex];
-               labelModName.Text = selectedMod.Name;
-               labelModAuthor.Text = "By " + selectedMod.Author;
-               labelModWebsite.Text = selectedMod.Version;
-               textDescription.Text = selectedMod.Description;
-               if (ModManager.GetMGSVersion() != selectedMod.MGSVersion.AsVersion() && selectedMod.MGSVersion.AsVersion() != new Version(0, 0, 0, 0))
-               {
+                labelModName.Text = selectedMod.Name;
+                labelModAuthor.Text = "By " + selectedMod.Author;
+                labelModWebsite.Text = selectedMod.Version;
+                textDescription.Text = selectedMod.Description;
+                if (ModManager.GetMGSVersion() != selectedMod.MGSVersion.AsVersion() && selectedMod.MGSVersion.AsVersion() != new Version(0, 0, 0, 0))
+                {
                     labelVersionWarning.ForeColor = Color.Yellow; labelVersionWarning.BackColor = Color.Chocolate; labelVersionWarning.Text = "!";
-               }
-               else
-               {
+                } else
+                {
                     labelVersionWarning.ForeColor = Color.MediumSeaGreen; labelVersionWarning.BackColor = Color.Gainsboro; labelVersionWarning.Text = "✔";
-               }
+                }
             }
         }
 
@@ -142,8 +140,7 @@ namespace SnakeBite
             {
                 countCheckedMods++;
                 buttonUninstall.Enabled = true;
-            }
-            else
+            } else
             {
                 countCheckedMods--;
                 if (countCheckedMods == 0)
@@ -152,23 +149,50 @@ namespace SnakeBite
 
         }
 
-        internal void ProcessInstallMod(string installFile, bool skipCleanup)// command-line install.
-        { 
-            var metaData = Tools.ReadMetaData(installFile);
-            if (metaData == null) return;
-            List<string> InstallFileList = new List<string>();
-            InstallFileList.Add(installFile);
-
-            if (!PreinstallManager.CheckConflicts(installFile)) return;
-
-            ProgressWindow.Show("Installing Mod", String.Format("Installing {0}...", metaData.Name), new Action((MethodInvoker)delegate { ModManager.InstallMod(InstallFileList, skipCleanup); }));
-
+        /// <summary>
+        /// command-line install.
+        /// </summary>
+        internal void ProcessInstallMod(string installModPath, bool skipConflictChecks, bool skipCleanup) 
+        {
+            List<string> InstallFileList = null;
+            if (File.Exists(installModPath) && installModPath.Contains(".mgsv"))
+            {
+                InstallFileList = new List<string> { installModPath };
+            } else
+            {
+                if (Directory.Exists(installModPath))
+                {
+                    InstallFileList = Directory.GetFiles(installModPath, "*.mgsv").ToList();
+                    if (InstallFileList.Count == 0)
+                    {
+                        Debug.LogLine($"[Install] Could not find any .mgsv files in {installModPath}.");
+                        return;
+                    }
+                } else
+                {
+                    Debug.LogLine($"[Install] Could not find file or directory {installModPath}.");
+                    return;
+                }
+            }
+            if (InstallFileList == null)
+            {
+                return;
+            }
+            if (!skipConflictChecks)
+            {
+                foreach (string modPath in InstallFileList)
+                {
+                    if (!PreinstallManager.CheckConflicts(modPath)) return;
+                }
+            }
+            ProgressWindow.Show("Installing Mod", $"Installing {installModPath}...",
+                new Action((MethodInvoker)delegate { ModManager.InstallMod(InstallFileList, skipCleanup); }
+            ));
             this.Invoke((MethodInvoker)delegate { RefreshInstalledMods(); });
         }
 
         public void ProcessUninstallMod(ModEntry mod)// command-line uninstall. This checks the mod it was passed, and puts it in a 1-item list to be uninstalled.
-        { 
-            
+        {
             for (int i = 0; i < listInstalledMods.Items.Count; i++)
             {
                 listInstalledMods.SetItemCheckState(i, CheckState.Unchecked);
@@ -201,14 +225,12 @@ namespace SnakeBite
                     if (listInstalledMods.Items.Count > 0)
                     {
                         listInstalledMods.SelectedIndex = 0;
-                    }
-                    else
+                    } else
                     {
                         listInstalledMods.SelectedIndex = -1;
                     }
                 }
-            }
-            else
+            } else
             {
 
                 groupBoxNoModsNotice.Visible = true;
@@ -218,7 +240,7 @@ namespace SnakeBite
 
         private void linkLabelSnakeBiteModsList_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) // opens the [SBWM] search filter on nexus mods, randomly sorted.
         {
-            Process.Start("http://www.nexusmods.com/metalgearsolidvtpp/mods/searchresults/?src_order=7&src_sort=0&src_view=1&src_tab=1&src_language=0&src_descr=SBWM&src_showadult=1&ignoreCF=0&page=1&pUp=1"); 
+            Process.Start("https://www.nexusmods.com/metalgearsolidvtpp/search/?search_description=SBWM");
         }
 
         private void buttonLaunchGame_Click(object sender, EventArgs e)
@@ -232,8 +254,7 @@ namespace SnakeBite
             try
             {
                 Process.Start(Properties.Settings.Default.InstallPath);
-            }
-            catch { }
+            } catch { }
         }
 
         private void labelVersionWarning_Click(object sender, EventArgs e)
@@ -255,8 +276,7 @@ namespace SnakeBite
                         MessageBox.Show(String.Format("{0} is intended for MGSV version {1}, but your installation is version {2}.\n\nThis mod may not be compatible with MGSV version {2}", selectedMod.Name, modMGSVersion, currentMGSVersion), "Update recommended", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }
 
-                }
-                else
+                } else
                 {
                     MessageBox.Show(String.Format("This mod is up to date with the current MGSV version {0}", currentMGSVersion), "Mod is up to date", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
