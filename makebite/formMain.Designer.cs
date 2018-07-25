@@ -86,7 +86,7 @@
             this.comboForVersion.FormattingEnabled = true;
             this.comboForVersion.Items.AddRange(new object[] {
             "",
-            "1.0.12.0"});
+            "1.0.13.0"});
             this.comboForVersion.Location = new System.Drawing.Point(348, 55);
             this.comboForVersion.Name = "comboForVersion";
             this.comboForVersion.Size = new System.Drawing.Size(83, 23);

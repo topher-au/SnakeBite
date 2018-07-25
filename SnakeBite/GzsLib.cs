@@ -189,11 +189,19 @@ namespace SnakeBite.GzsTool
             File.WriteAllLines("mod_fpk_dict.txt", FpkNames);
             File.WriteAllLines("mod_qar_dict.txt", QarNames);
 
-            Hashing.ReadDictionary("qar_dictionary.txt");
-            Hashing.ReadDictionary("mod_qar_dict.txt");
+            if (!File.Exists("qar_dictionary.txt"))
+                Debug.LogLine("File not found: qar_dictionary.txt");
+            else if (!File.Exists("fpk_dictionary.txt"))
+                Debug.LogLine("File not found: fpk_dictionary.txt");
+            else
+            {
 
-            Hashing.ReadMd5Dictionary("fpk_dictionary.txt");
-            Hashing.ReadMd5Dictionary("mod_fpk_dict.txt");
+                Hashing.ReadDictionary("qar_dictionary.txt");
+                Hashing.ReadDictionary("mod_qar_dict.txt");
+
+                Hashing.ReadMd5Dictionary("fpk_dictionary.txt");
+                Hashing.ReadMd5Dictionary("mod_fpk_dict.txt");
+            }
         }
 
         // Read contents of base game files into list

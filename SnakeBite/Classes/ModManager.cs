@@ -728,7 +728,7 @@ namespace SnakeBite
 
             CleanupFolders();
 
-            if (manager.IsExpected0001DatHash())
+            if (manager.IsVanilla0001DatHash())
             {   // first time setup or files have been revalidated
                 // lua files 00 -> 01,    texture files 01 -> texture7,   foxpatch 00 -> 00,   chunkfiles 00 -> chunk7
                 Debug.LogLine("[DatMerge] First Time Setup Started", Debug.LogLevel.Debug);

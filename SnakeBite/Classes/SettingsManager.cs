@@ -6,8 +6,11 @@ using System.Xml.Serialization;
 
 namespace SnakeBite
 {
+    
     public class SettingsManager
     { // originally static, now modified to support the needs of PreinstallManager.RefreshXml
+        public string vanillaDatHash = "78219F6C88B062D5ADCBE6ACADC16E8DB6905D4A97F8A9750B6CC2B97B6BE218"; //expected original hash for 1.0.13.0
+
         public string directory;
         public string filename;
         public SettingsManager(string dir, string file = "snakebite.xml")
@@ -160,10 +163,9 @@ namespace SnakeBite
             Debug.LogLine(String.Format("[UpdateDatHash] Updated 00/01 dat hash to: {0}", datHash), Debug.LogLevel.All);
             settings.SaveTo(directory, filename);
         }
-        public bool IsExpected0001DatHash()
+        public bool IsVanilla0001DatHash()
         {
-            string ExpectedDatHash = "73C577266F28835BDDDFCB9BE4A4D780E65A9157F2E2FCB4AAF4E2152C676F9B"; //expected original hash for 1.0.12.0
-            return ExpectedDatHash.Equals(Tools.GetMd5Hash(ModManager.ZeroPath) + Tools.GetMd5Hash(ModManager.OnePath));
+            return vanillaDatHash.Equals(Tools.GetMd5Hash(ModManager.ZeroPath) + Tools.GetMd5Hash(ModManager.OnePath));
         }
 
         public void ClearAllMods()
@@ -180,7 +182,7 @@ namespace SnakeBite
             string hashOld = this.GetGameData().DatHash;
             if (datHash != hashOld)
             {
-                Debug.LogLine(String.Format("[ValidateDatHash] 00/01 dat hash mismatch:\n{0} != {1}", datHash, hashOld), Debug.LogLevel.All);
+                Debug.LogLine(String.Format("[ValidateDatHash] 00/01 dat hash mismatch:\n{0} (Found Hash) != {1} (Expected Hash)", datHash, hashOld), Debug.LogLevel.All);
                 return false;
             }
             return true;

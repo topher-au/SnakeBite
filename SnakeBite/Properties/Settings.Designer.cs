@@ -73,7 +73,7 @@ namespace SnakeBite.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.8.2.0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.9.0.3")]
         public string LastSBVersion {
             get {
                 return ((string)(this["LastSBVersion"]));
