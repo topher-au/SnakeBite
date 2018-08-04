@@ -9,7 +9,6 @@ namespace SnakeBite
     
     public class SettingsManager
     { // originally static, now modified to support the needs of PreinstallManager.RefreshXml
-        public string vanillaDatHash = "78219F6C88B062D5ADCBE6ACADC16E8DB6905D4A97F8A9750B6CC2B97B6BE218"; //expected original hash for 1.0.13.0
 
         public string directory;
         public string filename;
@@ -165,7 +164,7 @@ namespace SnakeBite
         }
         public bool IsVanilla0001DatHash()
         {
-            return vanillaDatHash.Equals(Tools.GetMd5Hash(ModManager.ZeroPath) + Tools.GetMd5Hash(ModManager.OnePath));
+            return ModManager.vanillaDatHash.Equals(Tools.GetMd5Hash(ModManager.ZeroPath) + Tools.GetMd5Hash(ModManager.OnePath));
         }
 
         public void ClearAllMods()
