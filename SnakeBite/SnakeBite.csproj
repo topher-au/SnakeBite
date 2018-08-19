@@ -279,7 +279,6 @@
     <EmbeddedResource Include="SetupWizard\SetupWizard.resx">
       <DependentUpon>SetupWizard.cs</DependentUpon>
     </EmbeddedResource>
-    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
     <None Include="Properties\app.manifest" />
     <None Include="Properties\DataSources\SnakeBite.QuickMod.formQuickMod.datasource" />

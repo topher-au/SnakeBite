@@ -136,7 +136,7 @@ namespace SnakeBite
                 Debug.LogLine("Resetting dat hash");
                 manager.UpdateDatHash();
             }
-            if (ModManager.GetMGSVersion() > new Version(1, 0, 12, 0))
+            if (ModManager.GetMGSVersion() > new Version(ModManager.MGSVVersionStr))
             {
                 var contSB = MessageBox.Show("Due to a recent game update, this version of SnakeBite is outdated, and some features will not function properly.\n\nIt is highly recommended that you do not continue, and update to the latest version of Snakebite when it becomes available.\n\nWould you still like to continue? ", "Game Version Update", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (contSB == DialogResult.No)

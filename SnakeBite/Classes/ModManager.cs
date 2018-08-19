@@ -16,6 +16,9 @@ namespace SnakeBite
 {
     internal static class ModManager
     {
+        public static string MGSVVersionStr = "1.0.14.0";//GAMEVERSION
+        public static string ExpectedDatHash = "BB4EF4ACA3E717CC4A987723C7AEC8A0B6905D4A97F8A9750B6CC2B97B6BE218"; //expected original hash for 1.0.14.0 //GAMEVERSION:
+
         internal static string OnePath { get { return Properties.Settings.Default.InstallPath + "\\master\\0\\01.dat"; } }
         internal static string ZeroPath { get { return Properties.Settings.Default.InstallPath + "\\master\\0\\00.dat"; } }
         internal static string t7Path { get { return Properties.Settings.Default.InstallPath + "\\master\\a_texture7.dat"; } }

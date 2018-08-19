@@ -162,8 +162,7 @@ namespace SnakeBite
         }
         public bool IsExpected0001DatHash()
         {
-            string ExpectedDatHash = "73C577266F28835BDDDFCB9BE4A4D780E65A9157F2E2FCB4AAF4E2152C676F9B"; //expected original hash for 1.0.12.0 //GAMEVERSION:
-            return ExpectedDatHash.Equals(Tools.GetMd5Hash(ModManager.ZeroPath) + Tools.GetMd5Hash(ModManager.OnePath));
+            return ModManager.ExpectedDatHash.Equals(Tools.GetMd5Hash(ModManager.ZeroPath) + Tools.GetMd5Hash(ModManager.OnePath));
         }
 
         public void ClearAllMods()
