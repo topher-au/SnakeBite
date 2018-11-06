@@ -23,6 +23,7 @@ namespace SnakeBite.Forms
          * Excessive mods and conflicts will result in slower refresh times and list "flickering"
          */
         private List<PreinstallEntry> Mods = new List<PreinstallEntry>();
+        private SettingsManager manager = new SettingsManager(ModManager.GameDir);
         private int selectedIndex;
 
         public formInstallOrder()
@@ -94,9 +95,7 @@ namespace SnakeBite.Forms
                 labelModWebsite.Text = selectedMod.modInfo.Version;
                 textModDescription.Text = selectedMod.modInfo.Description;
 
-                bool isUpToDate = ModManager.GetMGSVersion() == selectedMod.modInfo.MGSVersion.AsVersion();
-                bool isSpecialCase = selectedMod.modInfo.MGSVersion.AsVersion() == new Version(0, 0, 0, 0) || selectedMod.modInfo.MGSVersion.AsVersion() == new Version(1, 0, 14, 0); // 1.0.15.0 only affected the exe, so 1.0.14.0 mods are still up to date
-                if (isUpToDate || isSpecialCase)
+                if (manager.IsUpToDate(selectedMod.modInfo.MGSVersion.AsVersion()))
                 {
                     labelVersionWarning.ForeColor = Color.MediumSeaGreen; labelVersionWarning.BackColor = Color.Gainsboro; labelVersionWarning.Text = "✔";
                 }
@@ -273,11 +272,11 @@ namespace SnakeBite.Forms
             PreinstallEntry selectedMod = Mods[selectedIndex];
             var currentMGSVersion = ModManager.GetMGSVersion();
             var modMGSVersion = selectedMod.modInfo.MGSVersion.AsVersion();
-            if (currentMGSVersion != modMGSVersion && modMGSVersion != new Version(0, 0, 0, 0))
+            if (!manager.IsUpToDate(modMGSVersion))
             {
                 if (currentMGSVersion > modMGSVersion && modMGSVersion > new Version(0, 0, 0, 0))
                 {
-                    MessageBox.Show(String.Format("{0} appears to be for MGSV Version {1}.\n\nIt is recommended that you at least check for an updated version before installing.", selectedMod.modInfo.Name, modMGSVersion), "Game version mismatch", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(String.Format("{0} appears to be for MGSV Version {1}, and may not be compatible with {2}\n\nIt is recommended that you check for an updated version before installing.", selectedMod.modInfo.Name, modMGSVersion, currentMGSVersion), "Game version mismatch", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
                 if (currentMGSVersion < modMGSVersion)
                 {

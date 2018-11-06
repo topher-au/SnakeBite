@@ -286,6 +286,7 @@ namespace SnakeBite
             var SBVersion = ModManager.GetSBVersion();
             var MGSVersion = ModManager.GetMGSVersion();
 
+            SettingsManager manager = new SettingsManager(GameDir);
             Version modSBVersion = new Version();
             Version modMGSVersion = new Version();
             try
@@ -314,11 +315,11 @@ namespace SnakeBite
             }
 
             // Check MGS version compatibility
-            if (MGSVersion != modMGSVersion && modMGSVersion != new Version(0, 0, 0, 0))
+            if (!manager.IsUpToDate(modMGSVersion))
             {
                 if (MGSVersion > modMGSVersion && modMGSVersion > new Version(0, 0, 0, 0))
                 {
-                    var contInstall = MessageBox.Show(String.Format("{0} appears to be for an older version of MGSV. It is recommended that you at least check for an updated version before installing.\n\nContinue installation?", metaData.Name), "Game version mismatch", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+                    var contInstall = MessageBox.Show(String.Format("{0} appears to be for an older version of MGSV. It is recommended that you check for an updated version before installing.\n\nContinue installation?", metaData.Name), "Game version mismatch", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (contInstall == DialogResult.No) return false;
                 }
                 if (MGSVersion < modMGSVersion)
@@ -333,7 +334,6 @@ namespace SnakeBite
             Debug.LogLine(String.Format("[Mod] Checking conflicts for {0}", metaData.Name));
             int confCounter = 0;
             // search installed mods for conflicts
-            SettingsManager manager = new SettingsManager(GameDir);
             var mods = manager.GetInstalledMods();
             List<string> conflictingMods = new List<string>();
             int confIndex = -1;
