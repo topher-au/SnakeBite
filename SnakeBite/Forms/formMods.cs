@@ -121,18 +121,21 @@ namespace SnakeBite
             {
                 var mods = manager.GetInstalledMods();
                 ModEntry selectedMod = mods[listInstalledMods.SelectedIndex];
-               labelModName.Text = selectedMod.Name;
-               labelModAuthor.Text = "By " + selectedMod.Author;
-               labelModWebsite.Text = selectedMod.Version;
-               textDescription.Text = selectedMod.Description;
-               if (ModManager.GetMGSVersion() != selectedMod.MGSVersion.AsVersion() && selectedMod.MGSVersion.AsVersion() != new Version(0, 0, 0, 0))
-               {
-                    labelVersionWarning.ForeColor = Color.Yellow; labelVersionWarning.BackColor = Color.Chocolate; labelVersionWarning.Text = "!";
-               }
-               else
-               {
+                labelModName.Text = selectedMod.Name;
+                labelModAuthor.Text = "By " + selectedMod.Author;
+                labelModWebsite.Text = selectedMod.Version;
+                textDescription.Text = selectedMod.Description;
+                
+                bool isUpToDate = ModManager.GetMGSVersion() == selectedMod.MGSVersion.AsVersion();
+                bool isSpecialCase = selectedMod.MGSVersion.AsVersion() == new Version(0, 0, 0, 0) || selectedMod.MGSVersion.AsVersion() == new Version(1, 0, 14, 0); // 1.0.15.0 only affected the exe, so 1.0.14.0 mods are still up to date
+                if (isUpToDate || isSpecialCase)
+                {
                     labelVersionWarning.ForeColor = Color.MediumSeaGreen; labelVersionWarning.BackColor = Color.Gainsboro; labelVersionWarning.Text = "✔";
-               }
+                }
+                else
+                {
+                    labelVersionWarning.ForeColor = Color.Yellow; labelVersionWarning.BackColor = Color.Chocolate; labelVersionWarning.Text = "!";
+                }
             }
         }
 

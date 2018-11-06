@@ -94,13 +94,15 @@ namespace SnakeBite.Forms
                 labelModWebsite.Text = selectedMod.modInfo.Version;
                 textModDescription.Text = selectedMod.modInfo.Description;
 
-                if (ModManager.GetMGSVersion() != selectedMod.modInfo.MGSVersion.AsVersion() && selectedMod.modInfo.MGSVersion.AsVersion() != new Version(0, 0, 0, 0))
+                bool isUpToDate = ModManager.GetMGSVersion() == selectedMod.modInfo.MGSVersion.AsVersion();
+                bool isSpecialCase = selectedMod.modInfo.MGSVersion.AsVersion() == new Version(0, 0, 0, 0) || selectedMod.modInfo.MGSVersion.AsVersion() == new Version(1, 0, 14, 0); // 1.0.15.0 only affected the exe, so 1.0.14.0 mods are still up to date
+                if (isUpToDate || isSpecialCase)
                 {
-                    labelVersionWarning.ForeColor = Color.Yellow; labelVersionWarning.BackColor = Color.Chocolate; labelVersionWarning.Text = "!";
+                    labelVersionWarning.ForeColor = Color.MediumSeaGreen; labelVersionWarning.BackColor = Color.Gainsboro; labelVersionWarning.Text = "✔";
                 }
                 else
                 {
-                    labelVersionWarning.ForeColor = Color.MediumSeaGreen; labelVersionWarning.BackColor = Color.Gainsboro; labelVersionWarning.Text = "✔";
+                    labelVersionWarning.ForeColor = Color.Yellow; labelVersionWarning.BackColor = Color.Chocolate; labelVersionWarning.Text = "!";
                 }
 
 

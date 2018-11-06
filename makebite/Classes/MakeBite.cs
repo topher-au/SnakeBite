@@ -11,8 +11,8 @@ namespace makebite
 {
     public static class Build
     {
-        public static string SnakeBiteVersionStr =  "0.9.0.4";
-        public static string MGSVVersionStr =       "1.0.14.0";
+        public static string SnakeBiteVersionStr =  "0.9.0.6";
+        public static string MGSVVersionStr =       "1.0.15.0";
 
         static string ExternalDirName = "GameDir";
         internal static List<string> ignoreFileList = new List<string>(new string[] {

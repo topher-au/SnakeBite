@@ -20,8 +20,8 @@ namespace SnakeBite
         internal static string t7Path { get { return Properties.Settings.Default.InstallPath + "\\master\\a_texture7.dat"; } }
         internal static string c7Path { get { return Properties.Settings.Default.InstallPath + "\\master\\a_chunk7.dat"; } }
         internal static string GameDir { get { return Properties.Settings.Default.InstallPath; } }
-        internal static string vanillaDatHash = "BB4EF4ACA3E717CC4A987723C7AEC8A0B6905D4A97F8A9750B6CC2B97B6BE218"; //expected original hash for 1.0.14.0
-        internal static Version IntendedGameVersion = new Version(1, 0, 14, 0);
+        internal static string vanillaDatHash = "41317C4D473D9A3DB6C1169E5ACDD358B6905D4A97F8A9750B6CC2B97B6BE218"; //expected original hash for 1.0.15.0
+        internal static Version IntendedGameVersion = new Version(1, 0, 15, 0);
 
         // SYNC makebite
         static string ExternalDirName = "GameDir";
