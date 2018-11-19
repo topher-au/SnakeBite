@@ -245,7 +245,8 @@ namespace SnakeBite.Forms
             DialogResult confirmInstall = MessageBox.Show(String.Format("The following mods will be installed:\n" + modsToInstall), "SnakeBite", MessageBoxButtons.OKCancel);
             if (confirmInstall == DialogResult.OK)
             {
-                ProgressWindow.Show("Installing Mod(s)", String.Format("Installing...\n\nNote:\nThe install time depends greatly on\nthe mod's contents, number of mods being installed\nand the mods that are already installed."), new Action((MethodInvoker)delegate { ModManager.InstallMod(modFiles); }));
+                string progressText = String.Format("Installing...\n\nNote:\nThe install time depends greatly on\nthe mod's contents, number of mods being installed\nand the mods that are already installed.");
+                ProgressWindow.Show("Installing Mod(s)", progressText, new Action((MethodInvoker)delegate { ModManager.InstallMod(modFiles); }));
                 this.Close(); // the form closes upon installation. If the install is cancelled, the form remains open.
             }
         }

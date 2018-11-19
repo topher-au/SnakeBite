@@ -13,6 +13,7 @@
             if (disposing && (components != null)) {
                 components.Dispose();
             }
+           //DEBUGNOW timer.Dispose();
             base.Dispose(disposing);
         }
 

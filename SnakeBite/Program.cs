@@ -30,7 +30,7 @@ namespace SnakeBite
 
             Debug.LogLine(String.Format(
                 "SnakeBite {0}\n" +
-                "{1}\n" + 
+                "{1}\n" +
                 "-------------------------",
                 ModManager.GetSBVersion(),
                 Environment.OSVersion.VersionString));
@@ -60,7 +60,7 @@ namespace SnakeBite
                 if (wizResult == DialogResult.Cancel) return;
                 if (wizResult == DialogResult.OK) showSetupWizard = false;
             }
-            
+
 
             string InitLog = String.Format(
                 "MGS Install Folder: {0}\n" +
@@ -71,11 +71,7 @@ namespace SnakeBite
 
             Debug.LogLine(InitLog, Debug.LogLevel.Basic);
 
-
-
             // Process Command Line args
-            // TODO: test all command line args
-
             // Uninstall SnakeBite
             if (args.Length == 1)
             {
@@ -94,7 +90,8 @@ namespace SnakeBite
             bool closeApp = false;              // Close app after?
             bool install = false;               // Install = true, uninstall = false
             bool resetDatHash = false;          // Rehash dat file
-            bool skipCleanup = true;            // Skip CleanupDatabase
+            bool skipConflictChecks = false;
+            bool skipCleanup = false;            // Skip CleanupDatabase
             string installFile = String.Empty;
             if (args.Length > 0)
             {
@@ -117,8 +114,13 @@ namespace SnakeBite
                         case "-x":
                             closeApp = true;
                             break;
+
                         case "-s":
                             skipCleanup = true;
+                            break;
+
+                        case "-c":
+                            skipConflictChecks = true;
                             break;
 
                         default:
@@ -128,7 +130,6 @@ namespace SnakeBite
                     }
                 }
             }
-
             // Update dat hash in settings
             if (resetDatHash)
             {
@@ -154,8 +155,7 @@ namespace SnakeBite
                 
                 SetupWizard.SetupWizard setupWizard = new SetupWizard.SetupWizard();
                 setupWizard.ShowDialog();
-            }
-            else if (!BackupManager.c7t7Exist()) // chunk7 and/or texture7 are missing, despite the dathash validating.
+            } else if (!BackupManager.c7t7Exist()) // chunk7 and/or texture7 are missing, despite the dathash validating.
             {
                 MessageBox.Show("To continue, SnakeBite must build a_chunk7.dat and a_texture7.dat from your current archives. The setup wizard will now run.", "Setup required", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 SetupWizard.SetupWizard setupWizard = new SetupWizard.SetupWizard();
@@ -170,15 +170,12 @@ namespace SnakeBite
                 ModForm.Hide();
                 if (install)
                 {
-                    // install
-                    ModForm.ProcessInstallMod(installFile, skipCleanup); // install mod
-                }
-                else
+                    ModForm.ProcessInstallMod(installFile, skipConflictChecks, skipCleanup); // install mod
+                } else
                 {
                     // uninstall
                     var mods = manager.GetInstalledMods();
                     ModEntry mod = mods.FirstOrDefault(entry => entry.Name == installFile); // select mod
-
                     if (mod != null)
                         ModForm.ProcessUninstallMod(mod); // uninstall mod
                 }
@@ -186,8 +183,6 @@ namespace SnakeBite
 
                 if (closeApp) return;
             }
-
-            //Application.Run(new formMain());
             Application.Run(new formLauncher());
         }
     }

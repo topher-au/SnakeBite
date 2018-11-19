@@ -10,45 +10,80 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SnakeBite {
-    public partial class formLog : Form {
+namespace SnakeBite
+{
+    public partial class formLog : Form
+    {
         public StringBuilder logStringBuilder = new StringBuilder();
-        private System.Threading.Timer timer;
+        //DEBUGNOWprivate System.Threading.Timer timer;
         private volatile bool stopTimer = false;
 
-        public formLog() {
+        private Object thisLock = new Object();
+
+        public formLog()
+        {
             InitializeComponent();
 
-            logStringBuilder.Capacity = 100 * 4000;
+            logStringBuilder.Capacity = 200 * 6000;
 
             Console.SetOut(new MultiTextWriter(new LogTextBoxWriter(this), Console.Out));
 
-            timer = new System.Threading.Timer(UpdateProperty, null, 400, 400);
+            //timer = new System.Threading.Timer(UpdateProperty, null, 400, 400);
+            /* //DEBUGNOW
+            this.SetStyle(
+              ControlStyles.AllPaintingInWmPaint |
+              ControlStyles.UserPaint |
+              ControlStyles.DoubleBuffer, true);
+              */
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e) {
+        private void textBox1_TextChanged(object sender, EventArgs e)
+        {
             textBox1.SelectionStart = textBox1.Text.Length;
             textBox1.ScrollToCaret();
         }
 
         delegate void WriteTextBox();
-        private void UpdateProperty(object state) {
-            if (!stopTimer) {
-                if (textBox1.InvokeRequired) {
+        private void UpdateProperty(object state)
+        {
+            if (!stopTimer)
+            {
+                if (textBox1.InvokeRequired)
+                {
                     textBox1.Invoke((MethodInvoker)delegate { UpdateProperty(state); });
-                } else {
+                } else
+                {
+                    lock (thisLock)
+                    {
+                        textBox1.Text = logStringBuilder.ToString();
+                    }
+                }
+            }
+        }
+
+        public void UpdateLog()
+        {
+            if (textBox1.InvokeRequired)
+            {
+                textBox1.Invoke((MethodInvoker)delegate { UpdateLog(); });
+            } else
+            {
+                lock (thisLock)
+                {
                     textBox1.Text = logStringBuilder.ToString();
                 }
             }
         }
 
-        private void formLog_FormClosing(object sender, FormClosingEventArgs e) {
+        private void formLog_FormClosing(object sender, FormClosingEventArgs e)
+        {
             stopTimer = true;
-            timer.Change(Timeout.Infinite, Timeout.Infinite);
+          //  timer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
-        private void formLog_FormClosed(object sender, FormClosedEventArgs e) {
-            timer.Dispose();
+        private void formLog_FormClosed(object sender, FormClosedEventArgs e)
+        {
+          //DEBUGNOW  timer.Dispose();
         }
     }
 }

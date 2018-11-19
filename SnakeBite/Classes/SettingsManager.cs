@@ -168,6 +168,7 @@ namespace SnakeBite
         }
         public bool IsUpToDate(Version ModVersion)
         {
+            return ModManager.ExpectedDatHash.Equals(Tools.GetMd5Hash(ModManager.ZeroPath) + Tools.GetMd5Hash(ModManager.OnePath));
             bool isUpToDate = ModManager.GetMGSVersion() == ModVersion;
             bool isSpecialCase = ModVersion == new Version(0, 0, 0, 0) || ModVersion == new Version(1, 0, 14, 0); // 1.0.15.0 only affected the exe, so 1.0.14.0 mods are still up to date
             return isUpToDate || isSpecialCase;
@@ -281,12 +282,15 @@ namespace SnakeBite
         [XmlAttribute("DatHash")]
         public string DatHash { get; set; }
 
+        //Entries of files in mod qar (ex 00,01.dat)
         [XmlArray("QarEntries")]
         public List<ModQarEntry> GameQarEntries { get; set; } = new List<ModQarEntry>();
 
+        //Entries of files inside fpks
         [XmlArray("FpkEntries")]
         public List<ModFpkEntry> GameFpkEntries { get; set; } = new List<ModFpkEntry>();
 
+        //Entries of files in GameDir (ex MGS_TPP)
         [XmlArray("FileEntries")]
         public List<ModFileEntry> GameFileEntries { get; set; } = new List<ModFileEntry>();
     }
@@ -392,6 +396,7 @@ namespace SnakeBite
         [XmlAttribute("Compressed")]
         public bool Compressed { get; set; }
 
+        //Added by makebite, currently unused
         [XmlAttribute("ContentHash")]
         public string ContentHash { get; set; }
 
@@ -411,9 +416,11 @@ namespace SnakeBite
         [XmlAttribute("FilePath")]
         public string FilePath { get; set; }
 
+        //Added by makebite, currently unused
         [XmlAttribute("ContentHash")]
         public string ContentHash { get; set; }
 
+        //TODO: currently inaccurate
         [XmlAttribute("SourceType")]
         public FileSource SourceType { get; set; }
 

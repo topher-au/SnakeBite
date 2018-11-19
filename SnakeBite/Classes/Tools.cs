@@ -11,16 +11,32 @@ namespace SnakeBite
 {
     public static class Tools
     {
+        internal static List<string> ignoreFileList = new List<string>(new string[] {
+            "mgsvtpp.exe",
+            "mgsvmgo.exe",
+            "steam_api64.dll",
+            "steam_appid.txt",
+            "version_info.txt",
+            "chunk0.dat",
+            "chunk1.dat",
+            "chunk2.dat",
+            "chunk3.dat",
+            "chunk0.dat",
+            "texture0.dat",
+            "texture1.dat",
+            "texture2.dat",
+            "texture3.dat",
+            "texture4.dat",
+            "00.dat",
+            "01.dat",
+            "snakebite.xml"
+        });
+
         private static readonly List<string> DatFileExtensions = new List<string>
         {
-            "1.ftexs",
-            "1.nav2",
-            "2.ftexs",
-            "3.ftexs",
-            "4.ftexs",
-            "5.ftexs",
-            "6.ftexs",
-            "ag.evf",
+            "ftexs",
+            "nav2",
+            "evf",
             "aia",
             "aib",
             "aibc",
@@ -32,14 +48,13 @@ namespace SnakeBite
             "atsh",
             "bnd",
             "bnk",
-            "cc.evf",
             "clo",
             "csnav",
             "dat",
             "des",
             "dnav",
             "dnav2",
-            "eng.lng",
+            "lng",
             "ese",
             "evb",
             "evf",
@@ -65,7 +80,6 @@ namespace SnakeBite
             "fpkd",
             "fpkl",
             "frdv",
-            "fre.lng",
             "frig",
             "frt",
             "fsd",
@@ -75,19 +89,15 @@ namespace SnakeBite
             "fstb",
             "ftex",
             "fv2",
-            "fx.evf",
             "fxp",
             "gani",
             "geom",
-            "ger.lng",
             "gpfp",
             "grxla",
             "grxoc",
             "gskl",
             "htre",
             "info",
-            "ita.lng",
-            "jpn.lng",
             "json",
             "lad",
             "ladb",
@@ -112,23 +122,19 @@ namespace SnakeBite
             "ph",
             "phep",
             "phsd",
-            "por.lng",
             "qar",
             "rbs",
             "rdb",
             "rdf",
             "rnav",
-            "rus.lng",
             "sad",
             "sand",
             "sani",
             "sbp",
-            "sd.evf",
             "sdf",
             "sim",
             "simep",
             "snav",
-            "spa.lng",
             "spch",
             "sub",
             "subp",
@@ -150,7 +156,7 @@ namespace SnakeBite
             "vo.evf",
             "vpc",
             "wem",
-            "xml"
+            //"xml"
         };
 
         public static ModEntry ReadMetaData(string ModFile)
@@ -207,21 +213,20 @@ namespace SnakeBite
 
         internal static ulong NameToHash(string FileName)
         {
-            // regenerate hash for file
             string filePath = Tools.ToQarPath(FileName);
             ulong hash = Hashing.HashFileNameWithExtension(filePath);
+            // find hashed names, which will be in root
             if (!filePath.Substring(1).Contains("/")) {
                 // try to parse hash from filename
                 string fileName = filePath.TrimStart('/');
                 string fileNoExt = fileName.Substring(0, fileName.IndexOf("."));
                 string fileExt = fileName.Substring(fileName.IndexOf(".") + 1);
-
                 //tex NMC aparently cant use HashFileNameWithExtension with undictionaried/files with hash names
-                // however BUG? because hexnumber is only 0-9, a-f thus tryParseHash will fail and return 0 for init.lua and foxpatch.dat
-                // see also duplicate function in makebite/classes/tools NameToHash
+                // tryParseHash will fail for non hashed files in root (currently only init.lua and foxpatch.dat)
                 bool tryParseHash = ulong.TryParse(fileNoExt, System.Globalization.NumberStyles.HexNumber, System.Globalization.CultureInfo.CurrentCulture, out hash);
                 if (tryParseHash) // successfully parsed filename
                 {
+                    //TODO: create Hashing.HashFileExtension
                     ulong ExtHash = Hashing.HashFileName(fileExt, false) & 0x1FFF;
                     hash = (ExtHash << 51) | hash;
                 } else {//tex attempted fix for above
@@ -244,7 +249,7 @@ namespace SnakeBite
 
         internal static bool IsValidFile(string FilePath)
         {
-            string ext = FilePath.Substring(FilePath.IndexOf("."));
+            string ext = FilePath.Substring(FilePath.IndexOf(".") + 1);
             if (DatFileExtensions.Contains(ext)) return true;
             return false;
         }

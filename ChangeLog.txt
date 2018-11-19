@@ -1,4 +1,15 @@
 Changelog
+0.9.1.0
+Unified qar flags to static in GzsLib.
+00.dat work folder changed from _working1 to _working0, likewise 01.dat from _working2 to _working1.
+InstallMod and UninstallMod broken into smaller functions.
+GameData - now priority ordered by qar, indexed by hash, includes chunk5_mgo0/cunk6_gz0. Knocks about 30s off IH install time on my machine.
+Re enabled commented out log window, added lock on write fixed prior issue and after removing logspam (coupled with other snakebite optimisations) I'm happy enough that the feedback it provides is better than the performance it takes.
+Removed some more remnants of sbupdater from project.
+Command line installs all .mgsvs if install path arg is a directory.
+Added -c commandline to skip collision checks
+More user feedback on longer setupwizard processes.
+
 0.9.0.0
 Makebite/Snakebite:
 Aesthetic revamp. New launcher wallpaper and grey/silver window forms. New menubar icon for SnakeBite.

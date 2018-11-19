@@ -130,7 +130,7 @@
         private System.Windows.Forms.Panel panelContent;
         private System.Windows.Forms.Label labelSelectDir;
         private System.Windows.Forms.Label labelHeader;
-        private System.Windows.Forms.Label labelWorking;
+        public System.Windows.Forms.Label labelWorking;
         private System.Windows.Forms.PictureBox pictureWorkingSpiral;
         public System.Windows.Forms.Panel panelProcessing;
         private System.Windows.Forms.Label labelNoInstallNote;
