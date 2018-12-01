@@ -450,6 +450,20 @@ namespace SnakeBite.GzsTool
             }
         }
 
+        public static void PromoteQarArchive(string sourcePath, string destinationPath)
+        {
+            if (File.Exists(sourcePath))
+            {
+                Debug.LogLine(String.Format("[GzsLib] Promoting {0} to {1}", Path.GetFileName(sourcePath), Path.GetFileName(destinationPath)));
+                File.Delete(destinationPath);
+                File.Move(sourcePath, destinationPath);
+            }
+            else
+            {
+                Debug.LogLine(String.Format("[GzsLib] {0} not found", Path.GetFileName(sourcePath), Path.GetFileName(destinationPath)));
+            }
+        }
+
         //SYNC: makebite
         //tex fpkds seem to require a specific order to their files.
         //Reproduction: Extract an unmodified fpkd (such as chunk0_dat\Assets\tpp\pack\mission2\init\init.fpkd, as it's loaded automatically and early) DEBUGNOW redo this test to confirm issue again

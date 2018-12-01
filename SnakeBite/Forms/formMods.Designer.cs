@@ -33,8 +33,8 @@
             this.buttonUninstall = new System.Windows.Forms.Button();
             this.labelInstalledMods = new System.Windows.Forms.Label();
             this.checkBoxMarkAll = new System.Windows.Forms.CheckBox();
-            this.buttonOpenLogs = new System.Windows.Forms.Button();
             this.panelModDescription = new System.Windows.Forms.Panel();
+            this.labelVersionWarning = new System.Windows.Forms.Label();
             this.labelModWebsite = new System.Windows.Forms.LinkLabel();
             this.textDescription = new System.Windows.Forms.TextBox();
             this.labelModAuthor = new System.Windows.Forms.Label();
@@ -44,24 +44,30 @@
             this.labelNoMod = new System.Windows.Forms.Label();
             this.labelNoModInstruction = new System.Windows.Forms.Label();
             this.buttonLaunchGame = new System.Windows.Forms.Button();
-            this.linkBrowseMods = new System.Windows.Forms.LinkLabel();
-            this.buttonOpenGameDir = new System.Windows.Forms.Button();
-            this.labelVersionWarning = new System.Windows.Forms.Label();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.helpToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.broseSnakeBiteModsToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.installMGSVFilesToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.openDebugLogsToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
+            this.exitToolStripMenuItem = new System.Windows.Forms.ToolStripSeparator();
+            this.exitToolStripMenuItem1 = new System.Windows.Forms.ToolStripMenuItem();
             this.panelModDescription.SuspendLayout();
             this.groupBoxNoModsNotice.SuspendLayout();
+            this.menuStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // listInstalledMods
             // 
             this.listInstalledMods.BackColor = System.Drawing.Color.DarkGray;
-            this.listInstalledMods.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.listInstalledMods.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.listInstalledMods.FormattingEnabled = true;
             this.listInstalledMods.IntegralHeight = false;
-            this.listInstalledMods.Location = new System.Drawing.Point(8, 39);
+            this.listInstalledMods.Location = new System.Drawing.Point(8, 57);
             this.listInstalledMods.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.listInstalledMods.Name = "listInstalledMods";
             this.listInstalledMods.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.listInstalledMods.Size = new System.Drawing.Size(187, 355);
+            this.listInstalledMods.Size = new System.Drawing.Size(187, 394);
             this.listInstalledMods.TabIndex = 3;
             this.listInstalledMods.Tag = "";
             this.listInstalledMods.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listInstalledMods_ItemCheck);
@@ -71,7 +77,7 @@
             // 
             this.buttonInstall.BackColor = System.Drawing.Color.Transparent;
             this.buttonInstall.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.buttonInstall.Location = new System.Drawing.Point(8, 401);
+            this.buttonInstall.Location = new System.Drawing.Point(8, 455);
             this.buttonInstall.Name = "buttonInstall";
             this.buttonInstall.Size = new System.Drawing.Size(187, 23);
             this.buttonInstall.TabIndex = 4;
@@ -83,7 +89,7 @@
             // 
             this.buttonUninstall.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonUninstall.Enabled = false;
-            this.buttonUninstall.Location = new System.Drawing.Point(8, 428);
+            this.buttonUninstall.Location = new System.Drawing.Point(8, 481);
             this.buttonUninstall.Name = "buttonUninstall";
             this.buttonUninstall.Size = new System.Drawing.Size(187, 23);
             this.buttonUninstall.TabIndex = 5;
@@ -94,9 +100,8 @@
             // labelInstalledMods
             // 
             this.labelInstalledMods.BackColor = System.Drawing.Color.DarkGray;
-            this.labelInstalledMods.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
             this.labelInstalledMods.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.labelInstalledMods.Location = new System.Drawing.Point(8, 13);
+            this.labelInstalledMods.Location = new System.Drawing.Point(8, 31);
             this.labelInstalledMods.Name = "labelInstalledMods";
             this.labelInstalledMods.RightToLeft = System.Windows.Forms.RightToLeft.No;
             this.labelInstalledMods.Size = new System.Drawing.Size(187, 22);
@@ -109,23 +114,12 @@
             this.checkBoxMarkAll.AutoSize = true;
             this.checkBoxMarkAll.Checked = true;
             this.checkBoxMarkAll.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxMarkAll.Location = new System.Drawing.Point(11, 17);
+            this.checkBoxMarkAll.Location = new System.Drawing.Point(11, 35);
             this.checkBoxMarkAll.Name = "checkBoxMarkAll";
             this.checkBoxMarkAll.Size = new System.Drawing.Size(15, 14);
             this.checkBoxMarkAll.TabIndex = 7;
             this.checkBoxMarkAll.UseVisualStyleBackColor = true;
             this.checkBoxMarkAll.Click += new System.EventHandler(this.checkBoxMarkAll_Click);
-            // 
-            // buttonOpenLogs
-            // 
-            this.buttonOpenLogs.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.buttonOpenLogs.Location = new System.Drawing.Point(8, 455);
-            this.buttonOpenLogs.Name = "buttonOpenLogs";
-            this.buttonOpenLogs.Size = new System.Drawing.Size(202, 23);
-            this.buttonOpenLogs.TabIndex = 9;
-            this.buttonOpenLogs.Text = "Open Debug Logs";
-            this.buttonOpenLogs.UseVisualStyleBackColor = true;
-            this.buttonOpenLogs.Click += new System.EventHandler(this.buttonOpenLogs_Click);
             // 
             // panelModDescription
             // 
@@ -136,10 +130,25 @@
             this.panelModDescription.Controls.Add(this.textDescription);
             this.panelModDescription.Controls.Add(this.labelModAuthor);
             this.panelModDescription.Controls.Add(this.labelModName);
-            this.panelModDescription.Location = new System.Drawing.Point(201, 13);
+            this.panelModDescription.Location = new System.Drawing.Point(201, 31);
             this.panelModDescription.Name = "panelModDescription";
-            this.panelModDescription.Size = new System.Drawing.Size(371, 434);
+            this.panelModDescription.Size = new System.Drawing.Size(371, 416);
             this.panelModDescription.TabIndex = 10;
+            // 
+            // labelVersionWarning
+            // 
+            this.labelVersionWarning.BackColor = System.Drawing.Color.Silver;
+            this.labelVersionWarning.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelVersionWarning.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.labelVersionWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelVersionWarning.ForeColor = System.Drawing.Color.MediumSeaGreen;
+            this.labelVersionWarning.Location = new System.Drawing.Point(323, 404);
+            this.labelVersionWarning.Name = "labelVersionWarning";
+            this.labelVersionWarning.Size = new System.Drawing.Size(42, 25);
+            this.labelVersionWarning.TabIndex = 15;
+            this.labelVersionWarning.Text = "✔";
+            this.labelVersionWarning.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelVersionWarning.Click += new System.EventHandler(this.labelVersionWarning_Click);
             // 
             // labelModWebsite
             // 
@@ -195,9 +204,9 @@
             this.groupBoxNoModsNotice.Controls.Add(this.linkLabelSnakeBiteModsList);
             this.groupBoxNoModsNotice.Controls.Add(this.labelNoMod);
             this.groupBoxNoModsNotice.Controls.Add(this.labelNoModInstruction);
-            this.groupBoxNoModsNotice.Location = new System.Drawing.Point(201, 6);
+            this.groupBoxNoModsNotice.Location = new System.Drawing.Point(201, 27);
             this.groupBoxNoModsNotice.Name = "groupBoxNoModsNotice";
-            this.groupBoxNoModsNotice.Size = new System.Drawing.Size(371, 445);
+            this.groupBoxNoModsNotice.Size = new System.Drawing.Size(371, 424);
             this.groupBoxNoModsNotice.TabIndex = 1;
             this.groupBoxNoModsNotice.TabStop = false;
             this.groupBoxNoModsNotice.Visible = false;
@@ -248,54 +257,72 @@
             this.buttonLaunchGame.UseVisualStyleBackColor = true;
             this.buttonLaunchGame.Click += new System.EventHandler(this.buttonLaunchGame_Click);
             // 
-            // linkBrowseMods
+            // menuStrip1
             // 
-            this.linkBrowseMods.BackColor = System.Drawing.Color.Silver;
-            this.linkBrowseMods.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
-            this.linkBrowseMods.Location = new System.Drawing.Point(248, 483);
-            this.linkBrowseMods.Name = "linkBrowseMods";
-            this.linkBrowseMods.Size = new System.Drawing.Size(139, 19);
-            this.linkBrowseMods.TabIndex = 12;
-            this.linkBrowseMods.TabStop = true;
-            this.linkBrowseMods.Text = "Browse SnakeBite Mods";
-            this.linkBrowseMods.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.linkBrowseMods.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabelSnakeBiteModsList_LinkClicked);
+            this.menuStrip1.BackColor = System.Drawing.Color.DarkGray;
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.fileToolStripMenuItem,
+            this.helpToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(584, 24);
+            this.menuStrip1.TabIndex = 14;
+            this.menuStrip1.Text = "menuStrip1";
             // 
-            // buttonOpenGameDir
+            // fileToolStripMenuItem
             // 
-            this.buttonOpenGameDir.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.buttonOpenGameDir.Location = new System.Drawing.Point(8, 481);
-            this.buttonOpenGameDir.Name = "buttonOpenGameDir";
-            this.buttonOpenGameDir.Size = new System.Drawing.Size(202, 23);
-            this.buttonOpenGameDir.TabIndex = 13;
-            this.buttonOpenGameDir.Text = "Open Game Directory";
-            this.buttonOpenGameDir.UseVisualStyleBackColor = true;
-            this.buttonOpenGameDir.Click += new System.EventHandler(this.buttonOpenGameDir_Click);
+            this.fileToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.installMGSVFilesToolStripMenuItem,
+            this.openDebugLogsToolStripMenuItem1,
+            this.exitToolStripMenuItem,
+            this.exitToolStripMenuItem1});
+            this.fileToolStripMenuItem.Name = "fileToolStripMenuItem";
+            this.fileToolStripMenuItem.Size = new System.Drawing.Size(37, 20);
+            this.fileToolStripMenuItem.Text = "File";
             // 
-            // labelVersionWarning
+            // helpToolStripMenuItem
             // 
-            this.labelVersionWarning.BackColor = System.Drawing.Color.Silver;
-            this.labelVersionWarning.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelVersionWarning.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.labelVersionWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelVersionWarning.ForeColor = System.Drawing.Color.MediumSeaGreen;
-            this.labelVersionWarning.Location = new System.Drawing.Point(323, 404);
-            this.labelVersionWarning.Name = "labelVersionWarning";
-            this.labelVersionWarning.Size = new System.Drawing.Size(42, 25);
-            this.labelVersionWarning.TabIndex = 15;
-            this.labelVersionWarning.Text = "✔";
-            this.labelVersionWarning.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            this.labelVersionWarning.Click += new System.EventHandler(this.labelVersionWarning_Click);
+            this.helpToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.broseSnakeBiteModsToolStripMenuItem});
+            this.helpToolStripMenuItem.Name = "helpToolStripMenuItem";
+            this.helpToolStripMenuItem.Size = new System.Drawing.Size(44, 20);
+            this.helpToolStripMenuItem.Text = "Help";
+            // 
+            // broseSnakeBiteModsToolStripMenuItem
+            // 
+            this.broseSnakeBiteModsToolStripMenuItem.Name = "broseSnakeBiteModsToolStripMenuItem";
+            this.broseSnakeBiteModsToolStripMenuItem.Size = new System.Drawing.Size(208, 22);
+            this.broseSnakeBiteModsToolStripMenuItem.Text = "Browse SnakeBite Mods...";
+            // 
+            // installMGSVFilesToolStripMenuItem
+            // 
+            this.installMGSVFilesToolStripMenuItem.Name = "installMGSVFilesToolStripMenuItem";
+            this.installMGSVFilesToolStripMenuItem.Size = new System.Drawing.Size(197, 22);
+            this.installMGSVFilesToolStripMenuItem.Text = "Open Game Directory...";
+            // 
+            // openDebugLogsToolStripMenuItem1
+            // 
+            this.openDebugLogsToolStripMenuItem1.Name = "openDebugLogsToolStripMenuItem1";
+            this.openDebugLogsToolStripMenuItem1.Size = new System.Drawing.Size(197, 22);
+            this.openDebugLogsToolStripMenuItem1.Text = "Open Debug Logs...";
+            // 
+            // exitToolStripMenuItem
+            // 
+            this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
+            this.exitToolStripMenuItem.Size = new System.Drawing.Size(194, 6);
+            // 
+            // exitToolStripMenuItem1
+            // 
+            this.exitToolStripMenuItem1.Name = "exitToolStripMenuItem1";
+            this.exitToolStripMenuItem1.Size = new System.Drawing.Size(197, 22);
+            this.exitToolStripMenuItem1.Text = "Exit";
             // 
             // formMods
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.DimGray;
             this.ClientSize = new System.Drawing.Size(584, 510);
-            this.Controls.Add(this.buttonOpenGameDir);
-            this.Controls.Add(this.linkBrowseMods);
             this.Controls.Add(this.buttonLaunchGame);
-            this.Controls.Add(this.buttonOpenLogs);
             this.Controls.Add(this.groupBoxNoModsNotice);
             this.Controls.Add(this.checkBoxMarkAll);
             this.Controls.Add(this.labelInstalledMods);
@@ -303,8 +330,10 @@
             this.Controls.Add(this.buttonInstall);
             this.Controls.Add(this.listInstalledMods);
             this.Controls.Add(this.panelModDescription);
+            this.Controls.Add(this.menuStrip1);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.Fixed3D;
+            this.MainMenuStrip = this.menuStrip1;
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "formMods";
@@ -315,6 +344,8 @@
             this.panelModDescription.ResumeLayout(false);
             this.panelModDescription.PerformLayout();
             this.groupBoxNoModsNotice.ResumeLayout(false);
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -326,7 +357,6 @@
         private System.Windows.Forms.Button buttonUninstall;
         private System.Windows.Forms.Label labelInstalledMods;
         private System.Windows.Forms.CheckBox checkBoxMarkAll;
-        private System.Windows.Forms.Button buttonOpenLogs;
         private System.Windows.Forms.Panel panelModDescription;
         private System.Windows.Forms.Label labelNoModInstruction;
         private System.Windows.Forms.GroupBox groupBoxNoModsNotice;
@@ -336,9 +366,15 @@
         private System.Windows.Forms.TextBox textDescription;
         private System.Windows.Forms.Label labelModAuthor;
         private System.Windows.Forms.Button buttonLaunchGame;
-        private System.Windows.Forms.LinkLabel linkBrowseMods;
         private System.Windows.Forms.LinkLabel labelModWebsite;
-        private System.Windows.Forms.Button buttonOpenGameDir;
         private System.Windows.Forms.Label labelVersionWarning;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem fileToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem installMGSVFilesToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem openDebugLogsToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripSeparator exitToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem exitToolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem helpToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem broseSnakeBiteModsToolStripMenuItem;
     }
 }

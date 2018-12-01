@@ -278,8 +278,7 @@ namespace SnakeBite
         }
 
         public static bool CheckConflicts(string ModFile)
-        { //Morbid: Conflict check has been reworked as of 0.9.0. CheckConflicts is now split into PreinstallManager.FilterModValidity and PreinstallManager.FilterModConflicts.
-          //        CheckConflicts is only used for command-line installation.
+        {
             ModEntry metaData = Tools.ReadMetaData(ModFile);
             if (metaData == null) return false;
             // check version conflicts
@@ -317,7 +316,7 @@ namespace SnakeBite
             // Check MGS version compatibility
             if (!manager.IsUpToDate(modMGSVersion))
             {
-                if (MGSVersion > modMGSVersion && modMGSVersion > new Version(0, 0, 0, 0))
+                if (MGSVersion > modMGSVersion)
                 {
                     var contInstall = MessageBox.Show(String.Format("{0} appears to be for an older version of MGSV. It is recommended that you check for an updated version before installing.\n\nContinue installation?", metaData.Name), "Game version mismatch", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                     if (contInstall == DialogResult.No) return false;

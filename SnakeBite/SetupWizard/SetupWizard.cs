@@ -77,7 +77,7 @@ namespace SnakeBite.SetupWizard
                 case 2:
                     if (BackupManager.BackupExists())
                     {
-                        var overWrite = MessageBox.Show("Some backup data already exists. Continuing will overwrite any existing backups.\n\nIf you have modified the game files seperately, you should restore them or skip this step.\n\nIf MGSV has just been updated, you should overwrite.\n\nAre you sure?", "SnakeBite", MessageBoxButtons.YesNo, MessageBoxIcon.Error);
+                        var overWrite = MessageBox.Show("Some backup data already exists. Continuing will overwrite any existing backups.\n\nIf you have modified the game files seperately, you should restore them or skip this step.\n\nIf MGSV has just been updated, you should overwrite.\n\nAre you sure?", "SnakeBite", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
                         if (overWrite == DialogResult.No) return;
                     }
 

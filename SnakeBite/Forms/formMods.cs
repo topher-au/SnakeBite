@@ -267,9 +267,9 @@ namespace SnakeBite
                 ModEntry selectedMod = mods[listInstalledMods.SelectedIndex];
                 var currentMGSVersion = ModManager.GetMGSVersion();
                 var modMGSVersion = selectedMod.MGSVersion.AsVersion();
-                if (!manager.IsUpToDate(modMGSVersion))
+                if (!manager.IsUpToDate(modMGSVersion)) // checks against intended gameversion
                 {
-                    if (currentMGSVersion > modMGSVersion && modMGSVersion > new Version(0, 0, 0, 0))
+                    if (currentMGSVersion > modMGSVersion) // checks against mgsvtpp.exe productversion
                     {
                         MessageBox.Show(String.Format("{0} appears to be for MGSV Version {1}, and may not be compatible with {2}.\n\nIt is recommended that you check for an updated version.", selectedMod.Name, modMGSVersion,currentMGSVersion), "Game version mismatch", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     }

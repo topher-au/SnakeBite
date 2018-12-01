@@ -168,7 +168,6 @@ namespace SnakeBite
         }
         public bool IsUpToDate(Version ModVersion)
         {
-            return ModManager.ExpectedDatHash.Equals(Tools.GetMd5Hash(ModManager.ZeroPath) + Tools.GetMd5Hash(ModManager.OnePath));
             bool isUpToDate = ModManager.GetMGSVersion() == ModVersion;
             bool isSpecialCase = ModVersion == new Version(0, 0, 0, 0) || ModVersion == new Version(1, 0, 14, 0); // 1.0.15.0 only affected the exe, so 1.0.14.0 mods are still up to date
             return isUpToDate || isSpecialCase;
