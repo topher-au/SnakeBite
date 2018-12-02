@@ -12,6 +12,7 @@ namespace SnakeBite.SetupWizard
         private CreateBackupPage createBackupPage = new CreateBackupPage();
         private MergeDatPage mergeDatPage = new MergeDatPage();
         private int displayPage = 0;
+        private bool setupSuccessful = true;
         private SettingsManager manager = new SettingsManager(ModManager.GameDir);
 
         public SetupWizard()
@@ -115,11 +116,12 @@ namespace SnakeBite.SetupWizard
                     buttonBack.Visible = false;
                     Tag = "noclose";
                     mergeDatPage.panelProcessing.Visible = true;
-
                     BackgroundWorker mergeProcessor = new BackgroundWorker();
+                    mergeProcessor.WorkerSupportsCancellation = true;
                     mergeProcessor.DoWork += new DoWorkEventHandler(ModManager.backgroundWorker_MergeAndCleanup);
                     mergeProcessor.WorkerReportsProgress = true;
                     mergeProcessor.ProgressChanged += new ProgressChangedEventHandler(mergeProcessor_ProgressChanged);
+                    mergeProcessor.RunWorkerCompleted += new RunWorkerCompletedEventHandler(mergeProcessor_Completed);
                     mergeProcessor.RunWorkerAsync();
 
                     while (mergeProcessor.IsBusy)
@@ -128,17 +130,26 @@ namespace SnakeBite.SetupWizard
                         Thread.Sleep(40);
                     }
 
-                    manager.UpdateDatHash();
-                    Debug.LogLine("[Setup Wizard] Setup Complete. Snakebite is configured and ready to use.");
-                    mergeDatPage.panelProcessing.Visible = false;
-                    mergeDatPage.labelWelcome.Text = "Setup complete";
-                    mergeDatPage.labelWelcomeText.Text = "SnakeBite is configured and ready to use.";
+                    if (setupSuccessful)
+                    {
+                        Debug.LogLine("[Setup Wizard] Setup Complete. Snakebite is configured and ready to use.");
+                        mergeDatPage.panelProcessing.Visible = false;
+                        mergeDatPage.labelWelcome.Text = "Setup complete";
+                        mergeDatPage.labelWelcomeText.Text = "SnakeBite is configured and ready to use.";
 
-                    buttonBack.Visible = false;
-                    buttonNext.Text = "Do&ne";
-                    buttonNext.Enabled = true;
+                        buttonNext.Text = "Do&ne";
+                        buttonNext.Enabled = true;
 
-                    displayPage = 4;
+                        displayPage = 4;
+                    }
+                    else
+                    {
+                        Debug.LogLine("[Setup Wizard] Setup Cancelled.");
+                        Tag = null;
+                        GoToMergeDatPage();
+
+                        buttonNext.Text = "Retry";
+                    }
                     break;
 
                 case 4:
@@ -157,6 +168,11 @@ namespace SnakeBite.SetupWizard
 
         private void buttonSkip_Click(object sender, EventArgs e)
         {
+            GoToMergeDatPage();
+        }
+
+        private void GoToMergeDatPage()
+        {
             buttonSkip.Visible = false;
             mergeDatPage.panelProcessing.Visible = false;
             this.contentPanel.Controls.Clear();
@@ -174,6 +190,13 @@ namespace SnakeBite.SetupWizard
         private void mergeProcessor_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
             mergeDatPage.labelWorking.Text = (string)e.UserState;
+        }
+
+        private void mergeProcessor_Completed(object sender, RunWorkerCompletedEventArgs e)
+        {
+            if (e.Cancelled)
+                setupSuccessful = false;
+
         }
     }
 }

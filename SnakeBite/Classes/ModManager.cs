@@ -24,9 +24,9 @@ namespace SnakeBite
         internal static string ZeroPath { get { return Properties.Settings.Default.InstallPath + "\\master\\0\\00.dat"; } }
         internal static string t7Path { get { return Properties.Settings.Default.InstallPath + "\\master\\a_texture7.dat"; } }
         internal static string c7Path { get { return Properties.Settings.Default.InstallPath + "\\master\\a_chunk7.dat"; } }
-        internal static string build_ext = ".SB_Build";
         internal static string GameDir { get { return Properties.Settings.Default.InstallPath; } }
-        
+        internal static string build_ext = ".SB_Build";
+
 
         // SYNC makebite
         static string ExternalDirName = "GameDir";
@@ -709,122 +709,104 @@ namespace SnakeBite
         /// </summary>
         public static void backgroundWorker_MergeAndCleanup(object sender, DoWorkEventArgs e)
         {
-            BackgroundWorker backupProcessor = (BackgroundWorker)sender;
-
+            BackgroundWorker mergeProcessor = (BackgroundWorker)sender;
             GzsLib.LoadDictionaries();
-            backupProcessor.ReportProgress(0, "Moving files into new archives");
-            MoveDatFiles(); //moves vanilla 00 files into 01, excluding foxpatch.
-            backupProcessor.ReportProgress(0, "Modfying foxfs in chunk0"); // promblem: if user exits during this phase, their chunk0 won't be modified and chunk7/texture7 won't be acknowledged by the game
-            ModifyFoxfs(); // adds lines to foxfs in chunk0.
-            backupProcessor.ReportProgress(0, "Promoting new archives");
-            PromoteArchives(); // overwrites existing archives with modified archives
-            backupProcessor.ReportProgress(0, "Cleaning up database");
+
+            mergeProcessor.ReportProgress(0, "Moving files into new archives");
+            if (!MoveDatFiles()) //moves vanilla 00 files into 01, excluding foxpatch. 
+            {
+                if (MessageBox.Show("Would you still like to continue the setup process?", "Continue Setup?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                {
+                    e.Cancel = true;
+                    ClearBuildArchives();
+                    return;
+                }
+            }
+
+            mergeProcessor.ReportProgress(0, "Modfying foxfs in chunk0");
+            if (!ModifyFoxfs()) // adds lines to foxfs in chunk0.
+            {
+                if (MessageBox.Show("Would you still like to continue the setup process?", "Continue Setup?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                {
+                    e.Cancel = true;
+                    ClearBuildArchives();
+                    return;
+                }
+            }
+
+            mergeProcessor.ReportProgress(0, "Promoting new archives");
+            PromoteBuildArchives(); // overwrites existing archives with modified archives
+
+            mergeProcessor.ReportProgress(0, "Cleaning up database");
             CleanupDatabase();
         }
 
-        private static void PromoteArchives()
-        {
-            // Promote SB builds
-            GzsLib.PromoteQarArchive(c7Path + build_ext, c7Path);
-            GzsLib.PromoteQarArchive(t7Path + build_ext, t7Path);
-            GzsLib.PromoteQarArchive(ZeroPath + build_ext, ZeroPath);
-            GzsLib.PromoteQarArchive(OnePath + build_ext, OnePath);
-            GzsLib.PromoteQarArchive(chunk0Path + build_ext, chunk0Path);
-
-            new SettingsManager(GameDir).UpdateDatHash();
-        }
-
-        public static void ModifyFoxfs() // edits the chunk/texture lines in foxfs.dat to accommodate a_chunk7 a_texture7, MGO and GZs data.
-        {
-            CleanupFolders();
-
-            Debug.LogLine("[ModifyFoxfs] Beginning foxfs.dat check.", Debug.LogLevel.Debug);
-
-            string foxfsInPath = "foxfs.dat";
-            string foxfsOutPath = "_extr\\foxfs.dat";
-
-            if (GzsLib.ExtractFile<QarFile>(chunk0Path, foxfsInPath, foxfsOutPath)) //extract foxfs alone, to save time if the changes are already made
-            {
-                if (!File.ReadAllText(foxfsOutPath).Contains("a_chunk7.dat")) // checks if there's an indication that it's modified
-                {
-                    Debug.LogLine("[ModifyFoxfs] foxfs.dat is unmodified, extracting chunk0.dat.", Debug.LogLevel.Debug);
-                    List<string> chunk0Files = GzsLib.ExtractArchive<QarFile>(chunk0Path, "_extr"); //extract chunk0 into _extr
-
-
-                    string[] linesToAdd = new string[8]
-                    {
-                    "		<chunk id=\"0\" label=\"old\" qar=\"a_chunk7.dat\" textures=\"a_texture7.dat\"/>",
-                    "		<chunk id=\"1\" label=\"cypr\" qar=\"chunk0.dat\" textures=\"texture0.dat\"/>",
-                    "		<chunk id=\"2\" label=\"base\" qar=\"chunk1.dat\" textures=\"texture1.dat\"/>",
-                    "		<chunk id=\"3\" label=\"afgh\" qar=\"chunk2.dat\" textures=\"texture2.dat\"/>",
-                    "		<chunk id=\"4\" label=\"mtbs\" qar=\"chunk3.dat\" textures=\"texture3.dat\"/>",
-                    "		<chunk id=\"5\" label=\"mafr\" qar=\"chunk4.dat\" textures=\"texture4.dat\"/>",
-                    "		<chunk id=\"6\" label=\"mgo\" qar=\"chunk5_mgo0.dat\" textures=\"texture5_mgo0.dat\"/>",
-                    "		<chunk id=\"7\" label=\"gzs\" qar=\"chunk6_gzs0.dat\" textures=\"texture6_gzs0.dat\"/>",
-                    };
-                    Debug.LogLine("[ModifyFoxfs] Updating foxfs.dat", Debug.LogLevel.Debug);
-                    var foxfsLine = File.ReadAllLines(foxfsOutPath).ToList();   // read the file
-                    int startIndex = foxfsLine.IndexOf("		<chunk id=\"0\" label=\"cypr\" qar=\"chunk0.dat\" textures=\"texture0.dat\"/>");
-
-                    foxfsLine.RemoveRange(startIndex, 6);
-                    foxfsLine.InsertRange(startIndex, linesToAdd);
-
-                    File.WriteAllLines(foxfsOutPath, foxfsLine); // write to file
-
-                    Debug.LogLine("[ModifyFoxfs] repacking chunk0.dat", Debug.LogLevel.Debug); 
-
-                    //Build chunk0.dat.SB_Build with modified foxfs
-                    GzsLib.WriteQarArchive(chunk0Path + build_ext, "_extr", chunk0Files, GzsLib.chunk0Flags);
-
-                }
-                else Debug.LogLine("[ModifyFoxfs] foxfs.dat is already modified.", Debug.LogLevel.Debug);
-            } else Debug.LogLine("[ModifyFoxfs] Process failed. Could not check foxfs.dat", Debug.LogLevel.Debug);
-
-            Debug.LogLine("[ModifyFoxfs] foxfs.dat modification complete.", Debug.LogLevel.Debug);
-            CleanupFolders();
-        }
-
-        public static void MoveDatFiles() // moves all vanilla 00.dat files, excluding foxpatch.dat, to 01.dat
+        public static bool MoveDatFiles() // moves all vanilla 00.dat files, excluding foxpatch.dat, to 01.dat
         {
             SettingsManager manager = new SettingsManager(GameDir);
+            bool goodChunkSetup = false;
+            bool goodTexSetup = false;
 
             CleanupFolders();
-
-            if (manager.IsVanilla0001DatHash())
-            {   // first time setup or files have been revalidated
-                MoveDatFilesClean(manager);
-            } else
-            {   // the "uncertainty" case.
-                MoveDatFilesDirty(manager);
-            }
-
-            if (File.Exists(c7Path + build_ext)) // check if chunk7/texture7 is at least the proper filesize to run the game, warn the player if otherwise.
-                if (new System.IO.FileInfo(c7Path + build_ext).Length < 345000000)
-                {
-                    MessageBox.Show("SnakeBite has detected that a_chunk7.dat.SB_Build is smaller than expected, and likely invalid.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Original Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Filesize check failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Debug.LogLine("[DatMerge] a_chunk7 filesize is likely too small to be valid.", Debug.LogLevel.Basic);
-
-                } // filesize should be around 350,000,000 bytes as of 1.0.11.0
-                else { Debug.LogLine("[DatMerge] a_chunk7 filesize is sufficiently large, and likely valid.", Debug.LogLevel.Basic); } else // no chunk files were moved to a_chunk7.
+            Debug.LogLine("[DatMerge] Beginning to move files to new archives");
+            try
             {
-                MessageBox.Show("a_chunk7.dat.SB_Build could not be created during setup, likely because the original files were missing from 00.dat or 01.dat.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Original Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Missing archive file", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Debug.LogLine("[DatMerge] a_chunk7 was not created during the setup process.", Debug.LogLevel.Basic);
-            }
+                if (manager.IsVanilla0001DatHash())
+                {   // first time setup or files have been revalidated
+                    MoveDatFilesClean(manager);
+                }
+                else
+                {   // the "uncertainty" case.
+                    MoveDatFilesDirty(manager);
+                }
 
-            if (File.Exists(t7Path + build_ext))
-                if (new System.IO.FileInfo(t7Path + build_ext).Length < 250000000)
+                if (File.Exists(c7Path + build_ext)) // check if chunk7/texture7 is at least the proper filesize to run the game, warn the player if otherwise.
+                    if (new System.IO.FileInfo(c7Path + build_ext).Length < 345000000)
+                    {
+                        MessageBox.Show("SnakeBite has detected that a_chunk7.dat.SB_Build is smaller than expected, and likely invalid.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Original Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Filesize check failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Debug.LogLine("[DatMerge] a_chunk7 filesize is likely too small to be valid.", Debug.LogLevel.Basic);
+                    } // filesize should be around 350,000,000 bytes as of 1.0.11.0
+                    else
+                    {
+                        Debug.LogLine("[DatMerge] a_chunk7 filesize is sufficiently large, and likely valid.", Debug.LogLevel.Basic);
+                        goodChunkSetup = true;
+                    }
+                else // no chunk files were moved to a_chunk7.
                 {
-                    MessageBox.Show("SnakeBite has detected that a_texture7.dat.SB_Build is smaller than expected, and likely invalid.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Original Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Setup required", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Debug.LogLine("[DatMerge] a_texture7 filesize is likely too small to be valid.", Debug.LogLevel.Basic);
-                } // filesize should be around 255,000,000 bytes as of 1.0.11.0
-                else { Debug.LogLine("[DatMerge] a_texture7 filesize is sufficiently large, and likely valid.", Debug.LogLevel.Basic); } else // no textures were moved from 01.
-            {
-                MessageBox.Show("a_texture7.dat.SB_Build could not be created during setup, likely because the original files were missing from 00.dat or 01.dat.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Original Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Missing archive file", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                Debug.LogLine("[DatMerge] a_texture7 was not created during the setup process.", Debug.LogLevel.Basic);
-            }
+                    MessageBox.Show("a_chunk7.dat.SB_Build could not be created during setup, likely because the original files were missing from 00.dat or 01.dat.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Original Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Missing archive file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Debug.LogLine("[DatMerge] a_chunk7 was not created during the setup process.", Debug.LogLevel.Basic);
+                }
 
-            Debug.LogLine(String.Format("[DatMerge] Archive merging complete."), Debug.LogLevel.Debug);
-            CleanupFolders();
+                if (File.Exists(t7Path + build_ext))
+                    if (new System.IO.FileInfo(t7Path + build_ext).Length < 250000000)
+                    {
+                        MessageBox.Show("SnakeBite has detected that a_texture7.dat.SB_Build is smaller than expected, and likely invalid.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Original Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Setup required", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Debug.LogLine("[DatMerge] a_texture7 filesize is likely too small to be valid.", Debug.LogLevel.Basic);
+                    } // filesize should be around 255,000,000 bytes as of 1.0.11.0
+                    else
+                    {
+                        Debug.LogLine("[DatMerge] a_texture7 filesize is sufficiently large, and likely valid.", Debug.LogLevel.Basic);
+                        goodTexSetup = true;
+                    }
+                else // no textures were moved from 01.
+                {
+                    MessageBox.Show("a_texture7.dat.SB_Build could not be created during setup, likely because the original files were missing from 00.dat or 01.dat.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Original Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Missing archive file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Debug.LogLine("[DatMerge] a_texture7 was not created during the setup process.", Debug.LogLevel.Basic);
+                }
+
+                Debug.LogLine(String.Format("[DatMerge] Archive merging complete."), Debug.LogLevel.Debug);
+                CleanupFolders();
+
+                return (goodChunkSetup && goodTexSetup);
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(string.Format("An error has occured while moving files into new archives: {0}", e), "Exception Occurred", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Debug.LogLine(string.Format("[DatMerge] Exception Occurred: {0}", e), Debug.LogLevel.Basic);
+                Debug.LogLine("[DatMerge] SnakeBite has failed to move the 00.dat or 01.dat contents to new archives.", Debug.LogLevel.Basic);
+
+                return false;
+            }
         }
 
         private static void MoveDatFilesClean(SettingsManager manager)
@@ -934,7 +916,7 @@ namespace SnakeBite
                     sourceName = Path.Combine("_working1", Tools.ToWinPath(zeroFile));
                     destName = Path.Combine("_extr", Tools.ToWinPath(zeroFile));
 
-                    oneFiles.Add(zeroFile);// 00 -> 01
+                    oneFiles.Add(zeroFile); // 00 -> 01
                     zeroOut.Remove(zeroFile);
 
                     destFolder = Path.GetDirectoryName(destName);
@@ -969,7 +951,7 @@ namespace SnakeBite
             foreach (string oneFile in oneFiles)
             {
                 if (modQarFiles.Contains(Tools.ToQarPath(oneFile)) || tex7List.Contains(oneFile) || chunk7List.Contains(oneFile)) continue;
-                if (oneFile.Contains(".lua")) continue; // lua files must stay in 01
+                if (oneFile.Contains(".lua")) continue; // vanilla lua files must stay in 01
                 if (oneFile.Contains(".ftex")) textureCount++;
                 moveCount++;
             }
@@ -1028,6 +1010,100 @@ namespace SnakeBite
                 }
                 GzsLib.WriteQarArchive(OnePath + build_ext, "_extr", oneOut, GzsLib.oneFlags); // rebuild 01 archive
             }
+        }
+
+        public static bool ModifyFoxfs() // edits the chunk/texture lines in foxfs.dat to accommodate a_chunk7 a_texture7, MGO and GZs data.
+        {
+            CleanupFolders();
+
+            Debug.LogLine("[ModifyFoxfs] Beginning foxfs.dat check.", Debug.LogLevel.Debug);
+            try
+            {
+                string foxfsInPath = "foxfs.dat";
+                string foxfsOutPath = "_extr\\foxfs.dat";
+
+                if (GzsLib.ExtractFile<QarFile>(chunk0Path, foxfsInPath, foxfsOutPath)) //extract foxfs alone, to save time if the changes are already made
+                {
+                    if (!File.ReadAllText(foxfsOutPath).Contains("a_chunk7.dat")) // checks if there's an indication that it's modified
+                    {
+                        Debug.LogLine("[ModifyFoxfs] foxfs.dat is unmodified, extracting chunk0.dat.", Debug.LogLevel.Debug);
+                        List<string> chunk0Files = GzsLib.ExtractArchive<QarFile>(chunk0Path, "_extr"); //extract chunk0 into _extr
+
+
+                        string[] linesToAdd = new string[8]
+                        {
+                    "		<chunk id=\"0\" label=\"old\" qar=\"a_chunk7.dat\" textures=\"a_texture7.dat\"/>",
+                    "		<chunk id=\"1\" label=\"cypr\" qar=\"chunk0.dat\" textures=\"texture0.dat\"/>",
+                    "		<chunk id=\"2\" label=\"base\" qar=\"chunk1.dat\" textures=\"texture1.dat\"/>",
+                    "		<chunk id=\"3\" label=\"afgh\" qar=\"chunk2.dat\" textures=\"texture2.dat\"/>",
+                    "		<chunk id=\"4\" label=\"mtbs\" qar=\"chunk3.dat\" textures=\"texture3.dat\"/>",
+                    "		<chunk id=\"5\" label=\"mafr\" qar=\"chunk4.dat\" textures=\"texture4.dat\"/>",
+                    "		<chunk id=\"6\" label=\"mgo\" qar=\"chunk5_mgo0.dat\" textures=\"texture5_mgo0.dat\"/>",
+                    "		<chunk id=\"7\" label=\"gzs\" qar=\"chunk6_gzs0.dat\" textures=\"texture6_gzs0.dat\"/>",
+                        };
+                        Debug.LogLine("[ModifyFoxfs] Updating foxfs.dat", Debug.LogLevel.Debug);
+                        var foxfsLine = File.ReadAllLines(foxfsOutPath).ToList();   // read the file
+                        int startIndex = foxfsLine.IndexOf("		<chunk id=\"0\" label=\"cypr\" qar=\"chunk0.dat\" textures=\"texture0.dat\"/>");
+
+                        foxfsLine.RemoveRange(startIndex, 6);
+                        foxfsLine.InsertRange(startIndex, linesToAdd);
+
+                        File.WriteAllLines(foxfsOutPath, foxfsLine); // write to file
+
+                        Debug.LogLine("[ModifyFoxfs] repacking chunk0.dat", Debug.LogLevel.Debug);
+
+                        //Build chunk0.dat.SB_Build with modified foxfs
+                        GzsLib.WriteQarArchive(chunk0Path + build_ext, "_extr", chunk0Files, GzsLib.chunk0Flags);
+
+                    }
+                    else
+                    {
+                        Debug.LogLine("[ModifyFoxfs] foxfs.dat is already modified", Debug.LogLevel.Debug);
+                    }
+                }
+                else
+                {
+                    MessageBox.Show(string.Format("SnakeBite failed to extract foxfs from chunk0: {0}"), "foxfs check failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Debug.LogLine("[ModifyFoxfs] Process failed: could not check foxfs.dat", Debug.LogLevel.Debug);
+                    CleanupFolders();
+
+                    return false;
+                }
+
+                Debug.LogLine("[ModifyFoxfs] foxfs.dat modification complete.", Debug.LogLevel.Debug);
+                CleanupFolders();
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show(string.Format("An error has occured while modifying foxfs in chunk0: {0}", e), "Exception Occurred", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Debug.LogLine(string.Format("[ModifyFoxfs] Exception Occurred: {0}", e), Debug.LogLevel.Basic);
+                Debug.LogLine("[ModifyFoxfs] SnakeBite has failed to modify foxfs in chunk0", Debug.LogLevel.Basic);
+
+                return false;
+            }
+        }
+
+        private static void PromoteBuildArchives()
+        {
+            // Promote SB builds
+            GzsLib.PromoteQarArchive(c7Path + build_ext, c7Path);
+            GzsLib.PromoteQarArchive(t7Path + build_ext, t7Path);
+            GzsLib.PromoteQarArchive(ZeroPath + build_ext, ZeroPath);
+            GzsLib.PromoteQarArchive(OnePath + build_ext, OnePath);
+            GzsLib.PromoteQarArchive(chunk0Path + build_ext, chunk0Path);
+
+            new SettingsManager(GameDir).UpdateDatHash();
+        }
+
+        private static void ClearBuildArchives()
+        {
+            File.Delete(c7Path + build_ext);
+            File.Delete(t7Path + build_ext);
+            File.Delete(ZeroPath + build_ext);
+            File.Delete(OnePath + build_ext);
+            File.Delete(chunk0Path + build_ext);
         }
 
         /// <summary>
@@ -1141,6 +1217,7 @@ namespace SnakeBite
             "_gameFpk",
             "_modfpk",
         };
+
         private static void CleanupFolders() // deletes the work folders which contain extracted files from 00/01
         {
             Debug.LogLine("[Mod] Cleaning up snakebite work folders.");
