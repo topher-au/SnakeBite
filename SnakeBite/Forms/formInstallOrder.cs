@@ -93,7 +93,7 @@ namespace SnakeBite.Forms
                 labelModName.Text = selectedMod.modInfo.Name;
                 labelModAuthor.Text = "By " + selectedMod.modInfo.Author;
                 labelModWebsite.Text = selectedMod.modInfo.Version;
-                textModDescription.Text = selectedMod.modInfo.Description;
+                textModDescription.Text = selectedMod.modInfo.Description.Replace("\n", "\r\n"); ;
 
                 if (manager.IsUpToDate(selectedMod.modInfo.MGSVersion.AsVersion()))
                 {

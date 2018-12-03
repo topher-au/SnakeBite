@@ -715,23 +715,17 @@ namespace SnakeBite
             mergeProcessor.ReportProgress(0, "Moving files into new archives");
             if (!MoveDatFiles()) //moves vanilla 00 files into 01, excluding foxpatch. 
             {
-                if (MessageBox.Show("Would you still like to continue the setup process?", "Continue Setup?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                {
                     e.Cancel = true;
                     ClearBuildArchives();
                     return;
-                }
             }
 
             mergeProcessor.ReportProgress(0, "Modfying foxfs in chunk0");
             if (!ModifyFoxfs()) // adds lines to foxfs in chunk0.
             {
-                if (MessageBox.Show("Would you still like to continue the setup process?", "Continue Setup?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                {
                     e.Cancel = true;
                     ClearBuildArchives();
                     return;
-                }
             }
 
             mergeProcessor.ReportProgress(0, "Promoting new archives");
@@ -744,8 +738,9 @@ namespace SnakeBite
         public static bool MoveDatFiles() // moves all vanilla 00.dat files, excluding foxpatch.dat, to 01.dat
         {
             SettingsManager manager = new SettingsManager(GameDir);
-            bool goodChunkSetup = false;
-            bool goodTexSetup = false;
+            bool goodChunkSetup = false; // proper chunk7 (filesize appears sufficient)
+            bool goodTexSetup = false; // proper texture7 (filesize appears sufficient)
+            bool promptContinue = false; // prompt shown upon apparently improper filesizes, but user may wish to continue anyway
 
             CleanupFolders();
             Debug.LogLine("[DatMerge] Beginning to move files to new archives");
@@ -765,6 +760,7 @@ namespace SnakeBite
                     {
                         MessageBox.Show("SnakeBite has detected that a_chunk7.dat.SB_Build is smaller than expected, and likely invalid.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Original Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Filesize check failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         Debug.LogLine("[DatMerge] a_chunk7 filesize is likely too small to be valid.", Debug.LogLevel.Basic);
+                        promptContinue = true;
                     } // filesize should be around 350,000,000 bytes as of 1.0.11.0
                     else
                     {
@@ -782,6 +778,7 @@ namespace SnakeBite
                     {
                         MessageBox.Show("SnakeBite has detected that a_texture7.dat.SB_Build is smaller than expected, and likely invalid.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Original Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Setup required", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         Debug.LogLine("[DatMerge] a_texture7 filesize is likely too small to be valid.", Debug.LogLevel.Basic);
+                        promptContinue = true;
                     } // filesize should be around 255,000,000 bytes as of 1.0.11.0
                     else
                     {
@@ -797,7 +794,14 @@ namespace SnakeBite
                 Debug.LogLine(String.Format("[DatMerge] Archive merging complete."), Debug.LogLevel.Debug);
                 CleanupFolders();
 
-                return (goodChunkSetup && goodTexSetup);
+                if (goodChunkSetup && goodTexSetup)
+                    return true;
+                else if (promptContinue)
+                {
+                    return (MessageBox.Show("Would you still like to continue the setup process?", "Continue Setup?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
+                }
+                else
+                    return false;
             }
             catch (Exception e)
             {
@@ -1063,7 +1067,7 @@ namespace SnakeBite
                 }
                 else
                 {
-                    MessageBox.Show(string.Format("SnakeBite failed to extract foxfs from chunk0: {0}"), "foxfs check failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show(string.Format("Setup cancelled: SnakeBite failed to extract foxfs from chunk0."), "foxfs check failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Debug.LogLine("[ModifyFoxfs] Process failed: could not check foxfs.dat", Debug.LogLevel.Debug);
                     CleanupFolders();
 

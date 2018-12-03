@@ -12,7 +12,7 @@ namespace SnakeBite.SetupWizard
         private CreateBackupPage createBackupPage = new CreateBackupPage();
         private MergeDatPage mergeDatPage = new MergeDatPage();
         private int displayPage = 0;
-        private bool setupSuccessful = true;
+        private bool setupComplete = true;
         private SettingsManager manager = new SettingsManager(ModManager.GameDir);
 
         public SetupWizard()
@@ -130,7 +130,7 @@ namespace SnakeBite.SetupWizard
                         Thread.Sleep(40);
                     }
 
-                    if (setupSuccessful)
+                    if (setupComplete)
                     {
                         Debug.LogLine("[Setup Wizard] Setup Complete. Snakebite is configured and ready to use.");
                         mergeDatPage.panelProcessing.Visible = false;
@@ -195,7 +195,9 @@ namespace SnakeBite.SetupWizard
         private void mergeProcessor_Completed(object sender, RunWorkerCompletedEventArgs e)
         {
             if (e.Cancelled)
-                setupSuccessful = false;
+                setupComplete = false;
+            else
+                setupComplete = true;
 
         }
     }

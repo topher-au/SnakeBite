@@ -16,6 +16,7 @@ namespace SnakeBite
     {
         private formProgress progWindow = new formProgress();
         private int countCheckedMods = 0;
+        private int modDescriptionMaxLeft = 300;
         private SettingsManager manager = new SettingsManager(ModManager.GameDir);
 
         public formMods()
@@ -91,7 +92,7 @@ namespace SnakeBite
             }
             if (!(MessageBox.Show("The following mods will be uninstalled:\n" + markedModNames, "SnakeBite", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)) return;
 
-            ProgressWindow.Show("Uninstalling Mod(s)", "Uninstalling...\n\nNote:\nThe uninstall time depends greatly on\nthe mod's contents, the number of mods being uninstalled\nand the mods that are still installed.", new Action((MethodInvoker)delegate { ModManager.UninstallMod(checkedModIndices); }));
+            ProgressWindow.Show("Uninstalling Mod(s)", "Uninstalling...\nNote:\nThe uninstall time depends greatly on\nthe mod's contents, the number of mods being uninstalled\nand the mods that are still installed.", new Action((MethodInvoker)delegate { ModManager.UninstallMod(checkedModIndices); }));
             // Update installed mod list
             RefreshInstalledMods(true);
         }
@@ -283,6 +284,16 @@ namespace SnakeBite
                     MessageBox.Show(String.Format("This mod is up to date with the current MGSV version {0}", currentMGSVersion), "Mod is up to date", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
             }
+        }
+
+        private void formMods_Resize(object sender, EventArgs e)
+        {
+            int modListWidth = this.Width / 3;
+
+            panelModList.Width = modListWidth;
+            //if (modListWidth > modDescriptionMaxLeft)
+            panelModDescription.Left = panelModList.Width + 6;
+            panelModDescription.Width = this.Width - panelModList.Width - 28;
         }
     }
 }

@@ -36,6 +36,7 @@
             this.labelModCount = new System.Windows.Forms.Label();
             this.labelInstallWarning = new System.Windows.Forms.Label();
             this.panelInfo = new System.Windows.Forms.Panel();
+            this.labelVersionWarning = new System.Windows.Forms.Label();
             this.labelConflictCount = new System.Windows.Forms.Label();
             this.textConflictDescription = new System.Windows.Forms.TextBox();
             this.textModDescription = new System.Windows.Forms.TextBox();
@@ -47,7 +48,6 @@
             this.labelInstallOrder = new System.Windows.Forms.Label();
             this.listInstallOrder = new System.Windows.Forms.ListView();
             this.columnModNames = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.labelVersionWarning = new System.Windows.Forms.Label();
             this.panelInfo.SuspendLayout();
             this.groupBoxNoModsNotice.SuspendLayout();
             this.SuspendLayout();
@@ -77,7 +77,7 @@
             // buttonContinue
             // 
             this.buttonContinue.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.buttonContinue.Location = new System.Drawing.Point(480, 390);
+            this.buttonContinue.Location = new System.Drawing.Point(485, 390);
             this.buttonContinue.Name = "buttonContinue";
             this.buttonContinue.Size = new System.Drawing.Size(173, 50);
             this.buttonContinue.TabIndex = 4;
@@ -121,7 +121,7 @@
             // 
             // labelInstallWarning
             // 
-            this.labelInstallWarning.BackColor = System.Drawing.Color.Gainsboro;
+            this.labelInstallWarning.BackColor = System.Drawing.Color.LightGray;
             this.labelInstallWarning.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.labelInstallWarning.Cursor = System.Windows.Forms.Cursors.Help;
             this.labelInstallWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -136,7 +136,8 @@
             // 
             // panelInfo
             // 
-            this.panelInfo.BorderStyle = System.Windows.Forms.BorderStyle.Fixed3D;
+            this.panelInfo.BackColor = System.Drawing.Color.Silver;
+            this.panelInfo.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelInfo.Controls.Add(this.labelVersionWarning);
             this.panelInfo.Controls.Add(this.labelInstallWarning);
             this.panelInfo.Controls.Add(this.labelConflictCount);
@@ -149,6 +150,21 @@
             this.panelInfo.Name = "panelInfo";
             this.panelInfo.Size = new System.Drawing.Size(356, 373);
             this.panelInfo.TabIndex = 9;
+            // 
+            // labelVersionWarning
+            // 
+            this.labelVersionWarning.BackColor = System.Drawing.Color.LightGray;
+            this.labelVersionWarning.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelVersionWarning.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.labelVersionWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelVersionWarning.ForeColor = System.Drawing.Color.MediumSeaGreen;
+            this.labelVersionWarning.Location = new System.Drawing.Point(308, 185);
+            this.labelVersionWarning.Name = "labelVersionWarning";
+            this.labelVersionWarning.Size = new System.Drawing.Size(42, 26);
+            this.labelVersionWarning.TabIndex = 14;
+            this.labelVersionWarning.Text = "✔";
+            this.labelVersionWarning.TextAlign = System.Drawing.ContentAlignment.TopCenter;
+            this.labelVersionWarning.Click += new System.EventHandler(this.labelVersionWarning_Click);
             // 
             // labelConflictCount
             // 
@@ -231,18 +247,18 @@
             // 
             // groupBoxNoModsNotice
             // 
-            this.groupBoxNoModsNotice.BackColor = System.Drawing.Color.Gray;
+            this.groupBoxNoModsNotice.BackColor = System.Drawing.Color.DarkGray;
             this.groupBoxNoModsNotice.Controls.Add(this.labelNoMod);
-            this.groupBoxNoModsNotice.Location = new System.Drawing.Point(297, 9);
+            this.groupBoxNoModsNotice.Location = new System.Drawing.Point(297, 5);
             this.groupBoxNoModsNotice.Name = "groupBoxNoModsNotice";
-            this.groupBoxNoModsNotice.Size = new System.Drawing.Size(356, 376);
+            this.groupBoxNoModsNotice.Size = new System.Drawing.Size(361, 380);
             this.groupBoxNoModsNotice.TabIndex = 10;
             this.groupBoxNoModsNotice.TabStop = false;
             this.groupBoxNoModsNotice.Visible = false;
             // 
             // labelNoMod
             // 
-            this.labelNoMod.BackColor = System.Drawing.Color.Gray;
+            this.labelNoMod.BackColor = System.Drawing.Color.DarkGray;
             this.labelNoMod.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold);
             this.labelNoMod.Location = new System.Drawing.Point(10, 16);
             this.labelNoMod.Name = "labelNoMod";
@@ -287,27 +303,12 @@
             // 
             this.columnModNames.Width = 226;
             // 
-            // labelVersionWarning
-            // 
-            this.labelVersionWarning.BackColor = System.Drawing.Color.Gainsboro;
-            this.labelVersionWarning.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
-            this.labelVersionWarning.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.labelVersionWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 16F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelVersionWarning.ForeColor = System.Drawing.Color.MediumSeaGreen;
-            this.labelVersionWarning.Location = new System.Drawing.Point(308, 185);
-            this.labelVersionWarning.Name = "labelVersionWarning";
-            this.labelVersionWarning.Size = new System.Drawing.Size(42, 26);
-            this.labelVersionWarning.TabIndex = 14;
-            this.labelVersionWarning.Text = "✔";
-            this.labelVersionWarning.TextAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.labelVersionWarning.Click += new System.EventHandler(this.labelVersionWarning_Click);
-            // 
             // formInstallOrder
             // 
             this.AcceptButton = this.buttonContinue;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.BackColor = System.Drawing.Color.Gray;
+            this.BackColor = System.Drawing.Color.DarkGray;
             this.ClientSize = new System.Drawing.Size(665, 444);
             this.Controls.Add(this.listInstallOrder);
             this.Controls.Add(this.labelInstallOrder);
