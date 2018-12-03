@@ -118,12 +118,6 @@
     <Compile Include="Forms\formInstallOrder.Designer.cs">
       <DependentUpon>formInstallOrder.cs</DependentUpon>
     </Compile>
-    <Compile Include="Forms\formLog.cs">
-      <SubType>Form</SubType>
-    </Compile>
-    <Compile Include="Forms\formLog.Designer.cs">
-      <DependentUpon>formLog.cs</DependentUpon>
-    </Compile>
     <Compile Include="Forms\formModConflict.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -155,6 +149,36 @@
       <DependentUpon>formSelectModelTarget.cs</DependentUpon>
     </Compile>
     <Compile Include="Classes\GzsLib.cs" />
+    <Compile Include="Forms\Pages\LogPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Pages\LogPage.Designer.cs">
+      <DependentUpon>LogPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Pages\ModDescriptionPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Pages\ModDescriptionPage.Designer.cs">
+      <DependentUpon>ModDescriptionPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Pages\NoAddedPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Pages\NoAddedPage.Designer.cs">
+      <DependentUpon>NoAddedPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Pages\NoInstalledPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Pages\NoInstalledPage.Designer.cs">
+      <DependentUpon>NoInstalledPage.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\Pages\PreinstallDescriptionPage.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Forms\Pages\PreinstallDescriptionPage.Designer.cs">
+      <DependentUpon>PreinstallDescriptionPage.cs</DependentUpon>
+    </Compile>
     <Compile Include="ProgressWindow.cs" />
     <Compile Include="Classes\SBTheme.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
@@ -229,9 +253,6 @@
       <DependentUpon>formLauncher.cs</DependentUpon>
       <SubType>Designer</SubType>
     </EmbeddedResource>
-    <EmbeddedResource Include="Forms\formLog.resx">
-      <DependentUpon>formLog.cs</DependentUpon>
-    </EmbeddedResource>
     <EmbeddedResource Include="Forms\formModConflict.resx">
       <DependentUpon>formModConflict.cs</DependentUpon>
     </EmbeddedResource>
@@ -247,6 +268,21 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\formSettings.resx">
       <DependentUpon>formSettings.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Pages\LogPage.resx">
+      <DependentUpon>LogPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Pages\ModDescriptionPage.resx">
+      <DependentUpon>ModDescriptionPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Pages\NoAddedPage.resx">
+      <DependentUpon>NoAddedPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Pages\NoInstalledPage.resx">
+      <DependentUpon>NoInstalledPage.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\Pages\PreinstallDescriptionPage.resx">
+      <DependentUpon>PreinstallDescriptionPage.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>PublicResXFileCodeGenerator</Generator>

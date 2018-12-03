@@ -1,14 +1,9 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
 using System.Diagnostics;
 using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
+using SnakeBite.ModPages;
 
 namespace SnakeBite.Forms
 {
@@ -25,6 +20,9 @@ namespace SnakeBite.Forms
         private List<PreinstallEntry> Mods = new List<PreinstallEntry>();
         private SettingsManager manager = new SettingsManager(ModManager.GameDir);
         private int selectedIndex;
+
+        private NoAddedPage noModsNotice = new NoAddedPage();
+        private PreinstallDescriptionPage modDescription = new PreinstallDescriptionPage();
 
         public formInstallOrder()
         {
@@ -54,12 +52,16 @@ namespace SnakeBite.Forms
             {
                 buttonContinue.Enabled = true;
                 buttonRemove.Enabled = true;
-                groupBoxNoModsNotice.Visible = false;
-                panelInfo.Visible = true;
+                //groupBoxNoModsNotice.Visible = false;
+                //panelContent.Visible = true;
+                this.panelContent.Controls.Clear();
+                this.panelContent.Controls.Add(modDescription);
+
                 foreach (PreinstallEntry mod in Mods)
                 {
                     listInstallOrder.Items.Add(mod.modInfo.Name);
                 }
+
                 selectedIndex = modCount - 1;
                 this.updateModConflicts();
                 listInstallOrder.Items[selectedIndex].Selected = true;
@@ -69,8 +71,12 @@ namespace SnakeBite.Forms
             {
                 buttonContinue.Enabled = false;
                 buttonRemove.Enabled = false;
-                groupBoxNoModsNotice.Visible = true;
-                panelInfo.Visible = false;
+                //groupBoxNoModsNotice.Visible = true;
+                //panelContent.Visible = false;
+                this.panelContent.Controls.Clear();
+                this.panelContent.Controls.Add(noModsNotice);
+                Console.WriteLine("HERE");
+
             }
 
             labelModCount.Text = "Total Count: " + modCount;
@@ -86,7 +92,7 @@ namespace SnakeBite.Forms
         }
 
         private void updateModDescription() //refreshes description panel with current index's metadata.
-        {
+        { /*
             if (selectedIndex >= 0)
             {
                 PreinstallEntry selectedMod = Mods[selectedIndex];
@@ -121,6 +127,7 @@ namespace SnakeBite.Forms
                 textConflictDescription.Text = conflictDescription;
                 showConflictColors(); // updates the conflict visualization
             }
+            */
         }
 
         private void showConflictColors() // Inspired by Nexus Mod Manager, a nice way of visualizing conflicts for the user.
@@ -158,10 +165,12 @@ namespace SnakeBite.Forms
                     conflictCounter++;
                 }
             }
+            /*
             if (conflictCounter == 0)
                 labelConflictCount.Text = "0 Conflicts Detected";
             else
                 labelConflictCount.Text = conflictCounter.ToString() + " Mods With Conflicts";
+            */
         }
 
         private void buttonUp_Click(object sender, EventArgs e) //moves the selected mod up one on the list. Installs earlier.

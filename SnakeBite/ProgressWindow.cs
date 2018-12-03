@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SnakeBite.ModPages;
 
 namespace SnakeBite
 {
@@ -15,7 +16,7 @@ namespace SnakeBite
             var progressWindow = new formProgress();
             progressWindow.StatusText.Text = ProgressText;
 
-            var logWindow = new formLog();
+            var logWindow = new LogPage();
             logWindow.Text = ProgressText;
 
             var progressWorker = new BackgroundWorker();
@@ -34,7 +35,7 @@ namespace SnakeBite
                     } else if (e.Cancelled) {
                         
                     } else {
-                        logWindow.Invoke((MethodInvoker)delegate { logWindow.Close(); });
+                        //logWindow.Invoke((MethodInvoker)delegate { logWindow.Close(); }); MORBIDADDBACK
                         //progressWindow.Invoke((MethodInvoker)delegate { progressWindow.Close(); });
                     }
                     progressWorker.Dispose();
@@ -42,7 +43,7 @@ namespace SnakeBite
              );
 
             progressWorker.RunWorkerAsync();
-            logWindow.ShowDialog();
+            //logWindow.ShowDialog(); MORBIDADDBACK
             //progressWindow.ShowDialog();
         }
     }

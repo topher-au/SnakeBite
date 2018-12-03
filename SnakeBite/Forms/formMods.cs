@@ -291,9 +291,12 @@ namespace SnakeBite
             int modListWidth = this.Width / 3;
 
             panelModList.Width = modListWidth;
-            //if (modListWidth > modDescriptionMaxLeft)
+
             panelModDescription.Left = panelModList.Width + 6;
             panelModDescription.Width = this.Width - panelModList.Width - 28;
+
+            groupBoxNoModsNotice.Left = panelModDescription.Left;
+            groupBoxNoModsNotice.Width = panelModDescription.Width;
         }
     }
 }

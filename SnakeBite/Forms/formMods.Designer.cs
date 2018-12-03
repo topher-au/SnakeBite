@@ -66,7 +66,7 @@
             this.listInstalledMods.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.listInstalledMods.Name = "listInstalledMods";
             this.listInstalledMods.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.listInstalledMods.Size = new System.Drawing.Size(191, 420);
+            this.listInstalledMods.Size = new System.Drawing.Size(191, 401);
             this.listInstalledMods.TabIndex = 3;
             this.listInstalledMods.Tag = "";
             this.listInstalledMods.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listInstalledMods_ItemCheck);
@@ -78,7 +78,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonInstall.BackColor = System.Drawing.Color.Transparent;
             this.buttonInstall.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.buttonInstall.Location = new System.Drawing.Point(0, 446);
+            this.buttonInstall.Location = new System.Drawing.Point(0, 427);
             this.buttonInstall.Name = "buttonInstall";
             this.buttonInstall.Size = new System.Drawing.Size(191, 23);
             this.buttonInstall.TabIndex = 4;
@@ -92,7 +92,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonUninstall.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonUninstall.Enabled = false;
-            this.buttonUninstall.Location = new System.Drawing.Point(0, 469);
+            this.buttonUninstall.Location = new System.Drawing.Point(0, 453);
             this.buttonUninstall.Name = "buttonUninstall";
             this.buttonUninstall.Size = new System.Drawing.Size(191, 23);
             this.buttonUninstall.TabIndex = 5;
@@ -130,7 +130,7 @@
             // panelModDescription
             // 
             this.panelModDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
-            this.panelModDescription.BackColor = System.Drawing.Color.Silver;
+            this.panelModDescription.BackColor = System.Drawing.Color.DarkGray;
             this.panelModDescription.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelModDescription.Controls.Add(this.labelVersionWarning);
             this.panelModDescription.Controls.Add(this.labelModWebsite);
@@ -139,7 +139,7 @@
             this.panelModDescription.Controls.Add(this.labelModName);
             this.panelModDescription.Location = new System.Drawing.Point(201, 9);
             this.panelModDescription.Name = "panelModDescription";
-            this.panelModDescription.Size = new System.Drawing.Size(379, 442);
+            this.panelModDescription.Size = new System.Drawing.Size(379, 424);
             this.panelModDescription.TabIndex = 10;
             // 
             // labelVersionWarning
@@ -150,7 +150,7 @@
             this.labelVersionWarning.Cursor = System.Windows.Forms.Cursors.Hand;
             this.labelVersionWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelVersionWarning.ForeColor = System.Drawing.Color.MediumSeaGreen;
-            this.labelVersionWarning.Location = new System.Drawing.Point(331, 410);
+            this.labelVersionWarning.Location = new System.Drawing.Point(331, 392);
             this.labelVersionWarning.Name = "labelVersionWarning";
             this.labelVersionWarning.Size = new System.Drawing.Size(42, 26);
             this.labelVersionWarning.TabIndex = 15;
@@ -165,7 +165,7 @@
             this.labelModWebsite.BackColor = System.Drawing.Color.Silver;
             this.labelModWebsite.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.labelModWebsite.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.labelModWebsite.Location = new System.Drawing.Point(4, 410);
+            this.labelModWebsite.Location = new System.Drawing.Point(4, 392);
             this.labelModWebsite.Name = "labelModWebsite";
             this.labelModWebsite.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.labelModWebsite.Size = new System.Drawing.Size(328, 26);
@@ -189,7 +189,7 @@
             this.textDescription.Name = "textDescription";
             this.textDescription.ReadOnly = true;
             this.textDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textDescription.Size = new System.Drawing.Size(369, 365);
+            this.textDescription.Size = new System.Drawing.Size(369, 347);
             this.textDescription.TabIndex = 6;
             // 
             // labelModAuthor
@@ -214,24 +214,26 @@
             // 
             // groupBoxNoModsNotice
             // 
-            this.groupBoxNoModsNotice.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.groupBoxNoModsNotice.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
+            this.groupBoxNoModsNotice.BackColor = System.Drawing.Color.Gray;
             this.groupBoxNoModsNotice.Controls.Add(this.linkLabelSnakeBiteModsList);
             this.groupBoxNoModsNotice.Controls.Add(this.labelNoMod);
             this.groupBoxNoModsNotice.Controls.Add(this.labelNoModInstruction);
-            this.groupBoxNoModsNotice.Location = new System.Drawing.Point(201, 1);
+            this.groupBoxNoModsNotice.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.groupBoxNoModsNotice.Location = new System.Drawing.Point(200, 2);
             this.groupBoxNoModsNotice.Name = "groupBoxNoModsNotice";
-            this.groupBoxNoModsNotice.Size = new System.Drawing.Size(379, 450);
+            this.groupBoxNoModsNotice.Size = new System.Drawing.Size(379, 430);
             this.groupBoxNoModsNotice.TabIndex = 1;
             this.groupBoxNoModsNotice.TabStop = false;
             this.groupBoxNoModsNotice.Visible = false;
             // 
             // linkLabelSnakeBiteModsList
             // 
-            this.linkLabelSnakeBiteModsList.BackColor = System.Drawing.Color.DarkGray;
+            this.linkLabelSnakeBiteModsList.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.linkLabelSnakeBiteModsList.BackColor = System.Drawing.Color.Gray;
             this.linkLabelSnakeBiteModsList.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
-            this.linkLabelSnakeBiteModsList.Location = new System.Drawing.Point(5, 93);
+            this.linkLabelSnakeBiteModsList.Location = new System.Drawing.Point(9, 98);
             this.linkLabelSnakeBiteModsList.Name = "linkLabelSnakeBiteModsList";
             this.linkLabelSnakeBiteModsList.Size = new System.Drawing.Size(361, 51);
             this.linkLabelSnakeBiteModsList.TabIndex = 2;
@@ -242,9 +244,11 @@
             // 
             // labelNoMod
             // 
-            this.labelNoMod.BackColor = System.Drawing.Color.DarkGray;
+            this.labelNoMod.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelNoMod.BackColor = System.Drawing.Color.Gray;
             this.labelNoMod.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold);
-            this.labelNoMod.Location = new System.Drawing.Point(5, 12);
+            this.labelNoMod.Location = new System.Drawing.Point(9, 17);
             this.labelNoMod.Name = "labelNoMod";
             this.labelNoMod.Size = new System.Drawing.Size(361, 55);
             this.labelNoMod.TabIndex = 1;
@@ -253,9 +257,11 @@
             // 
             // labelNoModInstruction
             // 
-            this.labelNoModInstruction.BackColor = System.Drawing.Color.DarkGray;
+            this.labelNoModInstruction.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.labelNoModInstruction.BackColor = System.Drawing.Color.Gray;
             this.labelNoModInstruction.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
-            this.labelNoModInstruction.Location = new System.Drawing.Point(10, 63);
+            this.labelNoModInstruction.Location = new System.Drawing.Point(9, 68);
             this.labelNoModInstruction.Name = "labelNoModInstruction";
             this.labelNoModInstruction.Size = new System.Drawing.Size(361, 30);
             this.labelNoModInstruction.TabIndex = 0;
@@ -266,9 +272,9 @@
             // 
             this.buttonLaunchGame.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonLaunchGame.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.buttonLaunchGame.Location = new System.Drawing.Point(431, 455);
+            this.buttonLaunchGame.Location = new System.Drawing.Point(395, 436);
             this.buttonLaunchGame.Name = "buttonLaunchGame";
-            this.buttonLaunchGame.Size = new System.Drawing.Size(149, 49);
+            this.buttonLaunchGame.Size = new System.Drawing.Size(185, 49);
             this.buttonLaunchGame.TabIndex = 11;
             this.buttonLaunchGame.Text = "Launch Game";
             this.buttonLaunchGame.UseVisualStyleBackColor = true;
@@ -302,14 +308,14 @@
             this.panelModList.Location = new System.Drawing.Point(4, 9);
             this.panelModList.MaximumSize = new System.Drawing.Size(300, 9001);
             this.panelModList.Name = "panelModList";
-            this.panelModList.Size = new System.Drawing.Size(191, 495);
+            this.panelModList.Size = new System.Drawing.Size(191, 476);
             this.panelModList.TabIndex = 12;
             // 
             // formMods
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.BackColor = System.Drawing.Color.DarkGray;
-            this.ClientSize = new System.Drawing.Size(584, 507);
+            this.BackColor = System.Drawing.Color.Gray;
+            this.ClientSize = new System.Drawing.Size(584, 497);
             this.Controls.Add(this.buttonLaunchGame);
             this.Controls.Add(this.groupBoxNoModsNotice);
             this.Controls.Add(this.checkBoxMarkAll);
@@ -320,6 +326,7 @@
             this.MinimumSize = new System.Drawing.Size(550, 520);
             this.Name = "formMods";
             this.ShowIcon = false;
+            this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "SnakeBite Mod Manager";
             this.Load += new System.EventHandler(this.formMain_Load);

@@ -1,18 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
 using System.Drawing;
-using System.IO;
+using System.Data;
 using System.Linq;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
-namespace SnakeBite
+namespace SnakeBite.ModPages
 {
-    public partial class formLog : Form
+    public partial class LogPage : UserControl
     {
         public StringBuilder logStringBuilder = new StringBuilder();
         //DEBUGNOWprivate System.Threading.Timer timer;
@@ -20,7 +18,7 @@ namespace SnakeBite
 
         private Object thisLock = new Object();
 
-        public formLog()
+        public LogPage()
         {
             InitializeComponent();
 
@@ -37,25 +35,21 @@ namespace SnakeBite
               */
         }
 
-        private void textBox1_TextChanged(object sender, EventArgs e)
-        {
-            textBox1.SelectionStart = textBox1.Text.Length;
-            textBox1.ScrollToCaret();
-        }
-
         delegate void WriteTextBox();
+
         private void UpdateProperty(object state)
         {
             if (!stopTimer)
             {
-                if (textBox1.InvokeRequired)
+                if (textLog.InvokeRequired)
                 {
-                    textBox1.Invoke((MethodInvoker)delegate { UpdateProperty(state); });
-                } else
+                    textLog.Invoke((MethodInvoker)delegate { UpdateProperty(state); });
+                }
+                else
                 {
                     lock (thisLock)
                     {
-                        textBox1.Text = logStringBuilder.ToString();
+                        textLog.Text = logStringBuilder.ToString();
                     }
                 }
             }
@@ -63,14 +57,15 @@ namespace SnakeBite
 
         public void UpdateLog()
         {
-            if (textBox1.InvokeRequired)
+            if (textLog.InvokeRequired)
             {
-                textBox1.Invoke((MethodInvoker)delegate { UpdateLog(); });
-            } else
+                textLog.Invoke((MethodInvoker)delegate { UpdateLog(); });
+            }
+            else
             {
                 lock (thisLock)
                 {
-                    textBox1.Text = logStringBuilder.ToString();
+                    textLog.Text = logStringBuilder.ToString();
                 }
             }
         }
@@ -78,12 +73,18 @@ namespace SnakeBite
         private void formLog_FormClosing(object sender, FormClosingEventArgs e)
         {
             stopTimer = true;
-          //  timer.Change(Timeout.Infinite, Timeout.Infinite);
+            //  timer.Change(Timeout.Infinite, Timeout.Infinite);
         }
 
         private void formLog_FormClosed(object sender, FormClosedEventArgs e)
         {
-          //DEBUGNOW  timer.Dispose();
+            //DEBUGNOW  timer.Dispose();
+        }
+
+        private void textLog_TextChanged(object sender, EventArgs e)
+        {
+            textLog.SelectionStart = textLog.Text.Length;
+            textLog.ScrollToCaret();
         }
     }
 }
