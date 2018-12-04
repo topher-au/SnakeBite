@@ -1,5 +1,6 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
 using SnakeBite.Forms;
+using SnakeBite.ModPages;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -16,8 +17,10 @@ namespace SnakeBite
     {
         private formProgress progWindow = new formProgress();
         private int countCheckedMods = 0;
-        private int modDescriptionMaxLeft = 300;
         private SettingsManager manager = new SettingsManager(ModManager.GameDir);
+
+        private ModDescriptionPage modDescription = new ModDescriptionPage();
+        private NoInstalledPage noInstallNotice = new NoInstalledPage();
 
         public formMods()
         {
@@ -26,13 +29,12 @@ namespace SnakeBite
 
         private void formMain_Load(object sender, EventArgs e)
         {
-
             // Refresh button state
             RefreshInstalledMods(true);
 
             // Show form before continuing
-            this.Show();
-
+            Show();
+            AdjustSize();
         }
 
         private delegate void GoToModListDelegate();
@@ -103,17 +105,6 @@ namespace SnakeBite
             Process.Start(Debug.LOG_FILE);
         }
 
-        private void labelModWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) //inspired by Nexus Mod Manager, the version number doubles as a link to the webpage.
-        {
-
-            var mods = manager.GetInstalledMods();
-            ModEntry selectedMod = mods[listInstalledMods.SelectedIndex];
-            try
-            {
-                Process.Start(selectedMod.Website);
-            } catch { }
-        }
-
         private void listInstalledMods_SelectedIndexChanged(object sender, EventArgs e)// Populate mod details pane
         {
 
@@ -121,19 +112,7 @@ namespace SnakeBite
             {
                 var mods = manager.GetInstalledMods();
                 ModEntry selectedMod = mods[listInstalledMods.SelectedIndex];
-                labelModName.Text = selectedMod.Name;
-                labelModAuthor.Text = "By " + selectedMod.Author;
-                labelModWebsite.Text = selectedMod.Version;
-                textDescription.Text = selectedMod.Description;
-
-                if (manager.IsUpToDate(selectedMod.MGSVersion.AsVersion()))
-                {
-                    labelVersionWarning.ForeColor = Color.MediumSeaGreen; labelVersionWarning.BackColor = Color.Gainsboro; labelVersionWarning.Text = "✔";
-                }
-                else
-                {
-                    labelVersionWarning.ForeColor = Color.Yellow; labelVersionWarning.BackColor = Color.Chocolate; labelVersionWarning.Text = "!";
-                }
+                modDescription.ShowModInfo(selectedMod);
             }
         }
 
@@ -215,8 +194,8 @@ namespace SnakeBite
 
             if (mods.Count > 0)
             {
-                groupBoxNoModsNotice.Visible = false;
-                panelModDescription.Visible = true;
+                panelContent.Controls.Clear();
+                panelContent.Controls.Add(modDescription);
 
                 foreach (ModEntry mod in mods)
                 {
@@ -235,15 +214,9 @@ namespace SnakeBite
                 }
             } else
             {
-
-                groupBoxNoModsNotice.Visible = true;
-                panelModDescription.Visible = false;
+                panelContent.Controls.Clear();
+                panelContent.Controls.Add(noInstallNotice);
             }
-        }
-
-        private void linkLabelSnakeBiteModsList_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) // opens the [SBWM] search filter on nexus mods, randomly sorted.
-        {
-            Process.Start("https://www.nexusmods.com/metalgearsolidvtpp/search/?search_description=SBWM");
         }
 
         private void buttonLaunchGame_Click(object sender, EventArgs e)
@@ -260,43 +233,22 @@ namespace SnakeBite
             } catch { }
         }
 
-        private void labelVersionWarning_Click(object sender, EventArgs e)
-        {
-            if (listInstalledMods.SelectedIndex >= 0)
-            {
-                var mods = manager.GetInstalledMods();
-                ModEntry selectedMod = mods[listInstalledMods.SelectedIndex];
-                var currentMGSVersion = ModManager.GetMGSVersion();
-                var modMGSVersion = selectedMod.MGSVersion.AsVersion();
-                if (!manager.IsUpToDate(modMGSVersion)) // checks against intended gameversion
-                {
-                    if (currentMGSVersion > modMGSVersion) // checks against mgsvtpp.exe productversion
-                    {
-                        MessageBox.Show(String.Format("{0} appears to be for MGSV Version {1}, and may not be compatible with {2}.\n\nIt is recommended that you check for an updated version.", selectedMod.Name, modMGSVersion,currentMGSVersion), "Game version mismatch", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-                    if (currentMGSVersion < modMGSVersion)
-                    {
-                        MessageBox.Show(String.Format("{0} is intended for MGSV version {1}, but your installation is version {2}.\n\nThis mod may not be compatible with MGSV version {2}", selectedMod.Name, modMGSVersion, currentMGSVersion), "Update recommended", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                    }
-
-                } else
-                {
-                    MessageBox.Show(String.Format("This mod is up to date with the current MGSV version {0}", currentMGSVersion), "Mod is up to date", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-            }
-        }
-
         private void formMods_Resize(object sender, EventArgs e)
         {
-            int modListWidth = this.Width / 3;
+            AdjustSize();
+        }
+
+        private void AdjustSize()
+        {
+            int modListWidth = Width / 3;
 
             panelModList.Width = modListWidth;
 
-            panelModDescription.Left = panelModList.Width + 6;
-            panelModDescription.Width = this.Width - panelModList.Width - 28;
+            panelContent.Left = panelModList.Width + 6;
+            panelContent.Width = Width - panelModList.Width - 28;
 
-            groupBoxNoModsNotice.Left = panelModDescription.Left;
-            groupBoxNoModsNotice.Width = panelModDescription.Width;
+            modDescription.Size = panelContent.Size;
+            noInstallNotice.Size = panelContent.Size;
         }
     }
 }

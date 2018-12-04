@@ -22,7 +22,7 @@ namespace SnakeBite.Forms
         private int selectedIndex;
 
         private NoAddedPage noModsNotice = new NoAddedPage();
-        private PreinstallDescriptionPage modDescription = new PreinstallDescriptionPage();
+        private ModDescriptionPage modDescription = new ModDescriptionPage();
 
         public formInstallOrder()
         {
@@ -52,8 +52,8 @@ namespace SnakeBite.Forms
             {
                 buttonContinue.Enabled = true;
                 buttonRemove.Enabled = true;
-                //groupBoxNoModsNotice.Visible = false;
-                //panelContent.Visible = true;
+                buttonUp.Enabled = true;
+                buttonDown.Enabled = true;
                 this.panelContent.Controls.Clear();
                 this.panelContent.Controls.Add(modDescription);
 
@@ -71,11 +71,10 @@ namespace SnakeBite.Forms
             {
                 buttonContinue.Enabled = false;
                 buttonRemove.Enabled = false;
-                //groupBoxNoModsNotice.Visible = true;
-                //panelContent.Visible = false;
+                buttonUp.Enabled = false;
+                buttonDown.Enabled = false;
                 this.panelContent.Controls.Clear();
                 this.panelContent.Controls.Add(noModsNotice);
-                Console.WriteLine("HERE");
 
             }
 
@@ -92,42 +91,13 @@ namespace SnakeBite.Forms
         }
 
         private void updateModDescription() //refreshes description panel with current index's metadata.
-        { /*
+        {
             if (selectedIndex >= 0)
             {
                 PreinstallEntry selectedMod = Mods[selectedIndex];
-                labelModName.Text = selectedMod.modInfo.Name;
-                labelModAuthor.Text = "By " + selectedMod.modInfo.Author;
-                labelModWebsite.Text = selectedMod.modInfo.Version;
-                textModDescription.Text = selectedMod.modInfo.Description.Replace("\n", "\r\n"); ;
-
-                if (manager.IsUpToDate(selectedMod.modInfo.MGSVersion.AsVersion()))
-                {
-                    labelVersionWarning.ForeColor = Color.MediumSeaGreen; labelVersionWarning.BackColor = Color.Gainsboro; labelVersionWarning.Text = "✔";
-                }
-                else
-                {
-                    labelVersionWarning.ForeColor = Color.Yellow; labelVersionWarning.BackColor = Color.Chocolate; labelVersionWarning.Text = "!";
-                }
-
-
-                string conflictDescription;
-                if (Mods[selectedIndex].ModConflicts.Count > 0)
-                {
-                    conflictDescription = "\r\nThis mod conflicts with: \r\n\r\n";
-                    foreach (string modname in selectedMod.ModConflicts)
-                    {
-                        conflictDescription += modname + "\r\n";
-                    }
-                }
-                else
-                {
-                    conflictDescription = "\r\nThis mod does not conflict with any other mods being installed.";
-                }
-                textConflictDescription.Text = conflictDescription;
+                modDescription.ShowModInfo(selectedMod.modInfo);
                 showConflictColors(); // updates the conflict visualization
             }
-            */
         }
 
         private void showConflictColors() // Inspired by Nexus Mod Manager, a nice way of visualizing conflicts for the user.
@@ -153,11 +123,11 @@ namespace SnakeBite.Forms
                 listInstallOrder.Items[selectedIndex].BackColor = Color.MediumSeaGreen;
         }
 
-        private void updateModConflicts() // Very computation-heavy, used sparingly. Checks current install list for conflicts.
+        private void updateModConflicts() 
         {
             int conflictCounter = 0;
-            PreinstallManager.getConflictList(Mods);
-            
+            PreinstallManager.getConflictList(Mods); // Very computation-heavy, used sparingly. Checks current install list for conflicts.
+
             for (int i = 0; i < Mods.Count; i++)
             {
                 if(Mods[i].ModConflicts.Count > 0)
@@ -165,12 +135,8 @@ namespace SnakeBite.Forms
                     conflictCounter++;
                 }
             }
-            /*
-            if (conflictCounter == 0)
-                labelConflictCount.Text = "0 Conflicts Detected";
-            else
-                labelConflictCount.Text = conflictCounter.ToString() + " Mods With Conflicts";
-            */
+
+            labelConflictCount.Text = string.Format("Conflicts Detected: {0}", conflictCounter);
         }
 
         private void buttonUp_Click(object sender, EventArgs e) //moves the selected mod up one on the list. Installs earlier.
@@ -260,45 +226,13 @@ namespace SnakeBite.Forms
             }
         }
       
-        private void labelInstallWarning_Click(object sender, EventArgs e)
+        private void labelExplainConflict_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("A conflict occurs when two or more mods attempt to modify the same game file. Whichever mod installs last on the list will overwrite any conflicting game files of the mods above it. " +
-       "In other words: The lower the mod, the higher the priority.\n\nThe user can adjust the installation order by using the arrow buttons. " +
+            MessageBox.Show("A 'Mod Conflict' is when two or more mods attempt to modify the same game file. Whichever mod installs last in the Installation Order will overwrite any conflicting files of the mods above it. " +
+       "In other words: The lower the mod, the higher the priority.\n\nThe user can adjust the Installation Order by using the arrow buttons. " +
        "Conflicts can also be resolved by removing mods from the list (removed mods will not be installed). \n\n" +
-       "Warning: overwriting a mod's data may cause significant problems in-game, which could affect your enjoyment. Install at your own risk.", "Resolving Mod Conflicts", MessageBoxButtons.OK, MessageBoxIcon.Question);
+       "Warning: overwriting a mod's data may cause significant problems in-game, which could affect your enjoyment. Install at your own risk.", "What is a Mod Conflict?", MessageBoxButtons.OK, MessageBoxIcon.Question);
         }
 
-        private void labelModWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            try //if the mod author didn't include a website, an exception occurs.
-            {
-                Process.Start(Mods[selectedIndex].modInfo.Website);
-            }
-            catch {}
-        }
-
-        private void labelVersionWarning_Click(object sender, EventArgs e)
-        {
-            PreinstallEntry selectedMod = Mods[selectedIndex];
-            var currentMGSVersion = ModManager.GetMGSVersion();
-            var modMGSVersion = selectedMod.modInfo.MGSVersion.AsVersion();
-            if (!manager.IsUpToDate(modMGSVersion))
-            {
-                if (currentMGSVersion > modMGSVersion && modMGSVersion > new Version(0, 0, 0, 0))
-                {
-                    MessageBox.Show(String.Format("{0} appears to be for MGSV Version {1}, and may not be compatible with {2}\n\nIt is recommended that you check for an updated version before installing.", selectedMod.modInfo.Name, modMGSVersion, currentMGSVersion), "Game version mismatch", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-                if (currentMGSVersion < modMGSVersion)
-                {
-                    MessageBox.Show(String.Format("{0} is intended for MGSV version {1}, but your installation is version {2}. This mod may not be compatible with MGSV version {2}", selectedMod.modInfo.Name, modMGSVersion, currentMGSVersion), "Update recommended", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                }
-
-            }
-            else
-            {
-                MessageBox.Show(String.Format("This mod is up to date with the current MGSV version {0}", currentMGSVersion), "Mod is up to date", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            }
-
-        }
     }
 }

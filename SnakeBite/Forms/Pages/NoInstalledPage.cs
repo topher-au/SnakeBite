@@ -7,6 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using System.Diagnostics;
 
 namespace SnakeBite.ModPages
 {
@@ -15,6 +16,11 @@ namespace SnakeBite.ModPages
         public NoInstalledPage()
         {
             InitializeComponent();
+        }
+
+        private void linkLabelSnakeBiteModsList_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e) // opens the [SBWM] search filter on nexus mods, randomly sorted.
+        {
+            Process.Start("https://www.nexusmods.com/metalgearsolidvtpp/search/?search_description=SBWM");
         }
     }
 }

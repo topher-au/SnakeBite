@@ -39,7 +39,9 @@
             // 
             // panelModDescription
             // 
-            this.panelModDescription.Anchor = System.Windows.Forms.AnchorStyles.None;
+            this.panelModDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panelModDescription.BackColor = System.Drawing.Color.DarkGray;
             this.panelModDescription.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelModDescription.Controls.Add(this.labelVersionWarning);
@@ -66,6 +68,7 @@
             this.labelVersionWarning.TabIndex = 15;
             this.labelVersionWarning.Text = "✔";
             this.labelVersionWarning.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelVersionWarning.Click += new System.EventHandler(this.labelVersionWarning_Click);
             // 
             // labelModWebsite
             // 
@@ -82,6 +85,7 @@
             this.labelModWebsite.TabStop = true;
             this.labelModWebsite.Text = "Mod Version Link To Website";
             this.labelModWebsite.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.labelModWebsite.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.labelModWebsite_LinkClicked);
             // 
             // textDescription
             // 

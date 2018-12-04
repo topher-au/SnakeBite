@@ -38,14 +38,16 @@
             this.labelInstallOrder = new System.Windows.Forms.Label();
             this.listInstallOrder = new System.Windows.Forms.ListView();
             this.columnModNames = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.labelConflictCount = new System.Windows.Forms.Label();
+            this.labelExplainConflict = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // buttonAdd
             // 
             this.buttonAdd.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.buttonAdd.Location = new System.Drawing.Point(12, 390);
+            this.buttonAdd.Location = new System.Drawing.Point(12, 436);
             this.buttonAdd.Name = "buttonAdd";
-            this.buttonAdd.Size = new System.Drawing.Size(231, 23);
+            this.buttonAdd.Size = new System.Drawing.Size(231, 24);
             this.buttonAdd.TabIndex = 2;
             this.buttonAdd.Text = "Add More Mods...";
             this.buttonAdd.UseVisualStyleBackColor = true;
@@ -54,9 +56,9 @@
             // buttonRemove
             // 
             this.buttonRemove.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.buttonRemove.Location = new System.Drawing.Point(12, 417);
+            this.buttonRemove.Location = new System.Drawing.Point(12, 463);
             this.buttonRemove.Name = "buttonRemove";
-            this.buttonRemove.Size = new System.Drawing.Size(231, 23);
+            this.buttonRemove.Size = new System.Drawing.Size(231, 24);
             this.buttonRemove.TabIndex = 3;
             this.buttonRemove.Text = "Remove Selected Mod";
             this.buttonRemove.UseVisualStyleBackColor = true;
@@ -65,9 +67,9 @@
             // buttonContinue
             // 
             this.buttonContinue.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.buttonContinue.Location = new System.Drawing.Point(485, 390);
+            this.buttonContinue.Location = new System.Drawing.Point(498, 436);
             this.buttonContinue.Name = "buttonContinue";
-            this.buttonContinue.Size = new System.Drawing.Size(173, 50);
+            this.buttonContinue.Size = new System.Drawing.Size(173, 51);
             this.buttonContinue.TabIndex = 4;
             this.buttonContinue.Text = "Continue Installation";
             this.buttonContinue.UseVisualStyleBackColor = true;
@@ -100,19 +102,19 @@
             this.labelModCount.BackColor = System.Drawing.Color.Silver;
             this.labelModCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.labelModCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelModCount.Location = new System.Drawing.Point(12, 365);
+            this.labelModCount.Location = new System.Drawing.Point(12, 386);
             this.labelModCount.Name = "labelModCount";
-            this.labelModCount.Size = new System.Drawing.Size(231, 20);
+            this.labelModCount.Size = new System.Drawing.Size(231, 24);
             this.labelModCount.TabIndex = 8;
             this.labelModCount.Text = "Total Count: 0";
-            this.labelModCount.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.labelModCount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             // 
             // panelContent
             // 
             this.panelContent.BackColor = System.Drawing.Color.Transparent;
-            this.panelContent.Location = new System.Drawing.Point(300, 11);
+            this.panelContent.Location = new System.Drawing.Point(292, 9);
             this.panelContent.Name = "panelContent";
-            this.panelContent.Size = new System.Drawing.Size(356, 373);
+            this.panelContent.Size = new System.Drawing.Size(379, 424);
             this.panelContent.TabIndex = 9;
             // 
             // labelInstallOrder
@@ -120,7 +122,7 @@
             this.labelInstallOrder.BackColor = System.Drawing.Color.Silver;
             this.labelInstallOrder.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.labelInstallOrder.Font = new System.Drawing.Font("Segoe UI", 9.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelInstallOrder.Location = new System.Drawing.Point(12, 11);
+            this.labelInstallOrder.Location = new System.Drawing.Point(12, 9);
             this.labelInstallOrder.Name = "labelInstallOrder";
             this.labelInstallOrder.Size = new System.Drawing.Size(231, 26);
             this.labelInstallOrder.TabIndex = 11;
@@ -137,11 +139,11 @@
             this.listInstallOrder.FullRowSelect = true;
             this.listInstallOrder.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.listInstallOrder.HideSelection = false;
-            this.listInstallOrder.Location = new System.Drawing.Point(12, 36);
+            this.listInstallOrder.Location = new System.Drawing.Point(12, 34);
             this.listInstallOrder.MultiSelect = false;
             this.listInstallOrder.Name = "listInstallOrder";
             this.listInstallOrder.ShowGroups = false;
-            this.listInstallOrder.Size = new System.Drawing.Size(231, 330);
+            this.listInstallOrder.Size = new System.Drawing.Size(231, 349);
             this.listInstallOrder.TabIndex = 12;
             this.listInstallOrder.UseCompatibleStateImageBehavior = false;
             this.listInstallOrder.View = System.Windows.Forms.View.Details;
@@ -151,13 +153,42 @@
             // 
             this.columnModNames.Width = 226;
             // 
+            // labelConflictCount
+            // 
+            this.labelConflictCount.BackColor = System.Drawing.Color.Silver;
+            this.labelConflictCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelConflictCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
+            this.labelConflictCount.Location = new System.Drawing.Point(12, 409);
+            this.labelConflictCount.Name = "labelConflictCount";
+            this.labelConflictCount.Size = new System.Drawing.Size(231, 24);
+            this.labelConflictCount.TabIndex = 13;
+            this.labelConflictCount.Text = "Conflicts Detected: 0";
+            this.labelConflictCount.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            // 
+            // labelExplainConflict
+            // 
+            this.labelExplainConflict.BackColor = System.Drawing.Color.LightGray;
+            this.labelExplainConflict.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.labelExplainConflict.Cursor = System.Windows.Forms.Cursors.Help;
+            this.labelExplainConflict.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelExplainConflict.ForeColor = System.Drawing.Color.Blue;
+            this.labelExplainConflict.Location = new System.Drawing.Point(199, 409);
+            this.labelExplainConflict.Name = "labelExplainConflict";
+            this.labelExplainConflict.Size = new System.Drawing.Size(44, 24);
+            this.labelExplainConflict.TabIndex = 14;
+            this.labelExplainConflict.Text = "?";
+            this.labelExplainConflict.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelExplainConflict.Click += new System.EventHandler(this.labelExplainConflict_Click);
+            // 
             // formInstallOrder
             // 
             this.AcceptButton = this.buttonContinue;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
-            this.ClientSize = new System.Drawing.Size(665, 444);
+            this.ClientSize = new System.Drawing.Size(683, 499);
+            this.Controls.Add(this.labelExplainConflict);
+            this.Controls.Add(this.labelConflictCount);
             this.Controls.Add(this.listInstallOrder);
             this.Controls.Add(this.labelInstallOrder);
             this.Controls.Add(this.panelContent);
@@ -190,5 +221,7 @@
         private System.Windows.Forms.Label labelInstallOrder;
         private System.Windows.Forms.ListView listInstallOrder;
         private System.Windows.Forms.ColumnHeader columnModNames;
+        private System.Windows.Forms.Label labelConflictCount;
+        private System.Windows.Forms.Label labelExplainConflict;
     }
 }
