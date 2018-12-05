@@ -25,7 +25,7 @@ namespace SnakeBite.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\Steam\\SteamApps\\Common\\MGS_TPP")]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
         public string InstallPath {
             get {
                 return ((string)(this["InstallPath"]));
@@ -73,13 +73,61 @@ namespace SnakeBite.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0.9.0.3")]
+        [global::System.Configuration.DefaultSettingValueAttribute("0.8.2.0")]
         public string LastSBVersion {
             get {
                 return ((string)(this["LastSBVersion"]));
             }
             set {
                 this["LastSBVersion"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool SkipLauncher {
+            get {
+                return ((bool)(this["SkipLauncher"]));
+            }
+            set {
+                this["SkipLauncher"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("0, 0")]
+        public global::System.Drawing.Point formModsLocation {
+            get {
+                return ((global::System.Drawing.Point)(this["formModsLocation"]));
+            }
+            set {
+                this["formModsLocation"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("600, 556")]
+        public global::System.Drawing.Size formModsSize {
+            get {
+                return ((global::System.Drawing.Size)(this["formModsSize"]));
+            }
+            set {
+                this["formModsSize"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool formModsMaximized {
+            get {
+                return ((bool)(this["formModsMaximized"]));
+            }
+            set {
+                this["formModsMaximized"] = value;
             }
         }
     }

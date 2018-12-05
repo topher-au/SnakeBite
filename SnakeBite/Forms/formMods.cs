@@ -32,9 +32,16 @@ namespace SnakeBite
             // Refresh button state
             RefreshInstalledMods(true);
 
-            // Show form before continuing
-            Show();
+            Location = Properties.Settings.Default.formModsLocation;
+            Size = Properties.Settings.Default.formModsSize;
+
+            if (Properties.Settings.Default.formModsMaximized == true)
+                WindowState = FormWindowState.Maximized;
+
+            menuItemSkipLauncher.Checked = Properties.Settings.Default.SkipLauncher;
             AdjustSize();
+
+            Show();
         }
 
         private delegate void GoToModListDelegate();
@@ -97,12 +104,6 @@ namespace SnakeBite
             ProgressWindow.Show("Uninstalling Mod(s)", "Uninstalling...\nNote:\nThe uninstall time depends greatly on\nthe mod's contents, the number of mods being uninstalled\nand the mods that are still installed.", new Action((MethodInvoker)delegate { ModManager.UninstallMod(checkedModIndices); }));
             // Update installed mod list
             RefreshInstalledMods(true);
-        }
-
-        private void buttonOpenLogs_Click(object sender, EventArgs e)
-        {
-            Process.Start(Debug.LOG_FILE_PREV);
-            Process.Start(Debug.LOG_FILE);
         }
 
         private void listInstalledMods_SelectedIndexChanged(object sender, EventArgs e)// Populate mod details pane
@@ -225,14 +226,6 @@ namespace SnakeBite
             Application.Exit();
         }
 
-        private void buttonOpenGameDir_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                Process.Start(Properties.Settings.Default.InstallPath);
-            } catch { }
-        }
-
         private void formMods_Resize(object sender, EventArgs e)
         {
             AdjustSize();
@@ -249,6 +242,124 @@ namespace SnakeBite
 
             modDescription.Size = panelContent.Size;
             noInstallNotice.Size = panelContent.Size;
+        }
+
+        private void menuItemOpenDir_Click(object sender, EventArgs e)
+        {
+            string installPath = Properties.Settings.Default.InstallPath;
+            try
+            {
+                Process.Start(installPath);
+            }
+            catch
+            {
+                Debug.LogLine(String.Format("Failed to open game directory: {0}", installPath));
+            }
+        }
+
+        private void menuItemOpenLogs_Click(object sender, EventArgs e)
+        {
+            Process.Start(Debug.LOG_FILE_PREV);
+            Process.Start(Debug.LOG_FILE);
+        }
+
+        private void menuItemBrowseMods_Click(object sender, EventArgs e)
+        {
+            Process.Start(ModManager.SBWMSearchURL);
+        }
+
+        private void menuItemExit_Click(object sender, EventArgs e)
+        {
+            Application.Exit();
+        }
+
+        private void menuItemSkipLauncher_Click(object sender, EventArgs e)
+        {
+            menuItemSkipLauncher.Checked = !menuItemSkipLauncher.Checked;
+
+            Properties.Settings.Default.SkipLauncher = menuItemSkipLauncher.Checked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void menuItemOpenSettings_Click(object sender, EventArgs e)
+        {
+            formSettings Settings = new formSettings();
+            Settings.Owner = this;
+            Settings.ShowDialog();
+
+            bool modsEnabled = !BackupManager.ModsDisabled(); //TODO: this will require some more methods to ensure that user can't mess with mods while they're disabled
+
+        }
+
+        private void formMods_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Properties.Settings.Default.formModsLocation = Location;
+
+            if (WindowState == FormWindowState.Normal)
+            {
+                Properties.Settings.Default.formModsSize = Size;
+            }
+            else
+            {
+                Properties.Settings.Default.formModsSize = RestoreBounds.Size;
+            }
+
+            Properties.Settings.Default.formModsMaximized = (WindowState == FormWindowState.Maximized);
+
+            Properties.Settings.Default.Save();
+        }
+
+        private void menuItemHelpInstall_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("", "Installing a Mod", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void menuItemHelpUninstall_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("", "Uninstalling a Mod", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void menuItemHelpCreate_Click(object sender, EventArgs e) // add a prompt to open makebite
+        {
+            if(MessageBox.Show("\n\nWould you like to launch MakeBite?", "Installing a Mod", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+            {
+                LaunchMakeBite();
+            }
+        }
+
+        private void menuItemOpenMakeBite_Click(object sender, EventArgs e)
+        {
+            LaunchMakeBite();
+        }
+
+        private void LaunchMakeBite()
+        {
+            string makeBitePath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "makebite.exe");
+
+            try
+            {
+                Process.Start(makeBitePath);
+            }
+            catch
+            {
+                MessageBox.Show("MakeBite application could not be opened from " + makeBitePath, "Failed to launch MakeBite", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+        }
+
+        private void menuItemHelpConflicts_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("", "Mod Conflicts", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        }
+
+        private void menuItemOpenBugReport_Click(object sender, EventArgs e)
+        {
+            MessageBox.Show("If you have found an issue with SnakeBite, please report the issue with as much information as you can gather! Be sure to include the relevant Debug Log in the bug report, and do your best to explain how you are able to reproduce the issue.\n\nAlso, always search through the existing bug reports to make sure that your issue hasn't already been created. If your bug is already reported, add your information to that bug report instead!", "Reporting a Bug", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Process.Start(ModManager.SBWMBugURL);
+        }
+
+        private void menuItemWikiLink_Click(object sender, EventArgs e)
+        {
+            Process.Start(ModManager.WikiURL);
         }
     }
 }

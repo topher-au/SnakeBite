@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="InstallPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)">C:\Program Files (x86)\Steam\SteamApps\Common\MGS_TPP</Value>
+      <Value Profile="(Default)" />
     </Setting>
     <Setting Name="DisableConflictCheck" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -16,6 +16,18 @@
     </Setting>
     <Setting Name="LastSBVersion" Type="System.String" Scope="User">
       <Value Profile="(Default)">0.8.2.0</Value>
+    </Setting>
+    <Setting Name="SkipLauncher" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
+    </Setting>
+    <Setting Name="formModsLocation" Type="System.Drawing.Point" Scope="User">
+      <Value Profile="(Default)">0, 0</Value>
+    </Setting>
+    <Setting Name="formModsSize" Type="System.Drawing.Size" Scope="User">
+      <Value Profile="(Default)">600, 556</Value>
+    </Setting>
+    <Setting Name="formModsMaximized" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">False</Value>
     </Setting>
   </Settings>
 </SettingsFile>

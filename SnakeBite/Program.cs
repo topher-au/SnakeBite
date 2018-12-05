@@ -183,9 +183,11 @@ namespace SnakeBite
 
                 if (closeApp) return;
             }
-            // todo: skip launcher option
-            Application.Run(new formLauncher());
-            //Application.Run(new formMods());
+            
+            if (Properties.Settings.Default.SkipLauncher)
+                Application.Run(new formMods());
+            else
+                Application.Run(new formLauncher());
         }
     }
 }
