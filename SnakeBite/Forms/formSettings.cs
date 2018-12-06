@@ -11,6 +11,7 @@ using System.Diagnostics;
 using ICSharpCode.SharpZipLib.Zip;
 using System.IO;
 using System.Xml.Serialization;
+using SnakeBite.ModPages;
 
 namespace SnakeBite
 {
@@ -18,6 +19,8 @@ namespace SnakeBite
     {
         List<string> themeFiles = new List<string>() { "" };
         SettingsManager manager = new SettingsManager(ModManager.GameDir);
+        LogPage log = new LogPage();
+
         public formSettings()
         {
             InitializeComponent();
@@ -167,11 +170,11 @@ namespace SnakeBite
         {
             if (BackupManager.ModsDisabled())
             {
-                ProgressWindow.Show("Working", "Enabling mods, please wait...", new Action(BackupManager.SwitchToMods));
+                ProgressWindow.Show("Working", "Enabling mods, please wait...", new Action(BackupManager.SwitchToMods), log);
             }
             else
             {
-                ProgressWindow.Show("Working", "Disabling mods, please wait...\n\nNote:\n You will not have access to the Mod Menu\nwhile mods are disabled.", new Action(BackupManager.SwitchToOriginal));
+                ProgressWindow.Show("Working", "Disabling mods, please wait...", new Action(BackupManager.SwitchToOriginal), log);
             }
             UpdateModToggle();
         }

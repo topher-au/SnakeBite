@@ -28,61 +28,50 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.groupBoxNoModsNotice = new System.Windows.Forms.GroupBox();
             this.labelNoMod = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.groupBoxNoModsNotice.SuspendLayout();
-            this.panel1.SuspendLayout();
+            this.panelNoMods = new System.Windows.Forms.Panel();
+            this.panelNoMods.SuspendLayout();
             this.SuspendLayout();
-            // 
-            // groupBoxNoModsNotice
-            // 
-            this.groupBoxNoModsNotice.BackColor = System.Drawing.Color.Gray;
-            this.groupBoxNoModsNotice.Controls.Add(this.labelNoMod);
-            this.groupBoxNoModsNotice.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.groupBoxNoModsNotice.Location = new System.Drawing.Point(0, -6);
-            this.groupBoxNoModsNotice.Name = "groupBoxNoModsNotice";
-            this.groupBoxNoModsNotice.Size = new System.Drawing.Size(379, 430);
-            this.groupBoxNoModsNotice.TabIndex = 11;
-            this.groupBoxNoModsNotice.TabStop = false;
             // 
             // labelNoMod
             // 
+            this.labelNoMod.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.labelNoMod.BackColor = System.Drawing.Color.Gray;
             this.labelNoMod.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold);
-            this.labelNoMod.Location = new System.Drawing.Point(10, 16);
+            this.labelNoMod.Location = new System.Drawing.Point(3, 17);
             this.labelNoMod.Name = "labelNoMod";
-            this.labelNoMod.Size = new System.Drawing.Size(338, 55);
+            this.labelNoMod.Size = new System.Drawing.Size(394, 55);
             this.labelNoMod.TabIndex = 1;
             this.labelNoMod.Text = "No Mods Added";
             this.labelNoMod.TextAlign = System.Drawing.ContentAlignment.BottomCenter;
             // 
-            // panel1
+            // panelNoMods
             // 
-            this.panel1.BackColor = System.Drawing.Color.Gray;
-            this.panel1.Controls.Add(this.groupBoxNoModsNotice);
-            this.panel1.Location = new System.Drawing.Point(0, 0);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(379, 424);
-            this.panel1.TabIndex = 12;
+            this.panelNoMods.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelNoMods.BackColor = System.Drawing.Color.Gray;
+            this.panelNoMods.Controls.Add(this.labelNoMod);
+            this.panelNoMods.Location = new System.Drawing.Point(0, 0);
+            this.panelNoMods.Name = "panelNoMods";
+            this.panelNoMods.Size = new System.Drawing.Size(400, 424);
+            this.panelNoMods.TabIndex = 12;
             // 
             // NoAddedPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.panelNoMods);
             this.Name = "NoAddedPage";
-            this.Size = new System.Drawing.Size(379, 424);
-            this.groupBoxNoModsNotice.ResumeLayout(false);
-            this.panel1.ResumeLayout(false);
+            this.Size = new System.Drawing.Size(400, 424);
+            this.panelNoMods.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
-
-        private System.Windows.Forms.GroupBox groupBoxNoModsNotice;
         private System.Windows.Forms.Label labelNoMod;
-        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.Panel panelNoMods;
     }
 }

@@ -23,6 +23,7 @@ namespace SnakeBite.Forms
 
         private NoAddedPage noModsNotice = new NoAddedPage();
         private ModDescriptionPage modDescription = new ModDescriptionPage();
+        private LogPage log = new LogPage();
 
         public formInstallOrder()
         {
@@ -220,8 +221,9 @@ namespace SnakeBite.Forms
             DialogResult confirmInstall = MessageBox.Show(String.Format("The following mods will be installed:\n" + modsToInstall), "SnakeBite", MessageBoxButtons.OKCancel);
             if (confirmInstall == DialogResult.OK)
             {
-                string progressText = String.Format("Installing...\n\nNote:\nThe install time depends greatly on\nthe mod's contents, number of mods being installed\nand the mods that are already installed.");
-                ProgressWindow.Show("Installing Mod(s)", progressText, new Action((MethodInvoker)delegate { ModManager.InstallMod(modFiles); }));
+                this.panelContent.Controls.Clear();
+                this.panelContent.Controls.Add(log);
+                ProgressWindow.Show("Installing Mod(s)", "Installing, please wait...", new Action((MethodInvoker)delegate { ModManager.InstallMod(modFiles); }), log);
                 this.Close(); // the form closes upon installation. If the install is cancelled, the form remains open.
             }
         }

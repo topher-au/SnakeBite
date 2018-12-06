@@ -45,7 +45,7 @@
             // buttonAdd
             // 
             this.buttonAdd.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.buttonAdd.Location = new System.Drawing.Point(12, 436);
+            this.buttonAdd.Location = new System.Drawing.Point(12, 438);
             this.buttonAdd.Name = "buttonAdd";
             this.buttonAdd.Size = new System.Drawing.Size(231, 24);
             this.buttonAdd.TabIndex = 2;
@@ -56,7 +56,7 @@
             // buttonRemove
             // 
             this.buttonRemove.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.buttonRemove.Location = new System.Drawing.Point(12, 463);
+            this.buttonRemove.Location = new System.Drawing.Point(12, 465);
             this.buttonRemove.Name = "buttonRemove";
             this.buttonRemove.Size = new System.Drawing.Size(231, 24);
             this.buttonRemove.TabIndex = 3;
@@ -67,7 +67,7 @@
             // buttonContinue
             // 
             this.buttonContinue.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.buttonContinue.Location = new System.Drawing.Point(498, 436);
+            this.buttonContinue.Location = new System.Drawing.Point(522, 438);
             this.buttonContinue.Name = "buttonContinue";
             this.buttonContinue.Size = new System.Drawing.Size(173, 51);
             this.buttonContinue.TabIndex = 4;
@@ -102,7 +102,7 @@
             this.labelModCount.BackColor = System.Drawing.Color.Silver;
             this.labelModCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.labelModCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.labelModCount.Location = new System.Drawing.Point(12, 386);
+            this.labelModCount.Location = new System.Drawing.Point(12, 388);
             this.labelModCount.Name = "labelModCount";
             this.labelModCount.Size = new System.Drawing.Size(231, 24);
             this.labelModCount.TabIndex = 8;
@@ -112,9 +112,10 @@
             // panelContent
             // 
             this.panelContent.BackColor = System.Drawing.Color.Transparent;
-            this.panelContent.Location = new System.Drawing.Point(292, 9);
+            this.panelContent.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelContent.Location = new System.Drawing.Point(293, 9);
             this.panelContent.Name = "panelContent";
-            this.panelContent.Size = new System.Drawing.Size(379, 424);
+            this.panelContent.Size = new System.Drawing.Size(400, 424);
             this.panelContent.TabIndex = 9;
             // 
             // labelInstallOrder
@@ -143,7 +144,7 @@
             this.listInstallOrder.MultiSelect = false;
             this.listInstallOrder.Name = "listInstallOrder";
             this.listInstallOrder.ShowGroups = false;
-            this.listInstallOrder.Size = new System.Drawing.Size(231, 349);
+            this.listInstallOrder.Size = new System.Drawing.Size(231, 351);
             this.listInstallOrder.TabIndex = 12;
             this.listInstallOrder.UseCompatibleStateImageBehavior = false;
             this.listInstallOrder.View = System.Windows.Forms.View.Details;
@@ -158,7 +159,7 @@
             this.labelConflictCount.BackColor = System.Drawing.Color.Silver;
             this.labelConflictCount.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.labelConflictCount.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Bold);
-            this.labelConflictCount.Location = new System.Drawing.Point(12, 409);
+            this.labelConflictCount.Location = new System.Drawing.Point(12, 411);
             this.labelConflictCount.Name = "labelConflictCount";
             this.labelConflictCount.Size = new System.Drawing.Size(231, 24);
             this.labelConflictCount.TabIndex = 13;
@@ -172,7 +173,7 @@
             this.labelExplainConflict.Cursor = System.Windows.Forms.Cursors.Help;
             this.labelExplainConflict.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Underline, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelExplainConflict.ForeColor = System.Drawing.Color.Blue;
-            this.labelExplainConflict.Location = new System.Drawing.Point(199, 409);
+            this.labelExplainConflict.Location = new System.Drawing.Point(199, 411);
             this.labelExplainConflict.Name = "labelExplainConflict";
             this.labelExplainConflict.Size = new System.Drawing.Size(44, 24);
             this.labelExplainConflict.TabIndex = 14;
@@ -186,7 +187,7 @@
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
-            this.ClientSize = new System.Drawing.Size(683, 499);
+            this.ClientSize = new System.Drawing.Size(705, 499);
             this.Controls.Add(this.labelExplainConflict);
             this.Controls.Add(this.labelConflictCount);
             this.Controls.Add(this.listInstallOrder);

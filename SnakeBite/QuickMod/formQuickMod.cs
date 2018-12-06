@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SnakeBite.ModPages;
 
 namespace SnakeBite.QuickMod
 {
@@ -16,6 +17,7 @@ namespace SnakeBite.QuickMod
         private int page = 0;
         private SelectZipPanel wp = new SelectZipPanel();
         private CreateModPanel cm = new CreateModPanel();
+        LogPage log = new LogPage();
 
         public formQuickMod()
         {
@@ -95,7 +97,7 @@ namespace SnakeBite.QuickMod
         {
             List<string> InstallFileList = new List<string>();
             InstallFileList.Add(OutputFile);
-            ProgressWindow.Show("Installing Mod", String.Format("Installing {0}, please wait...", cm.textModName.Text), new Action((MethodInvoker)delegate { ModManager.InstallMod(InstallFileList); }));
+            ProgressWindow.Show("Installing Mod", String.Format("Installing {0}, please wait...", cm.textModName.Text), new Action((MethodInvoker)delegate { ModManager.InstallMod(InstallFileList); }), log);
         }
 
         private void buttonNext_Click(object sender, EventArgs e)

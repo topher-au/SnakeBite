@@ -40,6 +40,8 @@
             this.menuItemFile = new System.Windows.Forms.MenuItem();
             this.menuItemOpenDir = new System.Windows.Forms.MenuItem();
             this.menuItemOpenLogs = new System.Windows.Forms.MenuItem();
+            this.menuItem2 = new System.Windows.Forms.MenuItem();
+            this.menuItemOpenMakeBite = new System.Windows.Forms.MenuItem();
             this.menuItem6 = new System.Windows.Forms.MenuItem();
             this.menuItemBrowseMods = new System.Windows.Forms.MenuItem();
             this.menuItem8 = new System.Windows.Forms.MenuItem();
@@ -55,11 +57,9 @@
             this.menuItemHelpCreate = new System.Windows.Forms.MenuItem();
             this.menuItemHelpConflicts = new System.Windows.Forms.MenuItem();
             this.menuItem18 = new System.Windows.Forms.MenuItem();
+            this.menuItemWikiLink = new System.Windows.Forms.MenuItem();
             this.menuItemOpenBugReport = new System.Windows.Forms.MenuItem();
             this.panelModList = new System.Windows.Forms.Panel();
-            this.menuItemOpenMakeBite = new System.Windows.Forms.MenuItem();
-            this.menuItem2 = new System.Windows.Forms.MenuItem();
-            this.menuItemWikiLink = new System.Windows.Forms.MenuItem();
             this.panelModList.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -75,7 +75,7 @@
             this.listInstalledMods.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.listInstalledMods.Name = "listInstalledMods";
             this.listInstalledMods.RightToLeft = System.Windows.Forms.RightToLeft.No;
-            this.listInstalledMods.Size = new System.Drawing.Size(191, 401);
+            this.listInstalledMods.Size = new System.Drawing.Size(191, 380);
             this.listInstalledMods.TabIndex = 3;
             this.listInstalledMods.Tag = "";
             this.listInstalledMods.ItemCheck += new System.Windows.Forms.ItemCheckEventHandler(this.listInstalledMods_ItemCheck);
@@ -87,7 +87,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonInstall.BackColor = System.Drawing.Color.Transparent;
             this.buttonInstall.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.buttonInstall.Location = new System.Drawing.Point(0, 427);
+            this.buttonInstall.Location = new System.Drawing.Point(0, 406);
             this.buttonInstall.Name = "buttonInstall";
             this.buttonInstall.Size = new System.Drawing.Size(191, 23);
             this.buttonInstall.TabIndex = 4;
@@ -101,7 +101,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonUninstall.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonUninstall.Enabled = false;
-            this.buttonUninstall.Location = new System.Drawing.Point(0, 453);
+            this.buttonUninstall.Location = new System.Drawing.Point(0, 432);
             this.buttonUninstall.Name = "buttonUninstall";
             this.buttonUninstall.Size = new System.Drawing.Size(191, 23);
             this.buttonUninstall.TabIndex = 5;
@@ -127,29 +127,31 @@
             // checkBoxMarkAll
             // 
             this.checkBoxMarkAll.AutoSize = true;
+            this.checkBoxMarkAll.BackColor = System.Drawing.Color.Transparent;
             this.checkBoxMarkAll.Checked = true;
             this.checkBoxMarkAll.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxMarkAll.Location = new System.Drawing.Point(8, 13);
+            this.checkBoxMarkAll.Location = new System.Drawing.Point(7, 13);
             this.checkBoxMarkAll.Name = "checkBoxMarkAll";
             this.checkBoxMarkAll.Size = new System.Drawing.Size(15, 14);
             this.checkBoxMarkAll.TabIndex = 7;
-            this.checkBoxMarkAll.UseVisualStyleBackColor = true;
+            this.checkBoxMarkAll.UseVisualStyleBackColor = false;
             this.checkBoxMarkAll.Click += new System.EventHandler(this.checkBoxMarkAll_Click);
             // 
             // panelContent
             // 
             this.panelContent.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom)));
             this.panelContent.BackColor = System.Drawing.Color.Transparent;
-            this.panelContent.Location = new System.Drawing.Point(201, 9);
+            this.panelContent.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelContent.Location = new System.Drawing.Point(197, 9);
             this.panelContent.Name = "panelContent";
-            this.panelContent.Size = new System.Drawing.Size(379, 424);
+            this.panelContent.Size = new System.Drawing.Size(420, 403);
             this.panelContent.TabIndex = 10;
             // 
             // buttonLaunchGame
             // 
             this.buttonLaunchGame.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonLaunchGame.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.buttonLaunchGame.Location = new System.Drawing.Point(395, 436);
+            this.buttonLaunchGame.Location = new System.Drawing.Point(432, 415);
             this.buttonLaunchGame.Name = "buttonLaunchGame";
             this.buttonLaunchGame.Size = new System.Drawing.Size(185, 49);
             this.buttonLaunchGame.TabIndex = 11;
@@ -189,6 +191,17 @@
             this.menuItemOpenLogs.Index = 1;
             this.menuItemOpenLogs.Text = "Open Debug Logs";
             this.menuItemOpenLogs.Click += new System.EventHandler(this.menuItemOpenLogs_Click);
+            // 
+            // menuItem2
+            // 
+            this.menuItem2.Index = 2;
+            this.menuItem2.Text = "-";
+            // 
+            // menuItemOpenMakeBite
+            // 
+            this.menuItemOpenMakeBite.Index = 3;
+            this.menuItemOpenMakeBite.Text = "Launch MakeBite";
+            this.menuItemOpenMakeBite.Click += new System.EventHandler(this.menuItemOpenMakeBite_Click);
             // 
             // menuItem6
             // 
@@ -286,6 +299,12 @@
             this.menuItem18.Index = 5;
             this.menuItem18.Text = "-";
             // 
+            // menuItemWikiLink
+            // 
+            this.menuItemWikiLink.Index = 6;
+            this.menuItemWikiLink.Text = "MGSV Modding Wiki";
+            this.menuItemWikiLink.Click += new System.EventHandler(this.menuItemWikiLink_Click);
+            // 
             // menuItemOpenBugReport
             // 
             this.menuItemOpenBugReport.Index = 7;
@@ -304,38 +323,21 @@
             this.panelModList.Location = new System.Drawing.Point(4, 9);
             this.panelModList.MaximumSize = new System.Drawing.Size(300, 9001);
             this.panelModList.Name = "panelModList";
-            this.panelModList.Size = new System.Drawing.Size(191, 476);
+            this.panelModList.Size = new System.Drawing.Size(191, 455);
             this.panelModList.TabIndex = 12;
-            // 
-            // menuItemOpenMakeBite
-            // 
-            this.menuItemOpenMakeBite.Index = 3;
-            this.menuItemOpenMakeBite.Text = "Launch MakeBite";
-            this.menuItemOpenMakeBite.Click += new System.EventHandler(this.menuItemOpenMakeBite_Click);
-            // 
-            // menuItem2
-            // 
-            this.menuItem2.Index = 2;
-            this.menuItem2.Text = "-";
-            // 
-            // menuItemWikiLink
-            // 
-            this.menuItemWikiLink.Index = 6;
-            this.menuItemWikiLink.Text = "MGSV Modding Wiki";
-            this.menuItemWikiLink.Click += new System.EventHandler(this.menuItemWikiLink_Click);
             // 
             // formMods
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.Gray;
-            this.ClientSize = new System.Drawing.Size(584, 497);
+            this.ClientSize = new System.Drawing.Size(621, 476);
             this.Controls.Add(this.buttonLaunchGame);
             this.Controls.Add(this.checkBoxMarkAll);
             this.Controls.Add(this.panelContent);
             this.Controls.Add(this.panelModList);
             this.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Menu = this.mainMenuMods;
-            this.MinimumSize = new System.Drawing.Size(583, 450);
+            this.MinimumSize = new System.Drawing.Size(637, 450);
             this.Name = "formMods";
             this.ShowIcon = false;
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Show;

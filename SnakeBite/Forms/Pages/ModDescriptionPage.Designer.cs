@@ -43,7 +43,6 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelModDescription.BackColor = System.Drawing.Color.DarkGray;
-            this.panelModDescription.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.panelModDescription.Controls.Add(this.labelVersionWarning);
             this.panelModDescription.Controls.Add(this.labelModWebsite);
             this.panelModDescription.Controls.Add(this.textDescription);
@@ -51,7 +50,7 @@
             this.panelModDescription.Controls.Add(this.labelModName);
             this.panelModDescription.Location = new System.Drawing.Point(0, 0);
             this.panelModDescription.Name = "panelModDescription";
-            this.panelModDescription.Size = new System.Drawing.Size(379, 424);
+            this.panelModDescription.Size = new System.Drawing.Size(400, 424);
             this.panelModDescription.TabIndex = 11;
             // 
             // labelVersionWarning
@@ -62,7 +61,7 @@
             this.labelVersionWarning.Cursor = System.Windows.Forms.Cursors.Hand;
             this.labelVersionWarning.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelVersionWarning.ForeColor = System.Drawing.Color.MediumSeaGreen;
-            this.labelVersionWarning.Location = new System.Drawing.Point(331, 392);
+            this.labelVersionWarning.Location = new System.Drawing.Point(354, 394);
             this.labelVersionWarning.Name = "labelVersionWarning";
             this.labelVersionWarning.Size = new System.Drawing.Size(42, 26);
             this.labelVersionWarning.TabIndex = 15;
@@ -77,10 +76,10 @@
             this.labelModWebsite.BackColor = System.Drawing.Color.Silver;
             this.labelModWebsite.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.labelModWebsite.Font = new System.Drawing.Font("Segoe UI", 10F);
-            this.labelModWebsite.Location = new System.Drawing.Point(4, 392);
+            this.labelModWebsite.Location = new System.Drawing.Point(4, 394);
             this.labelModWebsite.Name = "labelModWebsite";
             this.labelModWebsite.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.labelModWebsite.Size = new System.Drawing.Size(328, 26);
+            this.labelModWebsite.Size = new System.Drawing.Size(351, 26);
             this.labelModWebsite.TabIndex = 4;
             this.labelModWebsite.TabStop = true;
             this.labelModWebsite.Text = "Mod Version Link To Website";
@@ -101,7 +100,7 @@
             this.textDescription.Name = "textDescription";
             this.textDescription.ReadOnly = true;
             this.textDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textDescription.Size = new System.Drawing.Size(369, 347);
+            this.textDescription.Size = new System.Drawing.Size(392, 349);
             this.textDescription.TabIndex = 6;
             // 
             // labelModAuthor
@@ -130,7 +129,7 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.Controls.Add(this.panelModDescription);
             this.Name = "ModDescriptionPage";
-            this.Size = new System.Drawing.Size(379, 424);
+            this.Size = new System.Drawing.Size(400, 424);
             this.panelModDescription.ResumeLayout(false);
             this.panelModDescription.PerformLayout();
             this.ResumeLayout(false);

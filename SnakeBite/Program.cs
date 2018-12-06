@@ -16,6 +16,7 @@ namespace SnakeBite
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            ICSharpCode.SharpZipLib.Zip.ZipConstants.DefaultCodePage = 437;
             SettingsManager manager = new SettingsManager(ModManager.GameDir);
             manager.DisableConflictCheck = false;
             if (Properties.Settings.Default.LastSBVersion == null || new Version(Properties.Settings.Default.LastSBVersion) < ModManager.GetSBVersion())

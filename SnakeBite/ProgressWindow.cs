@@ -1,9 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 using SnakeBite.ModPages;
 
@@ -11,12 +7,11 @@ namespace SnakeBite
 {
     public static class ProgressWindow
     {
-        public static void Show(string WindowTitle, string ProgressText, Action WorkerFunction)
+        public static void Show(string WindowTitle, string ProgressText, Action WorkerFunction, LogPage logWindow)
         {
             var progressWindow = new formProgress();
             progressWindow.StatusText.Text = ProgressText;
-
-            var logWindow = new LogPage();
+            
             logWindow.Text = ProgressText;
 
             var progressWorker = new BackgroundWorker();
@@ -31,20 +26,17 @@ namespace SnakeBite
                         logWindow.Invoke((MethodInvoker)delegate { logWindow.Text = String.Format("Error during process :'{0}'", ProgressText); });
 
                         MessageBox.Show(String.Format("Exception :'{0}'\r\nCheck SnakeBites log for more info.", e.Error.Message), String.Format("Error during process :'{0}'", ProgressText), MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        //progressWindow.Invoke((MethodInvoker)delegate { progressWindow.Close(); });
                     } else if (e.Cancelled) {
                         
                     } else {
-                        //logWindow.Invoke((MethodInvoker)delegate { logWindow.Close(); }); MORBIDADDBACK
-                        //progressWindow.Invoke((MethodInvoker)delegate { progressWindow.Close(); });
+                        progressWindow.Invoke((MethodInvoker)delegate { progressWindow.Close(); });
                     }
                     progressWorker.Dispose();
                 }
              );
 
             progressWorker.RunWorkerAsync();
-            //logWindow.ShowDialog(); MORBIDADDBACK
-            //progressWindow.ShowDialog();
+            progressWindow.ShowDialog();
         }
     }
 }

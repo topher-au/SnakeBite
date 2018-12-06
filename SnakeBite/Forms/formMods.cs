@@ -21,6 +21,7 @@ namespace SnakeBite
 
         private ModDescriptionPage modDescription = new ModDescriptionPage();
         private NoInstalledPage noInstallNotice = new NoInstalledPage();
+        private LogPage log = new LogPage();
 
         public formMods()
         {
@@ -39,6 +40,7 @@ namespace SnakeBite
                 WindowState = FormWindowState.Maximized;
 
             menuItemSkipLauncher.Checked = Properties.Settings.Default.SkipLauncher;
+            SetModsEnabled(!BackupManager.ModsDisabled());
             AdjustSize();
 
             Show();
@@ -100,9 +102,10 @@ namespace SnakeBite
                 markedModNames += "\n" + mod.ToString();
             }
             if (!(MessageBox.Show("The following mods will be uninstalled:\n" + markedModNames, "SnakeBite", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)) return;
+            panelContent.Controls.Clear();
+            panelContent.Controls.Add(log);
+            ProgressWindow.Show("Uninstalling Mod(s)", "Uninstalling, please wait...", new Action((MethodInvoker)delegate { ModManager.UninstallMod(checkedModIndices); }), log);
 
-            ProgressWindow.Show("Uninstalling Mod(s)", "Uninstalling...\nNote:\nThe uninstall time depends greatly on\nthe mod's contents, the number of mods being uninstalled\nand the mods that are still installed.", new Action((MethodInvoker)delegate { ModManager.UninstallMod(checkedModIndices); }));
-            // Update installed mod list
             RefreshInstalledMods(true);
         }
 
@@ -129,7 +132,6 @@ namespace SnakeBite
                 if (countCheckedMods == 0)
                     buttonUninstall.Enabled = false;
             }
-
         }
 
         /// <summary>
@@ -170,7 +172,7 @@ namespace SnakeBite
             }
             ProgressWindow.Show("Installing Mod", $"Installing {installModPath}...",
                 new Action((MethodInvoker)delegate { ModManager.InstallMod(InstallFileList, skipCleanup); }
-            ));
+            ), log);
             this.Invoke((MethodInvoker)delegate { RefreshInstalledMods(); });
         }
 
@@ -183,7 +185,7 @@ namespace SnakeBite
             var mods = manager.GetInstalledMods();
             listInstalledMods.SetItemCheckState(mods.IndexOf(mod), CheckState.Checked);
             CheckedListBox.CheckedIndexCollection checkedModIndex = listInstalledMods.CheckedIndices;
-            ProgressWindow.Show("Uninstalling Mod", "Uninstalling...", new Action((MethodInvoker)delegate { ModManager.UninstallMod(checkedModIndex); }));
+            ProgressWindow.Show("Uninstalling Mod", "Uninstalling...", new Action((MethodInvoker)delegate { ModManager.UninstallMod(checkedModIndex); }), log);
         }
 
         private void RefreshInstalledMods(bool resetSelection = false) // Clears and then repopulates the installed mod list
@@ -218,6 +220,8 @@ namespace SnakeBite
                 panelContent.Controls.Clear();
                 panelContent.Controls.Add(noInstallNotice);
             }
+
+            AdjustSize();
         }
 
         private void buttonLaunchGame_Click(object sender, EventArgs e)
@@ -240,6 +244,7 @@ namespace SnakeBite
             panelContent.Left = panelModList.Width + 6;
             panelContent.Width = Width - panelModList.Width - 28;
 
+            log.Size = panelContent.Size;
             modDescription.Size = panelContent.Size;
             noInstallNotice.Size = panelContent.Size;
         }
@@ -287,8 +292,26 @@ namespace SnakeBite
             Settings.Owner = this;
             Settings.ShowDialog();
 
-            bool modsEnabled = !BackupManager.ModsDisabled(); //TODO: this will require some more methods to ensure that user can't mess with mods while they're disabled
+            bool modsEnabled = !BackupManager.ModsDisabled();
+            SetModsEnabled(modsEnabled);
+        }
 
+        private void SetModsEnabled(bool enabled)
+        {
+            labelInstalledMods.Text = "Installed Mods";
+            if (!enabled)
+            {
+                for (int i = 0; i < listInstalledMods.Items.Count; i++)
+                {
+                    listInstalledMods.SetItemCheckState(i, CheckState.Unchecked);
+                }
+
+                labelInstalledMods.Text += " [Disabled]";
+            }
+            buttonInstall.Enabled = enabled;
+            listInstalledMods.Enabled = enabled;
+            checkBoxMarkAll.Enabled = enabled;
+            labelInstalledMods.Enabled = enabled;
         }
 
         private void formMods_FormClosing(object sender, FormClosingEventArgs e)
@@ -311,28 +334,29 @@ namespace SnakeBite
 
         private void menuItemHelpInstall_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("", "Installing a Mod", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("SnakeBite can only install mods which have been properly packed into .MGSV files. After downloading a .MGSV mod file, the user can install it with SnakeBite by clicking the \"Install .MGSV File(s)\" button in the bottom-left corner of the menu." +
+                "\n\nMultiple mods can be selected at once when choosing what to install. Upon selecting the mod(s), SnakeBite will open the Installation Manager submenu, where these mod(s) will be listed and previewable. Additionally, mods can be added, removed and sorted in this menu." +
+                "\n\nWhen the user is ready to install the selected mods, they can click the \"Continue Installation\" button in the bottom-right corner of the submenu. The install time depends greatly on the mod's contents, number of mods being installed and the mods that are already installed." +
+                "\n\nThe installation is complete when the user is returned to the main menu. All mods installed with SnakeBite will now be listed on the menu, and will appear in-game. It is not necessary to launch the game using SnakeBite in order to use the installed mods.", "Installing a Mod", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void menuItemHelpUninstall_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("", "Uninstalling a Mod", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("To uninstall a mod, the user must simply click on the checkbox beside the mod's name, and then click the \"Uninstall Checked Mod(s)\" button in the bottom-left corner of the menu." +
+                "\n\nMultiple mods can be uninstalled at once by clicking on their checkboxes. In addition, the user can mark all mods by clicking on the checkbox in the top-right corner of the menu, beside the \"Installed Mods\" text." +
+                "\n\nThe uninstall time depends greatly on the number of mods being uninstalled, their contents, and the mods that remain installed.", "Uninstalling a Mod", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
-        private void menuItemHelpCreate_Click(object sender, EventArgs e) // add a prompt to open makebite
+        private void menuItemHelpCreate_Click(object sender, EventArgs e)
         {
-            if(MessageBox.Show("\n\nWould you like to launch MakeBite?", "Installing a Mod", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+            if(MessageBox.Show("To create a mod for SnakeBite, the user must build a .MGSV file using MakeBite (which was installed automatically alongside SnakeBite). MakeBite creates mods by packing all of the files from a specified folder into a new .MGSV file. " +
+                "\n\nIn fact, .MGSV files are basically glorified .zip files.\n\nThere are many tools and tutorials available for users to learn how to modify and prepare game files for MakeBite.\nWould you like to visit the MakeBite Wiki page for more information?", "Creating a Mod", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
             {
-                LaunchMakeBite();
+                Process.Start(ModManager.WikiURL + "SnakeBite#MakeBite");
             }
         }
 
         private void menuItemOpenMakeBite_Click(object sender, EventArgs e)
-        {
-            LaunchMakeBite();
-        }
-
-        private void LaunchMakeBite()
         {
             string makeBitePath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "makebite.exe");
 
@@ -346,14 +370,18 @@ namespace SnakeBite
             }
         }
 
-        private void menuItemHelpConflicts_Click(object sender, EventArgs e)
+        private void menuItemHelpConflicts_Click(object sender, EventArgs e) // TODO: move all of these messageboxes to a static 'Tips' class? 
         {
-            MessageBox.Show("", "Mod Conflicts", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("A 'Mod Conflict' is when two or more mods compete to modify the same game file. Whichever mod which was installed last will overwrite any conflicting files of the mods above it. " +
+                "\n\nIf the mods have already been installed, the user can only adjust the overwrite order by uninstalling all of the conflicting mods and then reinstalling them in the preferred order. " +
+                "\n\nFurthermore, uninstalling only one of the mods will NOT fix a conflict! When a mod is uninstalled, SnakeBite will remove all files that were included in that mod. This creates a 'hole' for the rest of the conflicting mods that were competing for the game file. This hole is not filled by the remaining mods, regardless of their order in the mod list." +
+                "\n\nWarning: overwriting a mod's data may cause significant problems in-game, which could affect your enjoyment. Install at your own risk.", "What is a Mod Conflict?", MessageBoxButtons.OK, MessageBoxIcon.Question);
         }
 
         private void menuItemOpenBugReport_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("If you have found an issue with SnakeBite, please report the issue with as much information as you can gather! Be sure to include the relevant Debug Log in the bug report, and do your best to explain how you are able to reproduce the issue.\n\nAlso, always search through the existing bug reports to make sure that your issue hasn't already been created. If your bug is already reported, add your information to that bug report instead!", "Reporting a Bug", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show("If you have found an issue with SnakeBite, please report the issue with as much information as you can gather! Be sure to include the relevant Debug Log in the bug report, and do your best to explain how you are able to reproduce the issue." +
+                "\n\nAlso, always search through the existing bug reports to make sure that your issue hasn't already been created. If your bug is already reported, add your information to that bug report instead!", "Reporting a Bug", MessageBoxButtons.OK, MessageBoxIcon.Information);
             Process.Start(ModManager.SBWMBugURL);
         }
 
