@@ -18,9 +18,6 @@ namespace SnakeBite
     {
         internal static string vanillaDatHash = "41317C4D473D9A3DB6C1169E5ACDD35849FCF50601FD41F5A171E1055C642093"; //expected original hash for 1.0.15.0
         internal static Version IntendedGameVersion = new Version(1, 0, 15, 0); // GAMEVERSION
-        internal static string SBWMSearchURL = "https://www.nexusmods.com/metalgearsolidvtpp/search/?search_description=SBWM";
-        internal static string SBWMBugURL = "https://www.nexusmods.com/metalgearsolidvtpp/mods/106?tab=bugs";
-        internal static string WikiURL = "https://metalgearmodding.wikia.com/wiki/";
         internal static string chunk0Path { get { return Properties.Settings.Default.InstallPath + "\\master\\chunk0.dat"; } }
         internal static string OnePath { get { return Properties.Settings.Default.InstallPath + "\\master\\0\\01.dat"; } }
         internal static string ZeroPath { get { return Properties.Settings.Default.InstallPath + "\\master\\0\\00.dat"; } }
@@ -28,6 +25,10 @@ namespace SnakeBite
         internal static string c7Path { get { return Properties.Settings.Default.InstallPath + "\\master\\a_chunk7.dat"; } }
         internal static string GameDir { get { return Properties.Settings.Default.InstallPath; } }
         internal static string build_ext = ".SB_Build";
+        internal static string NexusURL = "https://www.nexusmods.com/metalgearsolidvtpp";
+        internal static string SBWMSearchURL = "https://www.nexusmods.com/metalgearsolidvtpp/search/?search_description=SBWM";
+        internal static string SBWMBugURL = "https://www.nexusmods.com/metalgearsolidvtpp/mods/106?tab=bugs";
+        internal static string WikiURL = "https://metalgearmodding.wikia.com/wiki/";
 
 
         // SYNC makebite

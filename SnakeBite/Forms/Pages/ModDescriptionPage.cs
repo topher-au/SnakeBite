@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
-using System.Data;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SnakeBite.ModPages
@@ -21,7 +15,7 @@ namespace SnakeBite.ModPages
 
         private Version modMGSVersion = new Version(0, 0, 0, 0);
 
-        private string modWebsite = "https://www.nexusmods.com/metalgearsolidvtpp";
+        private string modWebsite;
 
         public void ShowModInfo(ModEntry mod)
         {
@@ -29,8 +23,10 @@ namespace SnakeBite.ModPages
 
             if (mod.Website.Length > 0)
                 modWebsite = mod.Website;
+            else
+                modWebsite = ModManager.NexusURL;
 
-            labelModAuthor.Text = mod.Author;
+            labelModAuthor.Text = "By " + mod.Author;
             labelModName.Text = mod.Name;
             labelModWebsite.Text = mod.Version;
             textDescription.Text = mod.Description.Replace("\n", "\r\n");
@@ -47,11 +43,14 @@ namespace SnakeBite.ModPages
 
         private void labelModWebsite_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            try // in case the mod author screwed up the url
+            try // in case the mod author screwed up their url
             {
-                System.Diagnostics.Process.Start(labelModWebsite.Text);
+                System.Diagnostics.Process.Start(modWebsite);
             }
-            catch { }
+            catch
+            {
+                System.Diagnostics.Process.Start(ModManager.NexusURL);
+            }
         }
 
         private void labelVersionWarning_Click(object sender, EventArgs e)

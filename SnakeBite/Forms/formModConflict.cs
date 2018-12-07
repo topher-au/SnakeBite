@@ -1,11 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace SnakeBite.Forms
@@ -24,14 +18,7 @@ namespace SnakeBite.Forms
             this.ShowDialog();
             return result;
         }
-
-        private void labelInstallWarning_Click(object sender, EventArgs e)
-        {
-            MessageBox.Show("Choosing to install this mod will overwrite existing mod or game data.\n" +
-       "Warning: overwriting a mod's data may cause significant problems in-game, which could affect your enjoyment. Install at your own risk.\n\n" +
-       "If you are installing multiple mods, cancelling this installation will not affect the other installation processes.", "Installing a mod with conflicts", MessageBoxButtons.OK, MessageBoxIcon.Question);
-        }
-
+        
         private void buttonInstall_Click(object sender, EventArgs e)
         {
             result = DialogResult.Yes;
@@ -42,6 +29,19 @@ namespace SnakeBite.Forms
         {
             result = DialogResult.Cancel;
             this.Close();
+        }
+
+        private void formModConflict_HelpButtonClicked(object sender, CancelEventArgs e)
+        {
+            MessageBox.Show("Choosing to install this mod will overwrite existing mod or game files. Check the Debug Log to review these file conflicts." +
+                "\n\nWarning: overwriting a mod's data may cause problems in-game, which could affect your enjoyment. Install at your own risk." +
+                "\n\nIf you are installing multiple mods, cancelling this installation will not affect the other installation processes.", "Installing a mod with conflicts", MessageBoxButtons.OK, MessageBoxIcon.Question);
+            e.Cancel = true;
+        }
+
+        private void labelCheckDebug_Click(object sender, EventArgs e)
+        {
+            System.Diagnostics.Process.Start(Debug.LOG_FILE);
         }
     }
 }

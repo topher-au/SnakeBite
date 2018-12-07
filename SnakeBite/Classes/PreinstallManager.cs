@@ -233,12 +233,11 @@ namespace SnakeBite
                 if (conflictingMods.Count > 0)
                 {
                     Debug.LogLine(String.Format("[Mod] Found {0} conflicts", confCounter));
-                    string msgboxtext = String.Format("\"{0}\" conflicts with the following pre-existing mods:\n\n", Tools.ReadMetaData(ModFiles[i]).Name);
+                    string msgboxtext = String.Format("\"{0}\" conflicts with mods that are already installed:\n", Tools.ReadMetaData(ModFiles[i]).Name);
                     foreach (string Conflict in conflictingMods)
                     {
-                        msgboxtext += String.Format("\"{0}\"\n", Conflict);
+                        msgboxtext += String.Format("\n\"{0}\"", Conflict);
                     }
-                    msgboxtext += "\n\nMore information regarding these conflicts can be found in the Debug Logs.";
                     DialogResult userInput = conflictForm.ShowDialog(msgboxtext);
                     if (userInput == DialogResult.Cancel)
                     {

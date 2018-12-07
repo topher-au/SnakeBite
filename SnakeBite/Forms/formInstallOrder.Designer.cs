@@ -125,7 +125,7 @@
             this.labelInstallOrder.Font = new System.Drawing.Font("Segoe UI", 9.25F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelInstallOrder.Location = new System.Drawing.Point(12, 9);
             this.labelInstallOrder.Name = "labelInstallOrder";
-            this.labelInstallOrder.Size = new System.Drawing.Size(231, 26);
+            this.labelInstallOrder.Size = new System.Drawing.Size(231, 24);
             this.labelInstallOrder.TabIndex = 11;
             this.labelInstallOrder.Text = "Installation Order";
             this.labelInstallOrder.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
@@ -140,11 +140,11 @@
             this.listInstallOrder.FullRowSelect = true;
             this.listInstallOrder.HeaderStyle = System.Windows.Forms.ColumnHeaderStyle.None;
             this.listInstallOrder.HideSelection = false;
-            this.listInstallOrder.Location = new System.Drawing.Point(12, 34);
+            this.listInstallOrder.Location = new System.Drawing.Point(12, 36);
             this.listInstallOrder.MultiSelect = false;
             this.listInstallOrder.Name = "listInstallOrder";
             this.listInstallOrder.ShowGroups = false;
-            this.listInstallOrder.Size = new System.Drawing.Size(231, 351);
+            this.listInstallOrder.Size = new System.Drawing.Size(231, 349);
             this.listInstallOrder.TabIndex = 12;
             this.listInstallOrder.UseCompatibleStateImageBehavior = false;
             this.listInstallOrder.View = System.Windows.Forms.View.Details;

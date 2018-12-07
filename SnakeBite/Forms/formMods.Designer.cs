@@ -39,8 +39,6 @@
             this.mainMenuMods = new System.Windows.Forms.MainMenu(this.components);
             this.menuItemFile = new System.Windows.Forms.MenuItem();
             this.menuItemOpenDir = new System.Windows.Forms.MenuItem();
-            this.menuItemOpenLogs = new System.Windows.Forms.MenuItem();
-            this.menuItem2 = new System.Windows.Forms.MenuItem();
             this.menuItemOpenMakeBite = new System.Windows.Forms.MenuItem();
             this.menuItem6 = new System.Windows.Forms.MenuItem();
             this.menuItemBrowseMods = new System.Windows.Forms.MenuItem();
@@ -51,13 +49,15 @@
             this.menuItem11 = new System.Windows.Forms.MenuItem();
             this.menuItemOpenSettings = new System.Windows.Forms.MenuItem();
             this.menuItemHelp = new System.Windows.Forms.MenuItem();
-            this.menuItemHelpInstall = new System.Windows.Forms.MenuItem();
-            this.menuItemHelpUninstall = new System.Windows.Forms.MenuItem();
-            this.menuItem15 = new System.Windows.Forms.MenuItem();
-            this.menuItemHelpCreate = new System.Windows.Forms.MenuItem();
-            this.menuItemHelpConflicts = new System.Windows.Forms.MenuItem();
-            this.menuItem18 = new System.Windows.Forms.MenuItem();
+            this.menuItemLearn = new System.Windows.Forms.MenuItem();
+            this.menuItemInstalling = new System.Windows.Forms.MenuItem();
+            this.menuItemUninstalling = new System.Windows.Forms.MenuItem();
+            this.menuItemCreating = new System.Windows.Forms.MenuItem();
+            this.menuItemConflicts = new System.Windows.Forms.MenuItem();
             this.menuItemWikiLink = new System.Windows.Forms.MenuItem();
+            this.menuItem18 = new System.Windows.Forms.MenuItem();
+            this.menuItemOpenLogs = new System.Windows.Forms.MenuItem();
+            this.menuItem1 = new System.Windows.Forms.MenuItem();
             this.menuItemOpenBugReport = new System.Windows.Forms.MenuItem();
             this.panelModList = new System.Windows.Forms.Panel();
             this.panelModList.SuspendLayout();
@@ -171,8 +171,6 @@
             this.menuItemFile.Index = 0;
             this.menuItemFile.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItemOpenDir,
-            this.menuItemOpenLogs,
-            this.menuItem2,
             this.menuItemOpenMakeBite,
             this.menuItem6,
             this.menuItemBrowseMods,
@@ -186,42 +184,31 @@
             this.menuItemOpenDir.Text = "Open Game Directory";
             this.menuItemOpenDir.Click += new System.EventHandler(this.menuItemOpenDir_Click);
             // 
-            // menuItemOpenLogs
-            // 
-            this.menuItemOpenLogs.Index = 1;
-            this.menuItemOpenLogs.Text = "Open Debug Logs";
-            this.menuItemOpenLogs.Click += new System.EventHandler(this.menuItemOpenLogs_Click);
-            // 
-            // menuItem2
-            // 
-            this.menuItem2.Index = 2;
-            this.menuItem2.Text = "-";
-            // 
             // menuItemOpenMakeBite
             // 
-            this.menuItemOpenMakeBite.Index = 3;
+            this.menuItemOpenMakeBite.Index = 1;
             this.menuItemOpenMakeBite.Text = "Launch MakeBite";
             this.menuItemOpenMakeBite.Click += new System.EventHandler(this.menuItemOpenMakeBite_Click);
             // 
             // menuItem6
             // 
-            this.menuItem6.Index = 4;
+            this.menuItem6.Index = 2;
             this.menuItem6.Text = "-";
             // 
             // menuItemBrowseMods
             // 
-            this.menuItemBrowseMods.Index = 5;
+            this.menuItemBrowseMods.Index = 3;
             this.menuItemBrowseMods.Text = "Browse SnakeBite Mods";
             this.menuItemBrowseMods.Click += new System.EventHandler(this.menuItemBrowseMods_Click);
             // 
             // menuItem8
             // 
-            this.menuItem8.Index = 6;
+            this.menuItem8.Index = 4;
             this.menuItem8.Text = "-";
             // 
             // menuItemExit
             // 
-            this.menuItemExit.Index = 7;
+            this.menuItemExit.Index = 5;
             this.menuItemExit.Text = "Exit";
             this.menuItemExit.Click += new System.EventHandler(this.menuItemExit_Click);
             // 
@@ -255,59 +242,73 @@
             // 
             this.menuItemHelp.Index = 2;
             this.menuItemHelp.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
-            this.menuItemHelpInstall,
-            this.menuItemHelpUninstall,
-            this.menuItem15,
-            this.menuItemHelpCreate,
-            this.menuItemHelpConflicts,
-            this.menuItem18,
+            this.menuItemLearn,
             this.menuItemWikiLink,
+            this.menuItem18,
+            this.menuItemOpenLogs,
+            this.menuItem1,
             this.menuItemOpenBugReport});
             this.menuItemHelp.Text = "Help";
             // 
-            // menuItemHelpInstall
+            // menuItemLearn
             // 
-            this.menuItemHelpInstall.Index = 0;
-            this.menuItemHelpInstall.Text = "Installing Mods...";
-            this.menuItemHelpInstall.Click += new System.EventHandler(this.menuItemHelpInstall_Click);
+            this.menuItemLearn.Index = 0;
+            this.menuItemLearn.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
+            this.menuItemInstalling,
+            this.menuItemUninstalling,
+            this.menuItemCreating,
+            this.menuItemConflicts});
+            this.menuItemLearn.Text = "About SnakeBite...";
             // 
-            // menuItemHelpUninstall
+            // menuItemInstalling
             // 
-            this.menuItemHelpUninstall.Index = 1;
-            this.menuItemHelpUninstall.Text = "Uninstalling Mods...";
-            this.menuItemHelpUninstall.Click += new System.EventHandler(this.menuItemHelpUninstall_Click);
+            this.menuItemInstalling.Index = 0;
+            this.menuItemInstalling.Text = "Installing Mods";
+            this.menuItemInstalling.Click += new System.EventHandler(this.menuItemHelpInstall_Click);
             // 
-            // menuItem15
+            // menuItemUninstalling
             // 
-            this.menuItem15.Index = 2;
-            this.menuItem15.Text = "-";
+            this.menuItemUninstalling.Index = 1;
+            this.menuItemUninstalling.Text = "Uninstalling Mods";
+            this.menuItemUninstalling.Click += new System.EventHandler(this.menuItemHelpUninstall_Click);
             // 
-            // menuItemHelpCreate
+            // menuItemCreating
             // 
-            this.menuItemHelpCreate.Index = 3;
-            this.menuItemHelpCreate.Text = "Creating Mods...";
-            this.menuItemHelpCreate.Click += new System.EventHandler(this.menuItemHelpCreate_Click);
+            this.menuItemCreating.Index = 2;
+            this.menuItemCreating.Text = "Creating Mods";
+            this.menuItemCreating.Click += new System.EventHandler(this.menuItemHelpCreate_Click);
             // 
-            // menuItemHelpConflicts
+            // menuItemConflicts
             // 
-            this.menuItemHelpConflicts.Index = 4;
-            this.menuItemHelpConflicts.Text = "Mod Conflicts...";
-            this.menuItemHelpConflicts.Click += new System.EventHandler(this.menuItemHelpConflicts_Click);
-            // 
-            // menuItem18
-            // 
-            this.menuItem18.Index = 5;
-            this.menuItem18.Text = "-";
+            this.menuItemConflicts.Index = 3;
+            this.menuItemConflicts.Text = "Mod Conflicts";
+            this.menuItemConflicts.Click += new System.EventHandler(this.menuItemHelpConflicts_Click);
             // 
             // menuItemWikiLink
             // 
-            this.menuItemWikiLink.Index = 6;
-            this.menuItemWikiLink.Text = "MGSV Modding Wiki";
+            this.menuItemWikiLink.Index = 1;
+            this.menuItemWikiLink.Text = "Visit Modding Wiki";
             this.menuItemWikiLink.Click += new System.EventHandler(this.menuItemWikiLink_Click);
+            // 
+            // menuItem18
+            // 
+            this.menuItem18.Index = 2;
+            this.menuItem18.Text = "-";
+            // 
+            // menuItemOpenLogs
+            // 
+            this.menuItemOpenLogs.Index = 3;
+            this.menuItemOpenLogs.Text = "Open Debug Logs";
+            this.menuItemOpenLogs.Click += new System.EventHandler(this.menuItemOpenLogs_Click);
+            // 
+            // menuItem1
+            // 
+            this.menuItem1.Index = 4;
+            this.menuItem1.Text = "-";
             // 
             // menuItemOpenBugReport
             // 
-            this.menuItemOpenBugReport.Index = 7;
+            this.menuItemOpenBugReport.Index = 5;
             this.menuItemOpenBugReport.Text = "Report a Bug";
             this.menuItemOpenBugReport.Click += new System.EventHandler(this.menuItemOpenBugReport_Click);
             // 
@@ -365,7 +366,6 @@
         private System.Windows.Forms.MenuItem menuItemOptions;
         private System.Windows.Forms.Panel panelModList;
         private System.Windows.Forms.MenuItem menuItemOpenDir;
-        private System.Windows.Forms.MenuItem menuItemOpenLogs;
         private System.Windows.Forms.MenuItem menuItem6;
         private System.Windows.Forms.MenuItem menuItemBrowseMods;
         private System.Windows.Forms.MenuItem menuItem8;
@@ -374,15 +374,16 @@
         private System.Windows.Forms.MenuItem menuItem11;
         private System.Windows.Forms.MenuItem menuItemHelp;
         private System.Windows.Forms.MenuItem menuItemOpenSettings;
-        private System.Windows.Forms.MenuItem menuItemHelpInstall;
-        private System.Windows.Forms.MenuItem menuItemHelpUninstall;
-        private System.Windows.Forms.MenuItem menuItem15;
-        private System.Windows.Forms.MenuItem menuItemHelpCreate;
-        private System.Windows.Forms.MenuItem menuItemHelpConflicts;
         private System.Windows.Forms.MenuItem menuItem18;
         private System.Windows.Forms.MenuItem menuItemOpenBugReport;
-        private System.Windows.Forms.MenuItem menuItem2;
         private System.Windows.Forms.MenuItem menuItemOpenMakeBite;
         private System.Windows.Forms.MenuItem menuItemWikiLink;
+        private System.Windows.Forms.MenuItem menuItemLearn;
+        private System.Windows.Forms.MenuItem menuItemInstalling;
+        private System.Windows.Forms.MenuItem menuItemUninstalling;
+        private System.Windows.Forms.MenuItem menuItemCreating;
+        private System.Windows.Forms.MenuItem menuItemConflicts;
+        private System.Windows.Forms.MenuItem menuItemOpenLogs;
+        private System.Windows.Forms.MenuItem menuItem1;
     }
 }

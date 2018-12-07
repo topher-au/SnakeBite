@@ -334,23 +334,23 @@ namespace SnakeBite
 
         private void menuItemHelpInstall_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("SnakeBite can only install mods which have been properly packed into .MGSV files. After downloading a .MGSV mod file, the user can install it with SnakeBite by clicking the \"Install .MGSV File(s)\" button in the bottom-left corner of the menu." +
-                "\n\nMultiple mods can be selected at once when choosing what to install. Upon selecting the mod(s), SnakeBite will open the Installation Manager submenu, where these mod(s) will be listed and previewable. Additionally, mods can be added, removed and sorted in this menu." +
+            MessageBox.Show("SnakeBite can install mods that have the '.MGSV' file extensions. After downloading a .MGSV file, the user can install it with SnakeBite by clicking the \"Install .MGSV File(s)\" button in the bottom-left corner of the menu." +
+                "\n\nMultiple mods can be selected at once when choosing what to install. Upon selecting a file, SnakeBite will open the Installation Manager submenu, where the mod will be listed and previewable. Additionally, mods can be added, removed and sorted in this menu." +
                 "\n\nWhen the user is ready to install the selected mods, they can click the \"Continue Installation\" button in the bottom-right corner of the submenu. The install time depends greatly on the mod's contents, number of mods being installed and the mods that are already installed." +
-                "\n\nThe installation is complete when the user is returned to the main menu. All mods installed with SnakeBite will now be listed on the menu, and will appear in-game. It is not necessary to launch the game using SnakeBite in order to use the installed mods.", "Installing a Mod", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                "\n\nThe installation is complete when the user is returned to the main menu. All mods installed with SnakeBite will now be listed on the menu, and will appear in-game. It is not necessary to launch the game using SnakeBite in order to use the installed mods.", "Installing a Mod", MessageBoxButtons.OK, MessageBoxIcon.Question);
         }
 
         private void menuItemHelpUninstall_Click(object sender, EventArgs e)
         {
             MessageBox.Show("To uninstall a mod, the user must simply click on the checkbox beside the mod's name, and then click the \"Uninstall Checked Mod(s)\" button in the bottom-left corner of the menu." +
-                "\n\nMultiple mods can be uninstalled at once by clicking on their checkboxes. In addition, the user can mark all mods by clicking on the checkbox in the top-right corner of the menu, beside the \"Installed Mods\" text." +
-                "\n\nThe uninstall time depends greatly on the number of mods being uninstalled, their contents, and the mods that remain installed.", "Uninstalling a Mod", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                "\n\nMultiple mods can be uninstalled at once by clicking on their checkboxes. In addition, the user can mark all mods by clicking on the checkbox in the top-left corner of the menu, beside the \"Installed Mods\" text." +
+                "\n\nThe uninstall time depends greatly on the number of mods being uninstalled, their contents, and the mods that remain installed.", "Uninstalling a Mod", MessageBoxButtons.OK, MessageBoxIcon.Question);
         }
 
         private void menuItemHelpCreate_Click(object sender, EventArgs e)
         {
             if(MessageBox.Show("To create a mod for SnakeBite, the user must build a .MGSV file using MakeBite (which was installed automatically alongside SnakeBite). MakeBite creates mods by packing all of the files from a specified folder into a new .MGSV file. " +
-                "\n\nIn fact, .MGSV files are basically glorified .zip files.\n\nThere are many tools and tutorials available for users to learn how to modify and prepare game files for MakeBite.\nWould you like to visit the MakeBite Wiki page for more information?", "Creating a Mod", MessageBoxButtons.YesNo, MessageBoxIcon.Information) == DialogResult.Yes)
+                "\n\nIn fact, .MGSV files are basically glorified .zip files.\n\nThere are many tools and tutorials available for users to learn how to modify and prepare game files for MakeBite.\nWould you like to visit the MakeBite Wiki page for more information?", "Creating a Mod", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 Process.Start(ModManager.WikiURL + "SnakeBite#MakeBite");
             }

@@ -100,7 +100,7 @@
             this.textDescription.Name = "textDescription";
             this.textDescription.ReadOnly = true;
             this.textDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.textDescription.Size = new System.Drawing.Size(392, 349);
+            this.textDescription.Size = new System.Drawing.Size(392, 345);
             this.textDescription.TabIndex = 6;
             // 
             // labelModAuthor
