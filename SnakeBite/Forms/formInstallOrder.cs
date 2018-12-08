@@ -18,7 +18,7 @@ namespace SnakeBite.Forms
          * Excessive mods and conflicts will result in slower refresh times and list "flickering"
          */
         private List<PreinstallEntry> Mods = new List<PreinstallEntry>();
-        private SettingsManager manager = new SettingsManager(ModManager.GameDir);
+        private SettingsManager manager = new SettingsManager(GamePaths.SnakeBiteSettings);
         private int selectedIndex;
 
         private NoAddedPage noModsNotice = new NoAddedPage();

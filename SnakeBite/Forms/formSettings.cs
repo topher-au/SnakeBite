@@ -18,7 +18,7 @@ namespace SnakeBite
     public partial class formSettings : Form
     {
         List<string> themeFiles = new List<string>() { "" };
-        SettingsManager manager = new SettingsManager(ModManager.GameDir);
+        SettingsManager manager = new SettingsManager(GamePaths.SnakeBiteSettings);
         LogPage log = new LogPage();
 
         public formSettings()
@@ -36,7 +36,7 @@ namespace SnakeBite
             else
             {
                 if (BackupManager.OriginalZeroOneExist()) {
-                    labelNoBackups.Text = "chunk0 backup not detected.\nCannot restore original game files.";
+                    labelNoBackups.Text = "chunk0 backup not detected.\nCannot restore backup game files.";
                     buttonRestoreOriginals.Enabled = false;
                     picModToggle.Enabled = true;
                 }
@@ -52,7 +52,7 @@ namespace SnakeBite
 
         private void buttonRestoreOriginals_Click(object sender, EventArgs e)
         {
-            var restoreData = MessageBox.Show("Your original backup files will be restored, and any SnakeBite settings and mods will be completely removed.\n\nAre you sure you want to continue?", "SnakeBite", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            var restoreData = MessageBox.Show("Your saved backup files will be restored, and any SnakeBite settings and mods will be completely removed.\n\nAre you sure you want to continue?", "SnakeBite", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (restoreData != DialogResult.Yes) return;
 
                 BackupManager.RestoreOriginals();
@@ -85,9 +85,9 @@ namespace SnakeBite
             CheckBackupState();
         }
 
-        private void linkGithub_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        private void linkNexusLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start(this.labelGithub.Text);
+            Process.Start(this.labelNexusLink.Text);
         }
 
         private void buttonFindMGSV_Click(object sender, EventArgs e)
@@ -114,11 +114,11 @@ namespace SnakeBite
             // Set installation path textbox
             textInstallPath.Text = Properties.Settings.Default.InstallPath;
             checkEnableSound.Checked = Properties.Settings.Default.EnableSound;
-            listThemes.SelectedIndex = 0;
+            //listThemes.SelectedIndex = 0;
             UpdateModToggle();
             CheckBackupState();
             
-
+            /*
             if (Directory.Exists("Themes"))
             {
                 foreach(string file in Directory.GetFiles("Themes", "*.sbtheme"))
@@ -143,6 +143,7 @@ namespace SnakeBite
             {
                 tabControl.TabPages.RemoveAt(1);
             }
+            */
         }
 
         private void checkEnableSound_CheckedChanged(object sender, EventArgs e)
@@ -151,6 +152,7 @@ namespace SnakeBite
             Properties.Settings.Default.Save();
         }
 
+        /*
         private void buttonSetTheme_Click(object sender, EventArgs e)
         {
             Properties.Settings.Default.ThemeFile = themeFiles[listThemes.SelectedIndex];
@@ -160,6 +162,7 @@ namespace SnakeBite
             o.SetupTheme();
             o.Refresh();
         }
+        */
 
         private void buttonOpenLog_Click(object sender, EventArgs e) {
             Process.Start(Debug.LOG_FILE_PREV);

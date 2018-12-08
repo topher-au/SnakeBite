@@ -17,7 +17,7 @@ namespace SnakeBite
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             ICSharpCode.SharpZipLib.Zip.ZipConstants.DefaultCodePage = 437;
-            SettingsManager manager = new SettingsManager(ModManager.GameDir);
+            SettingsManager manager = new SettingsManager(GamePaths.SnakeBiteSettings);
             manager.DisableConflictCheck = false;
             if (Properties.Settings.Default.LastSBVersion == null || new Version(Properties.Settings.Default.LastSBVersion) < ModManager.GetSBVersion())
             {
@@ -37,10 +37,10 @@ namespace SnakeBite
                 Environment.OSVersion.VersionString));
 
             // Delete old settings file
-            if (File.Exists(ModManager.GameDir + "\\sbmods.xml"))
+            if (File.Exists(GamePaths.SnakeBiteSettings + "\\sbmods.xml"))
             {
                 Debug.LogLine("Settings v0.7 or less detected, removing");
-                File.Delete(ModManager.GameDir + "\\sbmods.xml");
+                File.Delete(GamePaths.SnakeBiteSettings + "\\sbmods.xml");
                 MessageBox.Show("Due to fundamental changes from version 0.8 onwards, your settings have been reset. Please re-verify or restore the game files and run the setup wizard before continuing.", "Version Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 

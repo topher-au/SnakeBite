@@ -11,6 +11,7 @@ namespace makebite
         [STAThread]
         private static void Main()
         {
+            ICSharpCode.SharpZipLib.Zip.ZipConstants.DefaultCodePage = 437;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
             Application.Run(new formMain());

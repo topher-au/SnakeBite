@@ -36,9 +36,11 @@
             // 
             // contentPanel
             // 
-            this.contentPanel.Location = new System.Drawing.Point(12, 20);
+            this.contentPanel.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(215)))), ((int)(((byte)(215)))), ((int)(((byte)(215)))));
+            this.contentPanel.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.contentPanel.Location = new System.Drawing.Point(12, 12);
             this.contentPanel.Name = "contentPanel";
-            this.contentPanel.Size = new System.Drawing.Size(440, 340);
+            this.contentPanel.Size = new System.Drawing.Size(440, 348);
             this.contentPanel.TabIndex = 0;
             // 
             // buttonNext
@@ -76,6 +78,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.BackColor = System.Drawing.Color.DarkGray;
             this.ClientSize = new System.Drawing.Size(464, 399);
             this.Controls.Add(this.buttonBack);
             this.Controls.Add(this.buttonSkip);

@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Windows.Forms;
 using System.Xml.Serialization;
 
 namespace SnakeBite
@@ -10,12 +9,13 @@ namespace SnakeBite
     public class SettingsManager
     {
 
-        public string directory;
-        public string filename;
-        public SettingsManager(string dir, string file = "snakebite.xml")
+        private string ZeroPath = GamePaths.ZeroPath;
+        private string OnePath = GamePaths.OnePath;
+        public string xmlFilePath;
+
+        public SettingsManager(string filePath)
         {
-            directory = dir;
-            filename = file;
+            xmlFilePath = filePath;
         }
         public bool DisableConflictCheck
         {
@@ -33,7 +33,7 @@ namespace SnakeBite
         public List<string> GetModFpkFiles()
         {
             Settings settings = new Settings();
-            settings.LoadFrom(directory, filename);
+            settings.LoadFrom(xmlFilePath);
             List<string> fpkList = new List<string>();
             foreach (ModEntry mod in settings.ModEntries)
             {
@@ -48,7 +48,7 @@ namespace SnakeBite
         public List<string> GetModQarFiles(bool HideExtension = false)
         {
             Settings settings = new Settings();
-            settings.LoadFrom(directory, filename);
+            settings.LoadFrom(xmlFilePath);
             List<string> qarList = new List<string>();
             foreach (ModEntry mod in settings.ModEntries)
             {
@@ -71,7 +71,7 @@ namespace SnakeBite
 
         public List<string> GetModExternalFiles() {
             Settings settings = new Settings();
-            settings.LoadFrom(directory, filename);
+            settings.LoadFrom(xmlFilePath);
             List<string> fileList = new List<string>();
             foreach (ModEntry mod in settings.ModEntries) {
                 foreach (ModFileEntry fpkFile in mod.ModFileEntries) {
@@ -83,18 +83,18 @@ namespace SnakeBite
 
         public bool SettingsExist()
         {
-            return File.Exists(directory + "\\" + filename);
+            return File.Exists(xmlFilePath);
         }
 
         public void DeleteSettings()
         {
-            File.Delete(directory + "\\" + filename);
+            File.Delete(xmlFilePath);
         }
 
         public void AddMod(ModEntry Mod)
         {
             Settings settings = new Settings();
-            settings.LoadFrom(directory, filename);
+            settings.LoadFrom(xmlFilePath);
 
             foreach (ModFpkEntry f in Mod.ModFpkEntries)
             {
@@ -110,63 +110,86 @@ namespace SnakeBite
             }
 
             settings.ModEntries.Add(Mod);
-            settings.SaveTo(directory, filename);
+            settings.SaveTo(xmlFilePath);
         }
 
         public void RemoveMod(ModEntry Mod)
         {
             Settings settings = new Settings();
-            settings.LoadFrom(directory, filename);
+            settings.LoadFrom(xmlFilePath);
             ModEntry remMod = settings.ModEntries.Find(entry => entry.Name == Mod.Name);
             settings.ModEntries.Remove(remMod);
-            settings.SaveTo(directory, filename);
+            settings.SaveTo(xmlFilePath);
         }
 
         public List<ModEntry> GetInstalledMods()
         {
             Settings settings = new Settings();
-            settings.LoadFrom(directory, filename);
+            settings.LoadFrom(xmlFilePath);
             return settings.ModEntries;
         }
 
         public GameData GetGameData()
         {
             Settings settings = new Settings();
-            settings.LoadFrom(directory, filename);
+            settings.LoadFrom(xmlFilePath);
             return settings.GameData;
         }
 
         public void SetGameData(GameData NewGameData)
         {
             Settings settings = new Settings();
-            settings.LoadFrom(directory, filename);
+            settings.LoadFrom(xmlFilePath);
             settings.GameData = NewGameData;
-            settings.SaveTo(directory, filename);
+            settings.SaveTo(xmlFilePath);
         }
 
-        public Version GetSettingsVersion()
+        public Version GetSettingsSBVersion()
         {
             Settings settings = new Settings();
-            settings.LoadFrom(directory, filename);
+            settings.LoadFrom(xmlFilePath);
             return settings.SbVersion.AsVersion();
+        }
+
+        public Version GetSettingsMGSVersion()
+        {
+            Settings settings = new Settings();
+            settings.LoadFrom(xmlFilePath);
+            return settings.MGSVersion.AsVersion();
         }
 
         public void UpdateDatHash()
         {
             Settings settings = new Settings();
-            settings.LoadFrom(directory, filename);
+            settings.LoadFrom(xmlFilePath);
              
             // Hash 01.dat and update settings file
-            string datHash = Tools.GetMd5Hash(ModManager.ZeroPath) + Tools.GetMd5Hash(ModManager.OnePath);
+            string datHash = Tools.GetMd5Hash(ZeroPath) + Tools.GetMd5Hash(OnePath);
             settings.GameData.DatHash = datHash;
             Debug.LogLine(String.Format("[UpdateDatHash] Updated 00/01 dat hash to: {0}", datHash), Debug.LogLevel.All);
-            settings.SaveTo(directory, filename);
+            settings.SaveTo(xmlFilePath);
         }
-        public bool IsVanilla0001DatHash()
+
+        public bool IsVanilla0001DatHash() //shouldn't be in settingsmanager
         {
-            return ModManager.vanillaDatHash.Equals(Tools.GetMd5Hash(ModManager.ZeroPath) + Tools.GetMd5Hash(ModManager.OnePath));
+            return ModManager.vanillaDatHash.Equals(Tools.GetMd5Hash(ZeroPath) + Tools.GetMd5Hash(OnePath));
         }
-        public bool IsUpToDate(Version ModVersion)
+
+        public bool IsVanilla0001RoughSize() //shouldn't be in settingsmanager
+        {
+            var zeroSize = new System.IO.FileInfo(ZeroPath).Length;
+            var oneSize = new System.IO.FileInfo(OnePath).Length;
+            if (zeroSize < 495880000 && zeroSize > 495860000) // give or take 10 kb
+            {
+                if (oneSize < 264930000 && oneSize > 264910000)
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        public bool IsUpToDate(Version ModVersion) //shouldn't be in settingsmanager
         {
             bool isUpToDate = ModManager.GetMGSVersion() == ModVersion;
             bool isSpecialCase = ModVersion == new Version(0, 0, 0, 0) || ModVersion == new Version(1, 0, 14, 0); // 1.0.15.0 only affected the exe, so 1.0.14.0 mods are still up to date
@@ -176,14 +199,14 @@ namespace SnakeBite
         public void ClearAllMods()
         {
             Settings settings = new Settings();
-            settings.LoadFrom(directory, filename);
+            settings.LoadFrom(xmlFilePath);
             settings.ModEntries = new List<ModEntry>();
-            settings.SaveTo(directory, filename);
+            settings.SaveTo(xmlFilePath);
         }
 
         internal bool ValidateDatHash()
         {
-            string datHash = Tools.GetMd5Hash(ModManager.ZeroPath) + Tools.GetMd5Hash(ModManager.OnePath);
+            string datHash = Tools.GetMd5Hash(ZeroPath) + Tools.GetMd5Hash(OnePath);
             string hashOld = this.GetGameData().DatHash;
             if (datHash != hashOld)
             {
@@ -226,11 +249,11 @@ namespace SnakeBite
         [XmlArray("Mods")]
         public List<ModEntry> ModEntries { get; set; } = new List<ModEntry>();
 
-        public void SaveTo(string directory, string filename)
+        public void SaveTo(string xmlFilePath)
         {
             // Write settings to XML
-            Directory.CreateDirectory(directory);
-            using (FileStream s = new FileStream(Path.Combine(directory, filename), FileMode.Create))
+            Directory.CreateDirectory(Path.GetDirectoryName(xmlFilePath));
+            using (FileStream s = new FileStream(xmlFilePath, FileMode.Create))
             {
                 XmlSerializer x = new XmlSerializer(typeof(Settings), new[] { typeof(Settings) });
                 foreach (ModEntry mod in ModEntries)
@@ -243,16 +266,16 @@ namespace SnakeBite
             }
         }
 
-        public void LoadFrom(string directory, string filename)
+        public void LoadFrom(string xmlFilePath)
         {
             // Load settings from XML
 
-            if (!File.Exists(directory + "\\" + filename))
+            if (!File.Exists(xmlFilePath))
             {
                 return;
             }
 
-            using (FileStream s = new FileStream(Path.Combine(directory, filename), FileMode.Open))
+            using (FileStream s = new FileStream(xmlFilePath, FileMode.Open))
             {
                 XmlSerializer x = new XmlSerializer(typeof(Settings));
                 Settings loaded = (Settings)x.Deserialize(s);

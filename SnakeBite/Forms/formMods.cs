@@ -17,7 +17,7 @@ namespace SnakeBite
     {
         private formProgress progWindow = new formProgress();
         private int countCheckedMods = 0;
-        private SettingsManager manager = new SettingsManager(ModManager.GameDir);
+        private SettingsManager manager = new SettingsManager(GamePaths.SnakeBiteSettings);
 
         private ModDescriptionPage modDescription = new ModDescriptionPage();
         private NoInstalledPage noInstallNotice = new NoInstalledPage();

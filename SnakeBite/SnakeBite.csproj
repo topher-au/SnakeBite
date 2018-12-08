@@ -104,7 +104,8 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\BackupManager.cs" />
+    <Compile Include="Classes\SaveManager.cs" />
+    <Compile Include="Classes\MGSVPaths.cs" />
     <Compile Include="Classes\LogTextBoxWriter.cs" />
     <Compile Include="Classes\ControlWriter.cs" />
     <Compile Include="Classes\DebugManager.cs" />

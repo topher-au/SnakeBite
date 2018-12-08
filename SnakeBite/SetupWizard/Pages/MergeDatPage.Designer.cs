@@ -54,7 +54,7 @@
             // 
             this.panelProcessing.Controls.Add(this.labelWorking);
             this.panelProcessing.Controls.Add(this.pictureWorkingSpiral);
-            this.panelProcessing.Location = new System.Drawing.Point(95, 277);
+            this.panelProcessing.Location = new System.Drawing.Point(110, 277);
             this.panelProcessing.Name = "panelProcessing";
             this.panelProcessing.Size = new System.Drawing.Size(249, 43);
             this.panelProcessing.TabIndex = 8;

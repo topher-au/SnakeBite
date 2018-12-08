@@ -265,7 +265,7 @@ namespace SnakeBite
                     //tex TODO: figure out what it's actually checking and how this can be corrupted
                     string msgboxtext = String.Format("\"{0}\" conflicts with existing MGSV system files,\n", Tools.ReadMetaData(ModFiles[i]).Name);
                     msgboxtext += "or the snakebite.xml base entries has become corrupt.\n";
-                    msgboxtext += "Please use the Restore Original Game Files option in Snakebite settings and re-run snakebite\n";
+                    msgboxtext += "Please use the 'Restore Backup Game Files' option in Snakebite settings and re-run snakebite\n";
                     DialogResult userInput = conflictForm.ShowDialog(msgboxtext);
                     if (userInput == DialogResult.Cancel)
                     {
@@ -410,7 +410,7 @@ namespace SnakeBite
                 //tex TODO: figure out what it's actually checking and how this can be corrupted
                 string msgboxtext = "The selected mod conflicts with existing MGSV system files,\n";
                 msgboxtext += "or the snakebite.xml base entries has become corrupt.\n";
-                msgboxtext += "Please use the Restore Original Game Files option in Snakebite settings and re-run snakebite\n";
+                msgboxtext += "Please use the 'Restore Backup Game Files' option in Snakebite settings and re-run snakebite\n";
                 MessageBox.Show(msgboxtext, "SnakeBite", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return false;
             }

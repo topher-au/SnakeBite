@@ -3,7 +3,7 @@
   <Profiles />
   <Settings>
     <Setting Name="InstallPath" Type="System.String" Scope="User">
-      <Value Profile="(Default)" />
+      <Value Profile="(Default)">C:\Program Files (x86)\Steam\steamapps\common\MGS_TPP</Value>
     </Setting>
     <Setting Name="DisableConflictCheck" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
@@ -21,7 +21,7 @@
       <Value Profile="(Default)">False</Value>
     </Setting>
     <Setting Name="formModsLocation" Type="System.Drawing.Point" Scope="User">
-      <Value Profile="(Default)">0, 0</Value>
+      <Value Profile="(Default)">50, 50</Value>
     </Setting>
     <Setting Name="formModsSize" Type="System.Drawing.Size" Scope="User">
       <Value Profile="(Default)">600, 556</Value>

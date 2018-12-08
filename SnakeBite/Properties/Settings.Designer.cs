@@ -25,7 +25,7 @@ namespace SnakeBite.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        [global::System.Configuration.DefaultSettingValueAttribute("C:\\Program Files (x86)\\Steam\\steamapps\\common\\MGS_TPP")]
         public string InstallPath {
             get {
                 return ((string)(this["InstallPath"]));
@@ -97,7 +97,7 @@ namespace SnakeBite.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("0, 0")]
+        [global::System.Configuration.DefaultSettingValueAttribute("50, 50")]
         public global::System.Drawing.Point formModsLocation {
             get {
                 return ((global::System.Drawing.Point)(this["formModsLocation"]));

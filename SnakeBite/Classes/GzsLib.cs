@@ -346,7 +346,7 @@ namespace SnakeBite.GzsTool
         /// </summary>
         public static void LoadModDictionaries()
         {
-            SettingsManager manager = new SettingsManager(ModManager.GameDir);
+            SettingsManager manager = new SettingsManager(GamePaths.SnakeBiteSettings);
             //fpk dictionary only really needed for gz
             //var FpkNames = manager.GetModFpkFiles();
             var QarNames = manager.GetModQarFiles(true);
@@ -383,7 +383,7 @@ namespace SnakeBite.GzsTool
             Debug.LogLine("[GzsLib] Acquiring base game data");
 
             var baseDataFiles = new List<Dictionary<ulong, GameFile>>();
-            string dataDir = Path.Combine(ModManager.GameDir, "master");
+            string dataDir = Path.Combine(GamePaths.SnakeBiteSettings, "master");
 
             //in priority order SYNC with or read foxfs.dat directly
             var qarFileNames = new List<string> {
@@ -450,12 +450,21 @@ namespace SnakeBite.GzsTool
             }
         }
 
-        public static void PromoteQarArchive(string sourcePath, string destinationPath)
+        public static void PromoteQarArchive(bool revertable, string sourcePath, string destinationPath)
         {
             if (File.Exists(sourcePath))
             {
                 Debug.LogLine(String.Format("[GzsLib] Promoting {0} to {1}", Path.GetFileName(sourcePath), Path.GetFileName(destinationPath)));
-                File.Delete(destinationPath);
+                if (revertable)
+                {
+                    string revertFilePath = destinationPath + ModManager.revert_ext;
+                    File.Delete(revertFilePath);
+                    File.Move(destinationPath, revertFilePath);
+                }
+                else
+                {
+                    File.Delete(destinationPath);
+                }
                 File.Move(sourcePath, destinationPath);
             }
             else

@@ -13,7 +13,7 @@ namespace SnakeBite.SetupWizard
         private MergeDatPage mergeDatPage = new MergeDatPage();
         private int displayPage = 0;
         private bool setupComplete = true;
-        private SettingsManager manager = new SettingsManager(ModManager.GameDir);
+        private SettingsManager manager = new SettingsManager(GamePaths.SnakeBiteSettings);
 
         public SetupWizard()
         {
@@ -77,10 +77,31 @@ namespace SnakeBite.SetupWizard
                     break;
 
                 case 2:
+                    if(!(manager.IsVanilla0001RoughSize() || manager.IsVanilla0001DatHash()) && (ModManager.IntendedGameVersion >= ModManager.GetMGSVersion())) // not the right 00/01 and there hasn't been a game update
+                    {
+                        var overWrite = MessageBox.Show(string.Format("Your game data contains unexpected filesizes, and is likely modified or predates Game Version {0}." +
+                            "\n\nIt is recommended that you do NOT store these files as backups, unless you are absolutely certain that they can reliably restore your game to a safe state!" +
+                            "\n\nAre you sure you want to save these as backup data?", ModManager.IntendedGameVersion), "Unexpected 00.dat / 01.dat Filesizes", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                        if (overWrite != DialogResult.Yes) return;
+                    }
+
+                    string overWriteMessage;
+
                     if (BackupManager.BackupExists())
                     {
-                        var overWrite = MessageBox.Show("Some backup data already exists. Continuing will overwrite any existing backups.\n\nIf you have modified the game files seperately, you should restore them or skip this step.\n\nIf MGSV has just been updated, you should overwrite.\n\nAre you sure?", "SnakeBite", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
-                        if (overWrite == DialogResult.No) return;
+                        if (ModManager.IntendedGameVersion < ModManager.GetMGSVersion()) //A recent update has occurred and the user should probably create new backups
+                        {
+                            overWriteMessage = (string.Format("Some backup data already exists. Since this version of SnakeBite is intended for MGSV Version {0} and is now MGSV Version {1}, it is recommended that you overwrite your old backup files with new data.", ModManager.IntendedGameVersion, ModManager.GetMGSVersion()) +
+                                "\n\nContinue?");
+                        }
+                        else
+                        {
+                            overWriteMessage = "Some backup data already exists. Continuing will overwrite your existing backups." +
+                            "\n\nAre you sure you want to continue?";
+                        }
+
+                        var overWrite = MessageBox.Show(overWriteMessage, "Overwrite Existing Files", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                        if (overWrite != DialogResult.Yes) return;
                     }
 
                     // create backup

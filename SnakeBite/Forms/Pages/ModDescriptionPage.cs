@@ -11,7 +11,7 @@ namespace SnakeBite.ModPages
             InitializeComponent();
         }
 
-        private SettingsManager manager = new SettingsManager(ModManager.GameDir);
+        private SettingsManager manager = new SettingsManager(GamePaths.SnakeBiteSettings);
 
         private Version modMGSVersion = new Version(0, 0, 0, 0);
 

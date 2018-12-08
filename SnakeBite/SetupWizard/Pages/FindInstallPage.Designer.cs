@@ -65,21 +65,21 @@
             // labelWarning
             // 
             this.labelWarning.ForeColor = System.Drawing.Color.Red;
-            this.labelWarning.Location = new System.Drawing.Point(56, 140);
+            this.labelWarning.Location = new System.Drawing.Point(56, 95);
             this.labelWarning.Name = "labelWarning";
-            this.labelWarning.Size = new System.Drawing.Size(330, 125);
+            this.labelWarning.Size = new System.Drawing.Size(330, 170);
             this.labelWarning.TabIndex = 8;
             this.labelWarning.Text = resources.GetString("labelWarning.Text");
             this.labelWarning.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // buttonBrowse
             // 
-            this.buttonBrowse.Location = new System.Drawing.Point(358, 98);
+            this.buttonBrowse.Location = new System.Drawing.Point(400, 68);
             this.buttonBrowse.Name = "buttonBrowse";
-            this.buttonBrowse.Size = new System.Drawing.Size(75, 23);
+            this.buttonBrowse.Size = new System.Drawing.Size(32, 25);
             this.buttonBrowse.TabIndex = 7;
             this.buttonBrowse.Tag = "";
-            this.buttonBrowse.Text = "&Browse...";
+            this.buttonBrowse.Text = "...";
             this.buttonBrowse.UseVisualStyleBackColor = true;
             this.buttonBrowse.Click += new System.EventHandler(this.buttonBrowse_Click);
             // 
@@ -88,7 +88,7 @@
             this.textInstallPath.Location = new System.Drawing.Point(8, 69);
             this.textInstallPath.Name = "textInstallPath";
             this.textInstallPath.ReadOnly = true;
-            this.textInstallPath.Size = new System.Drawing.Size(425, 23);
+            this.textInstallPath.Size = new System.Drawing.Size(389, 23);
             this.textInstallPath.TabIndex = 6;
             // 
             // labelSelectDir

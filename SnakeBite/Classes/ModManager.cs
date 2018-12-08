@@ -17,19 +17,8 @@ namespace SnakeBite
     internal static class ModManager
     {
         internal static string vanillaDatHash = "41317C4D473D9A3DB6C1169E5ACDD35849FCF50601FD41F5A171E1055C642093"; //expected original hash for 1.0.15.0
-        internal static Version IntendedGameVersion = new Version(1, 0, 15, 0); // GAMEVERSION
-        internal static string chunk0Path { get { return Properties.Settings.Default.InstallPath + "\\master\\chunk0.dat"; } }
-        internal static string OnePath { get { return Properties.Settings.Default.InstallPath + "\\master\\0\\01.dat"; } }
-        internal static string ZeroPath { get { return Properties.Settings.Default.InstallPath + "\\master\\0\\00.dat"; } }
-        internal static string t7Path { get { return Properties.Settings.Default.InstallPath + "\\master\\a_texture7.dat"; } }
-        internal static string c7Path { get { return Properties.Settings.Default.InstallPath + "\\master\\a_chunk7.dat"; } }
-        internal static string GameDir { get { return Properties.Settings.Default.InstallPath; } }
-        internal static string build_ext = ".SB_Build";
-        internal static string NexusURL = "https://www.nexusmods.com/metalgearsolidvtpp";
-        internal static string SBWMSearchURL = "https://www.nexusmods.com/metalgearsolidvtpp/search/?search_description=SBWM";
-        internal static string SBWMBugURL = "https://www.nexusmods.com/metalgearsolidvtpp/mods/106?tab=bugs";
-        internal static string WikiURL = "https://metalgearmodding.wikia.com/wiki/";
 
+        internal static Version IntendedGameVersion = new Version(1, 0, 15, 0); // GAMEVERSION
 
         // SYNC makebite
         static string ExternalDirName = "GameDir";
@@ -719,7 +708,7 @@ namespace SnakeBite
             if (!MoveDatFiles()) //moves vanilla 00 files into 01, excluding foxpatch. 
             {
                     e.Cancel = true;
-                    ClearBuildArchives();
+                    ClearBuildArchives(c7Path, t7Path, ZeroPath, OnePath);
                     return;
             }
 
@@ -727,12 +716,12 @@ namespace SnakeBite
             if (!ModifyFoxfs()) // adds lines to foxfs in chunk0.
             {
                     e.Cancel = true;
-                    ClearBuildArchives();
+                    ClearBuildArchives(c7Path, t7Path, ZeroPath, OnePath, chunk0Path);
                     return;
             }
 
             mergeProcessor.ReportProgress(0, "Promoting new archives");
-            PromoteBuildArchives(); // overwrites existing archives with modified archives
+            PromoteBuildArchives(false, c7Path, t7Path, ZeroPath, OnePath, chunk0Path); // overwrites existing archives with modified archives
 
             mergeProcessor.ReportProgress(0, "Cleaning up database");
             CleanupDatabase();
@@ -761,7 +750,7 @@ namespace SnakeBite
                 if (File.Exists(c7Path + build_ext)) // check if chunk7/texture7 is at least the proper filesize to run the game, warn the player if otherwise.
                     if (new System.IO.FileInfo(c7Path + build_ext).Length < 345000000)
                     {
-                        MessageBox.Show("SnakeBite has detected that a_chunk7.dat.SB_Build is smaller than expected, and likely invalid.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Original Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Filesize check failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("SnakeBite has detected that a_chunk7.dat.SB_Build is smaller than expected, and likely invalid.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Backup Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Filesize check failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         Debug.LogLine("[DatMerge] a_chunk7 filesize is likely too small to be valid.", Debug.LogLevel.Basic);
                         promptContinue = true;
                     } // filesize should be around 350,000,000 bytes as of 1.0.11.0
@@ -772,14 +761,14 @@ namespace SnakeBite
                     }
                 else // no chunk files were moved to a_chunk7.
                 {
-                    MessageBox.Show("a_chunk7.dat.SB_Build could not be created during setup, likely because the original files were missing from 00.dat or 01.dat.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Original Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Missing archive file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("a_chunk7.dat.SB_Build could not be created during setup, likely because the original files were missing from 00.dat or 01.dat.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Backup Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Missing archive file", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Debug.LogLine("[DatMerge] a_chunk7 was not created during the setup process.", Debug.LogLevel.Basic);
                 }
 
                 if (File.Exists(t7Path + build_ext))
                     if (new System.IO.FileInfo(t7Path + build_ext).Length < 250000000)
                     {
-                        MessageBox.Show("SnakeBite has detected that a_texture7.dat.SB_Build is smaller than expected, and likely invalid.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Original Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Setup required", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        MessageBox.Show("SnakeBite has detected that a_texture7.dat.SB_Build is smaller than expected, and likely invalid.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Backup Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Setup required", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         Debug.LogLine("[DatMerge] a_texture7 filesize is likely too small to be valid.", Debug.LogLevel.Basic);
                         promptContinue = true;
                     } // filesize should be around 255,000,000 bytes as of 1.0.11.0
@@ -790,7 +779,7 @@ namespace SnakeBite
                     }
                 else // no textures were moved from 01.
                 {
-                    MessageBox.Show("a_texture7.dat.SB_Build could not be created during setup, likely because the original files were missing from 00.dat or 01.dat.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Original Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Missing archive file", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("a_texture7.dat.SB_Build could not be created during setup, likely because the original files were missing from 00.dat or 01.dat.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Backup Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Missing archive file", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Debug.LogLine("[DatMerge] a_texture7 was not created during the setup process.", Debug.LogLevel.Basic);
                 }
 
@@ -1092,25 +1081,23 @@ namespace SnakeBite
             }
         }
 
-        private static void PromoteBuildArchives()
+        private static void PromoteBuildArchives(bool revertable, params string[] paths)
         {
             // Promote SB builds
-            GzsLib.PromoteQarArchive(c7Path + build_ext, c7Path);
-            GzsLib.PromoteQarArchive(t7Path + build_ext, t7Path);
-            GzsLib.PromoteQarArchive(ZeroPath + build_ext, ZeroPath);
-            GzsLib.PromoteQarArchive(OnePath + build_ext, OnePath);
-            GzsLib.PromoteQarArchive(chunk0Path + build_ext, chunk0Path);
+            foreach (string path in paths)
+            {
+                GzsLib.PromoteQarArchive(revertable, path + build_ext, path);
+            }
 
             new SettingsManager(GameDir).UpdateDatHash();
         }
 
-        private static void ClearBuildArchives()
+        private static void ClearBuildArchives(params string[] paths)
         {
-            File.Delete(c7Path + build_ext);
-            File.Delete(t7Path + build_ext);
-            File.Delete(ZeroPath + build_ext);
-            File.Delete(OnePath + build_ext);
-            File.Delete(chunk0Path + build_ext);
+            foreach(string path in paths)
+            {
+                File.Delete(path + build_ext);
+            }
         }
 
         /// <summary>

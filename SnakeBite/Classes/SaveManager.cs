@@ -1,21 +1,19 @@
-﻿using System.ComponentModel;
+﻿using ICSharpCode.SharpZipLib.Zip;
+using System;
+using System.ComponentModel;
 using System.IO;
 using System.Threading;
+using System.Windows.Forms;
 
 namespace SnakeBite
 {
     public static class BackupManager
     {
-        private static string GameZero { get { return Path.Combine(ModManager.GameDir, "master\\0\\00.dat"); } }
-        private static string GameOne { get { return Path.Combine(ModManager.GameDir, "master\\0\\01.dat"); } }
-        private static string GameChunkZero { get { return Path.Combine(ModManager.GameDir, "master\\chunk0.dat"); } }
-        private static string GameTexture7 { get { return Path.Combine(ModManager.GameDir, "master\\a_texture7.dat"); } }
-        private static string GameChunk7 { get { return Path.Combine(ModManager.GameDir, "master\\a_chunk7.dat"); } }
-        private static string ModZero { get { return Path.Combine(ModManager.GameDir, "master\\0\\00.dat.modded"); } }
-        private static string ModOne { get { return Path.Combine(ModManager.GameDir, "master\\0\\01.dat.modded"); } }
-        private static string OriginalZero { get { return Path.Combine(ModManager.GameDir, "master\\0\\00.dat.original"); } }
-        private static string OriginalOne { get { return Path.Combine(ModManager.GameDir, "master\\0\\01.dat.original"); } }
-        private static string OriginalChunkZero { get { return Path.Combine(ModManager.GameDir, "master\\chunk0.dat.original"); } }
+        private static string GameZero = GamePaths.ZeroPath;
+        private static string GameOne = GamePaths.OnePath;
+        private static string GameChunkZero = GamePaths.chunk0Path;
+        private static string BackupPath = GamePaths.BackupPath;
+        private static string SnakeBiteXml = GamePaths.SnakeBiteSettings;
 
         public static bool OriginalsExist()
         {
@@ -88,7 +86,7 @@ namespace SnakeBite
                 File.Copy(OriginalZero, GameZero, true);
                 File.Copy(OriginalOne, GameOne, true);
 
-                SettingsManager manager = new SettingsManager(ModManager.GameDir);
+                SettingsManager manager = new SettingsManager(GamePaths.SnakeBiteSettings);
                 manager.UpdateDatHash();
             }
         }
@@ -104,7 +102,7 @@ namespace SnakeBite
                 // delete mod backup
                 File.Delete(ModZero);
                 File.Delete(ModOne);
-                SettingsManager manager = new SettingsManager(ModManager.GameDir);
+                SettingsManager manager = new SettingsManager(GamePaths.SnakeBiteSettings);
                 manager.UpdateDatHash();
             }
         }
@@ -139,12 +137,12 @@ namespace SnakeBite
             }
             if (!File.Exists(OriginalZero) || Overwrite)
             {
-                // copy one
+                // copy zero
                 File.Copy(GameZero, OriginalZero, true);
             }
             if (!File.Exists(OriginalChunkZero) || Overwrite)
             {
-                // copy one
+                // copy chunk0
                 File.Copy(GameChunkZero, OriginalChunkZero, true);
             }
         }
@@ -158,6 +156,94 @@ namespace SnakeBite
         {
             return (File.Exists(GameZero) && File.Exists(GameOne) && File.Exists(GameChunkZero));
         }
+
+        public static void backgroundWorker_CopyBackupFilesZip(object sender, DoWorkEventArgs e)
+        {
+            BackgroundWorker backupProcessor = (BackgroundWorker)sender;
+            Directory.CreateDirectory("_build");
+
+            object param = Path.GetFileName(GameZero); //TODO: append filesize
+            backupProcessor.ReportProgress(0, param);
+            File.Copy(GameZero, "_build", true);
+
+            param = Path.GetFileName(GameOne);
+            backupProcessor.ReportProgress(0, param);
+            File.Copy(GameOne, "_build", true);
+
+            param = Path.GetFileName(GameChunkZero);
+            backupProcessor.ReportProgress(0, param);
+            File.Copy(GameChunkZero, "_build", true);
+
+            FastZip zipper = new FastZip();
+            zipper.CreateZip(BackupPath, "_build", true, "(.*?dat)");
+
+            Directory.Delete("_build", true);
+        }
+
+        public static void SavePreset(string presetFilePath)
+        {
+            SettingsManager manager = new SettingsManager(SnakeBiteXml);
+
+            Directory.CreateDirectory("_build");
+
+            File.Copy(GameZero, "_build", true);
+            File.Copy(GameOne, "_build", true);
+            File.Copy(SnakeBiteXml, "_build", true);
+
+            FastZip zipper = new FastZip();
+            zipper.CreateZip(presetFilePath, "_build", true, "(.*?)");
+
+            Directory.Delete("_build", true);
+        }
+
+        public static void LoadPreset(string presetFilePath)
+        {
+            Directory.CreateDirectory("_extr");
+
+            FastZip unzipper = new FastZip();
+            unzipper.ExtractZip(presetFilePath, "_extr", "snakebite.xml");
+
+            SettingsManager manager = new SettingsManager("_extr\\snakebite.xml");
+            var presetVersion = manager.GetSettingsMGSVersion();
+            var MGSVersion = ModManager.GetMGSVersion();
+            if (presetVersion != MGSVersion)
+            {
+                if (MessageBox.Show(string.Format("This preset file is intended for Game Version {0}, but your current Game Version is {1}. Loading this preset will likely cause crashes, infinite loading screens or other significant problems in-game.", presetVersion, MGSVersion) +
+                    "\n\nAre you sure you want to load this preset?", "Preset Version Mismatch", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                {
+                    return;
+                }
+            }
+            string modsToInstall = "";
+            foreach(var mod in manager.GetInstalledMods())
+            {
+                modsToInstall += string.Format("\n{0}", mod.Name);
+            }
+            DialogResult confirmInstall = MessageBox.Show(string.Format("This preset will contain the following mods:\n" + modsToInstall), "Preset Mods", MessageBoxButtons.OKCancel);
+            if (confirmInstall == DialogResult.OK)
+            {
+                ProgressWindow.Show("Loading Preset", "Loading Preset, please wait...", new Action((MethodInvoker)delegate 
+                {
+                    unzipper.ExtractZip(presetFilePath, "_extr", "(.*?dat)");
+                    //todo create revert presets first
+                    File.Move("_extr\\00.dat", GameZero);
+                    File.Move("_extr\\01.dat", GameOne);
+                    File.Move("_extr\\snakebite.xml", SnakeBiteXml);
+                }), log); // gonna need to send most of this logic to formMods
+                
+            }
+
+            Directory.Delete("_extr", true);
+        }
+
+        private static void InstallPreset(string presetFilePath, FastZip unzipper)
+        {
+            unzipper.ExtractZip(presetFilePath, "_extr", "(.*?dat)");
+            //todo create revert presets first
+            File.Move("_extr\\00.dat", GameZero);
+            File.Move("_extr\\01.dat", GameOne);
+            File.Move("_extr\\snakebite.xml", SnakeBiteXml);
+        }
     }
 
     public enum BackupState
@@ -166,4 +252,15 @@ namespace SnakeBite
         ModActive,
         DefaultActive,
     }
+    
+
+    //1.0.15.0.MGSVOriginal
+    //  00.dat
+    //  01.dat
+    //  chunk0.dat
+
+    //MyPreset.MGSVPreset
+    //  00.dat
+    //  01.dat
+    //  Snakebite.xml
 }
