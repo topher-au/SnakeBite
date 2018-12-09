@@ -24,7 +24,7 @@ namespace SnakeBite.ModPages
             if (mod.Website.Length > 0)
                 modWebsite = mod.Website;
             else
-                modWebsite = ModManager.NexusURL;
+                modWebsite = GamePaths.NexusURLPath;
 
             labelModAuthor.Text = "By " + mod.Author;
             labelModName.Text = mod.Name;
@@ -49,7 +49,7 @@ namespace SnakeBite.ModPages
             }
             catch
             {
-                System.Diagnostics.Process.Start(ModManager.NexusURL);
+                System.Diagnostics.Process.Start(GamePaths.NexusURLPath);
             }
         }
 

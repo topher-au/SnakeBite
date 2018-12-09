@@ -79,7 +79,7 @@
             this.labelModWebsite.Location = new System.Drawing.Point(4, 394);
             this.labelModWebsite.Name = "labelModWebsite";
             this.labelModWebsite.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.labelModWebsite.Size = new System.Drawing.Size(351, 26);
+            this.labelModWebsite.Size = new System.Drawing.Size(347, 26);
             this.labelModWebsite.TabIndex = 4;
             this.labelModWebsite.TabStop = true;
             this.labelModWebsite.Text = "Mod Version Link To Website";

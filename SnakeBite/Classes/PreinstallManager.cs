@@ -17,12 +17,11 @@ namespace SnakeBite
          * Designed to support formInstallOrder with file reading/writing, conflict checking and installation processing
          * 
          */
-        internal static string GameDir { get { return Properties.Settings.Default.InstallPath; } }
 
         public static void RefreshXml(List<PreinstallEntry> Mods) // adds mods to an .xml file. Similar to snakebite.xml, but with yet-to-be-installed mods.
         {
             FastZip unzipper = new FastZip();
-            SettingsManager infoXml = new SettingsManager("_extr", "buildInfo.xml");
+            SettingsManager infoXml = new SettingsManager("_extr\\buildInfo.xml");
             // SettingsManager was originally a static class for managing snakebite.xml. It has been modified to manage buildInfo.xml as well.
 
             infoXml.ClearAllMods();
@@ -37,7 +36,7 @@ namespace SnakeBite
 
         public static List<ModEntry> getModEntries()
         {
-            return new SettingsManager("_extr", "buildInfo.xml").GetInstalledMods();
+            return new SettingsManager("_extr\\buildInfo.xml").GetInstalledMods();
         }
 
         public static void getConflictList(List<PreinstallEntry> Mods) // checks each mod against one another for conflicts, and adds conflicting mods to a list.
@@ -171,7 +170,7 @@ namespace SnakeBite
             //return a list of mods that the user has OK'd
             int confCounter;
             int confIndex;
-            SettingsManager manager = new SettingsManager(GameDir);
+            SettingsManager manager = new SettingsManager(GamePaths.SnakeBiteSettings);
             var mods = manager.GetInstalledMods();
             List<string> conflictingMods;
             ModEntry metaData;
@@ -284,7 +283,7 @@ namespace SnakeBite
             var SBVersion = ModManager.GetSBVersion();
             var MGSVersion = ModManager.GetMGSVersion();
 
-            SettingsManager manager = new SettingsManager(GameDir);
+            SettingsManager manager = new SettingsManager(GamePaths.SnakeBiteSettings);
             Version modSBVersion = new Version();
             Version modMGSVersion = new Version();
             try

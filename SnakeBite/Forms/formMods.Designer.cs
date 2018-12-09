@@ -43,6 +43,9 @@
             this.menuItem6 = new System.Windows.Forms.MenuItem();
             this.menuItemBrowseMods = new System.Windows.Forms.MenuItem();
             this.menuItem8 = new System.Windows.Forms.MenuItem();
+            this.menuItemSavePreset = new System.Windows.Forms.MenuItem();
+            this.menuItemLoadPreset = new System.Windows.Forms.MenuItem();
+            this.menuItem4 = new System.Windows.Forms.MenuItem();
             this.menuItemExit = new System.Windows.Forms.MenuItem();
             this.menuItemOptions = new System.Windows.Forms.MenuItem();
             this.menuItemSkipLauncher = new System.Windows.Forms.MenuItem();
@@ -52,8 +55,10 @@
             this.menuItemLearn = new System.Windows.Forms.MenuItem();
             this.menuItemInstalling = new System.Windows.Forms.MenuItem();
             this.menuItemUninstalling = new System.Windows.Forms.MenuItem();
-            this.menuItemCreating = new System.Windows.Forms.MenuItem();
             this.menuItemConflicts = new System.Windows.Forms.MenuItem();
+            this.menuItem3 = new System.Windows.Forms.MenuItem();
+            this.menuItemCreating = new System.Windows.Forms.MenuItem();
+            this.menuItemHelpPresets = new System.Windows.Forms.MenuItem();
             this.menuItemWikiLink = new System.Windows.Forms.MenuItem();
             this.menuItem18 = new System.Windows.Forms.MenuItem();
             this.menuItemOpenLogs = new System.Windows.Forms.MenuItem();
@@ -175,6 +180,9 @@
             this.menuItem6,
             this.menuItemBrowseMods,
             this.menuItem8,
+            this.menuItemSavePreset,
+            this.menuItemLoadPreset,
+            this.menuItem4,
             this.menuItemExit});
             this.menuItemFile.Text = "File";
             // 
@@ -206,9 +214,26 @@
             this.menuItem8.Index = 4;
             this.menuItem8.Text = "-";
             // 
+            // menuItemSavePreset
+            // 
+            this.menuItemSavePreset.Index = 5;
+            this.menuItemSavePreset.Text = "Save .MGSVPreset File...";
+            this.menuItemSavePreset.Click += new System.EventHandler(this.menuItemSavePreset_Click);
+            // 
+            // menuItemLoadPreset
+            // 
+            this.menuItemLoadPreset.Index = 6;
+            this.menuItemLoadPreset.Text = "Load .MGSVPreset File...";
+            this.menuItemLoadPreset.Click += new System.EventHandler(this.menuItemLoadPreset_Click);
+            // 
+            // menuItem4
+            // 
+            this.menuItem4.Index = 7;
+            this.menuItem4.Text = "-";
+            // 
             // menuItemExit
             // 
-            this.menuItemExit.Index = 5;
+            this.menuItemExit.Index = 8;
             this.menuItemExit.Text = "Exit";
             this.menuItemExit.Click += new System.EventHandler(this.menuItemExit_Click);
             // 
@@ -256,8 +281,10 @@
             this.menuItemLearn.MenuItems.AddRange(new System.Windows.Forms.MenuItem[] {
             this.menuItemInstalling,
             this.menuItemUninstalling,
+            this.menuItemConflicts,
+            this.menuItem3,
             this.menuItemCreating,
-            this.menuItemConflicts});
+            this.menuItemHelpPresets});
             this.menuItemLearn.Text = "About SnakeBite...";
             // 
             // menuItemInstalling
@@ -272,17 +299,28 @@
             this.menuItemUninstalling.Text = "Uninstalling Mods";
             this.menuItemUninstalling.Click += new System.EventHandler(this.menuItemHelpUninstall_Click);
             // 
+            // menuItemConflicts
+            // 
+            this.menuItemConflicts.Index = 2;
+            this.menuItemConflicts.Text = "Mod Conflicts";
+            this.menuItemConflicts.Click += new System.EventHandler(this.menuItemHelpConflicts_Click);
+            // 
+            // menuItem3
+            // 
+            this.menuItem3.Index = 3;
+            this.menuItem3.Text = "-";
+            // 
             // menuItemCreating
             // 
-            this.menuItemCreating.Index = 2;
+            this.menuItemCreating.Index = 4;
             this.menuItemCreating.Text = "Creating Mods";
             this.menuItemCreating.Click += new System.EventHandler(this.menuItemHelpCreate_Click);
             // 
-            // menuItemConflicts
+            // menuItemHelpPresets
             // 
-            this.menuItemConflicts.Index = 3;
-            this.menuItemConflicts.Text = "Mod Conflicts";
-            this.menuItemConflicts.Click += new System.EventHandler(this.menuItemHelpConflicts_Click);
+            this.menuItemHelpPresets.Index = 5;
+            this.menuItemHelpPresets.Text = "Saving/Loading Presets";
+            this.menuItemHelpPresets.Click += new System.EventHandler(this.menuItemHelpPresets_Click);
             // 
             // menuItemWikiLink
             // 
@@ -385,5 +423,10 @@
         private System.Windows.Forms.MenuItem menuItemConflicts;
         private System.Windows.Forms.MenuItem menuItemOpenLogs;
         private System.Windows.Forms.MenuItem menuItem1;
+        private System.Windows.Forms.MenuItem menuItemSavePreset;
+        private System.Windows.Forms.MenuItem menuItemLoadPreset;
+        private System.Windows.Forms.MenuItem menuItem4;
+        private System.Windows.Forms.MenuItem menuItem3;
+        private System.Windows.Forms.MenuItem menuItemHelpPresets;
     }
 }

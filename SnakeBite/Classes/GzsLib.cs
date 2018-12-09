@@ -383,7 +383,7 @@ namespace SnakeBite.GzsTool
             Debug.LogLine("[GzsLib] Acquiring base game data");
 
             var baseDataFiles = new List<Dictionary<ulong, GameFile>>();
-            string dataDir = Path.Combine(GamePaths.SnakeBiteSettings, "master");
+            string dataDir = Path.Combine(GamePaths.GameDir, "master");
 
             //in priority order SYNC with or read foxfs.dat directly
             var qarFileNames = new List<string> {
@@ -457,9 +457,9 @@ namespace SnakeBite.GzsTool
                 Debug.LogLine(String.Format("[GzsLib] Promoting {0} to {1}", Path.GetFileName(sourcePath), Path.GetFileName(destinationPath)));
                 if (revertable)
                 {
-                    string revertFilePath = destinationPath + ModManager.revert_ext;
-                    File.Delete(revertFilePath);
-                    File.Move(destinationPath, revertFilePath);
+                    //string revertFilePath = destinationPath + ModManager.revert_ext;
+                    //File.Delete(revertFilePath);
+                    //File.Move(destinationPath, revertFilePath);
                 }
                 else
                 {

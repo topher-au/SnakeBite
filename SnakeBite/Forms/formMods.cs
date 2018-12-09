@@ -126,7 +126,8 @@ namespace SnakeBite
             {
                 countCheckedMods++;
                 buttonUninstall.Enabled = true;
-            } else
+            }
+            else
             {
                 countCheckedMods--;
                 if (countCheckedMods == 0)
@@ -137,13 +138,14 @@ namespace SnakeBite
         /// <summary>
         /// command-line install.
         /// </summary>
-        internal void ProcessInstallMod(string installModPath, bool skipConflictChecks, bool skipCleanup) 
+        internal void ProcessInstallMod(string installModPath, bool skipConflictChecks, bool skipCleanup)
         {
             List<string> InstallFileList = null;
             if (File.Exists(installModPath) && installModPath.Contains(".mgsv"))
             {
                 InstallFileList = new List<string> { installModPath };
-            } else
+            }
+            else
             {
                 if (Directory.Exists(installModPath))
                 {
@@ -153,7 +155,8 @@ namespace SnakeBite
                         Debug.LogLine($"[Install] Could not find any .mgsv files in {installModPath}.");
                         return;
                     }
-                } else
+                }
+                else
                 {
                     Debug.LogLine($"[Install] Could not find file or directory {installModPath}.");
                     return;
@@ -210,12 +213,14 @@ namespace SnakeBite
                     if (listInstalledMods.Items.Count > 0)
                     {
                         listInstalledMods.SelectedIndex = 0;
-                    } else
+                    }
+                    else
                     {
                         listInstalledMods.SelectedIndex = -1;
                     }
                 }
-            } else
+            }
+            else
             {
                 panelContent.Controls.Clear();
                 panelContent.Controls.Add(noInstallNotice);
@@ -230,23 +235,61 @@ namespace SnakeBite
             Application.Exit();
         }
 
-        private void formMods_Resize(object sender, EventArgs e)
+        private void menuItemSavePreset_Click(object sender, EventArgs e)
         {
-            AdjustSize();
+            ShowPresetHelp();
+            //todo show a one-time explanation 
+            SaveFileDialog savePreset = new SaveFileDialog();
+            savePreset.Filter = "MGSV Preset File|*.mgsvpreset";
+            DialogResult saveResult = savePreset.ShowDialog();
+            if (saveResult != DialogResult.OK) return;
+
+            string presetPath = savePreset.FileName;
+            panelContent.Controls.Clear();
+            panelContent.Controls.Add(log);
+            ProgressWindow.Show("Saving Preset", "Saving Preset, please wait...", new Action((MethodInvoker)delegate { PresetManager.SavePreset(presetPath); }), log);
+            MessageBox.Show(string.Format("'{0}' Saved.", Path.GetFileName(presetPath)), "Preset Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            RefreshInstalledMods(true);
         }
 
-        private void AdjustSize()
+        private void menuItemLoadPreset_Click(object sender, EventArgs e)
         {
-            int modListWidth = Width / 3;
+            ShowPresetHelp();
+            //todo show a one-time explanation
+            OpenFileDialog getPresetFile = new OpenFileDialog();
+            getPresetFile.Filter = "MGSV Preset File|*.mgsvpreset|All Files|*.*";
+            getPresetFile.Multiselect = true;
 
-            panelModList.Width = modListWidth;
+            DialogResult result = getPresetFile.ShowDialog();
+            if (result != DialogResult.OK) return;
 
-            panelContent.Left = panelModList.Width + 6;
-            panelContent.Width = Width - panelModList.Width - 28;
+            string presetPath = getPresetFile.FileName;
+            Settings presetSettings = PresetManager.ReadSnakeBiteSettings(presetPath);
 
-            log.Size = panelContent.Size;
-            modDescription.Size = panelContent.Size;
-            noInstallNotice.Size = panelContent.Size;
+            if (!PresetManager.isPresetUpToDate(presetSettings))
+            {
+                if (MessageBox.Show(string.Format("This preset file is intended for Game Version {0}, but your current Game Version is {1}. Loading this preset will likely cause crashes, infinite loading screens or other significant problems in-game.", presetSettings.MGSVersion.AsVersion(), ModManager.GetMGSVersion()) +
+                     "\n\nAre you sure you want to load this preset?", "Preset Version Mismatch", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
+            }
+
+            string modsToInstall = "This preset will contain the following mods:\n";
+            if (presetSettings.ModEntries.Count != 0)
+            {
+                foreach (var mod in presetSettings.ModEntries)
+                {
+                    modsToInstall += string.Format("\n{0}", mod.Name);
+                }
+            }
+            else
+            {
+                modsToInstall += "\n[NONE]";
+            }
+            if (MessageBox.Show(modsToInstall, "Install Preset", MessageBoxButtons.OKCancel) != DialogResult.OK) return;
+            panelContent.Controls.Clear();
+            panelContent.Controls.Add(log);
+            ProgressWindow.Show("Loading Preset", "Loading Preset, please wait...", new Action((MethodInvoker)delegate { PresetManager.InstallPreset(presetPath); }), log);
+
+            RefreshInstalledMods(true);
         }
 
         private void menuItemOpenDir_Click(object sender, EventArgs e)
@@ -270,7 +313,7 @@ namespace SnakeBite
 
         private void menuItemBrowseMods_Click(object sender, EventArgs e)
         {
-            Process.Start(ModManager.SBWMSearchURL);
+            Process.Start(GamePaths.SBWMSearchURLPath);
         }
 
         private void menuItemExit_Click(object sender, EventArgs e)
@@ -314,22 +357,23 @@ namespace SnakeBite
             labelInstalledMods.Enabled = enabled;
         }
 
-        private void formMods_FormClosing(object sender, FormClosingEventArgs e)
+        private void menuItemOpenMakeBite_Click(object sender, EventArgs e)
         {
-            Properties.Settings.Default.formModsLocation = Location;
+            string makeBitePath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "makebite.exe");
 
-            if (WindowState == FormWindowState.Normal)
+            try
             {
-                Properties.Settings.Default.formModsSize = Size;
+                Process.Start(makeBitePath);
             }
-            else
+            catch
             {
-                Properties.Settings.Default.formModsSize = RestoreBounds.Size;
+                MessageBox.Show("MakeBite application could not be opened from " + makeBitePath, "Failed to launch MakeBite", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
 
-            Properties.Settings.Default.formModsMaximized = (WindowState == FormWindowState.Maximized);
-
-            Properties.Settings.Default.Save();
+        private void menuItemWikiLink_Click(object sender, EventArgs e)
+        {
+            Process.Start(GamePaths.WikiURLPath);
         }
 
         private void menuItemHelpInstall_Click(object sender, EventArgs e)
@@ -349,24 +393,10 @@ namespace SnakeBite
 
         private void menuItemHelpCreate_Click(object sender, EventArgs e)
         {
-            if(MessageBox.Show("To create a mod for SnakeBite, the user must build a .MGSV file using MakeBite (which was installed automatically alongside SnakeBite). MakeBite creates mods by packing all of the files from a specified folder into a new .MGSV file. " +
+            if (MessageBox.Show("To create a mod for SnakeBite, the user must build a .MGSV file using MakeBite (which was installed automatically alongside SnakeBite). MakeBite creates mods by packing all of the files from a specified folder into a new .MGSV file. " +
                 "\n\nIn fact, .MGSV files are basically glorified .zip files.\n\nThere are many tools and tutorials available for users to learn how to modify and prepare game files for MakeBite.\nWould you like to visit the MakeBite Wiki page for more information?", "Creating a Mod", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
-                Process.Start(ModManager.WikiURL + "SnakeBite#MakeBite");
-            }
-        }
-
-        private void menuItemOpenMakeBite_Click(object sender, EventArgs e)
-        {
-            string makeBitePath = Path.Combine(Path.GetDirectoryName(System.Reflection.Assembly.GetEntryAssembly().Location), "makebite.exe");
-
-            try
-            {
-                Process.Start(makeBitePath);
-            }
-            catch
-            {
-                MessageBox.Show("MakeBite application could not be opened from " + makeBitePath, "Failed to launch MakeBite", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Process.Start(GamePaths.WikiURLPath + "SnakeBite#MakeBite");
             }
         }
 
@@ -382,12 +412,55 @@ namespace SnakeBite
         {
             MessageBox.Show("If you have found an issue with SnakeBite, please report the issue with as much information as you can gather! Be sure to include the relevant Debug Log in the bug report, and do your best to explain how you are able to reproduce the issue." +
                 "\n\nAlso, always search through the existing bug reports to make sure that your issue hasn't already been created. If your bug is already reported, add your information to that bug report instead!", "Reporting a Bug", MessageBoxButtons.OK, MessageBoxIcon.Information);
-            Process.Start(ModManager.SBWMBugURL);
+            Process.Start(GamePaths.SBWMBugURLPath);
         }
 
-        private void menuItemWikiLink_Click(object sender, EventArgs e)
+        private void menuItemHelpPresets_Click(object sender, EventArgs e)
         {
-            Process.Start(ModManager.WikiURL);
+            ShowPresetHelp();
         }
+
+        private void ShowPresetHelp()
+        {
+
+        }
+
+        private void formMods_Resize(object sender, EventArgs e)
+        {
+            AdjustSize();
+        }
+
+        private void AdjustSize()
+        {
+            int modListWidth = Width / 3;
+
+            panelModList.Width = modListWidth;
+
+            panelContent.Left = panelModList.Width + 6;
+            panelContent.Width = Width - panelModList.Width - 28;
+
+            log.Size = panelContent.Size;
+            modDescription.Size = panelContent.Size;
+            noInstallNotice.Size = panelContent.Size;
+        }
+
+        private void formMods_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Properties.Settings.Default.formModsLocation = Location;
+
+            if (WindowState == FormWindowState.Normal)
+            {
+                Properties.Settings.Default.formModsSize = Size;
+            }
+            else
+            {
+                Properties.Settings.Default.formModsSize = RestoreBounds.Size;
+            }
+
+            Properties.Settings.Default.formModsMaximized = (WindowState == FormWindowState.Maximized);
+
+            Properties.Settings.Default.Save();
+        }
+
     }
 }

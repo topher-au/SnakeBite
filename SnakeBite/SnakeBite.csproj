@@ -104,14 +104,15 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Classes\SaveManager.cs" />
-    <Compile Include="Classes\MGSVPaths.cs" />
+    <Compile Include="Classes\BackupManager.cs" />
+    <Compile Include="Classes\GamePaths.cs" />
     <Compile Include="Classes\LogTextBoxWriter.cs" />
     <Compile Include="Classes\ControlWriter.cs" />
     <Compile Include="Classes\DebugManager.cs" />
     <Compile Include="Classes\GameFiles.cs" />
     <Compile Include="Classes\MultTextWriter.cs" />
     <Compile Include="Classes\PreinstallManager.cs" />
+    <Compile Include="Classes\PresetManager.cs" />
     <Compile Include="Classes\UpdateFile.cs" />
     <Compile Include="Forms\formInstallOrder.cs">
       <SubType>Form</SubType>

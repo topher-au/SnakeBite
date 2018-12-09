@@ -17,6 +17,14 @@ namespace SnakeBite
     internal static class ModManager
     {
         internal static string vanillaDatHash = "41317C4D473D9A3DB6C1169E5ACDD35849FCF50601FD41F5A171E1055C642093"; //expected original hash for 1.0.15.0
+        private static string ZeroPath = GamePaths.ZeroPath;
+        private static string OnePath = GamePaths.OnePath;
+        private static string GameDir = GamePaths.GameDir;
+        private static string c7Path = GamePaths.c7Path;
+        private static string t7Path = GamePaths.t7Path;
+        private static string chunk0Path = GamePaths.chunk0Path;
+        private static string SnakeBiteXml = GamePaths.SnakeBiteSettings;
+        private static string build_ext = GamePaths.build_ext;
 
         internal static Version IntendedGameVersion = new Version(1, 0, 15, 0); // GAMEVERSION
 
@@ -38,7 +46,7 @@ namespace SnakeBite
                 oneFiles = GzsLib.ExtractArchive<QarFile>(OnePath, "_working1");
             }       
             //snakebites settings manager also includes the installed mod lists
-            SettingsManager manager = new SettingsManager(GameDir);
+            SettingsManager manager = new SettingsManager(SnakeBiteXml);
             var gameData = manager.GetGameData();
             ValidateGameData(ref gameData, ref zeroFiles);
             var zeroFilesHashSet = new HashSet<string>(zeroFiles);
@@ -402,7 +410,7 @@ namespace SnakeBite
             Debug.LogLine("[Uninstall] Start", Debug.LogLevel.Basic);
             CleanupFolders();
             GzsLib.LoadDictionaries();
-            SettingsManager manager = new SettingsManager(GameDir);
+            SettingsManager manager = new SettingsManager(SnakeBiteXml);
             List<ModEntry> mods = manager.GetInstalledMods();
             List<ModEntry> uninstallMods = new List<ModEntry>();
             foreach (int index in modIndices)
@@ -669,7 +677,7 @@ namespace SnakeBite
 
         public static bool foundLooseFtexs(CheckedListBox.CheckedIndexCollection modIndices) // returns true if any mods at the indices contain a loose texture file which was installed to 01
         {
-            var mods = new SettingsManager(GameDir).GetInstalledMods();
+            var mods = new SettingsManager(SnakeBiteXml).GetInstalledMods();
             foreach (int index in modIndices)
             {
                 ModEntry mod = mods[index];
@@ -729,7 +737,7 @@ namespace SnakeBite
 
         public static bool MoveDatFiles() // moves all vanilla 00.dat files, excluding foxpatch.dat, to 01.dat
         {
-            SettingsManager manager = new SettingsManager(GameDir);
+            SettingsManager manager = new SettingsManager(SnakeBiteXml);
             bool goodChunkSetup = false; // proper chunk7 (filesize appears sufficient)
             bool goodTexSetup = false; // proper texture7 (filesize appears sufficient)
             bool promptContinue = false; // prompt shown upon apparently improper filesizes, but user may wish to continue anyway
@@ -1089,7 +1097,7 @@ namespace SnakeBite
                 GzsLib.PromoteQarArchive(revertable, path + build_ext, path);
             }
 
-            new SettingsManager(GameDir).UpdateDatHash();
+            new SettingsManager(SnakeBiteXml).UpdateDatHash();
         }
 
         private static void ClearBuildArchives(params string[] paths)
@@ -1109,7 +1117,7 @@ namespace SnakeBite
             Debug.LogLine("[Cleanup] Database cleanup started", Debug.LogLevel.Basic);
 
             // Retrieve installation data
-            SettingsManager manager = new SettingsManager(GameDir);
+            SettingsManager manager = new SettingsManager(SnakeBiteXml);
             var mods = manager.GetInstalledMods();
             var game = manager.GetGameData();
             var zeroFiles = GzsLib.ListArchiveContents<QarFile>(ZeroPath);

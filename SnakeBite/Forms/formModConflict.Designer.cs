@@ -41,9 +41,9 @@
             this.buttonInstall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.buttonInstall.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonInstall.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.buttonInstall.Location = new System.Drawing.Point(137, 136);
+            this.buttonInstall.Location = new System.Drawing.Point(81, 136);
             this.buttonInstall.Name = "buttonInstall";
-            this.buttonInstall.Size = new System.Drawing.Size(248, 31);
+            this.buttonInstall.Size = new System.Drawing.Size(283, 31);
             this.buttonInstall.TabIndex = 0;
             this.buttonInstall.Text = "Install Anyway (Overwrite Existing Data)";
             this.buttonInstall.UseVisualStyleBackColor = true;
@@ -55,9 +55,9 @@
             this.buttonDontInstall.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonDontInstall.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.buttonDontInstall.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.buttonDontInstall.Location = new System.Drawing.Point(391, 136);
+            this.buttonDontInstall.Location = new System.Drawing.Point(370, 136);
             this.buttonDontInstall.Name = "buttonDontInstall";
-            this.buttonDontInstall.Size = new System.Drawing.Size(126, 31);
+            this.buttonDontInstall.Size = new System.Drawing.Size(149, 31);
             this.buttonDontInstall.TabIndex = 1;
             this.buttonDontInstall.Text = "Cancel Installation";
             this.buttonDontInstall.UseVisualStyleBackColor = true;

@@ -275,6 +275,7 @@ namespace SnakeBite
                 return;
             }
 
+            Debug.LogLine(xmlFilePath);
             using (FileStream s = new FileStream(xmlFilePath, FileMode.Open))
             {
                 XmlSerializer x = new XmlSerializer(typeof(Settings));
