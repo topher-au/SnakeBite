@@ -47,6 +47,7 @@
             this.labelNexusLink = new System.Windows.Forms.LinkLabel();
             this.labelThanks = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
+            this.checkBoxSaveRevertPreset = new System.Windows.Forms.CheckBox();
             this.groupSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picModToggle)).BeginInit();
             this.groupBackup.SuspendLayout();
@@ -67,12 +68,13 @@
             // 
             // groupSettings
             // 
+            this.groupSettings.Controls.Add(this.checkBoxSaveRevertPreset);
             this.groupSettings.Controls.Add(this.label3);
             this.groupSettings.Controls.Add(this.checkEnableSound);
             this.groupSettings.Controls.Add(this.picModToggle);
-            this.groupSettings.Location = new System.Drawing.Point(3, 269);
+            this.groupSettings.Location = new System.Drawing.Point(3, 263);
             this.groupSettings.Name = "groupSettings";
-            this.groupSettings.Size = new System.Drawing.Size(360, 82);
+            this.groupSettings.Size = new System.Drawing.Size(360, 113);
             this.groupSettings.TabIndex = 5;
             this.groupSettings.TabStop = false;
             this.groupSettings.Text = "Settings";
@@ -80,7 +82,7 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(102, 55);
+            this.label3.Location = new System.Drawing.Point(103, 76);
             this.label3.Name = "label3";
             this.label3.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.label3.Size = new System.Drawing.Size(118, 15);
@@ -89,7 +91,7 @@
             // 
             // checkEnableSound
             // 
-            this.checkEnableSound.Location = new System.Drawing.Point(84, 21);
+            this.checkEnableSound.Location = new System.Drawing.Point(84, 19);
             this.checkEnableSound.Name = "checkEnableSound";
             this.checkEnableSound.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.checkEnableSound.Size = new System.Drawing.Size(215, 19);
@@ -104,7 +106,7 @@
             this.picModToggle.BackColor = System.Drawing.Color.Transparent;
             this.picModToggle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
             this.picModToggle.Image = global::SnakeBite.Properties.Resources.toggledisabled;
-            this.picModToggle.Location = new System.Drawing.Point(246, 43);
+            this.picModToggle.Location = new System.Drawing.Point(246, 68);
             this.picModToggle.Name = "picModToggle";
             this.picModToggle.Size = new System.Drawing.Size(92, 39);
             this.picModToggle.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
@@ -120,7 +122,7 @@
             this.groupBackup.Controls.Add(this.labelSetupWizard);
             this.groupBackup.Controls.Add(this.buttonRestoreOriginals);
             this.groupBackup.Controls.Add(this.buttonSetupWizard);
-            this.groupBackup.Location = new System.Drawing.Point(3, 94);
+            this.groupBackup.Location = new System.Drawing.Point(3, 92);
             this.groupBackup.Name = "groupBackup";
             this.groupBackup.Size = new System.Drawing.Size(360, 169);
             this.groupBackup.TabIndex = 4;
@@ -217,7 +219,7 @@
             // 
             this.groupAbout.Controls.Add(this.labelNexusLink);
             this.groupAbout.Controls.Add(this.labelThanks);
-            this.groupAbout.Location = new System.Drawing.Point(3, 357);
+            this.groupAbout.Location = new System.Drawing.Point(3, 378);
             this.groupAbout.Name = "groupAbout";
             this.groupAbout.Size = new System.Drawing.Size(360, 90);
             this.groupAbout.TabIndex = 3;
@@ -256,14 +258,28 @@
             this.panel1.Controls.Add(this.groupSettings);
             this.panel1.Location = new System.Drawing.Point(12, 12);
             this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(368, 452);
+            this.panel1.Size = new System.Drawing.Size(368, 473);
             this.panel1.TabIndex = 1;
+            // 
+            // checkBoxSaveRevertPreset
+            // 
+            this.checkBoxSaveRevertPreset.Checked = true;
+            this.checkBoxSaveRevertPreset.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxSaveRevertPreset.Location = new System.Drawing.Point(40, 46);
+            this.checkBoxSaveRevertPreset.Name = "checkBoxSaveRevertPreset";
+            this.checkBoxSaveRevertPreset.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.checkBoxSaveRevertPreset.Size = new System.Drawing.Size(259, 19);
+            this.checkBoxSaveRevertPreset.TabIndex = 11;
+            this.checkBoxSaveRevertPreset.Text = "Save RevertChanges.MGSVPreset";
+            this.checkBoxSaveRevertPreset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.checkBoxSaveRevertPreset.UseVisualStyleBackColor = true;
+            this.checkBoxSaveRevertPreset.CheckedChanged += new System.EventHandler(this.checkBoxSaveRevertPreset_CheckedChanged);
             // 
             // formSettings
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
             this.BackColor = System.Drawing.Color.DarkGray;
-            this.ClientSize = new System.Drawing.Size(392, 476);
+            this.ClientSize = new System.Drawing.Size(392, 497);
             this.Controls.Add(this.panel1);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -308,5 +324,6 @@
         private System.Windows.Forms.LinkLabel labelNexusLink;
         private System.Windows.Forms.Label labelThanks;
         private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.CheckBox checkBoxSaveRevertPreset;
     }
 }

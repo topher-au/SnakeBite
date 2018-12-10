@@ -236,5 +236,9 @@ namespace SnakeBite.Forms
        "Warning: overwriting a mod's data may cause significant problems in-game, which could affect your enjoyment. Install at your own risk.", "What is a Mod Conflict?", MessageBoxButtons.OK, MessageBoxIcon.Question);
         }
 
+        private void formInstallOrder_FormClosed(object sender, FormClosedEventArgs e)
+        {
+            ModManager.CleanupFolders();
+        }
     }
 }

@@ -231,16 +231,29 @@ namespace SnakeBite
 
         private void buttonLaunchGame_Click(object sender, EventArgs e)
         {
-            Process.Start("steam://run/287700/");
-            Application.Exit();
+            {
+                SettingsManager manager = new SettingsManager(GamePaths.SnakeBiteSettings);
+                if (manager.ValidInstallPath)
+                {
+                    Process.Start(GamePaths.GameDir + "\\mgsvtpp.exe");
+                }
+                else
+                {
+                    MessageBox.Show("Unable to locate MGSVTPP.exe. Please check the Settings and try again.", "Error launching MGSV", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
         }
 
         private void menuItemSavePreset_Click(object sender, EventArgs e)
         {
-            ShowPresetHelp();
-            //todo show a one-time explanation 
+            OneTimePresetHelp();
+            SavePreset();
+        }
+
+        private void SavePreset()
+        {
             SaveFileDialog savePreset = new SaveFileDialog();
-            savePreset.Filter = "MGSV Preset File|*.mgsvpreset";
+            savePreset.Filter = "MGSV Preset File|*.MGSVPreset";
             DialogResult saveResult = savePreset.ShowDialog();
             if (saveResult != DialogResult.OK) return;
 
@@ -254,25 +267,29 @@ namespace SnakeBite
 
         private void menuItemLoadPreset_Click(object sender, EventArgs e)
         {
-            ShowPresetHelp();
-            //todo show a one-time explanation
+            OneTimePresetHelp();
+
+            DialogResult saveModsResult = MessageBox.Show("Would you like to save your current mods as a Preset before loading a new Preset?", "Save current mods?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+            if (saveModsResult == DialogResult.Yes) SavePreset();
+            else if (saveModsResult == DialogResult.Cancel) return;
+
             OpenFileDialog getPresetFile = new OpenFileDialog();
-            getPresetFile.Filter = "MGSV Preset File|*.mgsvpreset|All Files|*.*";
+            getPresetFile.Filter = "MGSV Preset File|*.MGSVPreset|All Files|*.*";
             getPresetFile.Multiselect = true;
 
-            DialogResult result = getPresetFile.ShowDialog();
-            if (result != DialogResult.OK) return;
+            DialogResult getPresetResult = getPresetFile.ShowDialog();
+            if (getPresetResult != DialogResult.OK) return;
 
             string presetPath = getPresetFile.FileName;
             Settings presetSettings = PresetManager.ReadSnakeBiteSettings(presetPath);
 
             if (!PresetManager.isPresetUpToDate(presetSettings))
             {
-                if (MessageBox.Show(string.Format("This preset file is intended for Game Version {0}, but your current Game Version is {1}. Loading this preset will likely cause crashes, infinite loading screens or other significant problems in-game.", presetSettings.MGSVersion.AsVersion(), ModManager.GetMGSVersion()) +
+                if (MessageBox.Show(string.Format("This Preset file is intended for Game Version {0}, but your current Game Version is {1}. Loading this preset will likely cause crashes, infinite loading screens or other significant problems in-game.", presetSettings.MGSVersion.AsVersion(), ModManager.GetMGSVersion()) +
                      "\n\nAre you sure you want to load this preset?", "Preset Version Mismatch", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
             }
 
-            string modsToInstall = "This preset will contain the following mods:\n";
+            string modsToInstall = "This Preset will contain the following mods:\n";
             if (presetSettings.ModEntries.Count != 0)
             {
                 foreach (var mod in presetSettings.ModEntries)
@@ -287,7 +304,7 @@ namespace SnakeBite
             if (MessageBox.Show(modsToInstall, "Install Preset", MessageBoxButtons.OKCancel) != DialogResult.OK) return;
             panelContent.Controls.Clear();
             panelContent.Controls.Add(log);
-            ProgressWindow.Show("Loading Preset", "Loading Preset, please wait...", new Action((MethodInvoker)delegate { PresetManager.InstallPreset(presetPath); }), log);
+            ProgressWindow.Show("Loading Preset", "Loading Preset, please wait...", new Action((MethodInvoker)delegate { PresetManager.LoadPreset(presetPath); }), log);
 
             RefreshInstalledMods(true);
         }
@@ -422,7 +439,20 @@ namespace SnakeBite
 
         private void ShowPresetHelp()
         {
+            MessageBox.Show("A 'Mod Preset' is a collection of mods which can be saved and loaded with SnakeBite. Saving a Preset will pack your current modded game data into a .MGSVPreset file. Loading a Preset will simply replace your game data with the files stored in the .MGSVPreset file." +
+                "\n\nPresets are a fast and simple method of organizing your favorite mods or trying new mod combinations." +
+                "\n\nYou can also utilize Presets as restore checkpoints if SnakeBite encounters a serious error or your game data becomes corrupted. By default, SnakeBite creates 'RevertChanges.MGSVPreset' before a mod installation/uninstallation, so you can easily undo an action if it caused a critical error." +
+                "\n\nHowever, saving a large number of mods may take a long time, so you can choose to skip creating RevertChanges.MGSVPreset by unchecking the 'Save RevertChanges.MGSVPreset' option in the Settings menu for faster install/uninstall times.\nRevertChanges.MGSVPreset is saved to your Game Directory.", "Mod Preset Files", MessageBoxButtons.OK, MessageBoxIcon.Question);
+        }
 
+        private void OneTimePresetHelp()
+        {
+            if (Properties.Settings.Default.showOneTimePresetHelp)
+            {
+                ShowPresetHelp();
+                Properties.Settings.Default.showOneTimePresetHelp = false;
+                Properties.Settings.Default.Save();
+            }
         }
 
         private void formMods_Resize(object sender, EventArgs e)
@@ -461,6 +491,5 @@ namespace SnakeBite
 
             Properties.Settings.Default.Save();
         }
-
     }
 }

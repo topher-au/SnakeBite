@@ -37,10 +37,10 @@ namespace SnakeBite
                 Environment.OSVersion.VersionString));
 
             // Delete old settings file
-            if (File.Exists(GamePaths.SnakeBiteSettings + "\\sbmods.xml"))
+            if (File.Exists(GamePaths.GameDir + "\\sbmods.xml"))
             {
                 Debug.LogLine("Settings v0.7 or less detected, removing");
-                File.Delete(GamePaths.SnakeBiteSettings + "\\sbmods.xml");
+                File.Delete(GamePaths.GameDir + "\\sbmods.xml");
                 MessageBox.Show("Due to fundamental changes from version 0.8 onwards, your settings have been reset. Please re-verify or restore the game files and run the setup wizard before continuing.", "Version Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
@@ -137,7 +137,7 @@ namespace SnakeBite
                 Debug.LogLine("Resetting dat hash");
                 manager.UpdateDatHash();
             }
-            if(ModManager.GetMGSVersion() > ModManager.IntendedGameVersion)
+            if(ModManager.GetMGSVersion() > SettingsManager.IntendedGameVersion)
             {
                 var contSB = MessageBox.Show("Due to a recent game update, this version of SnakeBite is outdated, and some features will not function properly.\n\nIt is highly recommended that you do not continue, and update to the latest version of Snakebite when it becomes available.\n\nWould you still like to continue? ", "Game Version Update", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
                 if (contSB == DialogResult.No)

@@ -16,7 +16,6 @@ namespace SnakeBite
 {
     internal static class ModManager
     {
-        internal static string vanillaDatHash = "41317C4D473D9A3DB6C1169E5ACDD35849FCF50601FD41F5A171E1055C642093"; //expected original hash for 1.0.15.0
         private static string ZeroPath = GamePaths.ZeroPath;
         private static string OnePath = GamePaths.OnePath;
         private static string GameDir = GamePaths.GameDir;
@@ -26,8 +25,6 @@ namespace SnakeBite
         private static string SnakeBiteXml = GamePaths.SnakeBiteSettings;
         private static string build_ext = GamePaths.build_ext;
 
-        internal static Version IntendedGameVersion = new Version(1, 0, 15, 0); // GAMEVERSION
-
         // SYNC makebite
         static string ExternalDirName = "GameDir";
 
@@ -35,6 +32,16 @@ namespace SnakeBite
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
+            if (Properties.Settings.Default.AutosaveRevertPreset == true)
+            {
+                Debug.LogLine("[Install] Saving RevertChanges.MGSVPreset", Debug.LogLevel.Basic);
+                PresetManager.SavePreset(Path.Combine(GameDir, "RevertChanges.MGSVPreset"));
+            }
+            else
+            {
+                Debug.LogLine("[Install] Skipping RevertChanges.MGSVPreset Save", Debug.LogLevel.Basic);
+            }
+
             Debug.LogLine("[Install] Start", Debug.LogLevel.Basic);
             CleanupFolders();
             GzsLib.LoadDictionaries();
@@ -52,6 +59,7 @@ namespace SnakeBite
             var zeroFilesHashSet = new HashSet<string>(zeroFiles);
             //one list to rule them all, list per game .dat in priority order
             //does not include texture dats since we only care about archives to merge while non archive files in 00 will just override
+
             Debug.LogLine("[Install] Building gameFiles lists", Debug.LogLevel.Basic);
             var baseGameFiles = GzsLib.ReadBaseData();
             var zeroGameFiles = GzsLib.GetQarGameFiles(ZeroPath);
@@ -62,9 +70,11 @@ namespace SnakeBite
             {
                 InstallMod(modfilePath, manager, ref qarGameFiles, ref zeroFilesHashSet, ref oneFiles);
             }
+
             Debug.LogLine("[Install] Rebuilding 00.dat", Debug.LogLevel.Basic);
             zeroFiles = zeroFilesHashSet.ToList();
             zeroFiles.Sort();
+
             GzsLib.WriteQarArchive(ZeroPath, "_working0", zeroFiles, GzsLib.zeroFlags);
             if (hasFtexs)
             {
@@ -83,6 +93,7 @@ namespace SnakeBite
             }
             manager.UpdateDatHash();
             stopwatch.Stop();
+
             Debug.LogLine($"[Install] Installation finished in {stopwatch.ElapsedMilliseconds} ms", Debug.LogLevel.Basic);
             return true;
         }
@@ -407,6 +418,15 @@ namespace SnakeBite
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
+            if (Properties.Settings.Default.AutosaveRevertPreset == true)
+            {
+                Debug.LogLine("[Uninstall] Saving RevertChanges.MGSVPreset", Debug.LogLevel.Basic);
+                PresetManager.SavePreset(Path.Combine(GameDir, "RevertChanges.MGSVPreset"));
+            }
+            else
+            {
+                Debug.LogLine("[Uninstall] Skipping RevertChanges.MGSVPreset Save", Debug.LogLevel.Basic);
+            }
             Debug.LogLine("[Uninstall] Start", Debug.LogLevel.Basic);
             CleanupFolders();
             GzsLib.LoadDictionaries();
@@ -1220,7 +1240,7 @@ namespace SnakeBite
             "_modfpk",
         };
 
-        private static void CleanupFolders() // deletes the work folders which contain extracted files from 00/01
+        public static void CleanupFolders() // deletes the work folders which contain extracted files from 00/01
         {
             Debug.LogLine("[Mod] Cleaning up snakebite work folders.");
             foreach (var folder in cleanupFolders)

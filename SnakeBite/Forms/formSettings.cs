@@ -114,6 +114,7 @@ namespace SnakeBite
             // Set installation path textbox
             textInstallPath.Text = Properties.Settings.Default.InstallPath;
             checkEnableSound.Checked = Properties.Settings.Default.EnableSound;
+            checkBoxSaveRevertPreset.Checked = Properties.Settings.Default.AutosaveRevertPreset;
             //listThemes.SelectedIndex = 0;
             UpdateModToggle();
             CheckBackupState();
@@ -149,6 +150,12 @@ namespace SnakeBite
         private void checkEnableSound_CheckedChanged(object sender, EventArgs e)
         {
             Properties.Settings.Default.EnableSound = checkEnableSound.Checked;
+            Properties.Settings.Default.Save();
+        }
+
+        private void checkBoxSaveRevertPreset_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.AutosaveRevertPreset = checkBoxSaveRevertPreset.Checked;
             Properties.Settings.Default.Save();
         }
 

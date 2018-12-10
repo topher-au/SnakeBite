@@ -1,9 +1,6 @@
-﻿using ICSharpCode.SharpZipLib.Zip;
-using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using System.IO;
 using System.Threading;
-using System.Windows.Forms;
 
 namespace SnakeBite
 {
@@ -14,7 +11,6 @@ namespace SnakeBite
         private static string GameChunkZero = GamePaths.chunk0Path;
         private static string GameChunkSeven = GamePaths.c7Path;
         private static string GameTextureSeven = GamePaths.t7Path;
-        private static string BackupPath = GamePaths.BackupPath;
         private static string SnakeBiteXml = GamePaths.SnakeBiteSettings;
         private static string original_ext = GamePaths.original_ext;
         private static string modded_ext = GamePaths.modded_ext;
@@ -145,29 +141,7 @@ namespace SnakeBite
         {
             return (File.Exists(GameZero) && File.Exists(GameOne) && File.Exists(GameChunkZero));
         }
-
-        public static void backgroundWorker_CopyBackupFilesZip(object sender, DoWorkEventArgs e)
-        {
-            BackgroundWorker backupProcessor = (BackgroundWorker)sender;
-            Directory.CreateDirectory("_build");
-
-            object param = Path.GetFileName(GameZero); //TODO: append filesize
-            backupProcessor.ReportProgress(0, param);
-            File.Copy(GameZero, "_build", true);
-
-            param = Path.GetFileName(GameOne);
-            backupProcessor.ReportProgress(0, param);
-            File.Copy(GameOne, "_build", true);
-
-            param = Path.GetFileName(GameChunkZero);
-            backupProcessor.ReportProgress(0, param);
-            File.Copy(GameChunkZero, "_build", true);
-
-            FastZip zipper = new FastZip();
-            zipper.CreateZip(BackupPath, "_build", true, "(.*?dat)");
-
-            Directory.Delete("_build", true);
-        }
+        
     }
 
     public enum BackupState

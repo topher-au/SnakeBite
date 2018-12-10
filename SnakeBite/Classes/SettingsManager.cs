@@ -8,6 +8,8 @@ namespace SnakeBite
     
     public class SettingsManager
     {
+        internal static string vanillaDatHash = "41317C4D473D9A3DB6C1169E5ACDD35849FCF50601FD41F5A171E1055C642093"; //expected original hash for 1.0.15.0
+        internal static Version IntendedGameVersion = new Version(1, 0, 15, 0); // GAMEVERSION
 
         private string ZeroPath = GamePaths.ZeroPath;
         private string OnePath = GamePaths.OnePath;
@@ -172,7 +174,7 @@ namespace SnakeBite
 
         public bool IsVanilla0001DatHash() //shouldn't be in settingsmanager
         {
-            return ModManager.vanillaDatHash.Equals(Tools.GetMd5Hash(ZeroPath) + Tools.GetMd5Hash(OnePath));
+            return vanillaDatHash.Equals(Tools.GetMd5Hash(ZeroPath) + Tools.GetMd5Hash(OnePath));
         }
 
         public bool IsVanilla0001RoughSize() //shouldn't be in settingsmanager
@@ -274,8 +276,7 @@ namespace SnakeBite
             {
                 return;
             }
-
-            Debug.LogLine(xmlFilePath);
+            
             using (FileStream s = new FileStream(xmlFilePath, FileMode.Open))
             {
                 XmlSerializer x = new XmlSerializer(typeof(Settings));

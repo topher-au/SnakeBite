@@ -9,8 +9,7 @@ namespace SnakeBite
     static class GamePaths
     {
         internal static string GameDir { get { return Properties.Settings.Default.InstallPath; } }
-
-        internal static string BackupPath { get { return GameDir + "\\SnakeBite.MGSVBackup"; } }
+        
         internal static string chunk0Path { get { return GameDir + "\\master\\chunk0.dat"; } }
         internal static string OnePath { get { return GameDir + "\\master\\0\\01.dat"; } }
         internal static string ZeroPath { get { return GameDir + "\\master\\0\\00.dat"; } }
@@ -19,7 +18,6 @@ namespace SnakeBite
         internal static string SnakeBiteSettings { get { return GameDir + "\\snakebite.xml"; } }
 
         internal static string build_ext = ".SB_Build";
-        internal static string preset_ext = ".SB_Preset";
         internal static string original_ext = ".original";
         internal static string modded_ext = ".modded";
 

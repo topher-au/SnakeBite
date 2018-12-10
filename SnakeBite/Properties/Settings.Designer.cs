@@ -130,5 +130,29 @@ namespace SnakeBite.Properties {
                 this["formModsMaximized"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool showOneTimePresetHelp {
+            get {
+                return ((bool)(this["showOneTimePresetHelp"]));
+            }
+            set {
+                this["showOneTimePresetHelp"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool AutosaveRevertPreset {
+            get {
+                return ((bool)(this["AutosaveRevertPreset"]));
+            }
+            set {
+                this["AutosaveRevertPreset"] = value;
+            }
+        }
     }
 }

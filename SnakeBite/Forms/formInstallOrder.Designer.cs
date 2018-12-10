@@ -207,6 +207,7 @@
             this.SizeGripStyle = System.Windows.Forms.SizeGripStyle.Hide;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "SnakeBite Install Manager";
+            this.FormClosed += new System.Windows.Forms.FormClosedEventHandler(this.formInstallOrder_FormClosed);
             this.ResumeLayout(false);
 
         }
