@@ -103,6 +103,7 @@ namespace SnakeBite
             }
             if (!(MessageBox.Show("The following mods will be uninstalled:\n" + markedModNames, "SnakeBite", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)) return;
             panelContent.Controls.Clear();
+            log.ClearPage();
             panelContent.Controls.Add(log);
             ProgressWindow.Show("Uninstalling Mod(s)", "Uninstalling, please wait...", new Action((MethodInvoker)delegate { ModManager.UninstallMod(checkedModIndices); }), log);
 
@@ -179,7 +180,7 @@ namespace SnakeBite
             this.Invoke((MethodInvoker)delegate { RefreshInstalledMods(); });
         }
 
-        public void ProcessUninstallMod(ModEntry mod)// command-line uninstall. This checks the mod it was passed, and puts it in a 1-item list to be uninstalled.
+        public void ProcessUninstallMod(ModEntry mod, bool skipcleanup)// command-line uninstall. This checks the mod it was passed, and puts it in a 1-item list to be uninstalled.
         {
             for (int i = 0; i < listInstalledMods.Items.Count; i++)
             {
@@ -188,7 +189,7 @@ namespace SnakeBite
             var mods = manager.GetInstalledMods();
             listInstalledMods.SetItemCheckState(mods.IndexOf(mod), CheckState.Checked);
             CheckedListBox.CheckedIndexCollection checkedModIndex = listInstalledMods.CheckedIndices;
-            ProgressWindow.Show("Uninstalling Mod", "Uninstalling...", new Action((MethodInvoker)delegate { ModManager.UninstallMod(checkedModIndex); }), log);
+            ProgressWindow.Show("Uninstalling Mod", "Uninstalling...", new Action((MethodInvoker)delegate { ModManager.UninstallMod(checkedModIndex, skipcleanup); }), log);
         }
 
         private void RefreshInstalledMods(bool resetSelection = false) // Clears and then repopulates the installed mod list
@@ -259,6 +260,7 @@ namespace SnakeBite
 
             string presetPath = savePreset.FileName;
             panelContent.Controls.Clear();
+            log.ClearPage();
             panelContent.Controls.Add(log);
             ProgressWindow.Show("Saving Preset", "Saving Preset, please wait...", new Action((MethodInvoker)delegate { PresetManager.SavePreset(presetPath); }), log);
             MessageBox.Show(string.Format("'{0}' Saved.", Path.GetFileName(presetPath)), "Preset Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -283,29 +285,36 @@ namespace SnakeBite
             string presetPath = getPresetFile.FileName;
             Settings presetSettings = PresetManager.ReadSnakeBiteSettings(presetPath);
 
-            if (!PresetManager.isPresetUpToDate(presetSettings))
+            try
             {
-                if (MessageBox.Show(string.Format("This Preset file is intended for Game Version {0}, but your current Game Version is {1}. Loading this preset will likely cause crashes, infinite loading screens or other significant problems in-game.", presetSettings.MGSVersion.AsVersion(), ModManager.GetMGSVersion()) +
-                     "\n\nAre you sure you want to load this preset?", "Preset Version Mismatch", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
-            }
-
-            string modsToInstall = "This Preset will contain the following mods:\n";
-            if (presetSettings.ModEntries.Count != 0)
-            {
-                foreach (var mod in presetSettings.ModEntries)
+                if (!PresetManager.isPresetUpToDate(presetSettings))
                 {
-                    modsToInstall += string.Format("\n{0}", mod.Name);
+                    if (MessageBox.Show(string.Format("This Preset file is intended for Game Version {0}, but your current Game Version is {1}. Loading this preset will likely cause crashes, infinite loading screens or other significant problems in-game.", presetSettings.MGSVersion.AsVersion(), ModManager.GetMGSVersion()) +
+                         "\n\nAre you sure you want to load this preset?", "Preset Version Mismatch", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes) return;
                 }
-            }
-            else
-            {
-                modsToInstall += "\n[NONE]";
-            }
-            if (MessageBox.Show(modsToInstall, "Install Preset", MessageBoxButtons.OKCancel) != DialogResult.OK) return;
-            panelContent.Controls.Clear();
-            panelContent.Controls.Add(log);
-            ProgressWindow.Show("Loading Preset", "Loading Preset, please wait...", new Action((MethodInvoker)delegate { PresetManager.LoadPreset(presetPath); }), log);
 
+                string modsToInstall = "This Preset will contain the following mods:\n";
+                if (presetSettings.ModEntries.Count != 0)
+                {
+                    foreach (var mod in presetSettings.ModEntries)
+                    {
+                        modsToInstall += string.Format("\n{0}", mod.Name);
+                    }
+                }
+                else
+                {
+                    modsToInstall += "\n[NONE]";
+                }
+                if (MessageBox.Show(modsToInstall, "Install Preset", MessageBoxButtons.OKCancel) != DialogResult.OK) return;
+                panelContent.Controls.Clear();
+                log.ClearPage();
+                panelContent.Controls.Add(log);
+                ProgressWindow.Show("Loading Preset", "Loading Preset, please wait...", new Action((MethodInvoker)delegate { PresetManager.LoadPreset(presetPath); }), log);
+            }
+            catch (Exception f)
+            {
+                MessageBox.Show("An error has occurred and the .MGSVPreset could not be loaded. Maybe the Preset file was packed improperly, or is being used by another program?\nException: " + f);
+            }
             RefreshInstalledMods(true);
         }
 

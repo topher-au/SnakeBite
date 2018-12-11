@@ -66,7 +66,6 @@ namespace SnakeBite.SetupWizard
                         MessageBox.Show("Some game data appears to be missing. If you have just revalidated the game data, please wait for Steam to finish downloading the new files before continuing.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
-
                     // show create backup page, without processing panel, enable skip
                     createBackupPage.panelProcessing.Visible = false;
                     this.contentPanel.Controls.Clear();
@@ -77,7 +76,7 @@ namespace SnakeBite.SetupWizard
                     break;
 
                 case 2:
-                    if(!(manager.IsVanilla0001RoughSize() || manager.IsVanilla0001DatHash()) && (SettingsManager.IntendedGameVersion >= ModManager.GetMGSVersion())) // not the right 00/01 and there hasn't been a game update
+                    if(!(manager.IsVanilla0001Size() || manager.IsVanilla0001DatHash()) && (SettingsManager.IntendedGameVersion >= ModManager.GetMGSVersion())) // not the right 00/01 and there hasn't been a game update
                     {
                         var overWrite = MessageBox.Show(string.Format("Your game data contains unexpected filesizes, and is likely modified or predates Game Version {0}." +
                             "\n\nIt is recommended that you do NOT store these files as backups, unless you are absolutely certain that they can reliably restore your game to a safe state!" +

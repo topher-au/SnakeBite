@@ -99,10 +99,10 @@ namespace SnakeBite
 
         public static bool isPresetUpToDate(Settings presetSettings)
         {
-            var presetVersion = presetSettings.MGSVersion.AsVersion();
-            var MGSVersion = ModManager.GetMGSVersion();
+                var presetVersion = presetSettings.MGSVersion.AsVersion();
+                var MGSVersion = ModManager.GetMGSVersion();
 
-            return (presetVersion == MGSVersion);
+                return (presetVersion == MGSVersion);
         }
 
         public static Settings ReadSnakeBiteSettings(string PresetFilePath)

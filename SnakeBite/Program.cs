@@ -146,7 +146,7 @@ namespace SnakeBite
             var checkDat = manager.ValidateDatHash();
             if (!checkDat || manager.IsVanilla0001DatHash())
             {
-                if (manager.IsVanilla0001DatHash())
+                if (manager.IsVanilla0001DatHash() || manager.IsVanilla0001Size())
                 {
                     MessageBox.Show("Fresh 00.dat/01.dat detected. The setup wizard will now run.", "Game data hash mismatch", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 } else
@@ -156,7 +156,8 @@ namespace SnakeBite
                 
                 SetupWizard.SetupWizard setupWizard = new SetupWizard.SetupWizard();
                 setupWizard.ShowDialog();
-            } else if (!BackupManager.c7t7Exist()) // chunk7 and/or texture7 are missing, despite the dathash validating.
+            }
+            else if (!BackupManager.c7t7Exist()) // chunk7 and/or texture7 are missing, despite the dathash validating.
             {
                 MessageBox.Show("To continue, SnakeBite must build a_chunk7.dat and a_texture7.dat from your current archives. The setup wizard will now run.", "Setup required", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 SetupWizard.SetupWizard setupWizard = new SetupWizard.SetupWizard();
@@ -178,7 +179,7 @@ namespace SnakeBite
                     var mods = manager.GetInstalledMods();
                     ModEntry mod = mods.FirstOrDefault(entry => entry.Name == installFile); // select mod
                     if (mod != null)
-                        ModForm.ProcessUninstallMod(mod); // uninstall mod
+                        ModForm.ProcessUninstallMod(mod, skipCleanup); // uninstall mod
                 }
                 ModForm.Dispose();
 

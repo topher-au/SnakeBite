@@ -450,21 +450,12 @@ namespace SnakeBite.GzsTool
             }
         }
 
-        public static void PromoteQarArchive(bool revertable, string sourcePath, string destinationPath)
+        public static void PromoteQarArchive(string sourcePath, string destinationPath)
         {
             if (File.Exists(sourcePath))
             {
                 Debug.LogLine(String.Format("[GzsLib] Promoting {0} to {1}", Path.GetFileName(sourcePath), Path.GetFileName(destinationPath)));
-                if (revertable)
-                {
-                    //string revertFilePath = destinationPath + ModManager.revert_ext;
-                    //File.Delete(revertFilePath);
-                    //File.Move(destinationPath, revertFilePath);
-                }
-                else
-                {
-                    File.Delete(destinationPath);
-                }
+                File.Delete(destinationPath);
                 File.Move(sourcePath, destinationPath);
             }
             else

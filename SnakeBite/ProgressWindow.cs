@@ -26,6 +26,7 @@ namespace SnakeBite
                         logWindow.Invoke((MethodInvoker)delegate { logWindow.Text = String.Format("Error during process :'{0}'", ProgressText); });
 
                         MessageBox.Show(String.Format("Exception :'{0}'\r\nCheck SnakeBites log for more info.", e.Error.Message), String.Format("Error during process :'{0}'", ProgressText), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        progressWindow.Invoke((MethodInvoker)delegate { progressWindow.Close(); });
                     } else if (e.Cancelled) {
                         
                     } else {

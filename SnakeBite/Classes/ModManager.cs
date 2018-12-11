@@ -43,6 +43,8 @@ namespace SnakeBite
             }
 
             Debug.LogLine("[Install] Start", Debug.LogLevel.Basic);
+            File.Copy(SnakeBiteXml, SnakeBiteXml + build_ext, true);
+
             CleanupFolders();
             GzsLib.LoadDictionaries();
             var zeroFiles = GzsLib.ExtractArchive<QarFile>(ZeroPath, "_working0");       
@@ -53,7 +55,7 @@ namespace SnakeBite
                 oneFiles = GzsLib.ExtractArchive<QarFile>(OnePath, "_working1");
             }       
             //snakebites settings manager also includes the installed mod lists
-            SettingsManager manager = new SettingsManager(SnakeBiteXml);
+            SettingsManager manager = new SettingsManager(SnakeBiteXml + build_ext);
             var gameData = manager.GetGameData();
             ValidateGameData(ref gameData, ref zeroFiles);
             var zeroFilesHashSet = new HashSet<string>(zeroFiles);
@@ -66,36 +68,53 @@ namespace SnakeBite
             var qarGameFiles = new List<Dictionary<ulong, GameFile>>();
             qarGameFiles.Add(zeroGameFiles);
             qarGameFiles.AddRange(baseGameFiles);
-            foreach (string modfilePath in ModFiles)
+            try
             {
-                InstallMod(modfilePath, manager, ref qarGameFiles, ref zeroFilesHashSet, ref oneFiles);
-            }
+                WriteGameDirSbBuild();
+                foreach (string modfilePath in ModFiles)
+                {
+                    InstallMod(modfilePath, manager, ref qarGameFiles, ref zeroFilesHashSet, ref oneFiles);
+                }
+                Debug.LogLine("[Install] Rebuilding 00.dat", Debug.LogLevel.Basic);
+                zeroFiles = zeroFilesHashSet.ToList();
+                zeroFiles.Sort();
 
-            Debug.LogLine("[Install] Rebuilding 00.dat", Debug.LogLevel.Basic);
-            zeroFiles = zeroFilesHashSet.ToList();
-            zeroFiles.Sort();
+                GzsLib.WriteQarArchive(ZeroPath + build_ext, "_working0", zeroFiles, GzsLib.zeroFlags);
+                if (hasFtexs)
+                {
+                    Debug.LogLine("[Install] Rebuilding 01.dat", Debug.LogLevel.Basic);
+                    oneFiles.Sort();
+                    GzsLib.WriteQarArchive(OnePath + build_ext, "_working1", oneFiles, GzsLib.oneFlags);
+                }
+                if (!skipCleanup)
+                {
+                    //DEBUGNOW this takes a big chunk of time, see what of it is absolutenly nessesary 
+                    //DEBUGNOW    CleanupDatabase();
+                }
+                if (!skipCleanup)
+                {
+                    CleanupFolders();
+                }
+                PromoteGameDirFiles();
+                if (hasFtexs) PromoteBuildFiles(ZeroPath, OnePath, SnakeBiteXml);
+                else PromoteBuildFiles(ZeroPath, SnakeBiteXml);
 
-            GzsLib.WriteQarArchive(ZeroPath, "_working0", zeroFiles, GzsLib.zeroFlags);
-            if (hasFtexs)
-            {
-                Debug.LogLine("[Install] Rebuilding 01.dat", Debug.LogLevel.Basic);
-                oneFiles.Sort();
-                GzsLib.WriteQarArchive(OnePath, "_working1", oneFiles, GzsLib.oneFlags);
+                ClearSBGameDir();
+                stopwatch.Stop();
+                Debug.LogLine($"[Install] Installation finished in {stopwatch.ElapsedMilliseconds} ms", Debug.LogLevel.Basic);
+                return true;
             }
-            if (!skipCleanup)
+            catch (Exception e)
             {
-                //DEBUGNOW this takes a big chunk of time, see what of it is absolutenly nessesary 
-                //DEBUGNOW    CleanupDatabase();
-            }
-            if (!skipCleanup)
-            {
+                stopwatch.Stop();
+                Debug.LogLine($"[Install] Installation failed at {stopwatch.ElapsedMilliseconds} ms", Debug.LogLevel.Basic);
+                Debug.LogLine("[Install] Exception: " + e, Debug.LogLevel.Basic);
+                MessageBox.Show("An error has occurred during the installation process and SnakeBite could not install the selected mod(s).\nException: " + e);
+                ClearBuildFiles(ZeroPath, OnePath, SnakeBiteXml);
                 CleanupFolders();
+                ClearSBGameDir();
+                return false;
             }
-            manager.UpdateDatHash();
-            stopwatch.Stop();
-
-            Debug.LogLine($"[Install] Installation finished in {stopwatch.ElapsedMilliseconds} ms", Debug.LogLevel.Basic);
-            return true;
         }
 
         //Cull any invalid entries that might have slipped in via older versions of snakebite
@@ -405,7 +424,7 @@ namespace SnakeBite
                 if (skipFile == false)
                 {
                     string sourceFile = Path.Combine("_extr", ExternalDirName, Tools.ToWinPath(fileEntry.FilePath));
-                    string destFile = Path.Combine(GameDir, Tools.ToWinPath(fileEntry.FilePath));
+                    string destFile = Path.Combine(GamePaths.GameDirSB_Build, Tools.ToWinPath(fileEntry.FilePath));
                     Debug.LogLine(String.Format("[Install] Copying file: {0}", destFile), Debug.LogLevel.All);
                     Directory.CreateDirectory(Path.GetDirectoryName(destFile));
                     File.Copy(sourceFile, destFile, true);
@@ -414,7 +433,7 @@ namespace SnakeBite
             }
         }//InstallGameDirFiles
 
-        public static bool UninstallMod(CheckedListBox.CheckedIndexCollection modIndices) // Uninstalls mods based on their indices in the list
+        public static bool UninstallMod(CheckedListBox.CheckedIndexCollection modIndices, bool skipCleanup = false) // Uninstalls mods based on their indices in the list
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
@@ -427,10 +446,12 @@ namespace SnakeBite
             {
                 Debug.LogLine("[Uninstall] Skipping RevertChanges.MGSVPreset Save", Debug.LogLevel.Basic);
             }
+
             Debug.LogLine("[Uninstall] Start", Debug.LogLevel.Basic);
+            File.Copy(SnakeBiteXml, SnakeBiteXml + build_ext, true);
             CleanupFolders();
             GzsLib.LoadDictionaries();
-            SettingsManager manager = new SettingsManager(SnakeBiteXml);
+            SettingsManager manager = new SettingsManager(SnakeBiteXml + build_ext);
             List<ModEntry> mods = manager.GetInstalledMods();
             List<ModEntry> uninstallMods = new List<ModEntry>();
             foreach (int index in modIndices)
@@ -438,6 +459,7 @@ namespace SnakeBite
                 ModEntry mod = mods[index];
                 uninstallMods.Add(mod);
             }
+
             Debug.LogLine("[Uninstall] Extracting 00.dat to _working0", Debug.LogLevel.Basic);
             var zeroFiles = GzsLib.ExtractArchive<QarFile>(ZeroPath, "_working0"); // extracts 00.dat and creates a list of filenames, which is pruned throughout the uninstall process and repacked at the end.
             List<string> oneFiles = null;
@@ -449,36 +471,66 @@ namespace SnakeBite
             //end of qar extraction
             GameData gameData = manager.GetGameData();
             ValidateGameData(ref gameData, ref zeroFiles);
+
             Debug.LogLine("[Install] Building gameFiles lists", Debug.LogLevel.Basic);
             var baseGameFiles = GzsLib.ReadBaseData();
-            foreach (ModEntry mod in uninstallMods)
+            try
             {
-                UninstallMod(mod, manager, baseGameFiles, ref zeroFiles, ref oneFiles);
+                WriteGameDirSbBuild();
+                foreach (ModEntry mod in uninstallMods)
+                {
+                    UninstallMod(mod, manager, baseGameFiles, ref zeroFiles, ref oneFiles);
+                }
+
+                Debug.LogLine("[Uninstall] Rebuilding 00.dat", Debug.LogLevel.Basic);
+                zeroFiles.Sort();
+                GzsLib.WriteQarArchive(ZeroPath + build_ext, "_working0", zeroFiles, GzsLib.zeroFlags);
+
+                if (hasFtexs)
+                {
+                    Debug.LogLine("[Install] Rebuilding 01.dat", Debug.LogLevel.Basic);
+                    oneFiles.Sort();
+                    GzsLib.WriteQarArchive(OnePath + build_ext, "_working1", oneFiles, GzsLib.oneFlags);
+                }
+                // end of qar repacking
+
+                Debug.LogLine("[Uninstall] Updating 00.dat hash", Debug.LogLevel.Basic);
+                manager.UpdateDatHash();
+
+                foreach (ModEntry mod in uninstallMods)
+                {
+                    Debug.LogLine("[Uninstall] Removing mod entry from snakebite.xml", Debug.LogLevel.Basic);
+                    manager.RemoveMod(mod);
+                }
+                //DEBUGNOW CleanupDatabase();
+                //Debug.LogLine("CleanupFolders", Debug.LogLevel.Basic); //allready logs
+
+                PromoteGameDirFiles();
+                if (hasFtexs) PromoteBuildFiles(ZeroPath, OnePath, SnakeBiteXml);
+                else PromoteBuildFiles(ZeroPath, SnakeBiteXml);
+
+
+                if (!skipCleanup)
+                {
+                    CleanupFolders();
+                }
+                ClearSBGameDir();
+                Debug.LogLine("[Uninstall] Uninstall complete", Debug.LogLevel.Basic);
+                stopwatch.Stop();
+                Debug.LogLine($"[Uninstall] Uninstall took {stopwatch.ElapsedMilliseconds} ms", Debug.LogLevel.Basic);
+                return true;
             }
-            Debug.LogLine("[Uninstall] Rebuilding 00.dat", Debug.LogLevel.Basic);
-            zeroFiles.Sort();
-            GzsLib.WriteQarArchive(ZeroPath, "_working0", zeroFiles, GzsLib.zeroFlags);
-            if (hasFtexs)
+            catch (Exception e)
             {
-                Debug.LogLine("[Install] Rebuilding 01.dat", Debug.LogLevel.Basic);
-                oneFiles.Sort();
-                GzsLib.WriteQarArchive(OnePath, "_working1", oneFiles, GzsLib.oneFlags);
+                stopwatch.Stop();
+                Debug.LogLine($"[Uninstall] Uninstall failed at {stopwatch.ElapsedMilliseconds} ms", Debug.LogLevel.Basic);
+                Debug.LogLine("[Uninstall] Exception: " + e, Debug.LogLevel.Basic);
+                MessageBox.Show("An error has occurred during the uninstallation process and SnakeBite could not uninstall the selected mod(s).\nException: " + e);
+                ClearBuildFiles(ZeroPath, OnePath, SnakeBiteXml);
+                CleanupFolders();
+                ClearSBGameDir();
+                return false;
             }
-            // end of qar repacking
-            Debug.LogLine("[Uninstall] Updating 00.dat hash", Debug.LogLevel.Basic);
-            manager.UpdateDatHash();
-            foreach (ModEntry mod in uninstallMods)
-            {
-                Debug.LogLine("[Uninstall] Removing mod entry from snakebite.xml", Debug.LogLevel.Basic);
-                manager.RemoveMod(mod);
-            }
-            //DEBUGNOW CleanupDatabase();
-            //Debug.LogLine("CleanupFolders", Debug.LogLevel.Basic); //allready logs
-            CleanupFolders();
-            Debug.LogLine("[Uninstall] Uninstall complete", Debug.LogLevel.Basic);
-            stopwatch.Stop();
-            Debug.LogLine($"[Uninstall] Uninstall took {stopwatch.ElapsedMilliseconds} ms", Debug.LogLevel.Basic);
-            return true;
         }//UninstallMod batch
 
         private static void UninstallMod(ModEntry modEntry, SettingsManager manager, List<Dictionary<ulong, GameFile>> baseGameFiles, ref List<string> zeroFiles, ref List<string> oneFilesList)
@@ -648,7 +700,7 @@ namespace SnakeBite
             HashSet<string> fileEntryDirs = new HashSet<string>();
             foreach (ModFileEntry fileEntry in mod.ModFileEntries) //checks all of current mod's files
             {
-                string destFile = Path.Combine(GameDir, Tools.ToWinPath(fileEntry.FilePath)); //create the filepath to the file in question
+                string destFile = Path.Combine(GamePaths.GameDirSB_Build, Tools.ToWinPath(fileEntry.FilePath)); //create the filepath to the file in question
                 string dir = Path.GetDirectoryName(destFile); //filepath of the directory containing the file
                 fileEntryDirs.Add(dir); //the directory is added to the list of fileentrydirectories
                 if (File.Exists(destFile)) // attempt to delete the file in question
@@ -736,7 +788,7 @@ namespace SnakeBite
             if (!MoveDatFiles()) //moves vanilla 00 files into 01, excluding foxpatch. 
             {
                     e.Cancel = true;
-                    ClearBuildArchives(c7Path, t7Path, ZeroPath, OnePath);
+                    ClearBuildFiles(c7Path, t7Path, ZeroPath, OnePath);
                     return;
             }
 
@@ -744,12 +796,12 @@ namespace SnakeBite
             if (!ModifyFoxfs()) // adds lines to foxfs in chunk0.
             {
                     e.Cancel = true;
-                    ClearBuildArchives(c7Path, t7Path, ZeroPath, OnePath, chunk0Path);
+                    ClearBuildFiles(c7Path, t7Path, ZeroPath, OnePath, chunk0Path);
                     return;
             }
 
             mergeProcessor.ReportProgress(0, "Promoting new archives");
-            PromoteBuildArchives(false, c7Path, t7Path, ZeroPath, OnePath, chunk0Path); // overwrites existing archives with modified archives
+            PromoteBuildFiles(c7Path, t7Path, ZeroPath, OnePath, chunk0Path); // overwrites existing archives with modified archives
 
             mergeProcessor.ReportProgress(0, "Cleaning up database");
             CleanupDatabase();
@@ -758,15 +810,11 @@ namespace SnakeBite
         public static bool MoveDatFiles() // moves all vanilla 00.dat files, excluding foxpatch.dat, to 01.dat
         {
             SettingsManager manager = new SettingsManager(SnakeBiteXml);
-            bool goodChunkSetup = false; // proper chunk7 (filesize appears sufficient)
-            bool goodTexSetup = false; // proper texture7 (filesize appears sufficient)
-            bool promptContinue = false; // prompt shown upon apparently improper filesizes, but user may wish to continue anyway
-
             CleanupFolders();
             Debug.LogLine("[DatMerge] Beginning to move files to new archives");
             try
             {
-                if (manager.IsVanilla0001DatHash())
+                if (manager.IsVanilla0001DatHash() || manager.IsVanilla0001Size() )
                 {   // first time setup or files have been revalidated
                     MoveDatFilesClean(manager);
                 }
@@ -775,59 +823,16 @@ namespace SnakeBite
                     MoveDatFilesDirty(manager);
                 }
 
-                if (File.Exists(c7Path + build_ext)) // check if chunk7/texture7 is at least the proper filesize to run the game, warn the player if otherwise.
-                    if (new System.IO.FileInfo(c7Path + build_ext).Length < 345000000)
-                    {
-                        MessageBox.Show("SnakeBite has detected that a_chunk7.dat.SB_Build is smaller than expected, and likely invalid.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Backup Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Filesize check failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Debug.LogLine("[DatMerge] a_chunk7 filesize is likely too small to be valid.", Debug.LogLevel.Basic);
-                        promptContinue = true;
-                    } // filesize should be around 350,000,000 bytes as of 1.0.11.0
-                    else
-                    {
-                        Debug.LogLine("[DatMerge] a_chunk7 filesize is sufficiently large, and likely valid.", Debug.LogLevel.Basic);
-                        goodChunkSetup = true;
-                    }
-                else // no chunk files were moved to a_chunk7.
-                {
-                    MessageBox.Show("a_chunk7.dat.SB_Build could not be created during setup, likely because the original files were missing from 00.dat or 01.dat.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Backup Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Missing archive file", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Debug.LogLine("[DatMerge] a_chunk7 was not created during the setup process.", Debug.LogLevel.Basic);
-                }
-
-                if (File.Exists(t7Path + build_ext))
-                    if (new System.IO.FileInfo(t7Path + build_ext).Length < 250000000)
-                    {
-                        MessageBox.Show("SnakeBite has detected that a_texture7.dat.SB_Build is smaller than expected, and likely invalid.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Backup Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Setup required", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        Debug.LogLine("[DatMerge] a_texture7 filesize is likely too small to be valid.", Debug.LogLevel.Basic);
-                        promptContinue = true;
-                    } // filesize should be around 255,000,000 bytes as of 1.0.11.0
-                    else
-                    {
-                        Debug.LogLine("[DatMerge] a_texture7 filesize is sufficiently large, and likely valid.", Debug.LogLevel.Basic);
-                        goodTexSetup = true;
-                    }
-                else // no textures were moved from 01.
-                {
-                    MessageBox.Show("a_texture7.dat.SB_Build could not be created during setup, likely because the original files were missing from 00.dat or 01.dat.\n\nThis will result in the game crashing on startup.\n\n If this occurs, please use 'Restore Backup Game Files' in the SnakeBite settings, or verify the integrity of your game through Steam.", "Missing archive file", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                    Debug.LogLine("[DatMerge] a_texture7 was not created during the setup process.", Debug.LogLevel.Basic);
-                }
-
-                Debug.LogLine(String.Format("[DatMerge] Archive merging complete."), Debug.LogLevel.Debug);
+                Debug.LogLine(String.Format("[DatMerge] Archive merging finished"), Debug.LogLevel.Debug);
                 CleanupFolders();
 
-                if (goodChunkSetup && goodTexSetup)
-                    return true;
-                else if (promptContinue)
-                {
-                    return (MessageBox.Show("Would you still like to continue the setup process?", "Continue Setup?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
-                }
-                else
-                    return false;
+                return Checkc7t7Setup();
             }
             catch (Exception e)
             {
                 MessageBox.Show(string.Format("An error has occured while moving files into new archives: {0}", e), "Exception Occurred", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Debug.LogLine(string.Format("[DatMerge] Exception Occurred: {0}", e), Debug.LogLevel.Basic);
-                Debug.LogLine("[DatMerge] SnakeBite has failed to move the 00.dat or 01.dat contents to new archives.", Debug.LogLevel.Basic);
+                Debug.LogLine("[DatMerge] SnakeBite could not move the 00.dat or 01.dat contents to new archives.", Debug.LogLevel.Basic);
 
                 return false;
             }
@@ -841,18 +846,8 @@ namespace SnakeBite
 
             // lua files 00 -> 01,    texture files 01 -> texture7,   foxpatch 00 -> 00,   chunkfiles 00 -> chunk7
             Debug.LogLine("[DatMerge] First Time Setup Started", Debug.LogLevel.Debug);
-
-            bool c7t7Exists = true;
+            
             if (manager.SettingsExist()) manager.ClearAllMods();
-            if (File.Exists(c7Path)) File.Delete(c7Path);
-            if (File.Exists(t7Path)) File.Delete(t7Path);
-            while (c7t7Exists)
-            {
-                Thread.Sleep(100);
-                c7t7Exists = false;
-                if (File.Exists(c7Path)) c7t7Exists = true;
-                if (File.Exists(t7Path)) c7t7Exists = true;
-            }
 
             List<string> zeroFiles = GzsLib.ExtractArchive<QarFile>(ZeroPath, "_extr");
             List<string> chunk7Files = new List<string>();
@@ -886,7 +881,7 @@ namespace SnakeBite
             GzsLib.WriteQarArchive(c7Path + build_ext, "_working2", chunk7Files, GzsLib.chunk7Flags);
 
             // Build a_texture7.dat.SB_Build
-            File.Copy(OnePath, t7Path + build_ext);
+            File.Copy(OnePath, t7Path + build_ext, true);
 
             // Build 00.dat.SB_Build
             GzsLib.WriteQarArchive(ZeroPath + build_ext, "_extr", zeroOut, GzsLib.zeroFlags);
@@ -960,8 +955,7 @@ namespace SnakeBite
             int textureCount = 0;
             List<string> chunk7List = new List<string>();
             List<string> tex7List = new List<string>();
-
-
+            
             try
             {
                 if (File.Exists(t7Path)) tex7List = GzsLib.ListArchiveContents<QarFile>(t7Path);
@@ -1034,6 +1028,59 @@ namespace SnakeBite
                 }
                 GzsLib.WriteQarArchive(OnePath + build_ext, "_extr", oneOut, GzsLib.oneFlags); // rebuild 01 archive
             }
+        }
+
+        private static bool Checkc7t7Setup()
+        {
+            //check for good c7, t7
+            int archiveState = 0;
+
+            string chunkCheckPath = c7Path + build_ext;
+            if (!File.Exists(chunkCheckPath)) chunkCheckPath = c7Path;
+
+            string texCheckPath = t7Path + build_ext;
+            if (!File.Exists(texCheckPath)) texCheckPath = t7Path;
+
+            // check if they exist and their size
+            long chunkSize = 0;
+            long texSize = 0;
+            if (File.Exists(chunkCheckPath) && File.Exists(texCheckPath))
+            {
+                chunkSize = new FileInfo(chunkCheckPath).Length;
+                texSize = new FileInfo(texCheckPath).Length;
+                if (chunkSize >= 345000000 && texSize >= 250000000)
+                {
+                    archiveState = 1; // Good State
+                }
+                else archiveState = 2; // Bad Size
+            }
+            else archiveState = 3; // Not Found
+            
+            switch (archiveState)
+            {
+                case 1:
+                    Debug.LogLine("[DatMerge] chunk7 and texture7 are sufficiently large and likely valid.", Debug.LogLevel.Basic);
+                    return true;
+
+                case 2:
+                    MessageBox.Show("SnakeBite has detected that the reformatted game data is smaller than expected and likely invalid." +
+                        "\n\nThis will result in the game crashing on startup." +
+                        "\n\n If this occurs, please use 'Restore Backup Game Files' in the SnakeBite settings or verify the integrity of your game through Steam.", "Filesize check failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    Debug.LogLine(string.Format("[DatMerge] {0} filesize: {1}", Path.GetFileName(chunkCheckPath), chunkSize), Debug.LogLevel.Basic);
+                    Debug.LogLine(string.Format("[DatMerge] {0} filesize: {1}", Path.GetFileName(texCheckPath), texSize), Debug.LogLevel.Basic);
+                    break;
+
+                case 3:
+                    MessageBox.Show("SnakeBite could not reformat the necessary game data during setup. This issue could be caused by missing game files."+
+                        "\n\nThis error will result in the game crashing on startup." +
+                        "\n\n If this occurs, please use 'Restore Backup Game Files' in the SnakeBite settings or verify the integrity of your game through Steam.", "Missing archive file(s)", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+                    Debug.LogLine("[DatMerge] chunk7 and/or texture7 were not created during the setup process.", Debug.LogLevel.Basic);
+                    break;
+            }
+
+            return (MessageBox.Show("Would you still like to continue the setup process?", "Continue Setup?", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes);
         }
 
         public static bool ModifyFoxfs() // edits the chunk/texture lines in foxfs.dat to accommodate a_chunk7 a_texture7, MGO and GZs data.
@@ -1109,22 +1156,63 @@ namespace SnakeBite
             }
         }
 
-        private static void PromoteBuildArchives(bool revertable, params string[] paths)
+        private static void WriteGameDirSbBuild()
+        {
+            Debug.LogLine("[SB_Build] Writing SB_Build Game Directory", Debug.LogLevel.Basic);
+            foreach (string externalFile in new SettingsManager(SnakeBiteXml).GetModExternalFiles()) // creates a replica of snakebite.xml's managed gamedir files (unmanaged files are not copied)
+            {
+                string fileModPath = Tools.ToWinPath(externalFile);
+                string destFullPath = Path.Combine(GamePaths.GameDirSB_Build, fileModPath);
+                string sourceFullPath = Path.Combine(GameDir, fileModPath);
+
+                Directory.CreateDirectory(Path.GetDirectoryName(destFullPath));
+                if (File.Exists(sourceFullPath)) File.Copy(sourceFullPath, destFullPath, true);
+            }
+        }
+
+        private static void PromoteGameDirFiles() // call this method BEFORE snakebite.xml.SB_Build is promoted, so it will reference the old snakebite.xml
+        {
+            Debug.LogLine("[SB_Build] Promoting SB_Build Game Directory", Debug.LogLevel.Basic);
+            foreach (string externalFile in new SettingsManager(SnakeBiteXml).GetModExternalFiles())
+            {
+                string fileModPath = Tools.ToWinPath(externalFile);
+                string sourceFullPath = Path.Combine(GameDir, fileModPath);
+                File.Delete(sourceFullPath); // deletes all of the old snakebite.xml's managed files (unmanaged files will be overwritten later or left alone)
+            }
+            Tools.DirectoryCopy(GamePaths.GameDirSB_Build, GameDir, true); // moves all gamedir_sb_build files over
+        }
+
+        private static void PromoteBuildFiles(params string[] paths)
         {
             // Promote SB builds
+            Debug.LogLine("[SB_Build] Promoting SB_Build files", Debug.LogLevel.Basic);
             foreach (string path in paths)
             {
-                GzsLib.PromoteQarArchive(revertable, path + build_ext, path);
+                GzsLib.PromoteQarArchive(path + build_ext, path);
             }
 
             new SettingsManager(SnakeBiteXml).UpdateDatHash();
         }
 
-        private static void ClearBuildArchives(params string[] paths)
+        private static void ClearBuildFiles(params string[] paths)
         {
-            foreach(string path in paths)
+            Debug.LogLine("[SB_Build] Deleting SB_Build files", Debug.LogLevel.Basic);
+            foreach (string path in paths)
             {
                 File.Delete(path + build_ext);
+            }
+        }
+
+        private static void ClearSBGameDir()
+        {
+            Debug.LogLine("[SB_Build] Deleting old SB_Build Game Directory", Debug.LogLevel.Basic);
+            try
+            {
+                Directory.Delete(GamePaths.GameDirSB_Build, true);
+            }
+            catch (IOException e)
+            {
+                Console.WriteLine("[Cleanup] Could not delete old SB_Build Game Directory: " + e.Message);
             }
         }
 
@@ -1236,6 +1324,7 @@ namespace SnakeBite
             "_working1",
             "_working2",//LEGACY
             "_extr",
+            "_build",
             "_gameFpk",
             "_modfpk",
         };

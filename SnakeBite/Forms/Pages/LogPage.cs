@@ -70,6 +70,11 @@ namespace SnakeBite.ModPages
             }
         }
 
+        public void ClearPage()
+        {
+            logStringBuilder.Clear();
+        }
+
         private void formLog_FormClosing(object sender, FormClosingEventArgs e)
         {
             stopTimer = true;

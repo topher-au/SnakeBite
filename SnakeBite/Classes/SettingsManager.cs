@@ -177,7 +177,7 @@ namespace SnakeBite
             return vanillaDatHash.Equals(Tools.GetMd5Hash(ZeroPath) + Tools.GetMd5Hash(OnePath));
         }
 
-        public bool IsVanilla0001RoughSize() //shouldn't be in settingsmanager
+        public bool IsVanilla0001Size() //shouldn't be in settingsmanager
         {
             var zeroSize = new System.IO.FileInfo(ZeroPath).Length;
             var oneSize = new System.IO.FileInfo(OnePath).Length;
@@ -208,14 +208,17 @@ namespace SnakeBite
 
         internal bool ValidateDatHash()
         {
-            string datHash = Tools.GetMd5Hash(ZeroPath) + Tools.GetMd5Hash(OnePath);
-            string hashOld = this.GetGameData().DatHash;
-            if (datHash != hashOld)
-            {
-                Debug.LogLine(String.Format("[ValidateDatHash] 00/01 dat hash mismatch:\n{0} (Found Hash) != {1} (Expected Hash)", datHash, hashOld), Debug.LogLevel.All);
-                return false;
+            if (File.Exists(xmlFilePath)) {
+                string datHash = Tools.GetMd5Hash(ZeroPath) + Tools.GetMd5Hash(OnePath);
+                string hashOld = this.GetGameData().DatHash;
+                if (datHash == hashOld)
+                {
+                    Debug.LogLine(String.Format("[ValidateDatHash] 00/01 dat hash mismatch:\n{0} (Found Hash) != {1} (Expected Hash)", datHash, hashOld), Debug.LogLevel.All);
+                    return true;
+                }
             }
-            return true;
+            Debug.LogLine(String.Format("[ValidateDatHash] could not find snakebite.xml"), Debug.LogLevel.All);
+            return false;
         }
 
         // Checks the saved InstallPath variable for the existence of MGSVTPP.exe
