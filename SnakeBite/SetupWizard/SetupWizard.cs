@@ -60,7 +60,6 @@ namespace SnakeBite.SetupWizard
                     if (!manager.ValidInstallPath)
                     {
                         MessageBox.Show("Please select a valid installation directory.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                        MessageBox.Show(Properties.Settings.Default.InstallPath);
                         return;
                     }
 

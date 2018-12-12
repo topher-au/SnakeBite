@@ -25,6 +25,10 @@ namespace SnakeBite
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
+            Debug.LogLine("[Install] Start", Debug.LogLevel.Basic);
+            ClearBuildFiles(ZeroPath, OnePath, SnakeBiteSettings, SavePresetPath);
+            ClearSBGameDir();
+            CleanupFolders();
             if (Properties.Settings.Default.AutosaveRevertPreset == true)
             {
                 Debug.LogLine("[Install] Saving RevertChanges.MGSVPreset.SB_Build", Debug.LogLevel.Basic);
@@ -35,10 +39,7 @@ namespace SnakeBite
                 Debug.LogLine("[Install] Skipping RevertChanges.MGSVPreset Save", Debug.LogLevel.Basic);
             }
 
-            Debug.LogLine("[Install] Start", Debug.LogLevel.Basic);
             File.Copy(SnakeBiteSettings, SnakeBiteSettings + build_ext, true);
-
-            CleanupFolders();
             GzsLib.LoadDictionaries();
             var zeroFiles = GzsLib.ExtractArchive<QarFile>(ZeroPath, "_working0");       
             List<string> oneFiles = null;
@@ -429,6 +430,10 @@ namespace SnakeBite
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
+            Debug.LogLine("[Uninstall] Start", Debug.LogLevel.Basic);
+            ClearBuildFiles(ZeroPath, OnePath, SnakeBiteSettings, SavePresetPath);
+            ClearSBGameDir();
+            CleanupFolders();
             if (Properties.Settings.Default.AutosaveRevertPreset == true)
             {
                 Debug.LogLine("[Uninstall] Saving RevertChanges.MGSVPreset.SB_Build", Debug.LogLevel.Basic);
@@ -439,9 +444,7 @@ namespace SnakeBite
                 Debug.LogLine("[Uninstall] Skipping RevertChanges.MGSVPreset Save", Debug.LogLevel.Basic);
             }
 
-            Debug.LogLine("[Uninstall] Start", Debug.LogLevel.Basic);
             File.Copy(SnakeBiteSettings, SnakeBiteSettings + build_ext, true);
-            CleanupFolders();
             GzsLib.LoadDictionaries();
             SettingsManager manager = new SettingsManager(SnakeBiteSettings + build_ext);
             List<ModEntry> mods = manager.GetInstalledMods();
@@ -774,7 +777,9 @@ namespace SnakeBite
         {
             BackgroundWorker mergeProcessor = (BackgroundWorker)sender;
             GzsLib.LoadDictionaries();
-
+            ClearBuildFiles(c7Path, t7Path, ZeroPath, OnePath, SnakeBiteSettings, SavePresetPath);
+            ClearSBGameDir();
+            CleanupFolders();
             mergeProcessor.ReportProgress(0, "Moving files into new archives");
             if (!MoveDatFiles()) //moves vanilla 00 files into 01, excluding foxpatch. 
             {
@@ -801,7 +806,6 @@ namespace SnakeBite
         public static bool MoveDatFiles() // moves all vanilla 00.dat files, excluding foxpatch.dat, to 01.dat
         {
             SettingsManager manager = new SettingsManager(SnakeBiteSettings);
-            CleanupFolders();
             Debug.LogLine("[DatMerge] Beginning to move files to new archives");
             try
             {
