@@ -24,6 +24,7 @@ namespace SnakeBite
         private static string chunk0Path = GamePaths.chunk0Path;
         private static string SnakeBiteXml = GamePaths.SnakeBiteSettings;
         private static string build_ext = GamePaths.build_ext;
+        private static string SavePresetPath = GamePaths.SavePresetPath;
 
         // SYNC makebite
         static string ExternalDirName = "GameDir";
@@ -34,8 +35,8 @@ namespace SnakeBite
             stopwatch.Start();
             if (Properties.Settings.Default.AutosaveRevertPreset == true)
             {
-                Debug.LogLine("[Install] Saving RevertChanges.MGSVPreset", Debug.LogLevel.Basic);
-                PresetManager.SavePreset(Path.Combine(GameDir, "RevertChanges.MGSVPreset"));
+                Debug.LogLine("[Install] Saving RevertChanges.MGSVPreset.SB_Build", Debug.LogLevel.Basic);
+                PresetManager.SavePreset(SavePresetPath + build_ext);
             }
             else
             {
@@ -96,8 +97,7 @@ namespace SnakeBite
                     CleanupFolders();
                 }
                 PromoteGameDirFiles();
-                if (hasFtexs) PromoteBuildFiles(ZeroPath, OnePath, SnakeBiteXml);
-                else PromoteBuildFiles(ZeroPath, SnakeBiteXml);
+                PromoteBuildFiles(ZeroPath, OnePath, SnakeBiteXml, SavePresetPath);
 
                 ClearSBGameDir();
                 stopwatch.Stop();
@@ -110,7 +110,7 @@ namespace SnakeBite
                 Debug.LogLine($"[Install] Installation failed at {stopwatch.ElapsedMilliseconds} ms", Debug.LogLevel.Basic);
                 Debug.LogLine("[Install] Exception: " + e, Debug.LogLevel.Basic);
                 MessageBox.Show("An error has occurred during the installation process and SnakeBite could not install the selected mod(s).\nException: " + e);
-                ClearBuildFiles(ZeroPath, OnePath, SnakeBiteXml);
+                ClearBuildFiles(ZeroPath, OnePath, SnakeBiteXml, SavePresetPath);
                 CleanupFolders();
                 ClearSBGameDir();
                 return false;
@@ -439,8 +439,8 @@ namespace SnakeBite
             stopwatch.Start();
             if (Properties.Settings.Default.AutosaveRevertPreset == true)
             {
-                Debug.LogLine("[Uninstall] Saving RevertChanges.MGSVPreset", Debug.LogLevel.Basic);
-                PresetManager.SavePreset(Path.Combine(GameDir, "RevertChanges.MGSVPreset"));
+                Debug.LogLine("[Uninstall] Saving RevertChanges.MGSVPreset.SB_Build", Debug.LogLevel.Basic);
+                PresetManager.SavePreset(SavePresetPath + build_ext);
             }
             else
             {
@@ -506,8 +506,7 @@ namespace SnakeBite
                 //Debug.LogLine("CleanupFolders", Debug.LogLevel.Basic); //allready logs
 
                 PromoteGameDirFiles();
-                if (hasFtexs) PromoteBuildFiles(ZeroPath, OnePath, SnakeBiteXml);
-                else PromoteBuildFiles(ZeroPath, SnakeBiteXml);
+                PromoteBuildFiles(ZeroPath, OnePath, SnakeBiteXml, SavePresetPath);
 
 
                 if (!skipCleanup)
@@ -526,7 +525,7 @@ namespace SnakeBite
                 Debug.LogLine($"[Uninstall] Uninstall failed at {stopwatch.ElapsedMilliseconds} ms", Debug.LogLevel.Basic);
                 Debug.LogLine("[Uninstall] Exception: " + e, Debug.LogLevel.Basic);
                 MessageBox.Show("An error has occurred during the uninstallation process and SnakeBite could not uninstall the selected mod(s).\nException: " + e);
-                ClearBuildFiles(ZeroPath, OnePath, SnakeBiteXml);
+                ClearBuildFiles(ZeroPath, OnePath, SnakeBiteXml, SavePresetPath);
                 CleanupFolders();
                 ClearSBGameDir();
                 return false;
@@ -720,10 +719,10 @@ namespace SnakeBite
             {
                 if (Directory.Exists(fileEntryDir) && Directory.GetFiles(fileEntryDir).Length == 0) // if the directory has not yet been deleted and there are no more files inside the directory
                 {
-                    Debug.LogLine(String.Format("[Uninstall] deleting folder: {0}", fileEntryDir), Debug.LogLevel.All);
+                    Debug.LogLine(String.Format("[Uninstall] deleting empty folder: {0}", fileEntryDir), Debug.LogLevel.All);
                     try
                     {
-                        Directory.Delete(fileEntryDir, true); //attempt to delete the empty directory
+                        Directory.Delete(fileEntryDir); //attempt to delete the empty directory [NOT RECURSIVE]
                     } catch (IOException e)
                     {
                         Console.WriteLine("[Uninstall] Could not delete: " + e.Message);
@@ -1166,18 +1165,35 @@ namespace SnakeBite
                 string sourceFullPath = Path.Combine(GameDir, fileModPath);
 
                 Directory.CreateDirectory(Path.GetDirectoryName(destFullPath));
-                if (File.Exists(sourceFullPath)) File.Copy(sourceFullPath, destFullPath, true);
+                if (File.Exists(sourceFullPath)) { File.Copy(sourceFullPath, destFullPath, true); }
             }
         }
 
         private static void PromoteGameDirFiles() // call this method BEFORE snakebite.xml.SB_Build is promoted, so it will reference the old snakebite.xml
         {
-            Debug.LogLine("[SB_Build] Promoting SB_Build Game Directory", Debug.LogLevel.Basic);
+            Debug.LogLine("[SB_Build] Promoting SB_Build Game Directory", Debug.LogLevel.Basic);//
+            List<string> fileEntryDirs = new List<string>();
             foreach (string externalFile in new SettingsManager(SnakeBiteXml).GetModExternalFiles())
             {
                 string fileModPath = Tools.ToWinPath(externalFile);
                 string sourceFullPath = Path.Combine(GameDir, fileModPath);
+                fileEntryDirs.Add(Path.GetDirectoryName(sourceFullPath));
                 File.Delete(sourceFullPath); // deletes all of the old snakebite.xml's managed files (unmanaged files will be overwritten later or left alone)
+            }
+            foreach (string fileEntryDir in fileEntryDirs) //all the directories that have had files deleted within them
+            {
+                if (Directory.Exists(fileEntryDir) && Directory.GetFiles(fileEntryDir).Length == 0) // if the directory has not yet been deleted and there are no more files inside the directory
+                {
+                    Debug.LogLine(String.Format("[SB_Build] deleting empty folder: {0}", fileEntryDir), Debug.LogLevel.All);
+                    try
+                    {
+                        Directory.Delete(fileEntryDir); //attempt to delete the empty directory
+                    }
+                    catch (IOException e)
+                    {
+                        Console.WriteLine("[Uninstall] Could not delete: " + e.Message);
+                    }
+                }
             }
             Tools.DirectoryCopy(GamePaths.GameDirSB_Build, GameDir, true); // moves all gamedir_sb_build files over
         }

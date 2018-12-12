@@ -213,8 +213,13 @@ namespace SnakeBite
                 string hashOld = this.GetGameData().DatHash;
                 if (datHash == hashOld)
                 {
-                    Debug.LogLine(String.Format("[ValidateDatHash] 00/01 dat hash mismatch:\n{0} (Found Hash) != {1} (Expected Hash)", datHash, hashOld), Debug.LogLevel.All);
+                    Debug.LogLine(String.Format("[ValidateDatHash] 00/01 dat hash match:\n{0} (Found Hash) == {1} (Expected Hash)", datHash, hashOld), Debug.LogLevel.All);
                     return true;
+                }
+                else
+                {
+                    Debug.LogLine(String.Format("[ValidateDatHash] 00/01 dat hash mismatch:\n{0} (Found Hash) != {1} (Expected Hash)", datHash, hashOld), Debug.LogLevel.All);
+                    return false;
                 }
             }
             Debug.LogLine(String.Format("[ValidateDatHash] could not find snakebite.xml"), Debug.LogLevel.All);

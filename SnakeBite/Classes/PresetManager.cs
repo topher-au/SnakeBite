@@ -52,12 +52,16 @@ namespace SnakeBite
             string build_ext = GamePaths.build_ext;
             SettingsManager manager = new SettingsManager(GamePaths.SnakeBiteSettings);
             List<string> existingExternalFiles = manager.GetModExternalFiles();
-
+            List<string> fileEntryDirs = new List<string>();
             Debug.LogLine("[LoadPreset] Storing existing files", Debug.LogLevel.Basic);
             foreach (string gameFile in existingExternalFiles)
             {
                 string gameFilePath = Path.Combine(GamePaths.GameDir, Tools.ToWinPath(gameFile));
-                File.Move(gameFilePath, gameFilePath + build_ext);
+                if (File.Exists(gameFilePath))
+                {
+                    fileEntryDirs.Add(Path.GetDirectoryName(gameFilePath));
+                    File.Move(gameFilePath, gameFilePath + build_ext);
+                }
             }
             
             File.Move(GamePaths.ZeroPath, GamePaths.ZeroPath + build_ext);
@@ -75,6 +79,22 @@ namespace SnakeBite
                 {
                     string gameFilePath = Path.Combine(GamePaths.GameDir, Tools.ToWinPath(gameFile));
                     File.Delete(gameFilePath + build_ext);
+                }
+
+                foreach (string fileEntryDir in fileEntryDirs)
+                {
+                    if (Directory.Exists(fileEntryDir) && Directory.GetFiles(fileEntryDir).Length == 0)
+                    {
+                        Debug.LogLine(String.Format("[SB_Build] deleting empty folder: {0}", fileEntryDir), Debug.LogLevel.All);
+                        try
+                        {
+                            Directory.Delete(fileEntryDir); 
+                        }
+                        catch (IOException e)
+                        {
+                            Console.WriteLine("[Uninstall] Could not delete: " + e.Message);
+                        }
+                    }
                 }
 
                 File.Delete(GamePaths.ZeroPath + build_ext);

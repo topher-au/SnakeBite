@@ -1,12 +1,8 @@
-﻿using ICSharpCode.SharpZipLib.Zip;
-using SnakeBite.Forms;
+﻿using SnakeBite.Forms;
 using SnakeBite.ModPages;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -271,7 +267,7 @@ namespace SnakeBite
         {
             OneTimePresetHelp();
 
-            DialogResult saveModsResult = MessageBox.Show("Would you like to save your current mods as a Preset before loading a new Preset?", "Save current mods?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
+            DialogResult saveModsResult = MessageBox.Show("Would you like to save your current mods as a Preset before loading a new Preset?", "Save current mods?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
             if (saveModsResult == DialogResult.Yes) SavePreset();
             else if (saveModsResult == DialogResult.Cancel) return;
 
@@ -381,6 +377,8 @@ namespace SnakeBite
             listInstalledMods.Enabled = enabled;
             checkBoxMarkAll.Enabled = enabled;
             labelInstalledMods.Enabled = enabled;
+            menuItemLoadPreset.Enabled = enabled;
+            menuItemSavePreset.Enabled = enabled;
         }
 
         private void menuItemOpenMakeBite_Click(object sender, EventArgs e)
@@ -419,8 +417,8 @@ namespace SnakeBite
 
         private void menuItemHelpCreate_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("To create a mod for SnakeBite, the user must build a .MGSV file using MakeBite (which was installed automatically alongside SnakeBite). MakeBite creates mods by packing all of the files from a specified folder into a new .MGSV file. " +
-                "\n\nIn fact, .MGSV files are basically glorified .zip files.\n\nThere are many tools and tutorials available for users to learn how to modify and prepare game files for MakeBite.\nWould you like to visit the MakeBite Wiki page for more information?", "Creating a Mod", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (MessageBox.Show("To create a mod for SnakeBite, the user must build a .MGSV file using MakeBite (which was installed automatically alongside SnakeBite). MakeBite can create mods by packing all of the files from a specified folder into a new .MGSV file. " +
+                "\n\nIn fact, .MGSV files are .zip files with a different file extension.\n\nThere are a number of tools and tutorials available for users to learn how to modify and prepare game files for MakeBite.\nWould you like to visit the MakeBite Wiki page for more information?", "Creating a Mod", MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
             {
                 Process.Start(GamePaths.WikiURLPath + "SnakeBite#MakeBite");
             }
@@ -436,7 +434,7 @@ namespace SnakeBite
 
         private void menuItemOpenBugReport_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("If you have found an issue with SnakeBite, please report the issue with as much information as you can gather! Be sure to include the relevant Debug Log in the bug report, and do your best to explain how you are able to reproduce the issue." +
+            MessageBox.Show("If you have found an issue with SnakeBite, please report the bug with as much information as you can gather! Be sure to include the relevant Debug Log in the bug report, and do your best to explain how you are able to reproduce the issue." +
                 "\n\nAlso, always search through the existing bug reports to make sure that your issue hasn't already been created. If your bug is already reported, add your information to that bug report instead!", "Reporting a Bug", MessageBoxButtons.OK, MessageBoxIcon.Information);
             Process.Start(GamePaths.SBWMBugURLPath);
         }
@@ -451,7 +449,7 @@ namespace SnakeBite
             MessageBox.Show("A 'Mod Preset' is a collection of mods which can be saved and loaded with SnakeBite. Saving a Preset will pack your current modded game data into a .MGSVPreset file. Loading a Preset will simply replace your game data with the files stored in the .MGSVPreset file." +
                 "\n\nPresets are a fast and simple method of organizing your favorite mods or trying new mod combinations." +
                 "\n\nYou can also utilize Presets as restore checkpoints if SnakeBite encounters a serious error or your game data becomes corrupted. By default, SnakeBite creates 'RevertChanges.MGSVPreset' before a mod installation/uninstallation, so you can easily undo an action if it caused a critical error." +
-                "\n\nHowever, saving a large number of mods may take a long time, so you can choose to skip creating RevertChanges.MGSVPreset by unchecking the 'Save RevertChanges.MGSVPreset' option in the Settings menu for faster install/uninstall times.\nRevertChanges.MGSVPreset is saved to your Game Directory.", "Mod Preset Files", MessageBoxButtons.OK, MessageBoxIcon.Question);
+                "\n\nHowever, saving a large number of mods needs a bit of time and storage space, so you can choose to skip this option by unchecking the 'Save RevertChanges.MGSVPreset' checkbox in the Settings menu.\nRevertChanges.MGSVPreset is saved to your Game Directory.", "Mod Preset Files", MessageBoxButtons.OK, MessageBoxIcon.Question);
         }
 
         private void OneTimePresetHelp()

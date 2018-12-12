@@ -17,6 +17,7 @@ namespace SnakeBite
         internal static string c7Path { get { return GameDir + "\\master\\a_chunk7.dat"; } }
         internal static string SnakeBiteSettings { get { return GameDir + "\\snakebite.xml"; } }
         internal static string GameDirSB_Build { get { return GameDir + "\\GameDir_SB_Build"; } }
+        internal static string SavePresetPath { get { return GameDir + "\\RevertChanges.MGSVPreset"; } }
 
         internal static string build_ext = ".SB_Build";
         internal static string original_ext = ".original";
