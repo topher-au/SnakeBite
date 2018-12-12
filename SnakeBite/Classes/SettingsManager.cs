@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.Xml.Serialization;
+using static SnakeBite.GamePaths;
 
 namespace SnakeBite
 {
@@ -10,9 +11,7 @@ namespace SnakeBite
     {
         internal static string vanillaDatHash = "41317C4D473D9A3DB6C1169E5ACDD35849FCF50601FD41F5A171E1055C642093"; //expected original hash for 1.0.15.0
         internal static Version IntendedGameVersion = new Version(1, 0, 15, 0); // GAMEVERSION
-
-        private string ZeroPath = GamePaths.ZeroPath;
-        private string OnePath = GamePaths.OnePath;
+        
         public string xmlFilePath;
 
         public SettingsManager(string filePath)

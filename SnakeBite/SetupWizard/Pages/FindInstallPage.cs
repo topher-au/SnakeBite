@@ -76,12 +76,9 @@ namespace SnakeBite.SetupWizard
             if (findResult != DialogResult.OK) return;
 
             string fileDir = Path.GetDirectoryName(findMGSV.FileName);
-            if (fileDir != textInstallPath.Text)
-            {
-                textInstallPath.Text = fileDir;
-                Properties.Settings.Default.InstallPath = fileDir;
-                Properties.Settings.Default.Save();
-            }
+            textInstallPath.Text = fileDir;
+            Properties.Settings.Default.InstallPath = fileDir;
+            Properties.Settings.Default.Save();
         }
     }
 }

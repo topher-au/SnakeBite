@@ -11,20 +11,12 @@ using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Windows.Forms;
+using static SnakeBite.GamePaths;
 
 namespace SnakeBite
 {
     internal static class ModManager
     {
-        private static string ZeroPath = GamePaths.ZeroPath;
-        private static string OnePath = GamePaths.OnePath;
-        private static string GameDir = GamePaths.GameDir;
-        private static string c7Path = GamePaths.c7Path;
-        private static string t7Path = GamePaths.t7Path;
-        private static string chunk0Path = GamePaths.chunk0Path;
-        private static string SnakeBiteXml = GamePaths.SnakeBiteSettings;
-        private static string build_ext = GamePaths.build_ext;
-        private static string SavePresetPath = GamePaths.SavePresetPath;
 
         // SYNC makebite
         static string ExternalDirName = "GameDir";
@@ -44,7 +36,7 @@ namespace SnakeBite
             }
 
             Debug.LogLine("[Install] Start", Debug.LogLevel.Basic);
-            File.Copy(SnakeBiteXml, SnakeBiteXml + build_ext, true);
+            File.Copy(SnakeBiteSettings, SnakeBiteSettings + build_ext, true);
 
             CleanupFolders();
             GzsLib.LoadDictionaries();
@@ -56,7 +48,7 @@ namespace SnakeBite
                 oneFiles = GzsLib.ExtractArchive<QarFile>(OnePath, "_working1");
             }       
             //snakebites settings manager also includes the installed mod lists
-            SettingsManager manager = new SettingsManager(SnakeBiteXml + build_ext);
+            SettingsManager manager = new SettingsManager(SnakeBiteSettings + build_ext);
             var gameData = manager.GetGameData();
             ValidateGameData(ref gameData, ref zeroFiles);
             var zeroFilesHashSet = new HashSet<string>(zeroFiles);
@@ -97,7 +89,7 @@ namespace SnakeBite
                     CleanupFolders();
                 }
                 PromoteGameDirFiles();
-                PromoteBuildFiles(ZeroPath, OnePath, SnakeBiteXml, SavePresetPath);
+                PromoteBuildFiles(ZeroPath, OnePath, SnakeBiteSettings, SavePresetPath);
 
                 ClearSBGameDir();
                 stopwatch.Stop();
@@ -110,7 +102,7 @@ namespace SnakeBite
                 Debug.LogLine($"[Install] Installation failed at {stopwatch.ElapsedMilliseconds} ms", Debug.LogLevel.Basic);
                 Debug.LogLine("[Install] Exception: " + e, Debug.LogLevel.Basic);
                 MessageBox.Show("An error has occurred during the installation process and SnakeBite could not install the selected mod(s).\nException: " + e);
-                ClearBuildFiles(ZeroPath, OnePath, SnakeBiteXml, SavePresetPath);
+                ClearBuildFiles(ZeroPath, OnePath, SnakeBiteSettings, SavePresetPath);
                 CleanupFolders();
                 ClearSBGameDir();
                 return false;
@@ -424,8 +416,8 @@ namespace SnakeBite
                 if (skipFile == false)
                 {
                     string sourceFile = Path.Combine("_extr", ExternalDirName, Tools.ToWinPath(fileEntry.FilePath));
-                    string destFile = Path.Combine(GamePaths.GameDirSB_Build, Tools.ToWinPath(fileEntry.FilePath));
-                    Debug.LogLine(String.Format("[Install] Copying file: {0}", destFile), Debug.LogLevel.All);
+                    string destFile = Path.Combine(GameDirSB_Build, Tools.ToWinPath(fileEntry.FilePath));
+                    Debug.LogLine(string.Format("[Install] Copying file: {0}", destFile), Debug.LogLevel.All);
                     Directory.CreateDirectory(Path.GetDirectoryName(destFile));
                     File.Copy(sourceFile, destFile, true);
                     gameData.GameFileEntries.Add(fileEntry);
@@ -448,10 +440,10 @@ namespace SnakeBite
             }
 
             Debug.LogLine("[Uninstall] Start", Debug.LogLevel.Basic);
-            File.Copy(SnakeBiteXml, SnakeBiteXml + build_ext, true);
+            File.Copy(SnakeBiteSettings, SnakeBiteSettings + build_ext, true);
             CleanupFolders();
             GzsLib.LoadDictionaries();
-            SettingsManager manager = new SettingsManager(SnakeBiteXml + build_ext);
+            SettingsManager manager = new SettingsManager(SnakeBiteSettings + build_ext);
             List<ModEntry> mods = manager.GetInstalledMods();
             List<ModEntry> uninstallMods = new List<ModEntry>();
             foreach (int index in modIndices)
@@ -506,7 +498,7 @@ namespace SnakeBite
                 //Debug.LogLine("CleanupFolders", Debug.LogLevel.Basic); //allready logs
 
                 PromoteGameDirFiles();
-                PromoteBuildFiles(ZeroPath, OnePath, SnakeBiteXml, SavePresetPath);
+                PromoteBuildFiles(ZeroPath, OnePath, SnakeBiteSettings, SavePresetPath);
 
 
                 if (!skipCleanup)
@@ -525,7 +517,7 @@ namespace SnakeBite
                 Debug.LogLine($"[Uninstall] Uninstall failed at {stopwatch.ElapsedMilliseconds} ms", Debug.LogLevel.Basic);
                 Debug.LogLine("[Uninstall] Exception: " + e, Debug.LogLevel.Basic);
                 MessageBox.Show("An error has occurred during the uninstallation process and SnakeBite could not uninstall the selected mod(s).\nException: " + e);
-                ClearBuildFiles(ZeroPath, OnePath, SnakeBiteXml, SavePresetPath);
+                ClearBuildFiles(ZeroPath, OnePath, SnakeBiteSettings, SavePresetPath);
                 CleanupFolders();
                 ClearSBGameDir();
                 return false;
@@ -699,7 +691,7 @@ namespace SnakeBite
             HashSet<string> fileEntryDirs = new HashSet<string>();
             foreach (ModFileEntry fileEntry in mod.ModFileEntries) //checks all of current mod's files
             {
-                string destFile = Path.Combine(GamePaths.GameDirSB_Build, Tools.ToWinPath(fileEntry.FilePath)); //create the filepath to the file in question
+                string destFile = Path.Combine(GameDirSB_Build, Tools.ToWinPath(fileEntry.FilePath)); //create the filepath to the file in question
                 string dir = Path.GetDirectoryName(destFile); //filepath of the directory containing the file
                 fileEntryDirs.Add(dir); //the directory is added to the list of fileentrydirectories
                 if (File.Exists(destFile)) // attempt to delete the file in question
@@ -748,7 +740,7 @@ namespace SnakeBite
 
         public static bool foundLooseFtexs(CheckedListBox.CheckedIndexCollection modIndices) // returns true if any mods at the indices contain a loose texture file which was installed to 01
         {
-            var mods = new SettingsManager(SnakeBiteXml).GetInstalledMods();
+            var mods = new SettingsManager(SnakeBiteSettings).GetInstalledMods();
             foreach (int index in modIndices)
             {
                 ModEntry mod = mods[index];
@@ -808,7 +800,7 @@ namespace SnakeBite
 
         public static bool MoveDatFiles() // moves all vanilla 00.dat files, excluding foxpatch.dat, to 01.dat
         {
-            SettingsManager manager = new SettingsManager(SnakeBiteXml);
+            SettingsManager manager = new SettingsManager(SnakeBiteSettings);
             CleanupFolders();
             Debug.LogLine("[DatMerge] Beginning to move files to new archives");
             try
@@ -1158,10 +1150,10 @@ namespace SnakeBite
         private static void WriteGameDirSbBuild()
         {
             Debug.LogLine("[SB_Build] Writing SB_Build Game Directory", Debug.LogLevel.Basic);
-            foreach (string externalFile in new SettingsManager(SnakeBiteXml).GetModExternalFiles()) // creates a replica of snakebite.xml's managed gamedir files (unmanaged files are not copied)
+            foreach (string externalFile in new SettingsManager(SnakeBiteSettings).GetModExternalFiles()) // creates a replica of snakebite.xml's managed gamedir files (unmanaged files are not copied)
             {
                 string fileModPath = Tools.ToWinPath(externalFile);
-                string destFullPath = Path.Combine(GamePaths.GameDirSB_Build, fileModPath);
+                string destFullPath = Path.Combine(GameDirSB_Build, fileModPath);
                 string sourceFullPath = Path.Combine(GameDir, fileModPath);
 
                 Directory.CreateDirectory(Path.GetDirectoryName(destFullPath));
@@ -1173,7 +1165,7 @@ namespace SnakeBite
         {
             Debug.LogLine("[SB_Build] Promoting SB_Build Game Directory", Debug.LogLevel.Basic);//
             List<string> fileEntryDirs = new List<string>();
-            foreach (string externalFile in new SettingsManager(SnakeBiteXml).GetModExternalFiles())
+            foreach (string externalFile in new SettingsManager(SnakeBiteSettings).GetModExternalFiles())
             {
                 string fileModPath = Tools.ToWinPath(externalFile);
                 string sourceFullPath = Path.Combine(GameDir, fileModPath);
@@ -1195,7 +1187,7 @@ namespace SnakeBite
                     }
                 }
             }
-            Tools.DirectoryCopy(GamePaths.GameDirSB_Build, GameDir, true); // moves all gamedir_sb_build files over
+            Tools.DirectoryCopy(GameDirSB_Build, GameDir, true); // moves all gamedir_sb_build files over
         }
 
         private static void PromoteBuildFiles(params string[] paths)
@@ -1207,7 +1199,7 @@ namespace SnakeBite
                 GzsLib.PromoteQarArchive(path + build_ext, path);
             }
 
-            new SettingsManager(SnakeBiteXml).UpdateDatHash();
+            new SettingsManager(SnakeBiteSettings).UpdateDatHash();
         }
 
         private static void ClearBuildFiles(params string[] paths)
@@ -1224,7 +1216,7 @@ namespace SnakeBite
             Debug.LogLine("[SB_Build] Deleting old SB_Build Game Directory", Debug.LogLevel.Basic);
             try
             {
-                Directory.Delete(GamePaths.GameDirSB_Build, true);
+                Directory.Delete(GameDirSB_Build, true);
             }
             catch (IOException e)
             {
@@ -1241,7 +1233,7 @@ namespace SnakeBite
             Debug.LogLine("[Cleanup] Database cleanup started", Debug.LogLevel.Basic);
 
             // Retrieve installation data
-            SettingsManager manager = new SettingsManager(SnakeBiteXml);
+            SettingsManager manager = new SettingsManager(SnakeBiteSettings);
             var mods = manager.GetInstalledMods();
             var game = manager.GetGameData();
             var zeroFiles = GzsLib.ListArchiveContents<QarFile>(ZeroPath);

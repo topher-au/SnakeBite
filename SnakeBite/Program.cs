@@ -61,6 +61,7 @@ namespace SnakeBite
                 if (wizResult == DialogResult.Cancel) return;
                 if (wizResult == DialogResult.OK) showSetupWizard = false;
             }
+            manager = new SettingsManager(GamePaths.SnakeBiteSettings);
 
 
             string InitLog = String.Format(

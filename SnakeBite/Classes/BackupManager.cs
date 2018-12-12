@@ -1,52 +1,45 @@
 ﻿using System.ComponentModel;
 using System.IO;
 using System.Threading;
+using static SnakeBite.GamePaths;
 
 namespace SnakeBite
 {
     public static class BackupManager
     {
-        private static string GameZero = GamePaths.ZeroPath;
-        private static string GameOne = GamePaths.OnePath;
-        private static string GameChunkZero = GamePaths.chunk0Path;
-        private static string GameChunkSeven = GamePaths.c7Path;
-        private static string GameTextureSeven = GamePaths.t7Path;
-        private static string SnakeBiteXml = GamePaths.SnakeBiteSettings;
-        private static string original_ext = GamePaths.original_ext;
-        private static string modded_ext = GamePaths.modded_ext;
 
         public static bool OriginalsExist()
         {
-            return (File.Exists(GameZero + original_ext) && File.Exists(GameOne + original_ext) && File.Exists(GameChunkZero + original_ext));
+            return (File.Exists(ZeroPath + original_ext) && File.Exists(OnePath + original_ext) && File.Exists(chunk0Path + original_ext));
         }
 
         public static bool OriginalZeroOneExist()
         {
-            return (File.Exists(GameZero + original_ext) && File.Exists(GameOne + original_ext));
+            return (File.Exists(ZeroPath + original_ext) && File.Exists(OnePath + original_ext));
         }
 
         public static bool c7t7Exist()
         {
-            return (File.Exists(GameTextureSeven) && File.Exists(GameChunkSeven));
+            return (File.Exists(t7Path) && File.Exists(c7Path));
         }
 
         public static bool ModsDisabled()
         {
-            return (File.Exists(GameZero + modded_ext) && File.Exists(GameOne + modded_ext));
+            return (File.Exists(ZeroPath + modded_ext) && File.Exists(OnePath + modded_ext));
         }
 
         public static void RestoreOriginals()
         {
             // delete existing data
-            File.Delete(GameZero);
-            File.Delete(GameOne);
-            File.Delete(GameChunkZero);
-            File.Delete(GameChunkSeven);
-            File.Delete(GameTextureSeven);
+            File.Delete(ZeroPath);
+            File.Delete(OnePath);
+            File.Delete(chunk0Path);
+            File.Delete(c7Path);
+            File.Delete(t7Path);
 
             // delete mod data
-            File.Delete(GameZero + modded_ext);
-            File.Delete(GameOne + modded_ext);
+            File.Delete(ZeroPath + modded_ext);
+            File.Delete(OnePath + modded_ext);
 
             // restore backups
             bool fileExists = true;
@@ -54,24 +47,24 @@ namespace SnakeBite
             {
                 Thread.Sleep(100);
                 fileExists = false;
-                if (File.Exists(GameZero)) fileExists = true;
-                if (File.Exists(GameOne)) fileExists = true;
-                if (File.Exists(GameChunkZero)) fileExists = true;
-                if (File.Exists(GameChunkSeven)) fileExists = true;
-                if (File.Exists(GameTextureSeven)) fileExists = true;
+                if (File.Exists(ZeroPath)) fileExists = true;
+                if (File.Exists(OnePath)) fileExists = true;
+                if (File.Exists(chunk0Path)) fileExists = true;
+                if (File.Exists(c7Path)) fileExists = true;
+                if (File.Exists(t7Path)) fileExists = true;
             }
 
-            File.Move(GameZero + original_ext, GameZero);
-            File.Move(GameOne + original_ext, GameOne);
-            File.Move(GameChunkZero + original_ext, GameChunkZero);
+            File.Move(ZeroPath + original_ext, ZeroPath);
+            File.Move(OnePath + original_ext, OnePath);
+            File.Move(chunk0Path + original_ext, chunk0Path);
         }
 
         public static void DeleteOriginals()
         {
             // delete backups
-            File.Delete(GameZero + original_ext);
-            File.Delete(GameOne + original_ext);
-            File.Delete(GameChunkZero + original_ext);
+            File.Delete(ZeroPath + original_ext);
+            File.Delete(OnePath + original_ext);
+            File.Delete(chunk0Path + original_ext);
         }
 
         public static void SwitchToOriginal()
@@ -79,14 +72,14 @@ namespace SnakeBite
             if (OriginalZeroOneExist())
             {
                 // copy mod files to backup
-                File.Copy(GameZero, GameZero + modded_ext, true);
-                File.Copy(GameOne, GameOne + modded_ext, true);
+                File.Copy(ZeroPath, ZeroPath + modded_ext, true);
+                File.Copy(OnePath, OnePath + modded_ext, true);
 
                 // copy original files
-                File.Copy(GameZero + original_ext, GameZero, true);
-                File.Copy(GameOne + original_ext, GameOne, true);
+                File.Copy(ZeroPath + original_ext, ZeroPath, true);
+                File.Copy(OnePath + original_ext, OnePath, true);
 
-                SettingsManager manager = new SettingsManager(SnakeBiteXml);
+                SettingsManager manager = new SettingsManager(SnakeBiteSettings);
                 manager.UpdateDatHash();
             }
         }
@@ -96,13 +89,13 @@ namespace SnakeBite
             if (ModsDisabled())
             {
                 // restore mod backup
-                File.Copy(GameZero + modded_ext, GameZero, true);
-                File.Copy(GameOne + modded_ext, GameOne, true);
+                File.Copy(ZeroPath + modded_ext, ZeroPath, true);
+                File.Copy(OnePath + modded_ext, OnePath, true);
 
                 // delete mod backup
-                File.Delete(GameZero + modded_ext);
-                File.Delete(GameOne + modded_ext);
-                SettingsManager manager = new SettingsManager(SnakeBiteXml);
+                File.Delete(ZeroPath + modded_ext);
+                File.Delete(OnePath + modded_ext);
+                SettingsManager manager = new SettingsManager(SnakeBiteSettings);
                 manager.UpdateDatHash();
             }
             if (ModsDisabled())
@@ -119,17 +112,17 @@ namespace SnakeBite
         {
             BackgroundWorker backupProcessor = (BackgroundWorker)sender;
 
-            object param = Path.GetFileName(GameZero); //TODO: append filesize
+            object param = Path.GetFileName(ZeroPath); //TODO: append filesize
             backupProcessor.ReportProgress(0, param);
-            File.Copy(GameZero, GameZero + original_ext, true);
+            File.Copy(ZeroPath, ZeroPath + original_ext, true);
 
-            param = Path.GetFileName(GameOne);
+            param = Path.GetFileName(OnePath);
             backupProcessor.ReportProgress(0, param);
-            File.Copy(GameOne, GameOne + original_ext, true);
+            File.Copy(OnePath, OnePath + original_ext, true);
 
-            param = Path.GetFileName(GameChunkZero);
+            param = Path.GetFileName(chunk0Path);
             backupProcessor.ReportProgress(0, param);
-            File.Copy(GameChunkZero, GameChunkZero + original_ext, true);
+            File.Copy(chunk0Path, chunk0Path + original_ext, true);
         }
 
         public static bool BackupExists()
@@ -139,7 +132,7 @@ namespace SnakeBite
 
         public static bool GameFilesExist()
         {
-            return (File.Exists(GameZero) && File.Exists(GameOne) && File.Exists(GameChunkZero));
+            return (File.Exists(ZeroPath) && File.Exists(OnePath) && File.Exists(chunk0Path));
         }
         
     }

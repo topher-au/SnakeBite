@@ -1,7 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
+using System.IO;
 using System.Threading;
 using System.Windows.Forms;
+using static SnakeBite.GamePaths;
 
 namespace SnakeBite.SetupWizard
 {
@@ -13,7 +15,7 @@ namespace SnakeBite.SetupWizard
         private MergeDatPage mergeDatPage = new MergeDatPage();
         private int displayPage = 0;
         private bool setupComplete = true;
-        private SettingsManager manager = new SettingsManager(GamePaths.SnakeBiteSettings);
+        private SettingsManager manager = new SettingsManager(SnakeBiteSettings);
 
         public SetupWizard()
         {
@@ -54,6 +56,7 @@ namespace SnakeBite.SetupWizard
                     break;
 
                 case 1:
+                    manager = new SettingsManager(SnakeBiteSettings);
                     if (!manager.ValidInstallPath)
                     {
                         MessageBox.Show("Please select a valid installation directory.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
@@ -76,9 +79,10 @@ namespace SnakeBite.SetupWizard
                     break;
 
                 case 2:
-                    if(!(manager.IsVanilla0001Size() || manager.IsVanilla0001DatHash()) && (SettingsManager.IntendedGameVersion >= ModManager.GetMGSVersion())) // not the right 00/01 and there hasn't been a game update
+                    manager = new SettingsManager(SnakeBiteSettings);
+                    if (!(manager.IsVanilla0001Size() || manager.IsVanilla0001DatHash()) && (SettingsManager.IntendedGameVersion >= ModManager.GetMGSVersion())) // not the right 00/01 and there hasn't been a game update
                     {
-                        var overWrite = MessageBox.Show(string.Format("Your game data contains unexpected filesizes, and is likely modified or predates Game Version {0}." +
+                        var overWrite = MessageBox.Show(string.Format("Your existing game data contains unexpected filesizes, and is likely already modified or predates Game Version {0}." +
                             "\n\nIt is recommended that you do NOT store these files as backups, unless you are absolutely certain that they can reliably restore your game to a safe state!" +
                             "\n\nAre you sure you want to save these as backup data?", SettingsManager.IntendedGameVersion), "Unexpected 00.dat / 01.dat Filesizes", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
                         if (overWrite != DialogResult.Yes) return;
