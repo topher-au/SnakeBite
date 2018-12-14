@@ -224,7 +224,7 @@ namespace SnakeBite.Forms
                 this.panelContent.Controls.Clear();
                 log.ClearPage();
                 this.panelContent.Controls.Add(log);
-                ProgressWindow.Show("Installing Mod(s)", "Installing, please wait...", new Action((MethodInvoker)delegate { ModManager.InstallMod(modFiles); }), log);
+                ProgressWindow.Show("Installing Mod(s)", "Installing, please wait...", new Action((MethodInvoker)delegate { ModManager.InstallMods(modFiles); }), log);
                 this.Close(); // the form closes upon installation. If the install is cancelled, the form remains open.
             }
         }

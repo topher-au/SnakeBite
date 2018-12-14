@@ -101,7 +101,7 @@ namespace SnakeBite
             panelContent.Controls.Clear();
             log.ClearPage();
             panelContent.Controls.Add(log);
-            ProgressWindow.Show("Uninstalling Mod(s)", "Uninstalling, please wait...", new Action((MethodInvoker)delegate { ModManager.UninstallMod(checkedModIndices); }), log);
+            ProgressWindow.Show("Uninstalling Mod(s)", "Uninstalling, please wait...", new Action((MethodInvoker)delegate { ModManager.UninstallMods(checkedModIndices); }), log);
 
             RefreshInstalledMods(true);
         }
@@ -171,7 +171,7 @@ namespace SnakeBite
                 }
             }
             ProgressWindow.Show("Installing Mod", $"Installing {installModPath}...",
-                new Action((MethodInvoker)delegate { ModManager.InstallMod(InstallFileList, skipCleanup); }
+                new Action((MethodInvoker)delegate { ModManager.InstallMods(InstallFileList, skipCleanup); }
             ), log);
             this.Invoke((MethodInvoker)delegate { RefreshInstalledMods(); });
         }
@@ -185,7 +185,7 @@ namespace SnakeBite
             var mods = manager.GetInstalledMods();
             listInstalledMods.SetItemCheckState(mods.IndexOf(mod), CheckState.Checked);
             CheckedListBox.CheckedIndexCollection checkedModIndex = listInstalledMods.CheckedIndices;
-            ProgressWindow.Show("Uninstalling Mod", "Uninstalling...", new Action((MethodInvoker)delegate { ModManager.UninstallMod(checkedModIndex, skipcleanup); }), log);
+            ProgressWindow.Show("Uninstalling Mod", "Uninstalling...", new Action((MethodInvoker)delegate { ModManager.UninstallMods(checkedModIndex, skipcleanup); }), log);
         }
 
         private void RefreshInstalledMods(bool resetSelection = false) // Clears and then repopulates the installed mod list
