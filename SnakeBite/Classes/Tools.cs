@@ -181,7 +181,7 @@ namespace SnakeBite
             catch { return null; }
 
         }
-
+        
         public static string ToWinPath(string Path)
         {
             return Path.Replace("/", "\\").TrimStart('\\');

@@ -241,5 +241,33 @@ namespace SnakeBite.Forms
         {
             ModManager.CleanupFolders();
         }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            List<string> modFiles = new List<string>();
+            foreach (PreinstallEntry entry in Mods)
+            {
+                modFiles.Add(entry.filename);
+            }
+            PreinstallManager.FilterModValidity(modFiles);
+            if (modFiles.Count == 0) { this.refreshInstallList(); return; }//no valid mods. no mods will be installed
+            PreinstallManager.FilterModConflicts(modFiles);
+            if (modFiles.Count == 0) { this.refreshInstallList(); return; } //remaining mods had conflicts, user chose to install none.
+
+            string modsToInstall = "";
+            for (int i = 0; i < modFiles.Count; i++)
+            {
+                modsToInstall += "\n" + Tools.ReadMetaData(modFiles[i]).Name;
+            }
+            DialogResult confirmInstall = MessageBox.Show(String.Format("The following mods will be tested:\n" + modsToInstall), "SnakeBite", MessageBoxButtons.OKCancel);
+            if (confirmInstall == DialogResult.OK)
+            {
+                this.panelContent.Controls.Clear();
+                log.ClearPage();
+                this.panelContent.Controls.Add(log);
+                ProgressWindow.Show("Installing Mod(s)", "Installing, please wait...", new Action((MethodInvoker)delegate { InstallManager.InstallMods(modFiles); }), log);
+                this.Close(); // the form closes upon installation. If the install is cancelled, the form remains open.
+            }
+        }
     }
 }
