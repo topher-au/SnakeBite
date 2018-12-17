@@ -1,5 +1,6 @@
 ﻿using GzsTool.Core.Fpk;
 using GzsTool.Core.Qar;
+using ICSharpCode.SharpZipLib.Zip;
 using SnakeBite.GzsTool;
 using System;
 using System.Collections.Generic;
@@ -31,7 +32,7 @@ namespace SnakeBite
             GzsLib.LoadDictionaries();
             List<ModEntry> installEntryList = new List<ModEntry>();
 
-            // assume bad metadatas have been filtered out
+            // assume bad metadatas have been filtered out during preinstall management
             foreach(string modFile in ModFiles) installEntryList.Add(Tools.ReadMetaData(modFile));
 
             var zeroFiles = GzsLib.ExtractArchive<QarFile>(ZeroPath, "_working0");
@@ -50,10 +51,14 @@ namespace SnakeBite
             Debug.LogLine("[Install] Building gameFiles lists", Debug.LogLevel.Basic);
             var zeroGameFiles = GzsLib.GetQarGameFiles(ZeroPath);
             var baseGameFiles = GzsLib.ReadBaseData();
-
             var allQarGameFiles = new List<Dictionary<ulong, GameFile>>();
             allQarGameFiles.AddRange(baseGameFiles);
-            AddToSettings(installEntryList, manager, allQarGameFiles);
+
+            List<ModFpkEntry> fpkEntryRetrievalList;
+            List<ModQarEntry> qarEntryEditList;
+            AddToSettings(installEntryList, manager, allQarGameFiles, out fpkEntryRetrievalList, out qarEntryEditList);
+
+            DoMerges(ModFiles, fpkEntryRetrievalList, qarEntryEditList);
 
             try
             {
@@ -83,31 +88,74 @@ namespace SnakeBite
             }
         }
 
-        private static void AddToSettings(List<ModEntry> installEntryList, SettingsManager manager, List<Dictionary<ulong, GameFile>> allQarGameFiles)
+        /// <summary>
+        /// Merges the new mod files with the existing modded files and vanilla game files.
+        /// The resulting file structure is the new _working0 folder to pack as 00.dat 
+        /// </summary>
+        private static void DoMerges(List<string> modFilePaths, List<ModFpkEntry> fpkEntryRetrievalList, List<ModQarEntry> qarEntryEditList)
+        {
+            //Assumption: modded packs have already been extracted to _working0 directory
+            //Assumption: vanilla packs have already been extracted to _gameFpk directory (during AddToSettings)
+            //theoretically there should be no qar overlap between the _gamefpk and _working0 files
+            List<string> qarRetrievalFilePaths = new List<string>();
+            foreach(ModFpkEntry fpkEntry in fpkEntryRetrievalList)
+            {
+                if (!qarRetrievalFilePaths.Contains(fpkEntry.FpkFile)) qarRetrievalFilePaths.Add(fpkEntry.FpkFile);
+            }
+
+            FastZip unzipper = new FastZip();
+            foreach (string modFilePath in modFilePaths)
+            {
+                unzipper.ExtractZip(modFilePath, "_extr", "(.*?)");
+                ModEntry extractedModEntry = new ModEntry("_extr\\metadata.xml");
+
+                foreach(ModQarEntry modQarEntry in qarEntryEditList)
+                {
+                    if (extractedModEntry.ModQarEntries.FirstOrDefault(e => e.FilePath == modQarEntry.FilePath) == null) continue;
+
+
+                }
+
+                foreach(string qarFilePath in qarRetrievalFilePaths)
+                {
+
+                }
+
+            }
+
+        }
+
+        private static void AddToSettings(List<ModEntry> installEntryList, SettingsManager manager, List<Dictionary<ulong, GameFile>> allQarGameFiles, out List<ModFpkEntry> repairFpkEntries, out List<ModQarEntry> existingModQarList)
         {
             GameData gameData = manager.GetGameData();
+
             List<string> newModQarEntries = new List<string>();
+            List<string> modQarFiles = manager.GetModQarFiles();
+            existingModQarList = new List<ModQarEntry>();
 
             foreach (ModEntry modToInstall in installEntryList)
             {
                 manager.AddMod(modToInstall);
                 foreach (ModQarEntry modQarEntry in modToInstall.ModQarEntries) // add qar entries (fpk, fpkd) to GameData if they don't already exist
                 {
-                    if (!(modQarEntry.FilePath.EndsWith(".fpk") || modQarEntry.FilePath.EndsWith(".fpkd"))) continue;
+                    string modQarFilePath = modQarEntry.FilePath;
+                    if (!(modQarFilePath.EndsWith(".fpk") || modQarFilePath.EndsWith(".fpkd")) || newModQarEntries.Contains(modQarFilePath)) continue;
+                    if (existingModQarList.FirstOrDefault(e => e.Hash == modQarEntry.Hash) != null) continue;
 
-                    ModQarEntry existingModQarEntry = gameData.GameQarEntries.FirstOrDefault(e => e.FilePath == modQarEntry.FilePath);
-                    if (existingModQarEntry == null) // the qar does not yet exist. the program will need to pull repair files from the base archives and add them to the fpkentries gamedata list
+                    if (gameData.GameQarEntries.FirstOrDefault(e => e.Hash == modQarEntry.Hash) == null)// the qar may not yet exist in the snakebite environment. 
                     {
-                        //Debug.LogLine(string.Format("new ModQarEntry: {0}, {1}", Tools.ToQarPath(modQarEntry.FilePath), modQarEntry.SourceName));
-                        newModQarEntries.Add(modQarEntry.FilePath);
-                    }
-                    else { }// the qar already exists and two or more mods are using the same qar file. the fpk entries for this qar file are already listed in the modFpkEntries 
+                        if (modQarFiles.Contains(modQarEntry.FilePath)) //alternatively: (modQarFiles.FirstOrDefault(e => e == modQarEntry.FilePath) != null)
+                            existingModQarList.Add(modQarEntry); // the qar is managed in 00.dat but not native to MGSV. this file will need to be merged with the existing 00.dat file. we can save these entries for later, so we know which existing packs need to be editted (they will not need repair files)
+                        else
+                            newModQarEntries.Add(modQarEntry.FilePath); // the program will need to pull repair files from the base archives(if they exist) and add them to the fpkentries gamedata list
+                    }  
+                    else existingModQarList.Add(modQarEntry); // the qar is managed in 00.dat and one or more mods are using the same qar file. 
                 }
 
-                foreach (ModFileEntry modFileEntry in modToInstall.ModFileEntries)
+                foreach (ModFileEntry modDirFileEntry in modToInstall.ModFileEntries)
                 {
-                    ModFileEntry existingFileEntry = gameData.GameFileEntries.FirstOrDefault(e => e.FilePath == modFileEntry.FilePath);
-                    if (existingFileEntry == null) gameData.GameFileEntries.Add(modFileEntry);
+                    ModFileEntry existingFileEntry = gameData.GameFileEntries.FirstOrDefault(e => e.FilePath == modDirFileEntry.FilePath);
+                    if (existingFileEntry == null) gameData.GameFileEntries.Add(modDirFileEntry);
                 }
             }
             //Debug.LogLine(string.Format("Foreach nest 1 complete"));
@@ -133,7 +181,7 @@ namespace SnakeBite
             }
             //Debug.LogLine(string.Format("Foreach nest 2 complete"));
             HashSet<ulong> mergeFpkHashes = new HashSet<ulong>();
-            List<ModFpkEntry> repairFpkEntries = new List<ModFpkEntry>();
+            repairFpkEntries = new List<ModFpkEntry>();
             foreach (ModFpkEntry newFpkEntry in newModFpkEntries) // this will add the fpkentry listings (repair entries) required to merge the modded files with the old game files.
             {
                 //Debug.LogLine(string.Format("checking {0} for repairs", newFpkEntry.FilePath));
@@ -164,11 +212,11 @@ namespace SnakeBite
                             if (!Directory.Exists(destDirectory)) Directory.CreateDirectory(destDirectory);
                             
                             string sourceArchive = Path.Combine(GameDir, "master\\" + existingPack.QarFile);
-                            string workingPath = Path.Combine("test", windowsFilePath);
+                            string workingPath = Path.Combine("_gameFpk", windowsFilePath);
                             GzsLib.ExtractFileByHash<QarFile>(sourceArchive, existingPack.FileHash, workingPath); // extracts the specific .fpk from the game data
 
                             string unpackDirName = string.Format("{0}\\{1}_{2}", Path.GetDirectoryName(workingPath), Path.GetFileNameWithoutExtension(workingPath), Path.GetExtension(workingPath).Remove(0, 1));
-                            foreach (string extractedFile in GzsLib.ExtractArchive<FpkFile>(workingPath, unpackDirName))  // extracts the filepaths inside the fpk
+                            foreach (string extractedFile in GzsLib.ListArchiveContents<FpkFile>(workingPath))
                             {
                                 repairFpkEntries.Add(new ModFpkEntry {
                                     FpkFile = existingPack.FilePath,
