@@ -54,10 +54,10 @@ namespace SnakeBite
             SettingsManager manager = new SettingsManager(SnakeBiteSettings + build_ext);
             var gameData = manager.GetGameData(); //gamedata lists all managed snakebite files in 00.dat
             ValidateGameData(ref gameData, ref zeroFiles);
-            var zeroFilesHashSet = new HashSet<string>(zeroFiles); Debug.LogLine("zeroFilesHashSet Count: " + zeroFilesHashSet.Count);
+            var zeroFilesHashSet = new HashSet<string>(zeroFiles); //Debug.LogLine("zeroFilesHashSet Count: " + zeroFilesHashSet.Count);
 
             Debug.LogLine("[Install] Building gameFiles lists", Debug.LogLevel.Basic);
-            var zeroGameFiles = GzsLib.GetQarGameFiles(ZeroPath); Debug.LogLine("zeroGameFiles Count: " + zeroGameFiles.Count);
+            var zeroGameFiles = GzsLib.GetQarGameFiles(ZeroPath); //Debug.LogLine("zeroGameFiles Count: " + zeroGameFiles.Count);
             var baseGameFiles = GzsLib.ReadBaseData();
             var allQarGameFiles = new List<Dictionary<ulong, GameFile>>();
 
@@ -214,21 +214,21 @@ namespace SnakeBite
             mergeFpkHashes = new HashSet<ulong>();
             foreach (ModFpkEntry fpkEntry in modEntry.ModFpkEntries)
             {
-                Debug.LogLine(string.Format("for: {0}", fpkEntry.FilePath));
+                //Debug.LogLine(string.Format("for: {0}", fpkEntry.FilePath));
                 ulong fpkHash = Tools.NameToHash(fpkEntry.FpkFile);
-                if (mergeFpkHashes.Contains(fpkHash)) { Debug.LogLine(string.Format("mergeFpkHashes already contains {0}. This will skip {1}", fpkHash, fpkEntry.FilePath)); continue; }
-                int i = 0;
+                if (mergeFpkHashes.Contains(fpkHash)) continue;
+                //int i = 0;
                 foreach (var archiveQarGameFiles in allQarGameFiles)
                 {
-                    Debug.LogLine(string.Format("Checking archive {0}", i++));
+                    //Debug.LogLine(string.Format("Checking archive {0}", i++));
                     if (archiveQarGameFiles.Count > 0)
                     {
                         GameFile existingFpk = null;
-                        Debug.LogLine(string.Format("Seeking an existingFpk for {0} : {1} : {2} : {3} : {4}", fpkEntry.FilePath, fpkEntry.FpkFile, fpkEntry.SourceName, fpkEntry.SourceType, fpkEntry.ContentHash));
+                        //Debug.LogLine(string.Format("Seeking an existingFpk for {0} : {1} : {2} : {3} : {4}", fpkEntry.FilePath, fpkEntry.FpkFile, fpkEntry.SourceName, fpkEntry.SourceType, fpkEntry.ContentHash));
                         archiveQarGameFiles.TryGetValue(fpkHash, out existingFpk); // checks every archive to see if the particular fpk file already exists
                         if (existingFpk != null)
                         {
-                            Debug.LogLine(string.Format("An existingFpk ({0} in {1}) was found for {2} ", existingFpk.FilePath, existingFpk.QarFile, fpkEntry.FpkFile));
+                            //Debug.LogLine(string.Format("An existingFpk ({0} in {1}) was found for {2} ", existingFpk.FilePath, existingFpk.QarFile, fpkEntry.FpkFile));
                             // Create destination directory
                             string destDirectory = Path.Combine("_working0", Path.GetDirectoryName(Tools.ToWinPath(existingFpk.FilePath)));
                             if (!Directory.Exists(destDirectory)) Directory.CreateDirectory(destDirectory);
@@ -251,18 +251,18 @@ namespace SnakeBite
                                 Hash = existingFpk.FileHash
                             };
                             mergeFpks.Add(modQarEntry);
-                            Debug.LogLine("A new ModQarEntry has been added to mergeFpks: FilePath = " + modQarEntry.FilePath + ", SourceType = " + modQarEntry.SourceType + ", SourceName = " + modQarEntry.SourceName + ", Hash = " + modQarEntry.Hash);
+                            //Debug.LogLine("A new ModQarEntry has been added to mergeFpks: FilePath = " + modQarEntry.FilePath + ", SourceType = " + modQarEntry.SourceType + ", SourceName = " + modQarEntry.SourceName + ", Hash = " + modQarEntry.Hash);
 
                             //Update 00 gamefiles for multiple mod install
                             if (existingFpk.QarFile != "00.dat") // if the existingfpk did not come from 00.dat (ie is not a mod file), check if the existing fpk is in 00.dat.
                             {
-                                Debug.LogLine(string.Format("The existingFpk {0} was found in {1}, not 00.dat.", existingFpk.FilePath, existingFpk.QarFile));
+                                //Debug.LogLine(string.Format("The existingFpk {0} was found in {1}, not 00.dat.", existingFpk.FilePath, existingFpk.QarFile));
                                 GameFile gameFile = null;
                                 if (!allQarGameFiles[0].TryGetValue(existingFpk.FileHash, out gameFile)) // so if the hash can't be found in 00.dat, this updates the 00.dat dictionary to show the immediate change for any back-to-back installs
                                 {
-                                    Debug.LogLine(string.Format("The existingFpk {0} could not be found in 00.dat.", existingFpk.FilePath, existingFpk.QarFile));
+                                    //Debug.LogLine(string.Format("The existingFpk {0} could not be found in 00.dat.", existingFpk.FilePath, existingFpk.QarFile));
                                     allQarGameFiles[0][existingFpk.FileHash] = existingFpk;
-                                    Debug.LogLine(string.Format("00.dat Dictionary Updated: [existingFpk.FileHash] = {0}", allQarGameFiles[0][existingFpk.FileHash]));
+                                    //Debug.LogLine(string.Format("00.dat Dictionary Updated: [existingFpk.FileHash] = {0}", allQarGameFiles[0][existingFpk.FileHash]));
                                     gameFile = existingFpk; //gamefile: was null, now existingfpk. but why?
                                 }
                                 gameFile.QarFile = "00.dat"; // gamefile's qarfile is now 00.dat. but what does this do? gameFile is unused isn't it?
@@ -274,12 +274,12 @@ namespace SnakeBite
                         }
                         else
                         {
-                            Debug.LogLine(string.Format("{0} not found in archive", i));
+                           // Debug.LogLine(string.Format("{0} not found in archive", i));
                         }
                     }//if gameFiles > 0
                 }//foreach dat gamefiles
             }//foreach modfpkentries
-            Debug.LogLine("End of GetMergeFpks");
+            //Debug.LogLine("End of GetMergeFpks");
             return mergeFpks;
         }//GetMergeFpks     
 
@@ -299,7 +299,7 @@ namespace SnakeBite
             ModQarEntry existingModQarEntry = gameData.GameQarEntries.FirstOrDefault(e => e.FilePath == fpkQarEntry.FilePath);
             if (existingModQarEntry == null)
             {
-                Debug.LogLine(string.Format("new ModQarEntry added to gameData.GameQarEntries: {0}, {1}", Tools.ToQarPath(fpkQarEntry.FilePath), fpkQarEntry.SourceName));
+                //Debug.LogLine(string.Format("new ModQarEntry added to gameData.GameQarEntries: {0}, {1}", Tools.ToQarPath(fpkQarEntry.FilePath), fpkQarEntry.SourceName));
                 gameData.GameQarEntries.Add(new ModQarEntry() {
                     FilePath = Tools.ToQarPath(fpkQarEntry.FilePath),
                     SourceType = fpkQarEntry.SourceType,
@@ -332,7 +332,7 @@ namespace SnakeBite
                             SourceType = fpkQarEntry.SourceType,
                             SourceName = fpkQarEntry.SourceName,
                         });
-                        Debug.LogLine(string.Format("new fpkQarEntry added to gameData.GameFpkEntries: {0}, {1} (source: {2}, type {3})", fileName, Tools.ToQarPath(fpkQarEntry.FilePath), fpkQarEntry.SourceName, fpkQarEntry.SourceType));
+                        //Debug.LogLine(string.Format("new fpkQarEntry added to gameData.GameFpkEntries: {0}, {1} (source: {2}, type {3})", fileName, Tools.ToQarPath(fpkQarEntry.FilePath), fpkQarEntry.SourceName, fpkQarEntry.SourceType));
                     }
                 }
             }//foreach file in gameFpk
@@ -1177,7 +1177,7 @@ namespace SnakeBite
             }
         }
 
-        private static void WriteGameDirSbBuild()
+        public static void WriteGameDirSbBuild()
         {
             Debug.LogLine("[SB_Build] Writing SB_Build Game Directory", Debug.LogLevel.Basic);
             foreach (string externalFile in new SettingsManager(SnakeBiteSettings).GetModExternalFiles()) // creates a replica of snakebite.xml's managed gamedir files (unmanaged files are not copied)
@@ -1191,7 +1191,7 @@ namespace SnakeBite
             }
         }
 
-        private static void PromoteGameDirFiles() // call this method BEFORE snakebite.xml.SB_Build is promoted, so it will reference the old snakebite.xml
+        public static void PromoteGameDirFiles() // call this method BEFORE snakebite.xml.SB_Build is promoted, so it will reference the old snakebite.xml
         {
             Debug.LogLine("[SB_Build] Promoting SB_Build Game Directory", Debug.LogLevel.Basic);//
             List<string> fileEntryDirs = new List<string>();
@@ -1220,7 +1220,7 @@ namespace SnakeBite
             Tools.DirectoryCopy(GameDirSB_Build, GameDir, true); // moves all gamedir_sb_build files over
         }
 
-        private static void PromoteBuildFiles(params string[] paths)
+        public static void PromoteBuildFiles(params string[] paths)
         {
             // Promote SB builds
             Debug.LogLine("[SB_Build] Promoting SB_Build files", Debug.LogLevel.Basic);
@@ -1232,21 +1232,23 @@ namespace SnakeBite
             new SettingsManager(SnakeBiteSettings).UpdateDatHash();
         }
 
-        private static void ClearBuildFiles(params string[] paths)
+        public static void ClearBuildFiles(params string[] paths)
         {
             Debug.LogLine("[SB_Build] Deleting SB_Build files", Debug.LogLevel.Basic);
             foreach (string path in paths)
             {
-                File.Delete(path + build_ext);
+                if (File.Exists(path + build_ext))
+                    File.Delete(path + build_ext);
             }
         }
 
-        private static void ClearSBGameDir()
+        public static void ClearSBGameDir()
         {
             Debug.LogLine("[SB_Build] Deleting old SB_Build Game Directory", Debug.LogLevel.Basic);
             try
             {
-                Directory.Delete(GameDirSB_Build, true);
+                if(Directory.Exists(GameDirSB_Build))
+                    Tools.DeleteDirectory(GameDirSB_Build);
             }
             catch (IOException e)
             {
@@ -1370,20 +1372,24 @@ namespace SnakeBite
         public static void CleanupFolders() // deletes the work folders which contain extracted files from 00/01
         {
             Debug.LogLine("[Mod] Cleaning up snakebite work folders.");
-            foreach (var folder in cleanupFolders)
+            try
             {
-                if (Directory.Exists(folder)) Directory.Delete(folder, true);
-            }
-            bool directoryExists = true;
-            while (directoryExists)
-            {
-                Thread.Sleep(100);
-                directoryExists = false;
                 foreach (var folder in cleanupFolders)
                 {
-                    if (Directory.Exists(folder)) directoryExists = true;
+                    if (Directory.Exists(folder)) Tools.DeleteDirectory(folder);
+                }
+                bool directoryExists = true;
+                while (directoryExists)
+                {
+                    Thread.Sleep(100);
+                    directoryExists = false;
+                    foreach (var folder in cleanupFolders)
+                    {
+                        if (Directory.Exists(folder)) directoryExists = true;
+                    }
                 }
             }
+            catch { }
         }
     }//class ModManager
 }//namespace SnakeBite
