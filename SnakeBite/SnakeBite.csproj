@@ -114,6 +114,7 @@
     <Compile Include="Classes\MultTextWriter.cs" />
     <Compile Include="Classes\PreinstallManager.cs" />
     <Compile Include="Classes\PresetManager.cs" />
+    <Compile Include="Classes\UninstallManager.cs" />
     <Compile Include="Classes\UpdateFile.cs" />
     <Compile Include="Forms\formInstallOrder.cs">
       <SubType>Form</SubType>

@@ -112,7 +112,7 @@ namespace SnakeBite
         }
 
         //Cull any invalid entries that might have slipped in via older versions of snakebite
-        private static void ValidateGameData(ref GameData gameData, ref List<string> zeroFiles)
+        public static void ValidateGameData(ref GameData gameData, ref List<string> zeroFiles)
         {
             Debug.LogLine("[ValidateGameData] Validating gameData files", Debug.LogLevel.Basic);
             Debug.LogLine("[ValidateGameData] Validating qar entries", Debug.LogLevel.Basic);
