@@ -40,7 +40,6 @@
             this.columnModNames = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.labelConflictCount = new System.Windows.Forms.Label();
             this.labelExplainConflict = new System.Windows.Forms.Label();
-            this.button1 = new System.Windows.Forms.Button();
             this.SuspendLayout();
             // 
             // buttonAdd
@@ -182,16 +181,6 @@
             this.labelExplainConflict.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.labelExplainConflict.Click += new System.EventHandler(this.labelExplainConflict_Click);
             // 
-            // button1
-            // 
-            this.button1.Location = new System.Drawing.Point(381, 470);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(75, 23);
-            this.button1.TabIndex = 15;
-            this.button1.Text = "button1";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
-            // 
             // formInstallOrder
             // 
             this.AcceptButton = this.buttonContinue;
@@ -199,7 +188,6 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Gray;
             this.ClientSize = new System.Drawing.Size(705, 499);
-            this.Controls.Add(this.button1);
             this.Controls.Add(this.labelExplainConflict);
             this.Controls.Add(this.labelConflictCount);
             this.Controls.Add(this.listInstallOrder);
@@ -237,6 +225,5 @@
         private System.Windows.Forms.ColumnHeader columnModNames;
         private System.Windows.Forms.Label labelConflictCount;
         private System.Windows.Forms.Label labelExplainConflict;
-        private System.Windows.Forms.Button button1;
     }
 }

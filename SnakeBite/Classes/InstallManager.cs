@@ -134,7 +134,7 @@ namespace SnakeBite
                 ValidateModEntries(ref extractedModEntry);
 
                 Debug.LogLine("[Install] Check mod FPKs against game .dat fpks", Debug.LogLevel.Basic);
-                zeroFiles.UnionWith(MergeFpks(extractedModEntry, pullFromVanillas, pullFromMods));
+                zeroFiles.UnionWith(MergePacks(extractedModEntry, pullFromVanillas, pullFromMods));
                 //foreach (string zeroFile in zeroFiles) Debug.LogLine(string.Format("Contained in zeroFiles: {0}", zeroFile));
 
                 Debug.LogLine("[Install] Copying loose textures to 01.", Debug.LogLevel.Basic);
@@ -171,7 +171,7 @@ namespace SnakeBite
             }
         }
 
-        private static HashSet<string> MergeFpks(ModEntry extractedModEntry, List<string> pullFromVanillas, List<string> pullFromMods)
+        private static HashSet<string> MergePacks(ModEntry extractedModEntry, List<string> pullFromVanillas, List<string> pullFromMods)
         {
             HashSet<string> modQarZeroPaths = new HashSet<string>();
             foreach (ModQarEntry modQar in extractedModEntry.ModQarEntries)
@@ -204,10 +204,10 @@ namespace SnakeBite
 
                 if (existingQarSource != null)
                 {
-                    var pulledFpk = GzsLib.ExtractArchive<FpkFile>(existingQarSource, "_build");
-                    var extrFpk = GzsLib.ExtractArchive<FpkFile>(modQarSource, "_build");
-                    pulledFpk.Union(extrFpk);
-                    GzsLib.WriteFpkArchive(workingDestination, "_build", pulledFpk);
+                    var pulledPack = GzsLib.ExtractArchive<FpkFile>(existingQarSource, "_build");
+                    var extrPack = GzsLib.ExtractArchive<FpkFile>(modQarSource, "_build");
+                    pulledPack.Union(extrPack);
+                    GzsLib.WriteFpkArchive(workingDestination, "_build", pulledPack);
                 }
                 else
                 {
@@ -365,15 +365,15 @@ namespace SnakeBite
                             if (!Directory.Exists(Path.GetDirectoryName(workingPath))) Directory.CreateDirectory(Path.GetDirectoryName(workingPath));
 
                             GzsLib.ExtractFileByHash<QarFile>(sourceArchive, existingPack.FileHash, workingPath); // extracts the specific .fpk from the game data
-                            foreach (string extractedFile in GzsLib.ListArchiveContents<FpkFile>(workingPath))
+                            foreach (string listedFile in GzsLib.ListArchiveContents<FpkFile>(workingPath))
                             {
                                 repairFpkEntries.Add(new ModFpkEntry {
                                     FpkFile = newFpkEntry.FpkFile,
-                                    FilePath = extractedFile,
+                                    FilePath = listedFile,
                                     SourceType = FileSource.Merged,
                                     SourceName = existingPack.QarFile
                                 });
-                                //Debug.LogLine(string.Format("File Extracted: {0} in {1}", extractedFile, newFpkEntry.FpkFile));
+                                //Debug.LogLine(string.Format("File Listed: {0} in {1}", extractedFile, newFpkEntry.FpkFile));
                             }
                             break;
                         }

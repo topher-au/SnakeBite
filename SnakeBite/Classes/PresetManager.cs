@@ -15,7 +15,7 @@ namespace SnakeBite
         {
             Directory.CreateDirectory("_build\\master\\0");
             SettingsManager manager = new SettingsManager(SnakeBiteSettings);
-            Debug.LogLine("[SavePreset] Saving preset files", Debug.LogLevel.Basic);
+            Debug.LogLine("[SavePreset] Saving preset file", Debug.LogLevel.Basic);
             try
             {
                 foreach (string gameFile in manager.GetModExternalFiles())
@@ -26,7 +26,8 @@ namespace SnakeBite
                     string fileName = Path.GetFileName(gameFile);
 
                     Directory.CreateDirectory(DestDir);
-                    File.Copy(sourcePath, Path.Combine(DestDir, fileName), true);
+                    if(File.Exists(sourcePath))File.Copy(sourcePath, Path.Combine(DestDir, fileName), true);
+                    else Debug.LogLine(string.Format("[SavePreset] File not found: {0}", sourcePath), Debug.LogLevel.Basic);
                 }
                 File.Copy(ZeroPath, "_build\\master\\0\\00.dat", true);
                 File.Copy(OnePath, "_build\\master\\0\\01.dat", true);

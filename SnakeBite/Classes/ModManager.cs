@@ -1200,7 +1200,8 @@ namespace SnakeBite
                 string fileModPath = Tools.ToWinPath(externalFile);
                 string sourceFullPath = Path.Combine(GameDir, fileModPath);
                 fileEntryDirs.Add(Path.GetDirectoryName(sourceFullPath));
-                File.Delete(sourceFullPath); // deletes all of the old snakebite.xml's managed files (unmanaged files will be overwritten later or left alone)
+                if (File.Exists(sourceFullPath)) File.Delete(sourceFullPath); // deletes all of the old snakebite.xml's managed files (unmanaged files will be overwritten later or left alone)
+                else Debug.LogLine(string.Format("[SB_Build] File not found: {0}", sourceFullPath), Debug.LogLevel.Basic);
             }
             foreach (string fileEntryDir in fileEntryDirs) //all the directories that have had files deleted within them
             {

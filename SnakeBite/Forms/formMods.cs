@@ -101,7 +101,7 @@ namespace SnakeBite
             panelContent.Controls.Clear();
             log.ClearPage();
             panelContent.Controls.Add(log);
-            ProgressWindow.Show("Uninstalling Mod(s)", "Uninstalling, please wait...", new Action((MethodInvoker)delegate { ModManager.UninstallMods(checkedModIndices); }), log);
+            ProgressWindow.Show("Uninstalling Mod(s)", "Uninstalling, please wait...", new Action((MethodInvoker)delegate { UninstallManager.UninstallMods(checkedModIndices); }), log);
 
             RefreshInstalledMods(true);
         }
@@ -464,7 +464,10 @@ namespace SnakeBite
 
         private void formMods_Resize(object sender, EventArgs e)
         {
-            AdjustSize();
+            if (WindowState != FormWindowState.Minimized)
+            {
+                AdjustSize();
+            }
         }
 
         private void AdjustSize()
