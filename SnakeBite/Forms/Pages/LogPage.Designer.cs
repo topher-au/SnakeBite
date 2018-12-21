@@ -40,11 +40,11 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.textLog.BackColor = System.Drawing.Color.Silver;
             this.textLog.BorderStyle = System.Windows.Forms.BorderStyle.None;
-            this.textLog.Location = new System.Drawing.Point(2, 2);
+            this.textLog.Location = new System.Drawing.Point(3, 3);
             this.textLog.Multiline = true;
             this.textLog.Name = "textLog";
             this.textLog.ReadOnly = true;
-            this.textLog.Size = new System.Drawing.Size(396, 420);
+            this.textLog.Size = new System.Drawing.Size(394, 418);
             this.textLog.TabIndex = 1;
             this.textLog.TextChanged += new System.EventHandler(this.textLog_TextChanged);
             // 

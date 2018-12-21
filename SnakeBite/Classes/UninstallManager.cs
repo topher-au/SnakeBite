@@ -117,7 +117,7 @@ namespace SnakeBite
             Debug.LogLine("[Uninstall] Unmerging any fpk entries", Debug.LogLevel.Basic);
             UnmergePackFiles(partialEditQarEntries, partialRemoveFpkEntries, manager);
             Debug.LogLine("[Uninstall] Removing any unmodified fpk entries", Debug.LogLevel.Basic);
-            RemoveUnmoddedQars(ref zeroFiles, fullRemoveQarPaths, manager);
+            RemoveDemoddedQars(ref zeroFiles, fullRemoveQarPaths, manager);
 
             GameData gameData = manager.GetGameData();
             foreach (ModEntry uninstallMod in uninstallMods)
@@ -131,7 +131,7 @@ namespace SnakeBite
             manager.SetGameData(gameData);
         }
 
-        private static void RemoveUnmoddedQars(ref List<string> zeroFiles, List<string> fullRemoveQarPaths, SettingsManager manager)
+        private static void RemoveDemoddedQars(ref List<string> zeroFiles, List<string> fullRemoveQarPaths, SettingsManager manager)
         {
             // Remove the specified files from the mod ecosystem since they no longer contain modded data
             zeroFiles = zeroFiles.Except(fullRemoveQarPaths.Select(entry => Tools.ToWinPath(entry))).ToList();

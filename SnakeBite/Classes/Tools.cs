@@ -6,6 +6,7 @@ using System.Text;
 using ICSharpCode.SharpZipLib.Zip;
 using System.Xml.Serialization;
 using System.Collections;
+using System;
 
 namespace SnakeBite
 {

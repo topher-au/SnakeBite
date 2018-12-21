@@ -334,6 +334,7 @@ namespace SnakeBite.GzsTool
             Debug.LogLine("[GzsLib] Loading base dictionaries");
             Hashing.ReadDictionary("qar_dictionary.txt");
             Hashing.ReadMd5Dictionary("fpk_dictionary.txt");
+            HashingExtended.ReadDictionary("qar_dictionary.txt");
 
 #if SNAKEBITE
             LoadModDictionaries();
@@ -539,6 +540,119 @@ namespace SnakeBite.GzsTool
                 return false;
             }
             return true;
+        }
+    }
+
+    // Hashing snippet to check outdated filenames
+    public static class HashingExtended
+    {
+        private static readonly Dictionary<ulong, string> HashNameDictionary = new Dictionary<ulong, string>();
+
+        private const ulong MetaFlag = 0x4000000000000;
+
+        public static void ReadDictionary(string path)
+        {
+            foreach (var line in File.ReadAllLines(path))
+            {
+                ulong hash = HashFileName(line) & 0x3FFFFFFFFFFFF;
+                if (HashNameDictionary.ContainsKey(hash) == false)
+                {
+                    HashNameDictionary.Add(hash, line);
+                }
+            }
+        }
+
+        public static string UpdateName(string inputFile)
+        {
+            string filename = Path.GetFileNameWithoutExtension(inputFile);
+            string ext = Path.GetExtension(inputFile);
+            string extInner = "";
+            if (filename.Contains(".")) // Ex: .1.ftexs, .eng.lng
+            {
+                extInner = Path.GetExtension(filename);
+                filename = Path.GetFileNameWithoutExtension(filename);
+            }
+
+            ulong fileNameHash;
+            if (TryGetFileNameHash(filename, out fileNameHash))
+            {
+                string foundFileNoExt;
+                if (TryGetFilePathFromHash(fileNameHash, out foundFileNoExt))
+                {
+                    return foundFileNoExt + extInner + ext;
+                }
+
+            }
+
+            return null;
+        }
+
+        private static ulong HashFileName(string text, bool removeExtension = true)
+        {
+            if (removeExtension)
+            {
+                int index = text.IndexOf('.');
+                text = index == -1 ? text : text.Substring(0, index);
+            }
+
+            bool metaFlag = false;
+            const string assetsConstant = "/Assets/";
+            if (text.StartsWith(assetsConstant))
+            {
+                text = text.Substring(assetsConstant.Length);
+
+                if (text.StartsWith("tpptest"))
+                {
+                    metaFlag = true;
+                }
+            }
+            else
+            {
+                metaFlag = true;
+            }
+
+            text = text.TrimStart('/');
+
+            const ulong seed0 = 0x9ae16a3b2f90404f;
+            byte[] seed1Bytes = new byte[sizeof(ulong)];
+            for (int i = text.Length - 1, j = 0; i >= 0 && j < sizeof(ulong); i--, j++)
+            {
+                seed1Bytes[j] = Convert.ToByte(text[i]);
+            }
+            ulong seed1 = BitConverter.ToUInt64(seed1Bytes, 0);
+            ulong maskedHash = CityHash.CityHash.CityHash64WithSeeds(text, seed0, seed1) & 0x3FFFFFFFFFFFF;
+
+            return metaFlag
+                ? maskedHash | MetaFlag
+                : maskedHash;
+        }
+
+        private static bool TryGetFilePathFromHash(ulong hash, out string filePath)
+        {
+            bool foundFileName = true;
+            ulong pathHash = hash & 0x3FFFFFFFFFFFF;
+
+            if (!HashNameDictionary.TryGetValue(pathHash, out filePath))
+            {
+                foundFileName = false;
+            }
+
+            return foundFileName;
+        }
+
+        private static bool TryGetFileNameHash(string filename, out ulong fileNameHash)
+        {
+            bool isConverted = true;
+            try
+            {
+                fileNameHash = Convert.ToUInt64(filename, 16);
+            }
+            catch (FormatException)
+            {
+                isConverted = false;
+                fileNameHash = 0;
+            }
+            return isConverted;
         }
     }
 }

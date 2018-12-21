@@ -48,11 +48,9 @@
             // 
             // panelNoMods
             // 
-            this.panelNoMods.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.panelNoMods.BackColor = System.Drawing.Color.Gray;
             this.panelNoMods.Controls.Add(this.labelNoMod);
+            this.panelNoMods.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelNoMods.Location = new System.Drawing.Point(0, 0);
             this.panelNoMods.Name = "panelNoMods";
             this.panelNoMods.Size = new System.Drawing.Size(400, 424);

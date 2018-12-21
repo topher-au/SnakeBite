@@ -62,12 +62,11 @@ namespace SnakeBite
             try
             {
                 ModManager.WriteGameDirSbBuild();
-                List<string> pullFromVanillas; List<string> pullFromMods;
+                List<string> pullFromVanillas; List<string> pullFromMods; Dictionary<string, bool> pathUpdatesExist;
 
                 Debug.LogLine("[Install] Writing FPK data to Settings", Debug.LogLevel.Basic);
-                AddToSettingsFpk(installEntryList, manager, allQarGameFiles, out pullFromVanillas, out pullFromMods);
-                InstallMods(ModFiles, manager, pullFromVanillas, pullFromMods, ref zeroFilesHashSet, ref oneFiles);
-
+                AddToSettingsFpk(installEntryList, manager, allQarGameFiles, out pullFromVanillas, out pullFromMods, out pathUpdatesExist);
+                InstallMods(ModFiles, manager, pullFromVanillas, pullFromMods, ref zeroFilesHashSet, ref oneFiles, pathUpdatesExist);
                 Debug.LogLine("[Install] Rebuilding 00.dat", Debug.LogLevel.Basic);
                 zeroFiles = zeroFilesHashSet.ToList();
                 zeroFiles.Sort();
@@ -114,7 +113,7 @@ namespace SnakeBite
         /// Merges the new mod files with the existing modded files and vanilla game files.
         /// The resulting file structure is the new _working0 folder to pack as 00.dat 
         /// </summary>
-        private static void InstallMods(List<string> modFilePaths, SettingsManager manager, List<string> pullFromVanillas, List<string> pullFromMods, ref HashSet<string> zeroFiles, ref List<string> oneFilesList)
+        private static void InstallMods(List<string> modFilePaths, SettingsManager manager, List<string> pullFromVanillas, List<string> pullFromMods, ref HashSet<string> zeroFiles, ref List<string> oneFilesList, Dictionary<string, bool> pathUpdatesExist)
         {
             //Assumption: modded packs have already been extracted to _working0 directory - qarEntryEditList
             //Assumption: vanilla packs have already been extracted to _gameFpk directory (during AddToSettings) - fpkEntryRetrievalList
@@ -122,7 +121,7 @@ namespace SnakeBite
             FastZip unzipper = new FastZip();
             GameData gameData = manager.GetGameData();
 
-            foreach (string modFilePath in modFilePaths) //for every qar file of every mod, if the file is in qarEntryEditList, extract from X and X. if file is in qarRetrievalFilePaths, extract y and y
+            foreach (string modFilePath in modFilePaths) 
             {
                 Debug.LogLine($"[Install] Installation started: {modFilePath}", Debug.LogLevel.Basic);
                 Debug.LogLine("[Install] Unzip mod .mgsv", Debug.LogLevel.Basic);
@@ -130,6 +129,24 @@ namespace SnakeBite
 
                 Debug.LogLine("[Install] Load mod metadata", Debug.LogLevel.Basic);
                 ModEntry extractedModEntry = new ModEntry("_extr\\metadata.xml");
+                if (pathUpdatesExist[extractedModEntry.Name])
+                    foreach (ModQarEntry modQar in extractedModEntry.ModQarEntries.Where(entry => !entry.FilePath.StartsWith("/Assets/")))
+                    {
+                        Debug.LogLine(string.Format("[Install] Attempting to update Qar Path: {0}", modQar.FilePath), Debug.LogLevel.Basic);
+                        string unhashedName = HashingExtended.UpdateName(modQar.FilePath);
+                        if (unhashedName != null)
+                        {
+                            Debug.LogLine(string.Format("[Install] Update successful: {0}", unhashedName), Debug.LogLevel.Basic);
+
+                            string workingOldPath = Path.Combine("_extr", Tools.ToWinPath(modQar.FilePath));
+                            string workingNewPath = Path.Combine("_extr", Tools.ToWinPath(unhashedName));
+                            if (!Directory.Exists(Path.GetDirectoryName(workingNewPath))) Directory.CreateDirectory(Path.GetDirectoryName(workingNewPath));
+                            File.Move(workingOldPath, workingNewPath);
+
+                            modQar.FilePath = unhashedName;
+
+                        }
+                    }
                 GzsLib.LoadModDictionary(extractedModEntry);
                 ValidateModEntries(ref extractedModEntry);
 
@@ -142,6 +159,7 @@ namespace SnakeBite
 
                 Debug.LogLine("[Install] Copying game dir files", Debug.LogLevel.Basic);
                 InstallGameDirFiles(extractedModEntry, ref gameData);
+
             }
 
             manager.SetGameData(gameData);
@@ -281,16 +299,47 @@ namespace SnakeBite
             }
         }//InstallGameDirFiles
 
-        private static void AddToSettingsFpk(List<ModEntry> installEntryList, SettingsManager manager, List<Dictionary<ulong, GameFile>> allQarGameFiles, out List<string> PullFromVanillas, out List<string> pullFromMods)
+        private static void AddToSettingsFpk(List<ModEntry> installEntryList, SettingsManager manager, List<Dictionary<ulong, GameFile>> allQarGameFiles, out List<string> PullFromVanillas, out List<string> pullFromMods, out Dictionary<string, bool> pathUpdatesExist)
         {
             GameData gameData = manager.GetGameData();
+            pathUpdatesExist = new Dictionary<string, bool>();
 
             List<string> newModQarEntries = new List<string>();
             List<string> modQarFiles = manager.GetModQarFiles();
             pullFromMods = new List<string>();
-
             foreach (ModEntry modToInstall in installEntryList)
             {
+                Dictionary<string, string> newNameDictionary = new Dictionary<string, string>();
+                int foundUpdate = 0;
+                foreach (ModQarEntry modQar in modToInstall.ModQarEntries.Where(entry => !entry.FilePath.StartsWith("/Assets/")))
+                {
+                    //Debug.LogLine(string.Format("Attempting to update Qar filename: {0}", modQar.FilePath), Debug.LogLevel.Basic);
+                    string unhashedName = HashingExtended.UpdateName(modQar.FilePath);
+                    if (unhashedName != null)
+                    {
+                        //Debug.LogLine(string.Format("Success: {0}", unhashedName), Debug.LogLevel.Basic);
+                        newNameDictionary.Add(modQar.FilePath, unhashedName);
+                        foundUpdate++;
+
+                        modQar.FilePath = unhashedName;
+                        if (!pathUpdatesExist.ContainsKey(modToInstall.Name))
+                            pathUpdatesExist.Add(modToInstall.Name, true);
+                        else
+                            pathUpdatesExist[modToInstall.Name] = true;
+                    }
+                }
+                if (foundUpdate > 0)
+                {
+                    foreach (ModFpkEntry modFpkEntry in modToInstall.ModFpkEntries)
+                    {
+                        string unHashedName;
+                        if (newNameDictionary.TryGetValue(modFpkEntry.FpkFile, out unHashedName))
+                            modFpkEntry.FpkFile = unHashedName;
+                    }
+                }
+                else if(!pathUpdatesExist.ContainsKey(modToInstall.Name))
+                        pathUpdatesExist.Add(modToInstall.Name, false);
+
                 manager.AddMod(modToInstall);
                 //foreach (ModQarEntry modqar in modToInstall.ModQarEntries) Debug.LogLine("Mod Qar in modToInstall: " + modqar.FilePath);
                 foreach (ModQarEntry modQarEntry in modToInstall.ModQarEntries) // add qar entries (fpk, fpkd) to GameData if they don't already exist

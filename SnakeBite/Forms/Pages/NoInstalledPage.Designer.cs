@@ -37,13 +37,11 @@
             // 
             // panelNoInstalled
             // 
-            this.panelNoInstalled.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
             this.panelNoInstalled.BackColor = System.Drawing.Color.Gray;
             this.panelNoInstalled.Controls.Add(this.linkLabelSnakeBiteModsList);
             this.panelNoInstalled.Controls.Add(this.labelNoMod);
             this.panelNoInstalled.Controls.Add(this.labelNoModInstruction);
+            this.panelNoInstalled.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelNoInstalled.Location = new System.Drawing.Point(0, 0);
             this.panelNoInstalled.Name = "panelNoInstalled";
             this.panelNoInstalled.Size = new System.Drawing.Size(400, 424);

@@ -27,6 +27,9 @@ namespace SnakeBite
         private void formMain_Load(object sender, EventArgs e)
         {
             // Refresh button state
+            panelContent.Controls.Add(noInstallNotice);
+            panelContent.Controls.Add(log);
+            panelContent.Controls.Add(modDescription);
             RefreshInstalledMods(true);
 
             Location = Properties.Settings.Default.formModsLocation;
@@ -98,9 +101,8 @@ namespace SnakeBite
                 markedModNames += "\n" + mod.ToString();
             }
             if (!(MessageBox.Show("The following mods will be uninstalled:\n" + markedModNames, "SnakeBite", MessageBoxButtons.OKCancel, MessageBoxIcon.Question) == DialogResult.OK)) return;
-            panelContent.Controls.Clear();
             log.ClearPage();
-            panelContent.Controls.Add(log);
+            SetVisiblePage(log);
             ProgressWindow.Show("Uninstalling Mod(s)", "Uninstalling, please wait...", new Action((MethodInvoker)delegate { UninstallManager.UninstallMods(checkedModIndices); }), log);
 
             RefreshInstalledMods(true);
@@ -197,8 +199,7 @@ namespace SnakeBite
 
             if (mods.Count > 0)
             {
-                panelContent.Controls.Clear();
-                panelContent.Controls.Add(modDescription);
+                SetVisiblePage(modDescription);
 
                 foreach (ModEntry mod in mods)
                 {
@@ -219,8 +220,8 @@ namespace SnakeBite
             }
             else
             {
-                panelContent.Controls.Clear();
-                panelContent.Controls.Add(noInstallNotice);
+                SetVisiblePage(noInstallNotice);
+
             }
 
             AdjustSize();
@@ -255,9 +256,8 @@ namespace SnakeBite
             if (saveResult != DialogResult.OK) return;
 
             string presetPath = savePreset.FileName;
-            panelContent.Controls.Clear();
             log.ClearPage();
-            panelContent.Controls.Add(log);
+            SetVisiblePage(log);
             ProgressWindow.Show("Saving Preset", "Saving Preset, please wait...", new Action((MethodInvoker)delegate { PresetManager.SavePreset(presetPath); }), log);
             MessageBox.Show(string.Format("'{0}' Saved.", Path.GetFileName(presetPath)), "Preset Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
             RefreshInstalledMods(true);
@@ -302,9 +302,8 @@ namespace SnakeBite
                     modsToInstall += "\n[NONE]";
                 }
                 if (MessageBox.Show(modsToInstall, "Install Preset", MessageBoxButtons.OKCancel) != DialogResult.OK) return;
-                panelContent.Controls.Clear();
                 log.ClearPage();
-                panelContent.Controls.Add(log);
+                SetVisiblePage(log);
                 ProgressWindow.Show("Loading Preset", "Loading Preset, please wait...", new Action((MethodInvoker)delegate { PresetManager.LoadPreset(presetPath); }), log);
             }
             catch (Exception f)
@@ -500,6 +499,20 @@ namespace SnakeBite
             Properties.Settings.Default.formModsMaximized = (WindowState == FormWindowState.Maximized);
 
             Properties.Settings.Default.Save();
+        }
+
+        // The ModDescriptionPage would become slightly distorted over time using panelContent.Controls to clear or add a new page
+        // I'm not sure why it does this exactly (something to do with the form resizing?), but setting page visibility is more reliable
+        private void SetVisiblePage(UserControl visiblePage)
+        {
+            UserControl[] pages = { log, modDescription, noInstallNotice};
+            foreach(UserControl page in pages)
+            {
+                if (page == visiblePage)
+                    page.Visible = true;
+                else
+                    page.Visible = false;
+            }
         }
     }
 }

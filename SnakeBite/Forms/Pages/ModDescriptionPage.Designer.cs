@@ -39,15 +39,14 @@
             // 
             // panelModDescription
             // 
-            this.panelModDescription.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelModDescription.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.panelModDescription.BackColor = System.Drawing.Color.DarkGray;
             this.panelModDescription.Controls.Add(this.labelVersionWarning);
             this.panelModDescription.Controls.Add(this.labelModWebsite);
             this.panelModDescription.Controls.Add(this.textDescription);
             this.panelModDescription.Controls.Add(this.labelModAuthor);
             this.panelModDescription.Controls.Add(this.labelModName);
+            this.panelModDescription.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelModDescription.Location = new System.Drawing.Point(0, 0);
             this.panelModDescription.Name = "panelModDescription";
             this.panelModDescription.Size = new System.Drawing.Size(400, 424);
