@@ -24,13 +24,10 @@ If the mod you wish to install is available as a .MGSV file, it is the recommend
 
 Click "Install .MGSV" from the mod manager window and select the mod you wish to install.
 
-### If your mod is a **.ZIP**:
+## Mod Preset Files
+A 'Mod Preset' is a collection of mods which can be saved and loaded with SnakeBite. Saving a Preset will pack your current modded game data into a .MGSVPreset file. Loading a Preset will simply replace your game data with the files stored in the .MGSVPreset file. Presets are a fast and simple method of organizing your favorite mods or trying new mod combinations. You can also utilize Presets as restore checkpoints if SnakeBite encounters a serious error or your game data becomes corrupted. 
 
-**Please note that this functionality is not guaranteed and may cause bugs or glitches with other mods.**
-
-If the mod you downloaded is a zip archive, and that archive does not contain a .MGSV file, you can attempt to install the mod by clicking "Install .ZIP" from the mod manager window.
-
-You will need to manually specify a name, and can optionally save the file as a .MGSV for later use.
+By default, SnakeBite creates 'RevertChanges.MGSVPreset' before a mod installation/uninstallation, so you can easily undo an action if it caused a critical error. However, saving a large number of mods needs a bit of time and storage space, so you can choose to skip this option by unchecking the 'Save RevertChanges.MGSVPreset' checkbox in the Settings menu. RevertChanges.MGSVPreset is saved to your Game Directory.
 
 # Troubleshooting
 For those with issues with Snakebite try:
