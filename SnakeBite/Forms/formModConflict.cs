@@ -15,6 +15,8 @@ namespace SnakeBite.Forms
         {
             result = DialogResult.Cancel;
             labelHeader.Text = conflictMessage;
+            Left = formInstallOrder.formLocation.X + (formInstallOrder.formSize.Width - Width)/2;
+            Top = formInstallOrder.formLocation.Y + (formInstallOrder.formSize.Height - Height)/2;
             this.ShowDialog();
             return result;
         }

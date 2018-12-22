@@ -11,11 +11,12 @@ namespace SnakeBite
     static class PresetManager
     {
 
-        public static void SavePreset(string presetFilePath)
+        public static bool SavePreset(string presetFilePath)
         {
+            bool success = false;
             Directory.CreateDirectory("_build\\master\\0");
             SettingsManager manager = new SettingsManager(SnakeBiteSettings);
-            Debug.LogLine("[SavePreset] Saving preset file", Debug.LogLevel.Basic);
+            Debug.LogLine("[SavePreset] Saving preset file...", Debug.LogLevel.Basic);
             try
             {
                 foreach (string gameFile in manager.GetModExternalFiles())
@@ -26,16 +27,23 @@ namespace SnakeBite
                     string fileName = Path.GetFileName(gameFile);
 
                     Directory.CreateDirectory(DestDir);
-                    if(File.Exists(sourcePath))File.Copy(sourcePath, Path.Combine(DestDir, fileName), true);
+                    if (File.Exists(sourcePath)) { Debug.LogLine(string.Format("[SavePreset] Copying to build directory: {0}", gameFile), Debug.LogLevel.Basic);  File.Copy(sourcePath, Path.Combine(DestDir, fileName), true); }
                     else Debug.LogLine(string.Format("[SavePreset] File not found: {0}", sourcePath), Debug.LogLevel.Basic);
                 }
+                Debug.LogLine("[SavePreset] Copying to build directory: 00.dat", Debug.LogLevel.Basic);
                 File.Copy(ZeroPath, "_build\\master\\0\\00.dat", true);
+
+                Debug.LogLine("[SavePreset] Copying to build directory: 01.dat", Debug.LogLevel.Basic);
                 File.Copy(OnePath, "_build\\master\\0\\01.dat", true);
+
+                Debug.LogLine("[SavePreset] Copying to build directory: snakebite.xml", Debug.LogLevel.Basic);
                 File.Copy(SnakeBiteSettings, "_build\\snakebite.xml", true);
 
                 FastZip zipper = new FastZip();
+                Debug.LogLine(string.Format("[SavePreset] Writing {0}", Path.GetFileName(presetFilePath)), Debug.LogLevel.Basic);
                 zipper.CreateZip(presetFilePath, "_build", true, "(.*?)");
-                Debug.LogLine("[SavePreset] Save Complete", Debug.LogLevel.Basic);
+                Debug.LogLine("[SavePreset] Write Complete", Debug.LogLevel.Basic);
+                success = true;
             }
             catch (Exception e)
             {
@@ -46,76 +54,105 @@ namespace SnakeBite
                 ModManager.CleanupFolders();
             }
 
+            return success;
         }
 
-        public static void LoadPreset(string presetFilePath)
+        public static bool LoadPreset(string presetFilePath)
         {
+            bool panicMode = (!File.Exists(ZeroPath) || !File.Exists(OnePath) || !File.Exists(SnakeBiteSettings)); 
+            bool success = false;
             ModManager.CleanupFolders();
             SettingsManager manager = new SettingsManager(SnakeBiteSettings);
             List<string> existingExternalFiles = manager.GetModExternalFiles();
             List<string> fileEntryDirs = new List<string>();
-            Debug.LogLine("[LoadPreset] Storing existing files", Debug.LogLevel.Basic);
-            foreach (string gameFile in existingExternalFiles)
-            {
-                string gameFilePath = Path.Combine(GameDir, Tools.ToWinPath(gameFile));
-                if (File.Exists(gameFilePath))
-                {
-                    fileEntryDirs.Add(Path.GetDirectoryName(gameFilePath));
-                    File.Move(gameFilePath, gameFilePath + build_ext);
-                }
-            }
-            
-            File.Move(ZeroPath, ZeroPath + build_ext);
-            File.Move(OnePath, OnePath + build_ext);
-            File.Move(SnakeBiteSettings, SnakeBiteSettings + build_ext);
-
-            Debug.LogLine("[LoadPreset] Importing preset files", Debug.LogLevel.Basic);
             try
             {
+                if (!panicMode)
+                {
+                    Debug.LogLine("[LoadPreset] Storing backups of existing files...", Debug.LogLevel.Basic);
+                    foreach (string gameFile in existingExternalFiles)
+                    {
+                        string gameFilePath = Path.Combine(GameDir, Tools.ToWinPath(gameFile));
+                        if (File.Exists(gameFilePath))
+                        {
+                            Debug.LogLine(string.Format("[LoadPreset] Storing backup: {0}", gameFile), Debug.LogLevel.Basic);
+                            fileEntryDirs.Add(Path.GetDirectoryName(gameFilePath));
+                            File.Copy(gameFilePath, gameFilePath + build_ext, true);
+                        }
+                    }
+                    Debug.LogLine("[LoadPreset] Storing backup: 00.dat", Debug.LogLevel.Basic);
+                    File.Copy(ZeroPath, ZeroPath + build_ext, true);
+
+                    Debug.LogLine("[LoadPreset] Storing backup: 01.dat", Debug.LogLevel.Basic);
+                    File.Copy(OnePath, OnePath + build_ext, true);
+
+                    Debug.LogLine("[LoadPreset] Storing backup: snakebite.xml", Debug.LogLevel.Basic);
+                    File.Copy(SnakeBiteSettings, SnakeBiteSettings + build_ext, true);
+                }
+                else
+                {
+                    Debug.LogLine("[LoadPreset] Critical file(s) do not exist, skipping backup procedure", Debug.LogLevel.Basic);
+                }
+
+                Debug.LogLine("[LoadPreset] Importing preset files", Debug.LogLevel.Basic);
                 FastZip unzipper = new FastZip();
                 unzipper.ExtractZip(presetFilePath, GameDir, "(.*?)");
 
-                Debug.LogLine("[LoadPreset] Deleting old files", Debug.LogLevel.Basic);
-                foreach (string gameFile in existingExternalFiles)
-                {
-                    string gameFilePath = Path.Combine(GameDir, Tools.ToWinPath(gameFile));
-                    File.Delete(gameFilePath + build_ext);
-                }
-
-                foreach (string fileEntryDir in fileEntryDirs)
-                {
-                    if (Directory.Exists(fileEntryDir) && Directory.GetFiles(fileEntryDir).Length == 0)
-                    {
-                        Debug.LogLine(String.Format("[SB_Build] deleting empty folder: {0}", fileEntryDir), Debug.LogLevel.All);
-                        try
-                        {
-                            Directory.Delete(fileEntryDir); 
-                        }
-                        catch (IOException e)
-                        {
-                            Console.WriteLine("[Uninstall] Could not delete: " + e.Message);
-                        }
-                    }
-                }
-
-                File.Delete(ZeroPath + build_ext);
-                File.Delete(OnePath + build_ext);
-                File.Delete(SnakeBiteSettings + build_ext);
-                Debug.LogLine("[LoadPreset] Load Complete", Debug.LogLevel.Basic);
+                Debug.LogLine("[LoadPreset] Import Complete", Debug.LogLevel.Basic);
+                success = true;
             }
             catch (Exception e)
             {
                 MessageBox.Show("An error has occurred and the preset was not imported.\nException: " + e);
-                Debug.LogLine("[LoadPreset] Restoring old files", Debug.LogLevel.Basic);
-                foreach (string gameFile in existingExternalFiles)
+                if (!panicMode)
                 {
-                    string gameFilePath = Path.Combine(GameDir, Tools.ToWinPath(gameFile));
-                    File.Move(gameFilePath + build_ext, gameFilePath);
+                    Debug.LogLine("[LoadPreset] Restoring backup files", Debug.LogLevel.Basic);
+
+                    File.Copy(ZeroPath + build_ext, ZeroPath, true);
+                    File.Copy(OnePath + build_ext, OnePath, true);
+                    File.Copy(SnakeBiteSettings + build_ext, SnakeBiteSettings, true);
+
+                    foreach (string gameFile in existingExternalFiles)
+                    {
+                        string gameFilePath = Path.Combine(GameDir, Tools.ToWinPath(gameFile));
+                        if (File.Exists(gameFilePath)) File.Delete(gameFilePath);
+                        File.Copy(gameFilePath + build_ext, gameFilePath, true);
+                    }
                 }
-                File.Move(ZeroPath + build_ext, ZeroPath);
-                File.Move(OnePath + build_ext, OnePath);
-                File.Move(SnakeBiteSettings + build_ext, SnakeBiteSettings);
             }
+            finally
+            {
+                if (!panicMode)
+                {
+                    Debug.LogLine("[LoadPreset] Removing backup files", Debug.LogLevel.Basic);
+                    foreach (string gameFile in existingExternalFiles)
+                    {
+                        string gameFilePath = Path.Combine(GameDir, Tools.ToWinPath(gameFile));
+                        File.Delete(gameFilePath + build_ext);
+                    }
+
+                    foreach (string fileEntryDir in fileEntryDirs)
+                    {
+                        if (Directory.Exists(fileEntryDir) && Directory.GetFiles(fileEntryDir).Length == 0)
+                        {
+                            Debug.LogLine(String.Format("[SB_Build] deleting empty folder: {0}", fileEntryDir), Debug.LogLevel.All);
+                            try
+                            {
+                                Directory.Delete(fileEntryDir);
+                            }
+                            catch (IOException e)
+                            {
+                                Console.WriteLine("[Uninstall] Could not delete: " + e.Message);
+                            }
+                        }
+                    }
+                    File.Delete(ZeroPath + build_ext);
+                    File.Delete(OnePath + build_ext);
+                    File.Delete(SnakeBiteSettings + build_ext);
+                }
+            }
+
+            return success;
         }
 
         public static bool isPresetUpToDate(Settings presetSettings)

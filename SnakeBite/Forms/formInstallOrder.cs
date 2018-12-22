@@ -17,6 +17,9 @@ namespace SnakeBite.Forms
          * 
          * Excessive mods and conflicts will result in slower refresh times and list "flickering"
          */
+        public static Point formLocation = new Point(0, 0);
+        public static Size formSize = new Size(0, 0);
+
         private List<PreinstallEntry> Mods = new List<PreinstallEntry>();
         private SettingsManager manager = new SettingsManager(GamePaths.SnakeBiteSettings);
         private int selectedIndex;
@@ -47,14 +50,12 @@ namespace SnakeBite.Forms
         private void formInstallOrder_Shown(object sender, EventArgs e)
         {
             SetVisiblePage(log);
-            PreinstallManager.RefreshXml(Mods);
             this.CheckAllModConflicts();
-            this.refreshInstallList();
+            refreshInstallList();
         }
 
         private void refreshInstallList()
         {
-            PreinstallManager.RefreshXml(Mods);
             listInstallOrder.Items.Clear();
             int modCount = Mods.Count;
             
@@ -100,7 +101,10 @@ namespace SnakeBite.Forms
 
         private void CheckAllModConflicts()
         {
-            ProgressWindow.Show("Checking Preinstall Conflicts", "Processing mod data, please wait...", new Action((MethodInvoker)delegate { PreinstallManager.getAllConflicts(Mods); }), log);
+            ProgressWindow.Show("Checking Preinstall Conflicts", "Processing mod data, please wait...", new Action((MethodInvoker)delegate {
+                PreinstallManager.RefreshAllXml(Mods);
+                PreinstallManager.getAllConflicts(Mods);
+            }), log);
         }
 
         private void TallyConflicts()
@@ -164,7 +168,7 @@ namespace SnakeBite.Forms
 
                 PreinstallEntry newEntry = new PreinstallEntry();
                 newEntry.filename = filePath;
-                PreinstallManager.AddToXml(newEntry);
+                PreinstallManager.AddModsToXml(newEntry);
                 PreinstallManager.GetConflicts(newEntry, Mods);
                 Mods.Add(newEntry);
             }
@@ -206,8 +210,6 @@ namespace SnakeBite.Forms
 
         private void buttonAdd_Click(object sender, EventArgs e) //adds unique filenames to the list and refreshes list.
         {
-            log.ClearPage();
-            SetVisiblePage(log);
 
             OpenFileDialog openModFile = new OpenFileDialog();
             openModFile.Filter = "MGSV Mod Files|*.mgsv|All Files|*.*";
@@ -215,7 +217,10 @@ namespace SnakeBite.Forms
             
             DialogResult ofdResult = openModFile.ShowDialog();
             if (ofdResult != DialogResult.OK) return;
-            ProgressWindow.Show("Checking Preinstall Conflicts", "Processing mod data, please wait...", new Action((MethodInvoker)delegate { AddNewPaths(openModFile.FileNames); }), log);
+
+            log.ClearPage();
+            SetVisiblePage(log);
+            ProgressWindow.Show("Checking Preinstall Data", "Processing mod data, please wait...", new Action((MethodInvoker)delegate { AddNewPaths(openModFile.FileNames); }), log);
             this.refreshInstallList();
 
         }
@@ -225,6 +230,7 @@ namespace SnakeBite.Forms
             string modName = Mods[selectedIndex].modInfo.Name;
             if (listInstallOrder.SelectedItems != null)
             {
+                PreinstallManager.RemoveFromXml(Mods[selectedIndex]);
                 Mods.RemoveAt(selectedIndex);
                 RemoveConflict(modName);
                 refreshInstallList();
@@ -238,9 +244,14 @@ namespace SnakeBite.Forms
             {
                 modFiles.Add(entry.filename);
             }
-            PreinstallManager.FilterModValidity(modFiles);
+            log.ClearPage();
+            SetVisiblePage(log);
+            ProgressWindow.Show("Checking Validity", "Checking mod validity...", new Action((MethodInvoker)delegate { PreinstallManager.FilterModValidity(modFiles); }), log);            
             if (modFiles.Count == 0) { this.refreshInstallList(); return; }//no valid mods. no mods will be installed
-            PreinstallManager.FilterModConflicts(modFiles);
+
+            formLocation = Location; // to center the conflict window
+            formSize = Size;
+            ProgressWindow.Show("Checking Conflicts", "Checking for conflicts with installed mods...", new Action((MethodInvoker)delegate { PreinstallManager.FilterModConflicts(modFiles); }), log);            
             if (modFiles.Count == 0) { this.refreshInstallList(); return; } //remaining mods had conflicts, user chose to install none.
 
             string modsToInstall = "";
@@ -251,8 +262,6 @@ namespace SnakeBite.Forms
             DialogResult confirmInstall = MessageBox.Show(String.Format("The following mods will be installed:\n" + modsToInstall), "SnakeBite", MessageBoxButtons.OKCancel);
             if (confirmInstall == DialogResult.OK)
             {
-                log.ClearPage();
-                SetVisiblePage(log);
                 ProgressWindow.Show("Installing Mod(s)", "Installing, please wait...", new Action((MethodInvoker)delegate { InstallManager.InstallMods(modFiles); }), log);
                 this.Close(); // the form closes upon installation. If the install is cancelled, the form remains open.
             }

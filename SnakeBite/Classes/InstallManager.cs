@@ -130,13 +130,14 @@ namespace SnakeBite
                 Debug.LogLine("[Install] Load mod metadata", Debug.LogLevel.Basic);
                 ModEntry extractedModEntry = new ModEntry("_extr\\metadata.xml");
                 if (pathUpdatesExist[extractedModEntry.Name])
+                {
+                    Debug.LogLine(string.Format("[Install] Checking for Qar path updates: {0}", extractedModEntry.Name), Debug.LogLevel.Basic);
                     foreach (ModQarEntry modQar in extractedModEntry.ModQarEntries.Where(entry => !entry.FilePath.StartsWith("/Assets/")))
                     {
-                        Debug.LogLine(string.Format("[Install] Attempting to update Qar Path: {0}", modQar.FilePath), Debug.LogLevel.Basic);
                         string unhashedName = HashingExtended.UpdateName(modQar.FilePath);
                         if (unhashedName != null)
                         {
-                            Debug.LogLine(string.Format("[Install] Update successful: {0}", unhashedName), Debug.LogLevel.Basic);
+                            Debug.LogLine(string.Format("[Install] Update successful: {0} -> {1}", modQar.FilePath, unhashedName), Debug.LogLevel.Basic);
 
                             string workingOldPath = Path.Combine("_extr", Tools.ToWinPath(modQar.FilePath));
                             string workingNewPath = Path.Combine("_extr", Tools.ToWinPath(unhashedName));
@@ -147,6 +148,8 @@ namespace SnakeBite
 
                         }
                     }
+                }
+                    
                 GzsLib.LoadModDictionary(extractedModEntry);
                 ValidateModEntries(ref extractedModEntry);
 

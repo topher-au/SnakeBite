@@ -1,5 +1,6 @@
 ﻿using ICSharpCode.SharpZipLib.Zip;
 using SnakeBite.Forms;
+using SnakeBite.GzsTool;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -12,29 +13,55 @@ namespace SnakeBite
 {
     internal static class PreinstallManager
     {
-
-        public static void RefreshXml(List<PreinstallEntry> Mods) // adds mods to an .xml file. Similar to snakebite.xml, but with yet-to-be-installed mods.
+        public static void RemoveFromXml(PreinstallEntry mod)
         {
-            FastZip unzipper = new FastZip();
-            SettingsManager infoXml = new SettingsManager("_extr\\buildInfo.xml");
-
-            infoXml.ClearAllMods();
-            foreach (PreinstallEntry mod in Mods)
-            {
-                unzipper.ExtractZip(mod.filename, "_extr", "metadata.xml");
-                ModEntry metaData = new ModEntry("_extr\\metadata.xml");
-                infoXml.AddMod(metaData);
-                mod.modInfo = metaData;
-            } // adds each user-selected filename to the metadata list.
+            new SettingsManager("_extr\\buildInfo.xml").RemoveMod(mod.modInfo);
         }
 
-        public static void AddToXml(PreinstallEntry mod) // adds mods to an .xml file. Similar to snakebite.xml, but with yet-to-be-installed mods.
+        public static void AddModsToXml(params PreinstallEntry[] modsArrary)
         {
-            FastZip unzipper = new FastZip();
-            unzipper.ExtractZip(mod.filename, "_extr", "metadata.xml");
-            ModEntry metaData = new ModEntry("_extr\\metadata.xml");
-            new SettingsManager("_extr\\buildInfo.xml").AddMod(metaData);
-            mod.modInfo = metaData;
+            HashingExtended.ReadDictionary();
+            foreach (PreinstallEntry mod in modsArrary)
+            {
+                FastZip unzipper = new FastZip();
+                unzipper.ExtractZip(mod.filename, "_extr", "metadata.xml");
+                ModEntry metaData = new ModEntry("_extr\\metadata.xml");
+
+                Dictionary<string, string> newNameDictionary = new Dictionary<string, string>();
+                int foundUpdate = 0;
+
+                Debug.LogLine(string.Format("[PreinstallCheck] Checking for Qar path updates: {0}", metaData.Name), Debug.LogLevel.Basic);
+                foreach (ModQarEntry modQar in metaData.ModQarEntries.Where(entry => !entry.FilePath.StartsWith("/Assets/")))
+                {
+                    string unhashedName = HashingExtended.UpdateName(modQar.FilePath);
+                    if (unhashedName != null)
+                    {
+                        Debug.LogLine(string.Format("[PreinstallCheck] Update successful: {0} -> {1}", modQar.FilePath, unhashedName), Debug.LogLevel.Basic);
+                        newNameDictionary.Add(modQar.FilePath, unhashedName);
+                        modQar.FilePath = unhashedName;
+                        foundUpdate++;
+                    }
+                }
+                if (foundUpdate > 0)
+                {
+                    foreach (ModFpkEntry modFpkEntry in metaData.ModFpkEntries)
+                    {
+                        string unHashedName;
+                        if (newNameDictionary.TryGetValue(modFpkEntry.FpkFile, out unHashedName))
+                            modFpkEntry.FpkFile = unHashedName;
+                    }
+                }
+
+                new SettingsManager("_extr\\buildInfo.xml").AddMod(metaData);
+                mod.modInfo = metaData;
+            }
+
+        }
+
+        public static void RefreshAllXml(List<PreinstallEntry> mods)
+        {
+            new SettingsManager("_extr\\buildInfo.xml").ClearAllMods();
+            AddModsToXml(mods.ToArray());
         }
 
         public static List<ModEntry> getModEntries()
@@ -47,6 +74,7 @@ namespace SnakeBite
             List<PreinstallEntry> ModsChecked = new List<PreinstallEntry>();
             foreach (PreinstallEntry modA in allMods) // modA, modB, modC...
             {
+                Debug.LogLine(String.Format("[PreinstallCheck] Checking for conflicts: {0}", modA.modInfo.Name), Debug.LogLevel.Basic);
                 bool Skip = true;
                 foreach (PreinstallEntry modB in allMods) // [modA -> modA], [modA -> modB], [modA -> modC]
                 {
@@ -65,6 +93,8 @@ namespace SnakeBite
 
         public static void GetConflicts(PreinstallEntry addedMod, List<PreinstallEntry> listedMods) // checks each mod against one another for conflicts, and adds conflicting mods to a list.
         {
+
+            Debug.LogLine(String.Format("[PreinstallCheck] Checking for conflicts: {0}", addedMod.modInfo.Name), Debug.LogLevel.Basic);
             foreach (PreinstallEntry listedMod in listedMods)
             {
                 if (addedMod.Equals(listedMod) || listedMod.ModConflicts.Contains(addedMod.modInfo.Name)) continue;
@@ -80,14 +110,13 @@ namespace SnakeBite
 
         public static bool hasConflict(ModEntry mod1, ModEntry mod2)
         {
-            Debug.LogLine(String.Format("[Preinstall Manager] Checking {0} against {1}", mod1.Name, mod2.Name), Debug.LogLevel.Basic);
             foreach (ModQarEntry qarEntry in mod1.ModQarEntries) // iterate qar files from new mod
             {
                 if (qarEntry.FilePath.Contains(".fpk")) continue;
                 ModQarEntry conflicts = mod2.ModQarEntries.FirstOrDefault(entry => Tools.CompareHashes(entry.FilePath, qarEntry.FilePath));
                 if (conflicts != null)
                 {
-                    Debug.LogLine(String.Format("[Preinstall Manager] Conflict found: {0} within {1} and {2}", conflicts.FilePath, mod1.Name, mod2.Name), Debug.LogLevel.Basic);
+                    Debug.LogLine(String.Format("[PreinstallCheck] Conflict found between {0} and {1}: {2}", mod1.Name, mod2.Name, conflicts.FilePath), Debug.LogLevel.Basic);
                     return true;
                 }
             }
@@ -186,8 +215,7 @@ namespace SnakeBite
                 confIndex = -1;
                 conflictingMods = new List<string>();
 
-                Debug.LogLine(String.Format("[Mod] Checking conflicts for {0}", metaData.Name), Debug.LogLevel.Basic);
-
+                Debug.LogLine(String.Format("[PreinstallCheck] Checking conflicts for {0}", metaData.Name), Debug.LogLevel.Basic);
                 foreach (ModEntry mod in mods) // iterate through installed mods [Morbid: TODO iterate pftxs files as well]
                 {
                     foreach (ModFileEntry fileEntry in metaData.ModFileEntries) // iterate external files from new mod

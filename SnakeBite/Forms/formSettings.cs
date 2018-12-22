@@ -46,9 +46,13 @@ namespace SnakeBite
             var restoreData = MessageBox.Show("Your saved backup files will be restored, and any SnakeBite settings and mods will be completely removed.\n\nAre you sure you want to continue?", "SnakeBite", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
             if (restoreData != DialogResult.Yes) return;
 
-                BackupManager.RestoreOriginals();
+            BackupManager.RestoreOriginals();
+            try
+            {
                 manager.DeleteSettings();
-                Application.Exit();
+            }
+            catch { }
+            Application.Exit();
         }
 
         private void UpdateModToggle()

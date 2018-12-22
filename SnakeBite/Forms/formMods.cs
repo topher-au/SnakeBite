@@ -151,13 +151,13 @@ namespace SnakeBite
                     InstallFileList = Directory.GetFiles(installModPath, "*.mgsv").ToList();
                     if (InstallFileList.Count == 0)
                     {
-                        Debug.LogLine($"[Install] Could not find any .mgsv files in {installModPath}.");
+                        Debug.LogLine($"[Install] Could not find any .mgsv files in {installModPath}.", Debug.LogLevel.Basic);
                         return;
                     }
                 }
                 else
                 {
-                    Debug.LogLine($"[Install] Could not find file or directory {installModPath}.");
+                    Debug.LogLine($"[Install] Could not find file or directory {installModPath}.", Debug.LogLevel.Basic);
                     return;
                 }
             }
@@ -233,7 +233,26 @@ namespace SnakeBite
                 SettingsManager manager = new SettingsManager(GamePaths.SnakeBiteSettings);
                 if (manager.ValidInstallPath)
                 {
-                    Process.Start(GamePaths.GameDir + "\\mgsvtpp.exe");
+                    Debug.LogLine("Launching game...", Debug.LogLevel.Basic);
+                    try
+                    {
+                        Process.Start("steam://run/287700/");
+                        Application.Exit();
+                    }
+                    catch
+                    {
+                        try
+                        {
+                            Debug.LogLine("Failed to launch game through Steam (a bit suspicious tbh). Attempting to run mgsvtpp.exe...", Debug.LogLevel.Basic);
+                            Process.Start(GamePaths.GameDir + "\\mgsvtpp.exe");
+                            Application.Exit();
+                        }
+                        catch
+                        {
+                            Debug.LogLine("Failed to run mgsvtpp.exe", Debug.LogLevel.Basic);
+                        }
+                    }
+
                 }
                 else
                 {
@@ -258,29 +277,30 @@ namespace SnakeBite
             string presetPath = savePreset.FileName;
             log.ClearPage();
             SetVisiblePage(log);
-            ProgressWindow.Show("Saving Preset", "Saving Preset, please wait...", new Action((MethodInvoker)delegate { PresetManager.SavePreset(presetPath); }), log);
-            MessageBox.Show(string.Format("'{0}' Saved.", Path.GetFileName(presetPath)), "Preset Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            bool success = false;
+            ProgressWindow.Show("Saving Preset", "Saving Preset, please wait...", new Action((MethodInvoker)delegate { success = PresetManager.SavePreset(presetPath); }), log);
+            if (success) MessageBox.Show(string.Format("'{0}' Saved.", Path.GetFileName(presetPath)), "Preset Saved", MessageBoxButtons.OK, MessageBoxIcon.Information);
             RefreshInstalledMods(true);
         }
 
         private void menuItemLoadPreset_Click(object sender, EventArgs e)
         {
             OneTimePresetHelp();
-
+            /* This might be useful but I'm worried that the user might mistake the prompt and end up overwriting the preset that they wanted to load
             DialogResult saveModsResult = MessageBox.Show("Would you like to save your current mods as a Preset before loading a new Preset?", "Save current mods?", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Question);
             if (saveModsResult == DialogResult.Yes) SavePreset();
             else if (saveModsResult == DialogResult.Cancel) return;
-
+            */
             OpenFileDialog getPresetFile = new OpenFileDialog();
             getPresetFile.Filter = "MGSV Preset File|*.MGSVPreset|All Files|*.*";
             getPresetFile.Multiselect = true;
 
             DialogResult getPresetResult = getPresetFile.ShowDialog();
             if (getPresetResult != DialogResult.OK) return;
-
             string presetPath = getPresetFile.FileName;
             Settings presetSettings = PresetManager.ReadSnakeBiteSettings(presetPath);
-
+            
+            bool success = false;
             try
             {
                 if (!PresetManager.isPresetUpToDate(presetSettings))
@@ -304,13 +324,15 @@ namespace SnakeBite
                 if (MessageBox.Show(modsToInstall, "Install Preset", MessageBoxButtons.OKCancel) != DialogResult.OK) return;
                 log.ClearPage();
                 SetVisiblePage(log);
-                ProgressWindow.Show("Loading Preset", "Loading Preset, please wait...", new Action((MethodInvoker)delegate { PresetManager.LoadPreset(presetPath); }), log);
+                ProgressWindow.Show("Loading Preset", "Loading Preset, please wait...", new Action((MethodInvoker)delegate { success = PresetManager.LoadPreset(presetPath); }), log);
             }
             catch (Exception f)
             {
                 MessageBox.Show("An error has occurred and the .MGSVPreset could not be loaded. Maybe the Preset file was packed improperly, or is being used by another program?\nException: " + f);
+                success = false;
             }
             RefreshInstalledMods(true);
+            if (success) MessageBox.Show(string.Format("'{0}' Loaded", Path.GetFileName(presetPath)), "Preset Loaded", MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void menuItemOpenDir_Click(object sender, EventArgs e)
@@ -322,7 +344,7 @@ namespace SnakeBite
             }
             catch
             {
-                Debug.LogLine(String.Format("Failed to open game directory: {0}", installPath));
+                Debug.LogLine(String.Format("Failed to open game directory: {0}", installPath), Debug.LogLevel.Basic);
             }
         }
 
@@ -441,6 +463,8 @@ namespace SnakeBite
         private void menuItemHelpPresets_Click(object sender, EventArgs e)
         {
             ShowPresetHelp();
+            Properties.Settings.Default.showOneTimePresetHelp = false; // in case they click the help menuitem before they try loading/saving
+            Properties.Settings.Default.Save();
         }
 
         private void ShowPresetHelp()
@@ -456,8 +480,6 @@ namespace SnakeBite
             if (Properties.Settings.Default.showOneTimePresetHelp)
             {
                 ShowPresetHelp();
-                Properties.Settings.Default.showOneTimePresetHelp = false;
-                Properties.Settings.Default.Save();
             }
         }
 

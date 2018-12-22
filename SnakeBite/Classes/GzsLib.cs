@@ -334,7 +334,7 @@ namespace SnakeBite.GzsTool
             Debug.LogLine("[GzsLib] Loading base dictionaries");
             Hashing.ReadDictionary("qar_dictionary.txt");
             Hashing.ReadMd5Dictionary("fpk_dictionary.txt");
-            HashingExtended.ReadDictionary("qar_dictionary.txt");
+            HashingExtended.ReadDictionary();
 
 #if SNAKEBITE
             LoadModDictionaries();
@@ -550,7 +550,7 @@ namespace SnakeBite.GzsTool
 
         private const ulong MetaFlag = 0x4000000000000;
 
-        public static void ReadDictionary(string path)
+        public static void ReadDictionary(string path = "qar_dictionary.txt")
         {
             foreach (var line in File.ReadAllLines(path))
             {

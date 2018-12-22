@@ -91,9 +91,9 @@
             this.labelWelcome.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelWelcome.Location = new System.Drawing.Point(3, 0);
             this.labelWelcome.Name = "labelWelcome";
-            this.labelWelcome.Size = new System.Drawing.Size(139, 30);
+            this.labelWelcome.Size = new System.Drawing.Size(157, 30);
             this.labelWelcome.TabIndex = 4;
-            this.labelWelcome.Text = "Almost done";
+            this.labelWelcome.Text = "Almost done...";
             // 
             // MergeDatPage
             // 
