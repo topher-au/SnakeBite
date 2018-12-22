@@ -1,6 +1,8 @@
-﻿using System;
+﻿using SnakeBite.GzsTool;
+using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Xml.Serialization;
 using static SnakeBite.GamePaths;
 
@@ -18,18 +20,6 @@ namespace SnakeBite
         {
             xmlFilePath = filePath;
         }
-        public bool DisableConflictCheck
-        {
-            get
-            {
-                return Properties.Settings.Default.DisableConflictCheck;
-            }
-            set
-            {
-                Properties.Settings.Default.DisableConflictCheck = value;
-                Properties.Settings.Default.Save();
-            }
-        }
 
         public List<string> GetModFpkFiles()
         {
@@ -44,6 +34,76 @@ namespace SnakeBite
                 }
             }
             return fpkList;
+        }
+
+        internal void updateQarFileNames() // snakebite supports automatically updating filenames before they're installed, but will need to update old game settings from the prior version. 1-time-check per SB update
+        {
+            Settings settings = new Settings();
+            settings.LoadFrom(xmlFilePath);
+            HashingExtended.ReadDictionary();
+            List<string> noUpdateQars = new List<string>();
+            Dictionary<string, string> newNameDictionary = new Dictionary<string, string>();
+
+            int foundUpdate = 0; 
+            foreach (ModQarEntry QarEntry in settings.GameData.GameQarEntries)
+            {
+                if (QarEntry.FilePath.StartsWith("/Assets/")) { noUpdateQars.Add(QarEntry.FilePath);  continue; }
+                string unhashedName = HashingExtended.UpdateName(QarEntry.FilePath);
+                if (unhashedName != null)
+                {
+                    newNameDictionary.Add(QarEntry.FilePath, unhashedName);
+                    foundUpdate++;
+
+                    QarEntry.FilePath = unhashedName;
+                }
+                else
+                {
+                    noUpdateQars.Add(QarEntry.FilePath);
+                }
+            }
+            if (foundUpdate > 0)
+            {
+                foreach (ModFpkEntry modFpkEntry in settings.GameData.GameFpkEntries.Where(entry => !noUpdateQars.Contains(entry.FpkFile)))
+                {
+                    string unHashedName;
+                    if (newNameDictionary.TryGetValue(modFpkEntry.FpkFile, out unHashedName))
+                        modFpkEntry.FpkFile = unHashedName;
+                }
+            }
+            foreach (ModEntry mod in settings.ModEntries) {
+                noUpdateQars.Clear();
+                foreach (ModQarEntry modQar in mod.ModQarEntries)
+                {
+                    if (modQar.FilePath.StartsWith("/Assets/")) { noUpdateQars.Add(modQar.FilePath); continue; }
+                    string unHashedName;
+                    if (newNameDictionary.TryGetValue(modQar.FilePath, out unHashedName))
+                        modQar.FilePath = unHashedName;
+                    else
+                    {
+                        unHashedName = HashingExtended.UpdateName(modQar.FilePath);
+                        if (unHashedName != null)
+                        {
+                            newNameDictionary.Add(modQar.FilePath, unHashedName);
+                            modQar.FilePath = unHashedName;
+                            foundUpdate++;
+                        }
+                        else
+                        {
+                            noUpdateQars.Add(modQar.FilePath);
+                        }
+                    }
+                }
+                if (foundUpdate > 0)
+                {
+                    foreach (ModFpkEntry modFpkEntry in mod.ModFpkEntries.Where(entry => !noUpdateQars.Contains(entry.FpkFile)))
+                    {
+                        string unHashedName;
+                        if (newNameDictionary.TryGetValue(modFpkEntry.FpkFile, out unHashedName))
+                            modFpkEntry.FpkFile = unHashedName;
+                    }
+                }
+            }
+            settings.SaveTo(xmlFilePath);
         }
 
         public List<string> GetModQarFiles(bool HideExtension = false)

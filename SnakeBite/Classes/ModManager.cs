@@ -19,9 +19,7 @@ namespace SnakeBite
     {
 
         // SYNC makebite
-        static string ExternalDirName = "GameDir";
-        // tex's changes to the install and uninstall process changes how the manager uses the snakebite settings. 0.9.0.6 snakebite settings will causes errors for 0.9.1.0.
-        // I don't think I can use these processes unless 0.9.0.6 settings can be read properly. dealing with the hundreds of "I get an error when I try to uninstall this mod" comments is not how I want to spend my time
+        static string ExternalDirName = "GameDir"; 
         public static bool InstallMods(List<string> ModFiles, bool skipCleanup = false) // Installs a list of mod filenames
         {
             Stopwatch stopwatch = new Stopwatch();
@@ -308,7 +306,6 @@ namespace SnakeBite
                 });
             }
             //must for loop in case we have to remove invalid files
-            // yeah I have no idea what this is trying to do. I know that it adds ModFpkEntries to GameFpkEntries, but why? the uninstall process is now reliant on these changes, which will cause 0.9.0.6 settings to disfunction?
             for (int i=gameFpk.Count-1; i >= 0; i--)
             {
                 string fileName = gameFpk[i];

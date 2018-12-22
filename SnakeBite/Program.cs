@@ -18,9 +18,13 @@ namespace SnakeBite
             Application.SetCompatibleTextRenderingDefault(false);
             ICSharpCode.SharpZipLib.Zip.ZipConstants.DefaultCodePage = 437;
             SettingsManager manager = new SettingsManager(GamePaths.SnakeBiteSettings);
-            manager.DisableConflictCheck = false;
+            bool updateQarFilenames = false;
             if (Properties.Settings.Default.LastSBVersion == null || new Version(Properties.Settings.Default.LastSBVersion) < ModManager.GetSBVersion())
             {
+                if (Properties.Settings.Default.LastSBVersion != null)
+                {
+                    updateQarFilenames = true;
+                }
                 Properties.Settings.Default.Upgrade();
             }
 
@@ -44,11 +48,11 @@ namespace SnakeBite
                 MessageBox.Show("Due to fundamental changes from version 0.8 onwards, your settings have been reset. Please re-verify or restore the game files and run the setup wizard before continuing.", "Version Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
-            bool showSetupWizard = false;
+            bool showSetupWizard = true;
 
-            if (!manager.SettingsExist() || !manager.ValidInstallPath)
+            if (manager.SettingsExist() && manager.ValidInstallPath)
             {
-                showSetupWizard = true;
+                showSetupWizard = false;
             }
 
             // Show wizard on first run, if folder is invalid or settings out of date
@@ -150,6 +154,8 @@ namespace SnakeBite
             }
             else
             {
+                if (updateQarFilenames)
+                    manager.updateQarFileNames();
                 var checkDat = manager.ValidateDatHash();
                 if (!checkDat || manager.IsVanilla0001DatHash())
                 {
