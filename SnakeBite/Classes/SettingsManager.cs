@@ -190,6 +190,14 @@ namespace SnakeBite
             return settings.ModEntries;
         }
 
+        public void SetInstalledMods(List<ModEntry> NewModData)
+        {
+            Settings settings = new Settings();
+            settings.LoadFrom(xmlFilePath);
+            settings.ModEntries = NewModData;
+            settings.SaveTo(xmlFilePath);
+        }
+
         public GameData GetGameData()
         {
             Settings settings = new Settings();

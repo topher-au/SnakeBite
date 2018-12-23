@@ -220,6 +220,8 @@ namespace SnakeBite
                     {
                         //Debug.LogLine(string.Format("{0}'s Qar file '{1}' is non-native or not mergeable", extractedModEntry.Name, modQar.FilePath));
                         existingQarSource = null;
+                        if (modQar.FilePath.EndsWith(".fpk") || modQar.FilePath.EndsWith(".fpkd"))
+                            pullFromMods.Add(modQar.FilePath); // for merging non-native fpk files consecutively
                     }
                 }
 
@@ -227,7 +229,8 @@ namespace SnakeBite
                 {
                     var pulledPack = GzsLib.ExtractArchive<FpkFile>(existingQarSource, "_build");
                     var extrPack = GzsLib.ExtractArchive<FpkFile>(modQarSource, "_build");
-                    pulledPack.Union(extrPack);
+                    pulledPack = pulledPack.Union(extrPack).ToList();
+                    //foreach(string file in extrPack) Debug.LogLine(string.Format("{0} is listed in the archive extr", file));
                     GzsLib.WriteFpkArchive(workingDestination, "_build", pulledPack);
                 }
                 else
@@ -348,18 +351,12 @@ namespace SnakeBite
                 foreach (ModQarEntry modQarEntry in modToInstall.ModQarEntries) // add qar entries (fpk, fpkd) to GameData if they don't already exist
                 {
                     string modQarFilePath = modQarEntry.FilePath;
-                    if (!(modQarFilePath.EndsWith(".fpk") || modQarFilePath.EndsWith(".fpkd")) || newModQarEntries.Contains(modQarFilePath)) continue;
-                    if (pullFromMods.FirstOrDefault(e => e == modQarFilePath) != null) continue;
+                    if (!(modQarFilePath.EndsWith(".fpk") || modQarFilePath.EndsWith(".fpkd"))) continue; // only pull for Qar's with Fpk's
 
-                    if (gameData.GameQarEntries.FirstOrDefault(e => e.Hash == modQarEntry.Hash) == null) // the qar file is not listed in the gameQarEntries..
-                    {
-                        if (modQarFiles.Contains(modQarFilePath)) // but it is listed in the QarEntries for an existing mod, therefore...
-                            pullFromMods.Add(modQarFilePath); // the file is already managed in 00.dat as a non-native or unmergeable qar file. if the file is non-native, it needs to be merged with the existing 00.dat pack.
-                        else
-                            newModQarEntries.Add(modQarFilePath); // the file is completely new to SnakeBite and will need repair files from the base archives (if they exist)
-                    }  
-                    else pullFromMods.Add(modQarFilePath); // the qar is managed in 00.dat and one or more mods are using the same qar file. 
-                }
+                    if (modQarFiles.Any(entry => entry == modQarFilePath)) { pullFromMods.Add(modQarFilePath); Debug.LogLine("Pulling from 00.dat: {0} " + modQarFilePath);}
+                    else if (!newModQarEntries.Contains(modQarFilePath)){ newModQarEntries.Add(modQarFilePath); Debug.LogLine("Pulling from base archives: {0} " + modQarFilePath); }
+
+                } 
             }
             //Debug.LogLine(string.Format("Foreach nest 1 complete"));
             List<ModFpkEntry> newModFpkEntries = new List<ModFpkEntry>();
@@ -439,7 +436,7 @@ namespace SnakeBite
                 int indexToRemove = repairFpkEntries.FindIndex(m => m.FilePath == Tools.ToWinPath(newFpkEntry.FilePath));
                 if (indexToRemove >= 0) repairFpkEntries.RemoveAt(indexToRemove);
             }
-            gameData.GameFpkEntries.AddRange(repairFpkEntries);
+            gameData.GameFpkEntries = gameData.GameFpkEntries.Union(repairFpkEntries).ToList();
             manager.SetGameData(gameData);
         }
     }
