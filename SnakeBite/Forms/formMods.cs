@@ -463,8 +463,6 @@ namespace SnakeBite
         private void menuItemHelpPresets_Click(object sender, EventArgs e)
         {
             ShowPresetHelp();
-            Properties.Settings.Default.showOneTimePresetHelp = false; // in case they click the help menuitem before they try loading/saving
-            Properties.Settings.Default.Save();
         }
 
         private void ShowPresetHelp()
@@ -481,6 +479,8 @@ namespace SnakeBite
             {
                 ShowPresetHelp();
             }
+            Properties.Settings.Default.showOneTimePresetHelp = false;
+            Properties.Settings.Default.Save();
         }
 
         private void formMods_Resize(object sender, EventArgs e)

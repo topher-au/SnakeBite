@@ -216,10 +216,10 @@ namespace SnakeBite
                 {
                     if (installedMod.ModQarEntries.FirstOrDefault(entry => entry.FilePath == addedRepairEntry.FpkFile) == null) continue;
 
-                    Debug.LogLine(string.Format("checking {0} for {1} of {2}", installedMod.Name, addedRepairEntry.FilePath, addedRepairEntry.FpkFile));
+                    //Debug.LogLine(string.Format("checking {0} for {1} of {2}", installedMod.Name, addedRepairEntry.FilePath, addedRepairEntry.FpkFile));
                     if (installedMod.ModFpkEntries.RemoveAll(entry => entry.FilePath == Tools.ToQarPath(addedRepairEntry.FilePath) && entry.FpkFile == addedRepairEntry.FpkFile) > 0)
                     {
-                        Debug.LogLine(string.Format("found {0} of {1} in {2}", addedRepairEntry.FilePath, addedRepairEntry.FpkFile, installedMod.Name));
+                        //Debug.LogLine(string.Format("found {0} of {1} in {2}", addedRepairEntry.FilePath, addedRepairEntry.FpkFile, installedMod.Name));
                         if (!qarPathsFound.Contains(addedRepairEntry.FpkFile))
                             qarPathsFound.Add(addedRepairEntry.FpkFile);
                     }
@@ -229,7 +229,7 @@ namespace SnakeBite
                 {
                     if (installedMod.ModFpkEntries.FirstOrDefault(entry => entry.FpkFile == qarPathFound) == null) //when the duplicate fpk file(s) were removed, there was nothing left in the modded qar.
                     {
-                        Debug.LogLine(string.Format("Removing {0} from {1}", qarPathFound, installedMod.Name));
+                        //Debug.LogLine(string.Format("Removing {0} from {1}", qarPathFound, installedMod.Name));
                         installedMod.ModQarEntries.RemoveAll(entry => entry.FilePath == qarPathFound); // filters the qar file out of the list
                     }
                 }
@@ -284,7 +284,7 @@ namespace SnakeBite
                 foreach (ModQarEntry partialEditQarEntry in partialEditQarEntries)
                     foreach (ModFpkEntry modFpkEntry in uninstallMod.ModFpkEntries)
                     {
-                        Debug.LogLine("PartialEditQarEntry: " + partialEditQarEntry.FilePath);
+                        //Debug.LogLine("PartialEditQarEntry: " + partialEditQarEntry.FilePath);
                         if (modFpkEntry.FpkFile == partialEditQarEntry.FilePath)
                         {
                             modFpkEntry.FpkFile = modFpkEntry.FpkFile;

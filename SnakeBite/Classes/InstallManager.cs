@@ -353,8 +353,16 @@ namespace SnakeBite
                     string modQarFilePath = modQarEntry.FilePath;
                     if (!(modQarFilePath.EndsWith(".fpk") || modQarFilePath.EndsWith(".fpkd"))) continue; // only pull for Qar's with Fpk's
 
-                    if (modQarFiles.Any(entry => entry == modQarFilePath)) { pullFromMods.Add(modQarFilePath); Debug.LogLine("Pulling from 00.dat: {0} " + modQarFilePath);}
-                    else if (!newModQarEntries.Contains(modQarFilePath)){ newModQarEntries.Add(modQarFilePath); Debug.LogLine("Pulling from base archives: {0} " + modQarFilePath); }
+                    if (modQarFiles.Any(entry => entry == modQarFilePath))
+                    {
+                        pullFromMods.Add(modQarFilePath);
+                        //Debug.LogLine("Pulling from 00.dat: {0} " + modQarFilePath);
+                    }
+                    else if (!newModQarEntries.Contains(modQarFilePath))
+                    {
+                        newModQarEntries.Add(modQarFilePath);
+                        //Debug.LogLine("Pulling from base archives: {0} " + modQarFilePath);
+                    }
 
                 } 
             }
