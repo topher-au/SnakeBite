@@ -63,8 +63,16 @@ namespace SnakeBite
             bool success = false;
             ModManager.CleanupFolders();
             SettingsManager manager = new SettingsManager(SnakeBiteSettings);
-            List<string> existingExternalFiles = manager.GetModExternalFiles();
+            List<string> existingExternalFiles = new List<string>();
             List<string> fileEntryDirs = new List<string>();
+            try
+            {
+                existingExternalFiles = manager.GetModExternalFiles();
+            }
+            catch
+            {
+                panicMode = true;
+            }
             try
             {
                 if (!panicMode)
@@ -91,7 +99,7 @@ namespace SnakeBite
                 }
                 else
                 {
-                    Debug.LogLine("[LoadPreset] Critical file(s) do not exist, skipping backup procedure", Debug.LogLevel.Basic);
+                    Debug.LogLine("[LoadPreset] Critical file(s) are disfunctional or not found, skipping backup procedure", Debug.LogLevel.Basic);
                 }
 
                 Debug.LogLine("[LoadPreset] Importing preset files", Debug.LogLevel.Basic);

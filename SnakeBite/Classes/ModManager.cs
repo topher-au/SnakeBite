@@ -1239,7 +1239,7 @@ namespace SnakeBite
             {
                 GzsLib.PromoteQarArchive(path + build_ext, path);
             }
-
+            
             new SettingsManager(SnakeBiteSettings).UpdateDatHash();
         }
 
@@ -1362,7 +1362,14 @@ namespace SnakeBite
         {
             // Get MGSV executable version
             var versionInfo = FileVersionInfo.GetVersionInfo(Properties.Settings.Default.InstallPath + "\\mgsvtpp.exe");
-            return new Version(versionInfo.ProductVersion);
+            if (versionInfo != null)
+            {
+                if (versionInfo.ProductVersion != null)
+                {
+                    return new Version(versionInfo.ProductVersion);
+                }
+            }
+            return new Version(0,0,0,0);
         }
 
         internal static Version GetSBVersion()

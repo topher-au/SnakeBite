@@ -88,11 +88,7 @@ namespace SnakeBite
                     oneFiles.Sort();
                     GzsLib.WriteQarArchive(OnePath + build_ext, "_working1", oneFiles, GzsLib.oneFlags);
                 }
-                if (!skipCleanup)
-                {
-                    //DEBUGNOW this takes a big chunk of time, see what of it is absolutenly nessesary 
-                    //DEBUGNOW    CleanupDatabase();
-                }
+                
                 if (!skipCleanup)
                 {
                     ModManager.CleanupFolders();
