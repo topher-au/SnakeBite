@@ -43,12 +43,20 @@ namespace SnakeBite
                 selectedMods.Add(mod);
             }
 
-            Debug.LogLine("[Uninstall] Extracting 00.dat to _working0", Debug.LogLevel.Basic);
-            var zeroFiles = GzsLib.ExtractArchive<QarFile>(ZeroPath, "_working0"); // extracts 00.dat and creates a list of filenames, which is pruned throughout the uninstall process and repacked at the end.
+            List<string> zeroFiles = new List<string>();
+            bool hasQarZero = ModManager.hasQarZeroFiles(selectedMods);
+            if (hasQarZero)
+            {
+                Debug.LogLine("[Uninstall] Extracting 00.dat to _working0", Debug.LogLevel.Basic);
+                zeroFiles = GzsLib.ExtractArchive<QarFile>(ZeroPath, "_working0"); // extracts 00.dat and creates a list of filenames, which is pruned throughout the uninstall process and repacked at the end.
+
+            }
+
             List<string> oneFiles = null;
             bool hasFtexs = ModManager.foundLooseFtexs(selectedMods);
             if (hasFtexs)
             {
+                Debug.LogLine("[Uninstall] Extracting 01.dat to _working1", Debug.LogLevel.Basic);
                 oneFiles = GzsLib.ExtractArchive<QarFile>(OnePath, "_working1"); // if necessary, extracts 01.dat and creates a list of filenames similar to zeroFiles. only textures are pruned from the list.
             }
             //end of qar extraction
@@ -62,9 +70,12 @@ namespace SnakeBite
                 ModManager.WriteGameDirSbBuild();
                 UninstallMods(selectedMods, ref zeroFiles, ref oneFiles, manager);
 
-                Debug.LogLine("[Uninstall] Rebuilding 00.dat", Debug.LogLevel.Basic);
-                zeroFiles.Sort();
-                GzsLib.WriteQarArchive(ZeroPath + build_ext, "_working0", zeroFiles, GzsLib.zeroFlags);
+                if(hasQarZero)
+                {
+                    Debug.LogLine("[Uninstall] Rebuilding 00.dat", Debug.LogLevel.Basic);
+                    zeroFiles.Sort();
+                    GzsLib.WriteQarArchive(ZeroPath + build_ext, "_working0", zeroFiles, GzsLib.zeroFlags);
+                }
 
                 if (hasFtexs)
                 {

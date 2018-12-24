@@ -431,7 +431,7 @@ namespace SnakeBite.GzsTool
             List<QarEntry> qarEntries = new List<QarEntry>();
             foreach (string s in Files)
             {
-                qarEntries.Add(new QarEntry() { FilePath = s, Hash = Tools.NameToHash(s), Compressed = Path.GetExtension(s).Contains(".fpk") ? true : false });
+                qarEntries.Add(new QarEntry() { FilePath = s, Hash = Tools.NameToHash(s), Compressed = (Path.GetExtension(s).EndsWith(".fpk") || Path.GetExtension(s).EndsWith(".fpkd")) ? true : false });
             }
 
             QarFile q = new QarFile() { Entries = qarEntries, Flags = Flags, Name = FileName };

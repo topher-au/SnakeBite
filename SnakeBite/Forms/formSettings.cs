@@ -82,7 +82,7 @@ namespace SnakeBite
 
         private void linkNexusLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            Process.Start(this.labelNexusLink.Text);
+            Process.Start(labelNexusLink.Text);
         }
 
         private void buttonFindMGSV_Click(object sender, EventArgs e)
@@ -160,7 +160,7 @@ namespace SnakeBite
             Properties.Settings.Default.ThemeFile = themeFiles[listThemes.SelectedIndex];
             Properties.Settings.Default.Save();
 
-            var o = this.Owner as formLauncher;
+            var o = Owner as formLauncher;
             o.SetupTheme();
             o.Refresh();
         }

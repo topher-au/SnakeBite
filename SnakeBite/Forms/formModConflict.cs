@@ -17,20 +17,20 @@ namespace SnakeBite.Forms
             labelHeader.Text = conflictMessage;
             Left = formInstallOrder.formLocation.X + (formInstallOrder.formSize.Width - Width)/2;
             Top = formInstallOrder.formLocation.Y + (formInstallOrder.formSize.Height - Height)/2;
-            this.ShowDialog();
+            ShowDialog();
             return result;
         }
         
         private void buttonInstall_Click(object sender, EventArgs e)
         {
             result = DialogResult.Yes;
-            this.Close();
+            Close();
         }
 
         private void buttonDontInstall_Click(object sender, EventArgs e)
         {
             result = DialogResult.Cancel;
-            this.Close();
+            Close();
         }
 
         private void formModConflict_HelpButtonClicked(object sender, CancelEventArgs e)

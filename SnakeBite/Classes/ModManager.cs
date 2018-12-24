@@ -573,7 +573,7 @@ namespace SnakeBite
             foreach (ModQarEntry qarEntry in modEntry.ModQarEntries)
             {
                 string fExt = Path.GetExtension(qarEntry.FilePath);
-                if (!fExt.Contains(".fpk"))
+                if (!fExt.EndsWith(".fpk") || !fExt.EndsWith(".fpkd"))
                 {
                     zeroFiles.RemoveAll(file => Tools.CompareHashes(file, qarEntry.FilePath));
                 }
@@ -590,7 +590,7 @@ namespace SnakeBite
             //tex: the above wont catch empty fpks (fpkds require a fpk, which can be empty)
             foreach (ModQarEntry fpkEntry in mod.ModQarEntries)
             {
-                if (fpkEntry.FilePath.Contains(".fpk"))
+                if (fpkEntry.FilePath.EndsWith(".fpk") || fpkEntry.FilePath.EndsWith(".fpkd"))
                 {
                     modFpks.Add(fpkEntry.FilePath);//modfkps now has every fpk file and filepath for the current mod
                 }
@@ -757,21 +757,6 @@ namespace SnakeBite
                 metaData = Tools.ReadMetaData(modfile);
                 foreach (ModQarEntry qarFile in metaData.ModQarEntries)
                 {
-                    if (qarFile.FilePath.Contains(".ftex") || qarFile.FilePath.Contains(".ftexs"))
-                        return true;
-                }
-            }
-            return false;
-        }
-
-        public static bool foundLooseFtexs(CheckedListBox.CheckedIndexCollection modIndices) // returns true if any mods at the indices contain a loose texture file which was installed to 01
-        {
-            var mods = new SettingsManager(SnakeBiteSettings).GetInstalledMods();
-            foreach (int index in modIndices)
-            {
-                ModEntry mod = mods[index];
-                foreach (ModQarEntry qarFile in mod.ModQarEntries)
-                {
                     if (qarFile.FilePath.Contains(".ftex"))
                         return true;
                 }
@@ -786,6 +771,34 @@ namespace SnakeBite
                 foreach (ModQarEntry qarFile in mod.ModQarEntries)
                 {
                     if (qarFile.FilePath.Contains(".ftex"))
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool hasQarZeroFiles(List<string> ModFiles) // returns true if any mods in the list contain a loose texture file which was installed to 01
+        {
+            ModEntry metaData;
+            foreach (string modfile in ModFiles)
+            {
+                metaData = Tools.ReadMetaData(modfile);
+                foreach (ModQarEntry qarFile in metaData.ModQarEntries)
+                {
+                    if (!qarFile.FilePath.Contains(".ftex"))
+                        return true;
+                }
+            }
+            return false;
+        }
+
+        public static bool hasQarZeroFiles(List<ModEntry> checkMods) // any non-.ftex(s) file in modQarEntries will return true
+        {
+            foreach (ModEntry mod in checkMods)
+            {
+                foreach (ModQarEntry qarFile in mod.ModQarEntries)
+                {
+                    if (!qarFile.FilePath.Contains(".ftex")) 
                         return true;
                 }
             }
@@ -1284,7 +1297,7 @@ namespace SnakeBite
             Debug.LogLine("[Cleanup] Examining FPK archives", Debug.LogLevel.Debug);
             var GameFpks = game.GameFpkEntries.ToList();
             // Search for FPKs in game data
-            var fpkFiles = cleanFiles.FindAll(entry => entry.Contains(".fpk"));
+            var fpkFiles = cleanFiles.FindAll(entry => entry.EndsWith(".fpk") || entry.EndsWith(".fpkd"));
             foreach (string fpkFile in fpkFiles)
             {
                 string fpkName = Path.GetFileName(fpkFile);

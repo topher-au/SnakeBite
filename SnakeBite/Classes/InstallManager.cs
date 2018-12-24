@@ -39,7 +39,14 @@ namespace SnakeBite
             List<ModEntry> installEntryList = new List<ModEntry>();
             foreach(string modFile in ModFiles) installEntryList.Add(Tools.ReadMetaData(modFile));
 
-            var zeroFiles = GzsLib.ExtractArchive<QarFile>(ZeroPath, "_working0");
+
+            List<string> zeroFiles = new List<string>();
+            bool hasQarZero = ModManager.hasQarZeroFiles(installEntryList);
+            if (hasQarZero)
+            {
+                zeroFiles = GzsLib.ExtractArchive<QarFile>(ZeroPath, "_working0");
+            }
+
             List<string> oneFiles = null;
             bool hasFtexs = ModManager.foundLooseFtexs(installEntryList); 
             if (hasFtexs)
@@ -67,12 +74,14 @@ namespace SnakeBite
                 Debug.LogLine("[Install] Writing FPK data to Settings", Debug.LogLevel.Basic);
                 AddToSettingsFpk(installEntryList, manager, allQarGameFiles, out pullFromVanillas, out pullFromMods, out pathUpdatesExist);
                 InstallMods(ModFiles, manager, pullFromVanillas, pullFromMods, ref zeroFilesHashSet, ref oneFiles, pathUpdatesExist);
-                Debug.LogLine("[Install] Rebuilding 00.dat", Debug.LogLevel.Basic);
-                zeroFiles = zeroFilesHashSet.ToList();
-                zeroFiles.Sort();
-                
 
-                GzsLib.WriteQarArchive(ZeroPath + build_ext, "_working0", zeroFiles, GzsLib.zeroFlags);
+                if (hasQarZero)
+                {
+                    Debug.LogLine("[Install] Rebuilding 00.dat", Debug.LogLevel.Basic);
+                    zeroFiles = zeroFilesHashSet.ToList();
+                    zeroFiles.Sort();
+                    GzsLib.WriteQarArchive(ZeroPath + build_ext, "_working0", zeroFiles, GzsLib.zeroFlags);
+                }
                 if (hasFtexs)
                 {
                     Debug.LogLine("[Install] Rebuilding 01.dat", Debug.LogLevel.Basic);

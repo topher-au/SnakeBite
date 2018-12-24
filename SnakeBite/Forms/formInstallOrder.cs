@@ -31,9 +31,9 @@ namespace SnakeBite.Forms
         public formInstallOrder()
         {
             InitializeComponent();
-            this.panelContent.Controls.Add(noModsNotice);
-            this.panelContent.Controls.Add(modDescription);
-            this.panelContent.Controls.Add(log);
+            panelContent.Controls.Add(noModsNotice);
+            panelContent.Controls.Add(modDescription);
+            panelContent.Controls.Add(log);
         }
 
         public void ShowDialog(List<string> Filenames)
@@ -44,13 +44,13 @@ namespace SnakeBite.Forms
                 mod.filename = file;
                 Mods.Add(mod);
             }
-            this.ShowDialog();
+            ShowDialog();
         }
 
         private void formInstallOrder_Shown(object sender, EventArgs e)
         {
             SetVisiblePage(log);
-            this.CheckAllModConflicts();
+            CheckAllModConflicts();
             refreshInstallList();
         }
 
@@ -74,7 +74,7 @@ namespace SnakeBite.Forms
 
                 selectedIndex = modCount - 1;
                 listInstallOrder.Items[selectedIndex].Selected = true;
-                this.updateModDescription();
+                updateModDescription();
             }
             else // no mods in list, do nothing
             {
@@ -179,7 +179,7 @@ namespace SnakeBite.Forms
             if (listInstallOrder.SelectedItems.Count == 1)
             {
                 selectedIndex = listInstallOrder.SelectedIndices[0];
-                this.updateModDescription();
+                updateModDescription();
             }
         }
 
@@ -221,7 +221,7 @@ namespace SnakeBite.Forms
             log.ClearPage();
             SetVisiblePage(log);
             ProgressWindow.Show("Checking Preinstall Data", "Processing mod data, please wait...", new Action((MethodInvoker)delegate { AddNewPaths(openModFile.FileNames); }), log);
-            this.refreshInstallList();
+            refreshInstallList();
 
         }
 
@@ -247,12 +247,12 @@ namespace SnakeBite.Forms
             log.ClearPage();
             SetVisiblePage(log);
             ProgressWindow.Show("Checking Validity", "Checking mod validity...", new Action((MethodInvoker)delegate { PreinstallManager.FilterModValidity(modFiles); }), log);            
-            if (modFiles.Count == 0) { this.refreshInstallList(); return; }//no valid mods. no mods will be installed
+            if (modFiles.Count == 0) { refreshInstallList(); return; }//no valid mods. no mods will be installed
 
             formLocation = Location; // to center the conflict window
             formSize = Size;
             ProgressWindow.Show("Checking Conflicts", "Checking for conflicts with installed mods...", new Action((MethodInvoker)delegate { PreinstallManager.FilterModConflicts(modFiles); }), log);            
-            if (modFiles.Count == 0) { this.refreshInstallList(); return; } //remaining mods had conflicts, user chose to install none.
+            if (modFiles.Count == 0) { refreshInstallList(); return; } //remaining mods had conflicts, user chose to install none.
 
             string modsToInstall = "";
             for (int i = 0; i < modFiles.Count; i++)
@@ -263,7 +263,10 @@ namespace SnakeBite.Forms
             if (confirmInstall == DialogResult.OK)
             {
                 ProgressWindow.Show("Installing Mod(s)", "Installing, please wait...", new Action((MethodInvoker)delegate { InstallManager.InstallMods(modFiles); }), log);
-                this.Close(); // the form closes upon installation. If the install is cancelled, the form remains open.
+                Close(); // the form closes upon installation. If the install is cancelled, the form remains open.
+            } else
+            {
+                refreshInstallList();
             }
         }
       

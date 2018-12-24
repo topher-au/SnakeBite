@@ -277,7 +277,7 @@ namespace SnakeBite
         {
             if (File.Exists(xmlFilePath)) {
                 string datHash = Tools.GetMd5Hash(ZeroPath) + Tools.GetMd5Hash(OnePath);
-                string hashOld = this.GetGameData().DatHash;
+                string hashOld = GetGameData().DatHash;
                 if (datHash == hashOld)
                 {
                     Debug.LogLine(String.Format("[ValidateDatHash] 00/01 dat hash match:\n{0} (Found Hash) == {1} (Expected Hash)", datHash, hashOld), Debug.LogLevel.All);

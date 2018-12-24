@@ -96,7 +96,7 @@ namespace SnakeBite.QuickMod
             foreach(var File in Directory.GetFiles(SourceFolder, "*", SearchOption.AllDirectories))
             {
                 string ShortFileName = File.Substring(SourceFolder.Length + 1);
-                if(File.ToLower().Contains(".fpk"))
+                if(File.ToLower().EndsWith(".fpk") || File.ToLower().EndsWith(".fpkd"))
                 {
                     // do fpk
                     var fpkCont = GzsLib.ListArchiveContents<FpkFile>(File);

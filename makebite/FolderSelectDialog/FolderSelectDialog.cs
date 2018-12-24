@@ -112,8 +112,8 @@ namespace FolderSelect
             else
             {
                 var fbd = new FolderBrowserDialog();
-                fbd.Description = this.Title;
-                fbd.SelectedPath = this.InitialDirectory;
+                fbd.Description = Title;
+                fbd.SelectedPath = InitialDirectory;
                 fbd.ShowNewFolderButton = false;
                 if (fbd.ShowDialog(new WindowWrapper(hWndOwner)) != DialogResult.OK) return false;
                 ofd.FileName = fbd.SelectedPath;

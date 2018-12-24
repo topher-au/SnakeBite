@@ -204,7 +204,7 @@ namespace makebite
             foreach (string SourceFile in Directory.GetFiles(SourceDir, "*.fpk*", SearchOption.AllDirectories))
             {
                 //tex chunk0\Assets\tpp\pack\collectible\common\col_common_tpp_fpk\Assets\tpp\pack\resident\resident00.fpkl is the only fpkl, don't know what a fpkl is, but gzcore crashes on it.
-                if (SourceFile.Contains(".fpkl"))
+                if (SourceFile.EndsWith(".fpkl") || SourceFile.EndsWith(".xml"))
                 {
                     continue;
                 }
@@ -250,7 +250,7 @@ namespace makebite
                 ulong hash = Tools.NameToHash(qarFilePath);
                 metaData.ModQarEntries.Add(new ModQarEntry() {
                     FilePath = qarFilePath,
-                    Compressed = qarFile.Substring(qarFile.LastIndexOf(".") + 1).Contains("fpk") ? true : false,
+                    Compressed = qarFile.EndsWith(".fpk") || qarFile.EndsWith(".fpkd") ? true : false,
                     ContentHash = Tools.GetMd5Hash(qarFile), Hash = hash
                 });
             }

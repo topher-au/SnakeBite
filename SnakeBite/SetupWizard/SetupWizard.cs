@@ -20,13 +20,13 @@ namespace SnakeBite.SetupWizard
         public SetupWizard()
         {
             InitializeComponent();
-            this.FormClosing += formSetupWizard_Closing;
+            FormClosing += formSetupWizard_Closing;
         }
 
         private void formSetupWizard_Load(object sender, EventArgs e)
         {
             buttonSkip.Visible = false;
-            this.contentPanel.Controls.Add(introPage);
+            contentPanel.Controls.Add(introPage);
         }
 
         private void formSetupWizard_Closing(object sender, FormClosingEventArgs e)
@@ -41,8 +41,8 @@ namespace SnakeBite.SetupWizard
             {
                 case -1:
                     buttonBack.Visible = false;
-                    this.contentPanel.Controls.Clear();
-                    this.contentPanel.Controls.Add(introPage);
+                    contentPanel.Controls.Clear();
+                    contentPanel.Controls.Add(introPage);
                     displayPage = 0;
                     break;
 
@@ -50,8 +50,8 @@ namespace SnakeBite.SetupWizard
                     // move to find installation
                     buttonBack.Visible = true;
                     buttonSkip.Visible = false;
-                    this.contentPanel.Controls.Clear();
-                    this.contentPanel.Controls.Add(findInstallPage);
+                    contentPanel.Controls.Clear();
+                    contentPanel.Controls.Add(findInstallPage);
                     displayPage = 1;
                     break;
 
@@ -70,8 +70,8 @@ namespace SnakeBite.SetupWizard
                     }
                     // show create backup page, without processing panel, enable skip
                     createBackupPage.panelProcessing.Visible = false;
-                    this.contentPanel.Controls.Clear();
-                    this.contentPanel.Controls.Add(createBackupPage);
+                    contentPanel.Controls.Clear();
+                    contentPanel.Controls.Add(createBackupPage);
                     buttonSkip.Visible = true;
 
                     displayPage = 2;
@@ -127,8 +127,8 @@ namespace SnakeBite.SetupWizard
 
                     // move to merge dats
                     mergeDatPage.panelProcessing.Visible = false;
-                    this.contentPanel.Controls.Clear();
-                    this.contentPanel.Controls.Add(mergeDatPage);
+                    contentPanel.Controls.Clear();
+                    contentPanel.Controls.Add(mergeDatPage);
                     buttonNext.Enabled = true;
 
                     displayPage = 3;
@@ -199,8 +199,8 @@ namespace SnakeBite.SetupWizard
         {
             buttonSkip.Visible = false;
             mergeDatPage.panelProcessing.Visible = false;
-            this.contentPanel.Controls.Clear();
-            this.contentPanel.Controls.Add(mergeDatPage);
+            contentPanel.Controls.Clear();
+            contentPanel.Controls.Add(mergeDatPage);
             buttonNext.Enabled = true;
 
             displayPage = 3;
