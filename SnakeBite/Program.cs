@@ -154,12 +154,13 @@ namespace SnakeBite
             }
             else
             {
-                if (updateQarFilenames)
-                    manager.updateQarFileNames();
-                bool checkDat = false;
-
                 try
                 {
+                    bool checkDat = false;
+
+                    if (updateQarFilenames)
+                        manager.updateQarFileNames();
+
                     checkDat = manager.ValidateDatHash();
 
                     if (!checkDat || manager.IsVanilla0001DatHash())
@@ -185,6 +186,15 @@ namespace SnakeBite
                 }
                 catch (InvalidOperationException e)
                 {
+                    if (File.Exists(GamePaths.OnePath) && File.Exists(GamePaths.ZeroPath))
+                    {
+                        if (manager.IsVanilla0001Size())
+                        {
+                            File.Delete(GamePaths.SnakeBiteSettings);
+                            SetupWizard.SetupWizard setupWizard = new SetupWizard.SetupWizard();
+                            setupWizard.ShowDialog();
+                        }
+                    }
                     MessageBox.Show(string.Format("Critical Error: SnakeBite could not read settings data! \n\n({0})\n\nRestore your game files with backups, MGSVPreset files, or revalidating through Steam!", GamePaths.SnakeBiteSettings), "Failed To Read Settings", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     Debug.LogLine("Error: ValidateDatHash failed: " + e);
                 } 
