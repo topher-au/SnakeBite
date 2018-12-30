@@ -97,7 +97,7 @@ namespace SnakeBite.QuickMod
         {
             List<string> InstallFileList = new List<string>();
             InstallFileList.Add(OutputFile);
-            ProgressWindow.Show("Installing Mod", String.Format("Installing {0}, please wait...", cm.textModName.Text), new Action((MethodInvoker)delegate { ModManager.InstallMods(InstallFileList); }), log);
+            ProgressWindow.Show("Installing Mod", String.Format("Installing {0}, please wait...", cm.textModName.Text), new Action((MethodInvoker)delegate { InstallManager.InstallMods(InstallFileList); }), log);
         }
 
         private void buttonNext_Click(object sender, EventArgs e)

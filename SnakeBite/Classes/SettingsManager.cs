@@ -13,7 +13,12 @@ namespace SnakeBite
     {
         internal static string vanillaDatHash = "41317C4D473D9A3DB6C1169E5ACDD35849FCF50601FD41F5A171E1055C642093"; //expected original hash for 1.0.15.0
         internal static Version IntendedGameVersion = new Version(1, 0, 15, 0); // GAMEVERSION
-        
+
+        internal const int MAXZEROSIZE = 495880000; // ballpark estimates of vanilla archive filesizes
+        internal const int MINZEROSIZE = 495860000;
+        internal const int MAXONESIZE = 264930000;
+        internal const int MINONESIZE = 264910000;
+
         public string xmlFilePath;
 
         public SettingsManager(string filePath)
@@ -248,9 +253,9 @@ namespace SnakeBite
         {
             var zeroSize = new System.IO.FileInfo(ZeroPath).Length;
             var oneSize = new System.IO.FileInfo(OnePath).Length;
-            if (zeroSize < 495880000 && zeroSize > 495860000) // give or take 10 kb
+            if (MINZEROSIZE < zeroSize && zeroSize < MAXZEROSIZE)
             {
-                if (oneSize < 264930000 && oneSize > 264910000)
+                if (MINONESIZE < oneSize && oneSize < MAXONESIZE)
                 {
                     return true;
                 }

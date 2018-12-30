@@ -11,6 +11,9 @@ namespace SnakeBite
     static class PresetManager
     {
 
+        /// <summary>
+        /// Creates a .MGSVPreset file for the mods that are currently installed
+        /// </summary>
         public static bool SavePreset(string presetFilePath)
         {
             bool success = false;
@@ -57,6 +60,9 @@ namespace SnakeBite
             return success;
         }
 
+        /// <summary>
+        /// overwrites existing mods with the set of mods stored in the .MGSVPreset file
+        /// </summary>
         public static bool LoadPreset(string presetFilePath)
         {
             bool panicMode = (!File.Exists(ZeroPath) || !File.Exists(OnePath) || !File.Exists(SnakeBiteSettings)); 

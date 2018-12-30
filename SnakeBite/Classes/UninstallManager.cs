@@ -14,14 +14,20 @@ namespace SnakeBite
 {
     class UninstallManager
     {
+        private static SettingsManager manager = new SettingsManager(SnakeBiteSettings + build_ext);
+
         public static bool UninstallMods(CheckedListBox.CheckedIndexCollection modIndices, bool skipCleanup = false) // Uninstalls mods based on their indices in the list
         {
             Stopwatch stopwatch = new Stopwatch();
             stopwatch.Start();
             Debug.LogLine("[Uninstall] Start", Debug.LogLevel.Basic);
+
+            // initial cleanup
             ModManager.ClearBuildFiles(ZeroPath, OnePath, SnakeBiteSettings, SavePresetPath);
             ModManager.ClearSBGameDir();
             ModManager.CleanupFolders();
+
+            // backup preset build
             if (Properties.Settings.Default.AutosaveRevertPreset == true)
             {
                 Debug.LogLine("[Uninstall] Saving RevertChanges.MGSVPreset.SB_Build", Debug.LogLevel.Basic);
@@ -32,10 +38,10 @@ namespace SnakeBite
                 Debug.LogLine("[Uninstall] Skipping RevertChanges.MGSVPreset Save", Debug.LogLevel.Basic);
             }
 
-            File.Copy(SnakeBiteSettings, SnakeBiteSettings + build_ext, true);
             GzsLib.LoadDictionaries();
-            SettingsManager manager = new SettingsManager(SnakeBiteSettings + build_ext);
+            File.Copy(SnakeBiteSettings, SnakeBiteSettings + build_ext, true);
             List<ModEntry> mods = manager.GetInstalledMods();
+            Debug.LogLine("[Uninstall] Skipping RevertChanges.MGSVPreset Save", Debug.LogLevel.Basic);
             List<ModEntry> selectedMods = new List<ModEntry>();
             foreach (int index in modIndices)
             {
@@ -47,8 +53,9 @@ namespace SnakeBite
             bool hasQarZero = ModManager.hasQarZeroFiles(selectedMods);
             if (hasQarZero)
             {
+                // if necessary, extracts 00.dat and creates a list of filenames, which is pruned throughout the uninstall process and repacked at the end.
                 Debug.LogLine("[Uninstall] Extracting 00.dat to _working0", Debug.LogLevel.Basic);
-                zeroFiles = GzsLib.ExtractArchive<QarFile>(ZeroPath, "_working0"); // extracts 00.dat and creates a list of filenames, which is pruned throughout the uninstall process and repacked at the end.
+                zeroFiles = GzsLib.ExtractArchive<QarFile>(ZeroPath, "_working0"); 
 
             }
 
@@ -56,9 +63,11 @@ namespace SnakeBite
             bool hasFtexs = ModManager.foundLooseFtexs(selectedMods);
             if (hasFtexs)
             {
+                // if necessary, extracts 01.dat and creates a list of filenames similar to zeroFiles. only textures are pruned from the list.
                 Debug.LogLine("[Uninstall] Extracting 01.dat to _working1", Debug.LogLevel.Basic);
-                oneFiles = GzsLib.ExtractArchive<QarFile>(OnePath, "_working1"); // if necessary, extracts 01.dat and creates a list of filenames similar to zeroFiles. only textures are pruned from the list.
+                oneFiles = GzsLib.ExtractArchive<QarFile>(OnePath, "_working1");
             }
+
             //end of qar extraction
             GameData gameData = manager.GetGameData();
             ModManager.ValidateGameData(ref gameData, ref zeroFiles);
@@ -67,8 +76,10 @@ namespace SnakeBite
             var baseGameFiles = GzsLib.ReadBaseData();
             try
             {
-                ModManager.WriteGameDirSbBuild();
-                UninstallMods(selectedMods, ref zeroFiles, ref oneFiles, manager);
+                ModManager.WriteGameDirSbBuild(); // creates a copy of snakebite.xml's managed gamedir files (unmanaged files are not copied)
+
+                // begin uninstall
+                UninstallMods(selectedMods, ref zeroFiles, ref oneFiles);
 
                 if(hasQarZero)
                 {
@@ -83,16 +94,18 @@ namespace SnakeBite
                     oneFiles.Sort();
                     GzsLib.WriteQarArchive(OnePath + build_ext, "_working1", oneFiles, GzsLib.oneFlags);
                 }
+                // end of qar rebuild
+                
+                // overwrite old mod data
+                ModManager.PromoteGameDirFiles();
+                ModManager.PromoteBuildFiles(ZeroPath, OnePath, SnakeBiteSettings, SavePresetPath);
                 
                 if (!skipCleanup)
                 {
                     ModManager.CleanupFolders();
+                    ModManager.ClearSBGameDir();
                 }
 
-                ModManager.PromoteGameDirFiles();
-                ModManager.PromoteBuildFiles(ZeroPath, OnePath, SnakeBiteSettings, SavePresetPath);
-
-                ModManager.ClearSBGameDir();
                 Debug.LogLine("[Uninstall] Uninstall complete", Debug.LogLevel.Basic);
                 stopwatch.Stop();
                 Debug.LogLine($"[Uninstall] Uninstall took {stopwatch.ElapsedMilliseconds} ms", Debug.LogLevel.Basic);
@@ -100,10 +113,12 @@ namespace SnakeBite
             }
             catch (Exception e)
             {
+                Debug.LogLine("[Uninstall] Exception: " + e, Debug.LogLevel.Basic);
                 stopwatch.Stop();
                 Debug.LogLine($"[Uninstall] Uninstall failed at {stopwatch.ElapsedMilliseconds} ms", Debug.LogLevel.Basic);
-                Debug.LogLine("[Uninstall] Exception: " + e, Debug.LogLevel.Basic);
                 MessageBox.Show("An error has occurred during the uninstallation process and SnakeBite could not uninstall the selected mod(s).\nException: " + e);
+
+                // clean up failed files
                 ModManager.ClearBuildFiles(ZeroPath, OnePath, SnakeBiteSettings, SavePresetPath);
                 ModManager.CleanupFolders();
                 ModManager.ClearSBGameDir();
@@ -111,56 +126,121 @@ namespace SnakeBite
             }
         }//UninstallMod batch
 
-        private static void UninstallMods(List<ModEntry> uninstallMods, ref List<string> zeroFiles, ref List<string> oneFilesList, SettingsManager manager)
+        private static void UninstallMods(List<ModEntry> uninstallMods, ref List<string> zeroFiles, ref List<string> oneFilesList)
         {
             Debug.LogLine(String.Format("[Uninstall] Bulk uninstall started"), Debug.LogLevel.Basic);
-            List<string> fullRemoveQarPaths; // for fpk/fpkd files that can be removed altogether
-            List<ModQarEntry> partialEditQarEntries; // for files that need to be rebuilt using base archives
-            List<ModFpkEntry> partialRemoveFpkEntries;
+            List<string> fullRemoveQarPaths; // for qar files that can be removed altogether
+            List<ModQarEntry> partialEditQarEntries; // for qar files that need to be rebuilt using base archives
+            List<ModFpkEntry> partialRemoveFpkEntries; // of the qar files that need to be rebuilt, these are the fpk files that will be removed from them
+
             Debug.LogLine("[Uninstall] Building fpk removal lists", Debug.LogLevel.Basic);
-            GetFpkRemovalLists(uninstallMods, out fullRemoveQarPaths, out partialEditQarEntries, out partialRemoveFpkEntries, manager);
+            GetFpkRemovalLists(uninstallMods, out fullRemoveQarPaths, out partialEditQarEntries, out partialRemoveFpkEntries);
+
             Debug.LogLine("[Uninstall] Unmerging any fpk entries", Debug.LogLevel.Basic);
-            UnmergePackFiles(partialEditQarEntries, partialRemoveFpkEntries, manager);
+            UnmergePackFiles(partialEditQarEntries, partialRemoveFpkEntries);
+
             Debug.LogLine("[Uninstall] Removing any unmodified fpk entries", Debug.LogLevel.Basic);
-            RemoveDemoddedQars(ref zeroFiles, fullRemoveQarPaths, manager);
+            RemoveDemoddedQars(ref zeroFiles, fullRemoveQarPaths);
 
             GameData gameData = manager.GetGameData();
             foreach (ModEntry uninstallMod in uninstallMods)
             {
                 manager.RemoveMod(uninstallMod);
-                Debug.LogLine(string.Format("[Uninstall] Removing any game dir file entries in {0}", uninstallMod.Name), Debug.LogLevel.Basic);
+
+                Debug.LogLine(string.Format("[Uninstall] Removing any game dir file entries for {0}", uninstallMod.Name), Debug.LogLevel.Basic);
                 UninstallGameDirEntries(uninstallMod, ref gameData);
-                Debug.LogLine(String.Format("[Uninstall] Removing any loose textures in {0}", uninstallMod.Name), Debug.LogLevel.Basic); // begin loose texture check for current mod.
+
+                Debug.LogLine(String.Format("[Uninstall] Removing any loose textures for {0}", uninstallMod.Name), Debug.LogLevel.Basic);
                 UninstallLooseFtexs(uninstallMod, ref oneFilesList, ref gameData);
             }
             manager.SetGameData(gameData);
         }
 
-        private static void RemoveDemoddedQars(ref List<string> zeroFiles, List<string> fullRemoveQarPaths, SettingsManager manager)
+        private static void GetFpkRemovalLists(List<ModEntry> uninstallMods, out List<string> fullRemoveQarPaths, out List<ModQarEntry> partialEditQarEntries, out List<ModFpkEntry> partialEditFpkEntries)
         {
-            // Remove the specified files from the mod ecosystem since they no longer contain modded data
-            zeroFiles = zeroFiles.Except(fullRemoveQarPaths.Select(entry => Tools.ToWinPath(entry))).ToList();
-            List<ModEntry> installedMods = manager.GetInstalledMods();
-            GameData gameData = manager.GetGameData();
-            foreach(string fullRemoveQarPath in fullRemoveQarPaths)
+            // add all of the to-be-uninstalled fpk entries to a list
+            List<string> fpkFilesToUninstall = new List<string>();
+            foreach (ModEntry modToUninstall in uninstallMods)
             {
-                //Debug.LogLine(string.Format("DEMODDED QAR: {0}", fullRemoveQarPath), Debug.LogLevel.Basic);
-                int indexToRemove = gameData.GameQarEntries.FindIndex(entry => entry.FilePath == fullRemoveQarPath);
-                if (indexToRemove >= 0) gameData.GameQarEntries.RemoveAt(indexToRemove);
-                gameData.GameFpkEntries = gameData.GameFpkEntries.Where(entry => entry.FpkFile != fullRemoveQarPath).ToList();
-                foreach (ModEntry installedMod in installedMods)
+                foreach (ModFpkEntry fpkToUninstall in modToUninstall.ModFpkEntries)
                 {
-                    indexToRemove = installedMod.ModQarEntries.FindIndex(entry => entry.FilePath == fullRemoveQarPath);
-                    if (indexToRemove >= 0) installedMod.ModQarEntries.RemoveAt(indexToRemove);
-                    installedMod.ModFpkEntries = installedMod.ModFpkEntries.Where(entry => entry.FpkFile != fullRemoveQarPath).ToList();
+                    fpkFilesToUninstall.Add(fpkToUninstall.FilePath + fpkToUninstall.FpkFile);
                 }
             }
-            manager.SetInstalledMods(installedMods);
-            manager.SetGameData(gameData);
 
+            List<string> remainingModQarPaths = new List<string>();
+            foreach (ModEntry mod in manager.GetInstalledMods())
+            {
+                if (uninstallMods.Any(e => e.Name == mod.Name)) continue;
+                foreach (ModFpkEntry remainingFpk in mod.ModFpkEntries)
+                {
+                    string remainingFpkString = remainingFpk.FilePath + remainingFpk.FpkFile;
+                    if (fpkFilesToUninstall.Any(entry => (entry == remainingFpkString)))
+                    {
+                        //Debug.LogLine("(found duplicate, not adding to remaining fpkfiles: " + remainingFpk.FilePath);
+                        continue;
+                    }
+
+                    if (!remainingModQarPaths.Contains(remainingFpk.FpkFile))
+                    {
+                        //Debug.LogLine("(found in mods not marked for uninstallation) new qar added to remainingmodqarpaths: " + remainingFpk.FpkFile);
+                        remainingModQarPaths.Add(remainingFpk.FpkFile);
+                    }
+                }
+            }
+
+            //Build lists for two categories of qar files:
+            fullRemoveQarPaths = new List<string>(); // for files that can be removed altogether
+            partialEditQarEntries = new List<ModQarEntry>(); // for files that need to be edited using base archives
+            partialEditFpkEntries = new List<ModFpkEntry>(); // Packed files within partialEditQarEntries that either need to be repaired (overwritten by a vanilla file) or removed from the Qar
+
+            GameData gameData = manager.GetGameData();
+            // loop through every to-be-uninstalled mod to sort each Qar file into one of the two categories
+            foreach (ModEntry uninstallMod in uninstallMods)
+            {
+                foreach (ModQarEntry uninstallQarEntry in uninstallMod.ModQarEntries)
+                {
+                    string uninstallQarFilePath = uninstallQarEntry.FilePath;
+                    if (partialEditQarEntries.Any(entry => entry.FilePath == uninstallQarFilePath) || fullRemoveQarPaths.Contains(uninstallQarFilePath)) continue; // a to-be-uninstalled mod has already categorised this file
+
+                    if (!(uninstallQarFilePath.EndsWith(".fpk") || uninstallQarFilePath.EndsWith(".fpkd")))
+                    {
+                        fullRemoveQarPaths.Add(uninstallQarFilePath);
+                        //Debug.LogLine("(file is not a .fpk or .fpkd) new fullRemoveQarPath: " + uninstallQarFilePath);
+                        continue;
+                    }
+
+                    ModQarEntry existingGameQar = gameData.GameQarEntries.FirstOrDefault(entry => entry.FilePath == uninstallQarFilePath); // switches over to gameData QarEntries, since they know the vanilla archives of the original Qar file.
+                    if (existingGameQar == null) existingGameQar = uninstallQarEntry; // Qar entries that aren't merged with vanilla qar entries (non-native fpk/fpkd files)
+
+                    if (remainingModQarPaths.Contains(uninstallQarFilePath))
+                    {
+                        partialEditQarEntries.Add(existingGameQar);
+                        //Debug.LogLine("(Qar contained in remaining mod qar paths)New PartialEditQarEntry: " + existingGameQar);
+                    }  // the file is being used in a not-to-be-uninstalled mod
+                    else
+                    {
+                        fullRemoveQarPaths.Add(uninstallQarFilePath);
+                        //Debug.LogLine("(Qar NOT contained in remaining mod qar paths)New FullRemoveQarPaths " + uninstallQarFilePath);
+                    } // the file can be discarded now that no mod(s) have files for it
+                }
+                // For the files categorised as partially affected by the uninstall, list their packed files which need to be uninstalled
+                foreach (ModQarEntry partialEditQarEntry in partialEditQarEntries)
+                    foreach (ModFpkEntry modFpkEntry in uninstallMod.ModFpkEntries)
+                    {
+                        //Debug.LogLine("(Nested Foreach loop) PartialEditQarEntry: " + partialEditQarEntry.FilePath);
+                        if (modFpkEntry.FpkFile == partialEditQarEntry.FilePath)
+                        {
+                            modFpkEntry.FpkFile = modFpkEntry.FpkFile;
+                            partialEditFpkEntries.Add(modFpkEntry);
+                            Debug.LogLine(string.Format("[RemovalList] Fpk flagged for removal: {0}", modFpkEntry.FilePath), Debug.LogLevel.Basic);
+                        }
+                    }
+
+            }
         }
 
-        private static void UnmergePackFiles(List<ModQarEntry> partialEditQarEntries, List<ModFpkEntry> partialRemoveFpkEntries, SettingsManager manager)
+        private static void UnmergePackFiles(List<ModQarEntry> partialEditQarEntries, List<ModFpkEntry> partialRemoveFpkEntries)
         {
             GameData gameData = manager.GetGameData();
             List<ModFpkEntry> addedRepairFpkEntries = new List<ModFpkEntry>();
@@ -207,7 +287,7 @@ namespace SnakeBite
 
                 var buildFiles = moddedFpkFiles.Except(removeFilePathList).ToList();
                 GzsLib.WriteFpkArchive(workingZeroQarPath, "_build", buildFiles); // writes the pack back to _working folder (leaving out the non-native fpk files)
-                foreach(string removeFilePath in removeFilePathList)
+                foreach (string removeFilePath in removeFilePathList)
                 {
                     int indexToRemove = gameData.GameFpkEntries.FindIndex(entry => entry.FilePath == removeFilePath);
                     if (indexToRemove >= 0) gameData.GameFpkEntries.RemoveAt(indexToRemove);
@@ -231,7 +311,7 @@ namespace SnakeBite
                     }
                 }
 
-                foreach(string qarPathFound in qarPathsFound)
+                foreach (string qarPathFound in qarPathsFound)
                 {
                     if (installedMod.ModFpkEntries.FirstOrDefault(entry => entry.FpkFile == qarPathFound) == null) //when the duplicate fpk file(s) were removed, there was nothing left in the modded qar.
                     {
@@ -242,115 +322,31 @@ namespace SnakeBite
             }
             manager.SetInstalledMods(installedMods);
             manager.SetGameData(gameData);
-
-
-
-
         }
 
-        private static void GetFpkRemovalLists(List<ModEntry> uninstallMods, out List<string> fullRemoveQarPaths, out List<ModQarEntry> partialEditQarEntries, out List<ModFpkEntry> partialEditFpkEntries, SettingsManager manager)
+        private static void RemoveDemoddedQars(ref List<string> zeroFiles, List<string> fullRemoveQarPaths)
         {
-            // add all of the not-to-be-uninstalled Qar files to a remainder list
-            List<string> fpkFilesToUninstall = new List<string>();
-            foreach(ModEntry modToUninstall in uninstallMods)
-            {
-                foreach(ModFpkEntry fpkToUninstall in modToUninstall.ModFpkEntries)
-                {
-                    fpkFilesToUninstall.Add(fpkToUninstall.FilePath + fpkToUninstall.FpkFile);
-                }
-            }
-            List<string> remainingModQarPaths = new List<string>();
-            foreach (ModEntry mod in manager.GetInstalledMods())
-            {
-                if (uninstallMods.Any(e => e.Name == mod.Name)) continue;
-                foreach (ModFpkEntry remainingFpk in mod.ModFpkEntries)
-                {
-                    string remainingFpkString = remainingFpk.FilePath + remainingFpk.FpkFile;
-                    if (fpkFilesToUninstall.Any(entry => (entry == remainingFpkString)))
-                    {
-                        //Debug.LogLine("(found duplicate, not adding to remaining fpkfiles: " + remainingFpk.FilePath);
-                        continue;
-                    }
-
-                    if (!remainingModQarPaths.Contains(remainingFpk.FpkFile))
-                    {
-                        //Debug.LogLine("(found in mods not marked for uninstallation) new qar added to remainingmodqarpaths: " + remainingFpk.FpkFile);
-                        remainingModQarPaths.Add(remainingFpk.FpkFile);
-                    }
-                }
-            }
-
-            //Build lists for two categories of qar files:
-            fullRemoveQarPaths = new List<string>(); // for files that can be removed altogether
-            partialEditQarEntries = new List<ModQarEntry>(); // for files that need to be edited using base archives
-            partialEditFpkEntries = new List<ModFpkEntry>(); // Packed files within partialEditQarEntries that either need to be repaired (overwritten by a vanilla file) or removed from the Qar
-
+            // Remove the specified files from the mod ecosystem since they no longer contain modded data
+            zeroFiles = zeroFiles.Except(fullRemoveQarPaths.Select(entry => Tools.ToWinPath(entry))).ToList();
+            List<ModEntry> installedMods = manager.GetInstalledMods();
             GameData gameData = manager.GetGameData();
-            // loop through every to-be-uninstalled mod to sort each Qar file into one of the two categories
-            foreach (ModEntry uninstallMod in uninstallMods)
+            foreach(string fullRemoveQarPath in fullRemoveQarPaths)
             {
-                foreach (ModQarEntry uninstallQarEntry in uninstallMod.ModQarEntries)
+                //Debug.LogLine(string.Format("DEMODDED QAR: {0}", fullRemoveQarPath), Debug.LogLevel.Basic);
+                int indexToRemove = gameData.GameQarEntries.FindIndex(entry => entry.FilePath == fullRemoveQarPath);
+                if (indexToRemove >= 0) gameData.GameQarEntries.RemoveAt(indexToRemove);
+                gameData.GameFpkEntries = gameData.GameFpkEntries.Where(entry => entry.FpkFile != fullRemoveQarPath).ToList();
+                foreach (ModEntry installedMod in installedMods)
                 {
-                    string uninstallQarFilePath = uninstallQarEntry.FilePath;
-                    if (partialEditQarEntries.Any(entry => entry.FilePath == uninstallQarFilePath) || fullRemoveQarPaths.Contains(uninstallQarFilePath)) continue; // a to-be-uninstalled mod has already categorised this file
-
-                    if (!(uninstallQarFilePath.EndsWith(".fpk") || uninstallQarFilePath.EndsWith(".fpkd")))
-                    {
-                        fullRemoveQarPaths.Add(uninstallQarFilePath);
-                        //Debug.LogLine("(file is not a .fpk or .fpkd) new fullRemoveQarPath: " + uninstallQarFilePath);
-                        continue;
-                    }
-                    
-                    ModQarEntry existingGameQar = gameData.GameQarEntries.FirstOrDefault(entry => entry.FilePath == uninstallQarFilePath); // switches over to gameData QarEntries, since they know the vanilla archives of the original Qar file.
-                    if (existingGameQar == null) existingGameQar = uninstallQarEntry; // Qar entries that aren't merged with vanilla qar entries (non-native fpk/fpkd files)
-
-                    if (remainingModQarPaths.Contains(uninstallQarFilePath)) {
-                        partialEditQarEntries.Add(existingGameQar);
-                        //Debug.LogLine("(Qar contained in remaining mod qar paths)New PartialEditQarEntry: " + existingGameQar);
-                    }  // the file is being used in a not-to-be-uninstalled mod
-                    else {
-                        fullRemoveQarPaths.Add(uninstallQarFilePath);
-                        //Debug.LogLine("(Qar NOT contained in remaining mod qar paths)New FullRemoveQarPaths " + uninstallQarFilePath);
-                    } // the file can be discarded now that no mod(s) have files for it
+                    indexToRemove = installedMod.ModQarEntries.FindIndex(entry => entry.FilePath == fullRemoveQarPath);
+                    if (indexToRemove >= 0) installedMod.ModQarEntries.RemoveAt(indexToRemove);
+                    installedMod.ModFpkEntries = installedMod.ModFpkEntries.Where(entry => entry.FpkFile != fullRemoveQarPath).ToList();
                 }
-                // For the files categorised as partially affected by the uninstall, list their packed files which need to be uninstalled
-                foreach (ModQarEntry partialEditQarEntry in partialEditQarEntries)
-                    foreach (ModFpkEntry modFpkEntry in uninstallMod.ModFpkEntries)
-                    {
-                        //Debug.LogLine("(Nested Foreach loop) PartialEditQarEntry: " + partialEditQarEntry.FilePath);
-                        if (modFpkEntry.FpkFile == partialEditQarEntry.FilePath)
-                        {
-                            modFpkEntry.FpkFile = modFpkEntry.FpkFile;
-                            partialEditFpkEntries.Add(modFpkEntry);
-                            Debug.LogLine(string.Format("[RemovalList] Fpk flagged for removal: {0}", modFpkEntry.FilePath), Debug.LogLevel.Basic);
-                        }
-                    }
-
             }
+            manager.SetInstalledMods(installedMods);
+            manager.SetGameData(gameData);
+
         }
-        private static void UninstallLooseFtexs(ModEntry mod, ref List<string> oneFilesList, ref GameData gameData)
-        {
-            foreach (ModQarEntry qarEntry in mod.ModQarEntries) // check all qar entries in current mod
-            {
-                if (qarEntry.FilePath.Contains(".ftex"))
-                { // if the file is an ftex or ftexs
-                    string destFile = Path.Combine("_working1", qarEntry.FilePath);
-                    if (File.Exists(destFile)) // check if the file exists in the extracted 01
-                    {
-                        try
-                        {
-                            File.Delete(destFile); // deletes the specified file
-                        }
-                        catch (IOException e)
-                        {
-                            Console.WriteLine("[Uninstall] Could not delete: " + e.Message);
-                        }
-                    }
-                    gameData.GameQarEntries.RemoveAll(file => Tools.CompareHashes(file.FilePath, qarEntry.FilePath)); //remove all mentions of the deleted texture from snakebite.xml
-                    oneFilesList.RemoveAll(file => Tools.CompareHashes(file, qarEntry.FilePath)); // removes all mentions of deleted texture from 01.dat's repack list
-                }
-            }
-        }//UninstallLooseFtexs
 
         private static void UninstallGameDirEntries(ModEntry mod, ref GameData gameData)
         {
@@ -390,5 +386,29 @@ namespace SnakeBite
                 }
             }//foreach fileEntryDirs
         }//UninstallGameDirEntries
+
+        private static void UninstallLooseFtexs(ModEntry mod, ref List<string> oneFilesList, ref GameData gameData)
+        {
+            foreach (ModQarEntry qarEntry in mod.ModQarEntries) // check all qar entries in current mod
+            {
+                if (qarEntry.FilePath.Contains(".ftex"))
+                { // if the file is an ftex or ftexs
+                    string destFile = Path.Combine("_working1", qarEntry.FilePath);
+                    if (File.Exists(destFile)) // check if the file exists in the extracted 01
+                    {
+                        try
+                        {
+                            File.Delete(destFile); // deletes the specified file
+                        }
+                        catch (IOException e)
+                        {
+                            Console.WriteLine("[Uninstall] Could not delete: " + e.Message);
+                        }
+                    }
+                    gameData.GameQarEntries.RemoveAll(file => Tools.CompareHashes(file.FilePath, qarEntry.FilePath)); //remove all mentions of the deleted texture from snakebite.xml
+                    oneFilesList.RemoveAll(file => Tools.CompareHashes(file, qarEntry.FilePath)); // removes all mentions of deleted texture from 01.dat's repack list
+                }
+            }
+        }//UninstallLooseFtexs
     }
 }
