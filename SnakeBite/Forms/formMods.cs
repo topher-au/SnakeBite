@@ -3,6 +3,7 @@ using SnakeBite.ModPages;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Windows.Forms;
@@ -31,8 +32,17 @@ namespace SnakeBite
             panelContent.Controls.Add(log);
             panelContent.Controls.Add(modDescription);
             RefreshInstalledMods(true);
-
-            Location = Properties.Settings.Default.formModsLocation;
+            foreach (Screen screen in Screen.AllScreens)
+            {
+                if (screen.WorkingArea.Contains(Properties.Settings.Default.formModsLocation))
+                {
+                    Location = Properties.Settings.Default.formModsLocation;
+                }
+                else
+                {
+                    Location = new Point(0, 0);
+                }
+            }
             Size = Properties.Settings.Default.formModsSize;
 
             if (Properties.Settings.Default.formModsMaximized == true)

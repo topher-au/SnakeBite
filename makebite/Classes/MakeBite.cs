@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Windows.Forms;
 
 namespace makebite
 {
@@ -183,17 +184,73 @@ namespace makebite
         public static void BuildArchive(string SourceDir, ModEntry metaData, string outputFilePath)
         {
             Debug.LogLine($"[BuildArchive] {SourceDir}.");
+            HashingExtended.ReadDictionary();
             string buildDir = Directory.GetCurrentDirectory() + "\\build";
             if (Directory.Exists(buildDir)) Directory.Delete(buildDir, true);
 
             Directory.CreateDirectory("_build");
 
+            List<string> fpkFolders = ListFpkFolders(SourceDir);
+            for(int i = fpkFolders.Count - 1; i >= 0; i--)
+            {
+                string fpkFolder = fpkFolders[i].Substring(SourceDir.Length + 1);
+                if (!fpkFolder.StartsWith("Assets"))
+                {
+                    string updatedFolderName = HashingExtended.UpdateName(fpkFolder.Replace("_fpk", ".fpk"));
+                    if(updatedFolderName != null)
+                    {
+                        updatedFolderName = SourceDir + updatedFolderName.Replace(".fpk", "_fpk").Replace('/','\\');
+                        if (fpkFolders.Contains(updatedFolderName))
+                        {
+                            fpkFolders.Remove(fpkFolders[i]);
+                        }
+                    }
+                }
+            }
+
+            List<string> fpkFiles = Directory.GetFiles(SourceDir, "*.fpk*", SearchOption.AllDirectories).ToList();
+            for (int i = fpkFiles.Count - 1; i >= 0; i--)
+            {
+                string fpkFile = fpkFiles[i].Substring(SourceDir.Length + 1);
+                if (!fpkFile.StartsWith("Assets"))
+                {
+                    string updatedFileName = HashingExtended.UpdateName(fpkFile);
+                    if(updatedFileName != null)
+                    {
+                        updatedFileName = SourceDir + updatedFileName.Replace('/', '\\');
+                        if (fpkFiles.Contains(updatedFileName))
+                        {
+                            fpkFiles.Remove(fpkFiles[i]);
+                        }
+                    }
+                }
+            }
+
+            List<string> qarFiles = ListQarFiles(SourceDir);
+            for (int i = qarFiles.Count - 1; i >= 0; i--)
+            {
+                string qarFile = qarFiles[i].Substring(SourceDir.Length + 1);
+                if(!qarFile.StartsWith("Assets"))
+                {
+                    string updatedQarName = HashingExtended.UpdateName(qarFile);
+                    if (updatedQarName != null)
+                    {
+                        updatedQarName = SourceDir + updatedQarName.Replace('/', '\\');
+                        if (qarFiles.Contains(updatedQarName))
+                        {
+                            MessageBox.Show(string.Format("{0} was not added to the build, because {1} (the unhashed filename of {0}) already exists in the mod directory.", Path.GetFileName(qarFiles[i]), Path.GetFileName(updatedQarName)));
+                            qarFiles.Remove(qarFiles[i]);
+                        }
+                    }
+                }
+            }
+
             // check for FPKs that must be built and build
             metaData.ModFpkEntries = new List<ModFpkEntry>();
             List<string> builtFpks = new List<string>();
-            foreach (string FpkDir in ListFpkFolders(SourceDir))
+            foreach (string FpkFullDir in fpkFolders)
             {
-                foreach (ModFpkEntry fpkEntry in BuildFpk(FpkDir, SourceDir))
+                foreach (ModFpkEntry fpkEntry in BuildFpk(FpkFullDir, SourceDir))
                 {
                     metaData.ModFpkEntries.Add(fpkEntry);
                     if (!builtFpks.Contains(fpkEntry.FpkFile)) builtFpks.Add(fpkEntry.FpkFile);
@@ -201,14 +258,13 @@ namespace makebite
             }
 
             // check for other FPKs and build fpkentry data
-            foreach (string SourceFile in Directory.GetFiles(SourceDir, "*.fpk*", SearchOption.AllDirectories))
+            foreach (string SourceFile in fpkFiles)
             {
                 //tex chunk0\Assets\tpp\pack\collectible\common\col_common_tpp_fpk\Assets\tpp\pack\resident\resident00.fpkl is the only fpkl, don't know what a fpkl is, but gzcore crashes on it.
                 if (SourceFile.EndsWith(".fpkl") || SourceFile.EndsWith(".xml"))
                 {
                     continue;
                 }
-
                 string FileName = Tools.ToQarPath(SourceFile.Substring(SourceDir.Length));
                 if (!builtFpks.Contains(FileName))
                 {
@@ -240,10 +296,11 @@ namespace makebite
 
             // build QAR entries
             metaData.ModQarEntries = new List<ModQarEntry>();
-            foreach (string qarFile in ListQarFiles(SourceDir))
+            foreach (string qarFile in qarFiles)
             {
                 string subDir = qarFile.Substring(0, qarFile.LastIndexOf("\\")).Substring(SourceDir.Length).TrimStart('\\'); // the subdirectory for XML output
                 string qarFilePath = Tools.ToQarPath(qarFile.Substring(SourceDir.Length));
+                
                 if (!Directory.Exists(Path.Combine("_build", subDir))) Directory.CreateDirectory(Path.Combine("_build", subDir)); // create file structure
                 File.Copy(qarFile, Path.Combine("_build", Tools.ToWinPath(qarFilePath)), true);
 

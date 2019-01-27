@@ -147,7 +147,7 @@ namespace SnakeBite
                             string workingOldPath = Path.Combine("_extr", Tools.ToWinPath(modQar.FilePath));
                             string workingNewPath = Path.Combine("_extr", Tools.ToWinPath(unhashedName));
                             if (!Directory.Exists(Path.GetDirectoryName(workingNewPath))) Directory.CreateDirectory(Path.GetDirectoryName(workingNewPath));
-                            File.Move(workingOldPath, workingNewPath);
+                            if (!File.Exists(workingNewPath)) File.Move(workingOldPath, workingNewPath);
 
                             modQar.FilePath = unhashedName;
 
