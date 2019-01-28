@@ -190,24 +190,6 @@ namespace makebite
 
             Directory.CreateDirectory("_build");
 
-            List<string> fpkFolders = ListFpkFolders(SourceDir);
-            for(int i = fpkFolders.Count - 1; i >= 0; i--)
-            {
-                string fpkFolder = fpkFolders[i].Substring(SourceDir.Length + 1);
-                if (!fpkFolder.StartsWith("Assets"))
-                {
-                    string updatedFolderName = HashingExtended.UpdateName(fpkFolder.Replace("_fpk", ".fpk"));
-                    if(updatedFolderName != null)
-                    {
-                        updatedFolderName = SourceDir + updatedFolderName.Replace(".fpk", "_fpk").Replace('/','\\');
-                        if (fpkFolders.Contains(updatedFolderName))
-                        {
-                            fpkFolders.Remove(fpkFolders[i]);
-                        }
-                    }
-                }
-            }
-
             List<string> fpkFiles = Directory.GetFiles(SourceDir, "*.fpk*", SearchOption.AllDirectories).ToList();
             for (int i = fpkFiles.Count - 1; i >= 0; i--)
             {
@@ -221,6 +203,26 @@ namespace makebite
                         if (fpkFiles.Contains(updatedFileName))
                         {
                             fpkFiles.Remove(fpkFiles[i]);
+                        }
+                    }
+                }
+            }
+
+            List<string> fpkFolders = ListFpkFolders(SourceDir);
+            for (int i = fpkFolders.Count - 1; i >= 0; i--)
+            {
+                string fpkFolder = fpkFolders[i].Substring(SourceDir.Length + 1);
+                if (!fpkFolder.StartsWith("Assets"))
+                {
+                    string updatedFileName = HashingExtended.UpdateName(fpkFolder.Replace("_fpk", ".fpk"));
+                    if (updatedFileName != null)
+                    {
+                        updatedFileName = SourceDir + updatedFileName.Replace('/', '\\');
+                        if (fpkFolders.Contains(updatedFileName.Replace(".fpk", "_fpk")) || fpkFiles.Contains(updatedFileName))
+                        {
+
+                            MessageBox.Show(string.Format("{0} was not packed or added to the build, because {1} (the unhashed filename of {0}) already exists in the mod directory.", Path.GetFileName(fpkFolders[i]), Path.GetFileName(updatedFileName)));
+                            fpkFolders.Remove(fpkFolders[i]);
                         }
                     }
                 }
