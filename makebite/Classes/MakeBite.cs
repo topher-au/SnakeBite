@@ -228,25 +228,6 @@ namespace makebite
                 }
             }
 
-            List<string> qarFiles = ListQarFiles(SourceDir);
-            for (int i = qarFiles.Count - 1; i >= 0; i--)
-            {
-                string qarFile = qarFiles[i].Substring(SourceDir.Length + 1);
-                if(!qarFile.StartsWith("Assets"))
-                {
-                    string updatedQarName = HashingExtended.UpdateName(qarFile);
-                    if (updatedQarName != null)
-                    {
-                        updatedQarName = SourceDir + updatedQarName.Replace('/', '\\');
-                        if (qarFiles.Contains(updatedQarName))
-                        {
-                            MessageBox.Show(string.Format("{0} was not added to the build, because {1} (the unhashed filename of {0}) already exists in the mod directory.", Path.GetFileName(qarFiles[i]), Path.GetFileName(updatedQarName)));
-                            qarFiles.Remove(qarFiles[i]);
-                        }
-                    }
-                }
-            }
-
             // check for FPKs that must be built and build
             metaData.ModFpkEntries = new List<ModFpkEntry>();
             List<string> builtFpks = new List<string>();
@@ -260,7 +241,7 @@ namespace makebite
             }
 
             // check for other FPKs and build fpkentry data
-            foreach (string SourceFile in fpkFiles)
+            foreach (string SourceFile in Directory.GetFiles(SourceDir, "*.fpk*", SearchOption.AllDirectories))
             {
                 //tex chunk0\Assets\tpp\pack\collectible\common\col_common_tpp_fpk\Assets\tpp\pack\resident\resident00.fpkl is the only fpkl, don't know what a fpkl is, but gzcore crashes on it.
                 if (SourceFile.EndsWith(".fpkl") || SourceFile.EndsWith(".xml"))
@@ -297,6 +278,25 @@ namespace makebite
             }
 
             // build QAR entries
+            List<string> qarFiles = ListQarFiles(SourceDir);
+            for (int i = qarFiles.Count - 1; i >= 0; i--)
+            {
+                string qarFile = qarFiles[i].Substring(SourceDir.Length + 1);
+                if (!qarFile.StartsWith("Assets"))
+                {
+                    string updatedQarName = HashingExtended.UpdateName(qarFile);
+                    if (updatedQarName != null)
+                    {
+                        updatedQarName = SourceDir + updatedQarName.Replace('/', '\\');
+                        if (qarFiles.Contains(updatedQarName))
+                        {
+                            MessageBox.Show(string.Format("{0} was not added to the build, because {1} (the unhashed filename of {0}) already exists in the mod directory.", Path.GetFileName(qarFiles[i]), Path.GetFileName(updatedQarName)));
+                            qarFiles.Remove(qarFiles[i]);
+                        }
+                    }
+                }
+            }
+
             metaData.ModQarEntries = new List<ModQarEntry>();
             foreach (string qarFile in qarFiles)
             {
