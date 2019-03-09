@@ -91,7 +91,8 @@ namespace SnakeBite
                         {
                             Debug.LogLine(string.Format("[LoadPreset] Storing backup: {0}", gameFile), Debug.LogLevel.Basic);
                             fileEntryDirs.Add(Path.GetDirectoryName(gameFilePath));
-                            File.Copy(gameFilePath, gameFilePath + build_ext, true);
+                            if (File.Exists(gameFilePath + build_ext)) File.Delete(gameFilePath + build_ext);
+                            File.Move(gameFilePath, gameFilePath + build_ext);
                         }
                     }
                     Debug.LogLine("[LoadPreset] Storing backup: 00.dat", Debug.LogLevel.Basic);
@@ -129,7 +130,6 @@ namespace SnakeBite
                     foreach (string gameFile in existingExternalFiles)
                     {
                         string gameFilePath = Path.Combine(GameDir, Tools.ToWinPath(gameFile));
-                        if (File.Exists(gameFilePath)) File.Delete(gameFilePath);
                         File.Copy(gameFilePath + build_ext, gameFilePath, true);
                     }
                 }
@@ -147,16 +147,20 @@ namespace SnakeBite
 
                     foreach (string fileEntryDir in fileEntryDirs)
                     {
-                        if (Directory.Exists(fileEntryDir) && Directory.GetFiles(fileEntryDir).Length == 0)
+                        if (Directory.Exists(fileEntryDir))
                         {
-                            Debug.LogLine(String.Format("[SB_Build] deleting empty folder: {0}", fileEntryDir), Debug.LogLevel.All);
                             try
                             {
-                                Directory.Delete(fileEntryDir);
+                                if (Directory.GetFiles(fileEntryDir).Length == 0)
+                                {
+                                    Debug.LogLine(String.Format("[SB_Build] deleting empty folder: {0}", fileEntryDir), Debug.LogLevel.All);
+                                    Directory.Delete(fileEntryDir);
+                                }
                             }
-                            catch (IOException e)
+
+                            catch (Exception e)
                             {
-                                Console.WriteLine("[Uninstall] Could not delete: " + e.Message);
+                                Debug.LogLine("[Uninstall] Could not delete: " + e.Message);
                             }
                         }
                     }

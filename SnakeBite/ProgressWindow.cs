@@ -23,6 +23,7 @@ namespace SnakeBite
                 delegate (object sender, RunWorkerCompletedEventArgs e) {
                     if (e.Error != null) {
                         Debug.LogLine(String.Format("[Error] Exception message '{0}'", e.Error.Message));
+                        Debug.LogLine(String.Format("[Error] Exception StackTrace '{0}'", e.Error.StackTrace));
                         logWindow.Invoke((MethodInvoker)delegate { logWindow.Text = String.Format("Error during process :'{0}'", ProgressText); });
 
                         MessageBox.Show(String.Format("Exception :'{0}'\r\nCheck SnakeBites log for more info.", e.Error.Message), String.Format("Error during process :'{0}'", ProgressText), MessageBoxButtons.OK, MessageBoxIcon.Error);

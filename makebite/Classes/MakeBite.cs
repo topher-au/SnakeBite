@@ -6,14 +6,14 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 
 namespace makebite
 {
     public static class Build
     {
-        public static string SnakeBiteVersionStr =  "0.9.1.0";
-        public static string MGSVVersionStr =       "1.0.15.0";
+        public static string MGSVVersionStr = "1.0.15.0";
 
         static string ExternalDirName = "GameDir";
         static List<string> archiveFolders = new List<string> {
@@ -186,7 +186,14 @@ namespace makebite
             Debug.LogLine($"[BuildArchive] {SourceDir}.");
             HashingExtended.ReadDictionary();
             string buildDir = Directory.GetCurrentDirectory() + "\\build";
-            if (Directory.Exists(buildDir)) Directory.Delete(buildDir, true);
+            try
+            {
+                if (Directory.Exists(buildDir)) Directory.Delete(buildDir, true);
+            }
+            catch (Exception e)
+            {
+                Debug.LogLine(string.Format("[BuildArchive] preexisting _build directory could not be deleted: {0}", e.Message));
+            }
 
             Directory.CreateDirectory("_build");
 
@@ -333,7 +340,7 @@ namespace makebite
                 metaData.ModFileEntries.Add(new ModFileEntry() { FilePath = externalFilePath, ContentHash = Tools.GetMd5Hash(externalFile) });
             }
 
-            metaData.SBVersion.Version = SnakeBiteVersionStr;
+            metaData.SBVersion.Version = Application.ProductVersion;
 
             metaData.SaveToFile("_build\\metadata.xml");
 
@@ -341,7 +348,14 @@ namespace makebite
             FastZip zipper = new FastZip();
             zipper.CreateZip(outputFilePath, "_build", true, "(.*?)");
 
-            Directory.Delete("_build", true);
+            try
+            {
+                Directory.Delete("_build", true);
+            }
+            catch (Exception e)
+            {
+                Debug.LogLine(string.Format("[BuildArchive] _build directory could not be deleted: {0}", e.Message));
+            }
         }
     }
 }
