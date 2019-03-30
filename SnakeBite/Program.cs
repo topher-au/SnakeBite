@@ -167,11 +167,11 @@ namespace SnakeBite
                     {
                         if (manager.IsVanilla0001DatHash() || manager.IsVanilla0001Size())
                         {
-                            MessageBox.Show("Fresh 00.dat/01.dat detected. The setup wizard will now run. \n\n(Note: If you have an up-to-date MGSVPreset file, you can load it by closing out of the setup wizard)", "Game data hash mismatch", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show("Fresh 00.dat/01.dat detected. The setup wizard will now run.", "Game data hash mismatch", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
                         else
                         {
-                            MessageBox.Show("Game archive has been modified. The setup wizard will now run. \n\n(Note: If you have an up-to-date MGSVPreset file, you can load it by closing out of the setup wizard)", "Game data hash mismatch", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBox.Show("Game archive has been modified. The setup wizard will now run.", "Game data hash mismatch", MessageBoxButtons.OK, MessageBoxIcon.Information);
                         }
 
                         SetupWizard.SetupWizard setupWizard = new SetupWizard.SetupWizard();

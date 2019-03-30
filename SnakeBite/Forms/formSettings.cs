@@ -50,6 +50,7 @@ namespace SnakeBite
             try
             {
                 manager.DeleteSettings();
+                MessageBox.Show("Backups restored. SnakeBite will now close.", "SnakeBite", MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
             catch { }
             Application.Exit();
