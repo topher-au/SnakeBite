@@ -14,7 +14,7 @@ namespace SnakeBite.SetupWizard
         private CreateBackupPage createBackupPage = new CreateBackupPage();
         private MergeDatPage mergeDatPage = new MergeDatPage();
         private int displayPage = 0;
-        private bool setupComplete = true;
+        private bool setupComplete = false;
         private SettingsManager manager = new SettingsManager(SnakeBiteSettings);
 
         public SetupWizard()
@@ -168,7 +168,7 @@ namespace SnakeBite.SetupWizard
                     }
                     else
                     {
-                        Debug.LogLine("[Setup Wizard] Setup Cancelled.");
+                        Debug.LogLine("[Setup Wizard] Setup Incomplete.");
                         Tag = null;
                         GoToMergeDatPage();
 

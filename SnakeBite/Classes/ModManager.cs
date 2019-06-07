@@ -108,31 +108,53 @@ namespace SnakeBite
         public static void backgroundWorker_MergeAndCleanup(object sender, DoWorkEventArgs e)
         {
             BackgroundWorker mergeProcessor = (BackgroundWorker)sender;
-            GzsLib.LoadDictionaries();
-            ClearBuildFiles(c7Path, t7Path, ZeroPath, OnePath, SnakeBiteSettings, SavePresetPath);
-            ClearSBGameDir();
-            CleanupFolders();
-            mergeProcessor.ReportProgress(0, "Moving files into new archives");
-            if (!MoveDatFiles()) //moves vanilla 00 files into 01, excluding foxpatch. 
+            try
             {
+                GzsLib.LoadDictionaries();
+                ClearBuildFiles(c7Path, t7Path, ZeroPath, OnePath, SnakeBiteSettings, SavePresetPath);
+                ClearSBGameDir();
+                CleanupFolders();
+                mergeProcessor.ReportProgress(0, "Moving files into new archives");
+                if (!MoveDatFiles()) //moves vanilla 00 files into 01, excluding foxpatch. 
+                {
+                    Debug.LogLine("[DatMerge] Failed to complete archive migration. Cancelling...");
                     e.Cancel = true;
                     ClearBuildFiles(c7Path, t7Path, ZeroPath, OnePath);
                     return;
-            }
+                }
 
-            mergeProcessor.ReportProgress(0, "Modfying foxfs in chunk0");
-            if (!ModifyFoxfs()) // adds lines to foxfs in chunk0.
-            {
+                mergeProcessor.ReportProgress(0, "Modfying foxfs in chunk0");
+                if (!ModifyFoxfs()) // adds lines to foxfs in chunk0.
+                {
+                    Debug.LogLine("[ModifyFoxfs] Failed to complete Foxfs modification. Cancelling...");
                     e.Cancel = true;
                     ClearBuildFiles(c7Path, t7Path, ZeroPath, OnePath, chunk0Path);
                     return;
+                }
+
+                mergeProcessor.ReportProgress(0, "Promoting new archives");
+                PromoteBuildFiles(c7Path, t7Path, ZeroPath, OnePath, chunk0Path); // overwrites existing archives with modified archives
+
+                mergeProcessor.ReportProgress(0, "Cleaning up database");
+                CleanupDatabase();
             }
-
-            mergeProcessor.ReportProgress(0, "Promoting new archives");
-            PromoteBuildFiles(c7Path, t7Path, ZeroPath, OnePath, chunk0Path); // overwrites existing archives with modified archives
-
-            mergeProcessor.ReportProgress(0, "Cleaning up database");
-            CleanupDatabase();
+            catch (Exception f)
+            {
+                MessageBox.Show(string.Format("An error has occured while attempting to merge or clean up SnakeBite data: {0}", f), "Exception Occurred", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Debug.LogLine(string.Format("[MergeAndCleanup] Exception Occurred: {0}", f), Debug.LogLevel.Basic);
+                Debug.LogLine("[MergeAndCleanup] SnakeBite has failed to merge and clean up SnakeBite data", Debug.LogLevel.Basic);
+                e.Cancel = true;
+                try
+                {
+                    ClearBuildFiles(c7Path, t7Path, ZeroPath, OnePath, chunk0Path);
+                }
+                catch (Exception g)
+                {
+                    Debug.LogLine(string.Format("[MergeAndCleanup] Exception Occurred: {0}", g), Debug.LogLevel.Basic);
+                    Debug.LogLine("[MergeAndCleanup] SnakeBite has failed to remove the build files.", Debug.LogLevel.Basic);
+                }
+                return;
+            }
         }
 
         public static bool MoveDatFiles() // moves all vanilla 00.dat files, excluding foxpatch.dat, to 01.dat
@@ -468,7 +490,7 @@ namespace SnakeBite
                     return false;
                 }
 
-                Debug.LogLine("[ModifyFoxfs] foxfs.dat modification complete.", Debug.LogLevel.Debug);
+                Debug.LogLine("[ModifyFoxfs] Archive modification complete.", Debug.LogLevel.Debug);
                 CleanupFolders();
 
                 return true;
@@ -692,6 +714,7 @@ namespace SnakeBite
                 {
                     if (Directory.Exists(folder)) Tools.DeleteDirectory(folder);
                 }
+                /*
                 bool directoryExists = true;
                 while (directoryExists)
                 {
@@ -702,6 +725,7 @@ namespace SnakeBite
                         if (Directory.Exists(folder)) directoryExists = true;
                     }
                 }
+                */
             }
             catch { }
         }
