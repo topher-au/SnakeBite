@@ -140,7 +140,7 @@ namespace SnakeBite
             }
             catch (Exception f)
             {
-                MessageBox.Show(string.Format("An error has occured while attempting to merge or clean up SnakeBite data: {0}", f), "Exception Occurred", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(string.Format("An error has occurred while attempting to merge or clean up SnakeBite data: {0}", f), "Exception Occurred", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Debug.LogLine(string.Format("[MergeAndCleanup] Exception Occurred: {0}", f), Debug.LogLevel.Basic);
                 Debug.LogLine("[MergeAndCleanup] SnakeBite has failed to merge and clean up SnakeBite data", Debug.LogLevel.Basic);
                 e.Cancel = true;
