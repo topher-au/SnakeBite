@@ -54,8 +54,8 @@ namespace SnakeBite
                 oneFiles = GzsLib.ExtractArchive<QarFile>(OnePath, "_working1");
             }
 
-            SettingsManager manager = new SettingsManager(SnakeBiteSettings + build_ext);
-            var gameData = manager.GetGameData();
+            SettingsManager SBBuildManager = new SettingsManager(SnakeBiteSettings + build_ext);
+            var gameData = SBBuildManager.GetGameData();
             ModManager.ValidateGameData(ref gameData, ref zeroFiles);
 
             var zeroFilesHashSet = new HashSet<string>(zeroFiles);
@@ -68,12 +68,12 @@ namespace SnakeBite
 
             try
             {
-                ModManager.WriteGameDirSbBuild();
+                ModManager.PrepGameDirFiles();
                 List<string> pullFromVanillas; List<string> pullFromMods; Dictionary<string, bool> pathUpdatesExist;
 
                 Debug.LogLine("[Install] Writing FPK data to Settings", Debug.LogLevel.Basic);
-                AddToSettingsFpk(installEntryList, manager, allQarGameFiles, out pullFromVanillas, out pullFromMods, out pathUpdatesExist);
-                InstallMods(ModFiles, manager, pullFromVanillas, pullFromMods, ref zeroFilesHashSet, ref oneFiles, pathUpdatesExist);
+                AddToSettingsFpk(installEntryList, SBBuildManager, allQarGameFiles, out pullFromVanillas, out pullFromMods, out pathUpdatesExist);
+                InstallMods(ModFiles, SBBuildManager, pullFromVanillas, pullFromMods, ref zeroFilesHashSet, ref oneFiles, pathUpdatesExist);
 
                 if (hasQarZero)
                 {
@@ -88,15 +88,16 @@ namespace SnakeBite
                     oneFiles.Sort();
                     GzsLib.WriteQarArchive(OnePath + build_ext, "_working1", oneFiles, GzsLib.oneFlags);
                 }
-                
-                if (!skipCleanup)
-                {
-                    ModManager.CleanupFolders();
-                }
+
                 ModManager.PromoteGameDirFiles();
                 ModManager.PromoteBuildFiles(ZeroPath, OnePath, SnakeBiteSettings, SavePresetPath);
 
-                ModManager.ClearSBGameDir();
+                if (!skipCleanup)
+                {
+                    ModManager.CleanupFolders();
+                    ModManager.ClearSBGameDir();
+                }
+
                 stopwatch.Stop();
                 Debug.LogLine($"[Install] Installation finished in {stopwatch.ElapsedMilliseconds} ms", Debug.LogLevel.Basic);
                 return true;
@@ -107,8 +108,24 @@ namespace SnakeBite
                 Debug.LogLine($"[Install] Installation failed at {stopwatch.ElapsedMilliseconds} ms", Debug.LogLevel.Basic);
                 Debug.LogLine("[Install] Exception: " + e, Debug.LogLevel.Basic);
                 MessageBox.Show("An error has occurred during the installation process and SnakeBite could not install the selected mod(s).\nException: " + e, "Mod(s) could not be installed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
                 ModManager.ClearBuildFiles(ZeroPath, OnePath, SnakeBiteSettings, SavePresetPath);
                 ModManager.CleanupFolders();
+
+                bool restoreRetry = false;
+                do
+                {
+                    try
+                    {
+                        ModManager.RestoreBackupGameDir(SBBuildManager);
+                    }
+                    catch (Exception f)
+                    {
+                        Debug.LogLine("[Uninstall] Exception: " + f, Debug.LogLevel.Basic);
+                        restoreRetry = DialogResult.Retry == MessageBox.Show("SnakeBite could not restore Game Directory mod files due to the following exception: {f} \nWould you like to retry?", "Exception Occurred", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+                    }
+                } while (restoreRetry);
+
                 ModManager.ClearSBGameDir();
                 return false;
             }
@@ -300,7 +317,6 @@ namespace SnakeBite
                 {
                     string sourceFile = Path.Combine("_extr\\GameDir", Tools.ToWinPath(fileEntry.FilePath));
                     string destFile = Path.Combine(GameDirSB_Build, Tools.ToWinPath(fileEntry.FilePath));
-                    Debug.LogLine(string.Format("[Install] Copying file: {0}", destFile), Debug.LogLevel.All);
                     Directory.CreateDirectory(Path.GetDirectoryName(destFile));
                     File.Copy(sourceFile, destFile, true);
 

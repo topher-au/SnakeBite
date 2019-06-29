@@ -17,6 +17,7 @@ namespace SnakeBite
         internal static string c7Path { get { return Properties.Settings.Default.InstallPath + "\\master\\a_chunk7.dat"; } }
         internal static string SnakeBiteSettings { get { return Properties.Settings.Default.InstallPath + "\\snakebite.xml"; } }
         internal static string GameDirSB_Build { get { return Properties.Settings.Default.InstallPath + "\\GameDir_SB_Build"; } }
+        internal static string GameDirBackup_Build { get { return Properties.Settings.Default.InstallPath + "\\GameDir_Backup_Build"; } }
         internal static string SavePresetPath { get { return Properties.Settings.Default.InstallPath + "\\RevertChanges.MGSVPreset"; } }
 
         internal static string build_ext = ".SB_Build";

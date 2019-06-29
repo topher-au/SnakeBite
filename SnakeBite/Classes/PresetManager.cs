@@ -87,7 +87,7 @@ namespace SnakeBite
                     foreach (string gameFile in existingExternalFiles)
                     {
                         string gameFilePath = Path.Combine(GameDir, Tools.ToWinPath(gameFile));
-                        if (File.Exists(gameFilePath))
+                        if (File.Exists(gameFilePath)) // only stores backups of managed files
                         {
                             Debug.LogLine(string.Format("[LoadPreset] Storing backup: {0}", gameFile), Debug.LogLevel.Basic);
                             fileEntryDirs.Add(Path.GetDirectoryName(gameFilePath));
@@ -130,7 +130,8 @@ namespace SnakeBite
                     foreach (string gameFile in existingExternalFiles)
                     {
                         string gameFilePath = Path.Combine(GameDir, Tools.ToWinPath(gameFile));
-                        File.Copy(gameFilePath + build_ext, gameFilePath, true);
+                        if (File.Exists(gameFilePath + build_ext))
+                            File.Copy(gameFilePath + build_ext, gameFilePath, true);
                     }
                 }
             }

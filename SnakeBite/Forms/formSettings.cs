@@ -168,8 +168,7 @@ namespace SnakeBite
         */
 
         private void buttonOpenLog_Click(object sender, EventArgs e) {
-            Process.Start(Debug.LOG_FILE_PREV);
-            Process.Start(Debug.LOG_FILE);
+            Debug.OpenLogs(4);
         }
 
         private void picModToggle_Click(object sender, EventArgs e)

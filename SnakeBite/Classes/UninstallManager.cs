@@ -14,7 +14,7 @@ namespace SnakeBite
 {
     class UninstallManager
     {
-        private static SettingsManager manager = new SettingsManager(SnakeBiteSettings + build_ext);
+        private static SettingsManager SBBuildManager = new SettingsManager(SnakeBiteSettings + build_ext);
 
         public static bool UninstallMods(CheckedListBox.CheckedIndexCollection modIndices, bool skipCleanup = false) // Uninstalls mods based on their indices in the list
         {
@@ -40,7 +40,7 @@ namespace SnakeBite
 
             GzsLib.LoadDictionaries();
             File.Copy(SnakeBiteSettings, SnakeBiteSettings + build_ext, true);
-            List<ModEntry> mods = manager.GetInstalledMods();
+            List<ModEntry> mods = SBBuildManager.GetInstalledMods();
             Debug.LogLine("[Uninstall] Skipping RevertChanges.MGSVPreset Save", Debug.LogLevel.Basic);
             List<ModEntry> selectedMods = new List<ModEntry>();
             foreach (int index in modIndices)
@@ -69,15 +69,14 @@ namespace SnakeBite
             }
 
             //end of qar extraction
-            GameData gameData = manager.GetGameData();
+            GameData gameData = SBBuildManager.GetGameData();
             ModManager.ValidateGameData(ref gameData, ref zeroFiles);
 
             Debug.LogLine("[Uninstall] Building gameFiles lists", Debug.LogLevel.Basic);
             var baseGameFiles = GzsLib.ReadBaseData();
             try
             {
-                ModManager.WriteGameDirSbBuild(); // creates a copy of snakebite.xml's managed gamedir files (unmanaged files are not copied)
-
+                ModManager.PrepGameDirFiles();
                 // begin uninstall
                 UninstallMods(selectedMods, ref zeroFiles, ref oneFiles);
 
@@ -121,6 +120,21 @@ namespace SnakeBite
                 // clean up failed files
                 ModManager.ClearBuildFiles(ZeroPath, OnePath, SnakeBiteSettings, SavePresetPath);
                 ModManager.CleanupFolders();
+
+                bool restoreRetry = false;
+                do
+                {
+                    try
+                    {
+                        ModManager.RestoreBackupGameDir(SBBuildManager);
+                    }
+                    catch (Exception f)
+                    {
+                        Debug.LogLine("[Uninstall] Exception: " + f, Debug.LogLevel.Basic);
+                        restoreRetry = DialogResult.Retry == MessageBox.Show("SnakeBite could not restore Game Directory mod files due to the following exception: {f} \nWould you like to retry?", "Exception Occurred", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+                    }
+                } while (restoreRetry);
+
                 ModManager.ClearSBGameDir();
                 return false;
             }
@@ -142,10 +156,10 @@ namespace SnakeBite
             Debug.LogLine("[Uninstall] Removing any unmodified fpk entries", Debug.LogLevel.Basic);
             RemoveDemoddedQars(ref zeroFiles, fullRemoveQarPaths);
 
-            GameData gameData = manager.GetGameData();
+            GameData gameData = SBBuildManager.GetGameData();
             foreach (ModEntry uninstallMod in uninstallMods)
             {
-                manager.RemoveMod(uninstallMod);
+                SBBuildManager.RemoveMod(uninstallMod);
 
                 Debug.LogLine(string.Format("[Uninstall] Removing any game dir file entries for {0}", uninstallMod.Name), Debug.LogLevel.Basic);
                 UninstallGameDirEntries(uninstallMod, ref gameData);
@@ -153,7 +167,7 @@ namespace SnakeBite
                 Debug.LogLine(String.Format("[Uninstall] Removing any loose textures for {0}", uninstallMod.Name), Debug.LogLevel.Basic);
                 UninstallLooseFtexs(uninstallMod, ref oneFilesList, ref gameData);
             }
-            manager.SetGameData(gameData);
+            SBBuildManager.SetGameData(gameData);
         }
 
         private static void GetFpkRemovalLists(List<ModEntry> uninstallMods, out List<string> fullRemoveQarPaths, out List<ModQarEntry> partialEditQarEntries, out List<ModFpkEntry> partialEditFpkEntries)
@@ -169,7 +183,7 @@ namespace SnakeBite
             }
 
             List<string> remainingModQarPaths = new List<string>();
-            foreach (ModEntry mod in manager.GetInstalledMods())
+            foreach (ModEntry mod in SBBuildManager.GetInstalledMods())
             {
                 if (uninstallMods.Any(e => e.Name == mod.Name)) continue;
                 foreach (ModFpkEntry remainingFpk in mod.ModFpkEntries)
@@ -194,7 +208,7 @@ namespace SnakeBite
             partialEditQarEntries = new List<ModQarEntry>(); // for files that need to be edited using base archives
             partialEditFpkEntries = new List<ModFpkEntry>(); // Packed files within partialEditQarEntries that either need to be repaired (overwritten by a vanilla file) or removed from the Qar
 
-            GameData gameData = manager.GetGameData();
+            GameData gameData = SBBuildManager.GetGameData();
             // loop through every to-be-uninstalled mod to sort each Qar file into one of the two categories
             foreach (ModEntry uninstallMod in uninstallMods)
             {
@@ -242,7 +256,7 @@ namespace SnakeBite
 
         private static void UnmergePackFiles(List<ModQarEntry> partialEditQarEntries, List<ModFpkEntry> partialRemoveFpkEntries)
         {
-            GameData gameData = manager.GetGameData();
+            GameData gameData = SBBuildManager.GetGameData();
             List<ModFpkEntry> addedRepairFpkEntries = new List<ModFpkEntry>();
 
             foreach (ModQarEntry partialEditQarEntry in partialEditQarEntries)
@@ -294,7 +308,7 @@ namespace SnakeBite
                 }
             }
 
-            List<ModEntry> installedMods = manager.GetInstalledMods();
+            List<ModEntry> installedMods = SBBuildManager.GetInstalledMods();
             foreach (ModEntry installedMod in installedMods)
             {
                 List<string> qarPathsFound = new List<string>();
@@ -320,16 +334,16 @@ namespace SnakeBite
                     }
                 }
             }
-            manager.SetInstalledMods(installedMods);
-            manager.SetGameData(gameData);
+            SBBuildManager.SetInstalledMods(installedMods);
+            SBBuildManager.SetGameData(gameData);
         }
 
         private static void RemoveDemoddedQars(ref List<string> zeroFiles, List<string> fullRemoveQarPaths)
         {
             // Remove the specified files from the mod ecosystem since they no longer contain modded data
             zeroFiles = zeroFiles.Except(fullRemoveQarPaths.Select(entry => Tools.ToWinPath(entry))).ToList();
-            List<ModEntry> installedMods = manager.GetInstalledMods();
-            GameData gameData = manager.GetGameData();
+            List<ModEntry> installedMods = SBBuildManager.GetInstalledMods();
+            GameData gameData = SBBuildManager.GetGameData();
             foreach(string fullRemoveQarPath in fullRemoveQarPaths)
             {
                 //Debug.LogLine(string.Format("DEMODDED QAR: {0}", fullRemoveQarPath), Debug.LogLevel.Basic);
@@ -343,8 +357,8 @@ namespace SnakeBite
                     installedMod.ModFpkEntries = installedMod.ModFpkEntries.Where(entry => entry.FpkFile != fullRemoveQarPath).ToList();
                 }
             }
-            manager.SetInstalledMods(installedMods);
-            manager.SetGameData(gameData);
+            SBBuildManager.SetInstalledMods(installedMods);
+            SBBuildManager.SetGameData(gameData);
 
         }
 
@@ -358,7 +372,6 @@ namespace SnakeBite
                 fileEntryDirs.Add(dir); //the directory is added to the list of fileentrydirectories
                 if (File.Exists(destFile)) // attempt to delete the file in question
                 {
-                    Debug.LogLine(String.Format("[Uninstall] deleting file: {0}", destFile), Debug.LogLevel.All);
                     try
                     {
                         File.Delete(destFile); // deletes the specified file

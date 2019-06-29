@@ -261,7 +261,7 @@ namespace SnakeBite
 
         private void labelVersion_DoubleClick(object sender, EventArgs e)
         {
-            Process.Start(Debug.LOG_FILE);
+            Debug.OpenLogs(2);
         }
 
         private void labelVersion_TextChanged(object sender, EventArgs e)

@@ -43,7 +43,7 @@ namespace SnakeBite.Forms
 
         private void labelCheckDebug_Click(object sender, EventArgs e)
         {
-            System.Diagnostics.Process.Start(Debug.LOG_FILE);
+            Debug.OpenLogs(1);
         }
     }
 }

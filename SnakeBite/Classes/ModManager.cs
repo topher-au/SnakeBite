@@ -505,13 +505,19 @@ namespace SnakeBite
             }
         }
 
-        public static void WriteGameDirSbBuild()
+        public static void PrepGameDirFiles()
+        {
+            CopyGameDirManagedFiles(GameDirSB_Build);
+            CopyGameDirManagedFiles(GameDirBackup_Build);
+        }
+
+        public static void CopyGameDirManagedFiles(string destinationDir)
         {
             Debug.LogLine("[SB_Build] Writing SB_Build Game Directory", Debug.LogLevel.Basic);
             foreach (string externalFile in new SettingsManager(SnakeBiteSettings).GetModExternalFiles()) 
             {
                 string fileModPath = Tools.ToWinPath(externalFile);
-                string destFullPath = Path.Combine(GameDirSB_Build, fileModPath);
+                string destFullPath = Path.Combine(destinationDir, fileModPath);
                 string sourceFullPath = Path.Combine(GameDir, fileModPath);
 
                 Directory.CreateDirectory(Path.GetDirectoryName(destFullPath));
@@ -521,24 +527,36 @@ namespace SnakeBite
 
         public static void PromoteGameDirFiles() // call this method BEFORE snakebite.xml.SB_Build is promoted, so it will reference the old snakebite.xml
         {
-            Debug.LogLine("[SB_Build] Promoting SB_Build Game Directory", Debug.LogLevel.Basic);//
+            Debug.LogLine("[SB_Build] Promoting SB_Build Game Directory", Debug.LogLevel.Basic);
+            if (!Directory.Exists(GameDirSB_Build))
+            {
+                Debug.LogLine($"[SB_Build] Directory not found: {GameDirSB_Build}", Debug.LogLevel.Basic);
+                return;
+            }
+
             List<string> fileEntryDirs = new List<string>();
             foreach (string externalFile in new SettingsManager(SnakeBiteSettings).GetModExternalFiles())
             {
                 string fileModPath = Tools.ToWinPath(externalFile);
                 string sourceFullPath = Path.Combine(GameDir, fileModPath);
-                fileEntryDirs.Add(Path.GetDirectoryName(sourceFullPath));
+
+                string sourceDir = Path.GetDirectoryName(sourceFullPath);
+                if (!fileEntryDirs.Contains(sourceDir)) fileEntryDirs.Add(sourceDir);
+
                 if (File.Exists(sourceFullPath)) File.Delete(sourceFullPath); // deletes all of the old snakebite.xml's managed files (unmanaged files will be overwritten later or left alone)
                 else Debug.LogLine(string.Format("[SB_Build] File not found: {0}", sourceFullPath), Debug.LogLevel.Basic);
             }
-            foreach (string fileEntryDir in fileEntryDirs) //all the directories that have had files deleted within them
+
+            Tools.DirectoryCopy(GameDirSB_Build, GameDir, true); // moves all gamedir_sb_build files over
+
+            foreach (string fileEntryDir in fileEntryDirs)
             {
-                if (Directory.Exists(fileEntryDir) && Directory.GetFiles(fileEntryDir).Length == 0) // if the directory has not yet been deleted and there are no more files inside the directory
+                if (Directory.Exists(fileEntryDir) && Directory.GetFiles(fileEntryDir).Length == 0)
                 {
                     Debug.LogLine(String.Format("[SB_Build] deleting empty folder: {0}", fileEntryDir), Debug.LogLevel.All);
                     try
                     {
-                        Directory.Delete(fileEntryDir); //attempt to delete the empty directory
+                        Directory.Delete(fileEntryDir);
                     }
                     catch (IOException e)
                     {
@@ -546,7 +564,47 @@ namespace SnakeBite
                     }
                 }
             }
-            Tools.DirectoryCopy(GameDirSB_Build, GameDir, true); // moves all gamedir_sb_build files over
+        }
+
+        public static void RestoreBackupGameDir(SettingsManager SBBuildSettings)
+        {
+            Debug.LogLine("[SB_Build] Promoting SB_Build Game Directory", Debug.LogLevel.Basic);
+            if (!Directory.Exists(GameDirBackup_Build))
+            {
+                Debug.LogLine($"[SB_Build] Directory not found: {GameDirBackup_Build}", Debug.LogLevel.Basic);
+                return;
+            }
+
+            List<string> fileEntryDirs = new List<string>();
+            foreach (string externalBuildFiles in SBBuildSettings.GetModExternalFiles())
+            {
+                string fileModPath = Tools.ToWinPath(externalBuildFiles);
+                string sourceFullPath = Path.Combine(GameDir, fileModPath);
+
+                string sourceDir = Path.GetDirectoryName(sourceFullPath);
+                if (!fileEntryDirs.Contains(sourceDir)) fileEntryDirs.Add(sourceDir);
+
+                if (File.Exists(sourceFullPath)) File.Delete(sourceFullPath); // deletes all of the new snakebite.xml's managed files
+                else Debug.LogLine(string.Format("[SB_Build] File not found: {0}", sourceFullPath), Debug.LogLevel.Basic);
+            }
+
+            Tools.DirectoryCopy(GameDirBackup_Build, GameDir, true); // moves all gamedir_backup_build files over
+
+            foreach (string fileEntryDir in fileEntryDirs) //all the directories that have had files deleted within them
+            {
+                if (Directory.Exists(fileEntryDir) && Directory.GetFiles(fileEntryDir).Length == 0) // if the directory has not yet been deleted and there are no more files inside the directory
+                {
+                    Debug.LogLine(String.Format("[SB_Build] deleting empty folder: {0}", fileEntryDir), Debug.LogLevel.All);
+                    try
+                    {
+                        Directory.Delete(fileEntryDir);
+                    }
+                    catch (IOException e)
+                    {
+                        Console.WriteLine("[Uninstall] Could not delete: " + e.Message);
+                    }
+                }
+            }
         }
 
         public static void PromoteBuildFiles(params string[] paths)
@@ -578,10 +636,12 @@ namespace SnakeBite
             {
                 if(Directory.Exists(GameDirSB_Build))
                     Tools.DeleteDirectory(GameDirSB_Build);
+                if (Directory.Exists(GameDirBackup_Build))
+                    Tools.DeleteDirectory(GameDirBackup_Build);
             }
             catch (IOException e)
             {
-                Console.WriteLine("[Cleanup] Could not delete old SB_Build Game Directory: " + e.Message);
+                Console.WriteLine("[Cleanup] Could not delete Game Directory Content: " + e.Message);
             }
         }
 
