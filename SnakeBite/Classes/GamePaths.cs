@@ -9,6 +9,7 @@ namespace SnakeBite
     static class GamePaths
     {
         internal static string GameDir { get { return Properties.Settings.Default.InstallPath; } }
+        internal static string SBInstallDir { get { return AppDomain.CurrentDomain.BaseDirectory; } }
         
         internal static string chunk0Path { get { return Properties.Settings.Default.InstallPath + "\\master\\chunk0.dat"; } }
         internal static string OnePath { get { return Properties.Settings.Default.InstallPath + "\\master\\0\\01.dat"; } }

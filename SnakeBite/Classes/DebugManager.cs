@@ -7,6 +7,7 @@ namespace SnakeBite
 {
     public static class Debug
     {
+        public static readonly string logDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
         public const string LOG_FILE_PREV = "log_prev";
         public const string TXT_EXT = ".txt";
         public const string LOG_FILE_TXT = "log" + TXT_EXT;
@@ -14,24 +15,40 @@ namespace SnakeBite
 
         public static void Clear()
         {
-            if (File.Exists("log_prev.txt")) // old format
-                File.Delete("log_prev.txt");
+            RemoveOldFormatLogs();
+            if (!Directory.Exists(logDir))
+                Directory.CreateDirectory(logDir);
 
-            if (File.Exists(LOG_FILE_TXT))
+            string logFilePath = Path.Combine(logDir, LOG_FILE_TXT);
+            if (File.Exists(logFilePath))
             {
                 RecursiveCopyLogs(1, MAX_COUNT);
-                File.Copy(LOG_FILE_TXT, $"{LOG_FILE_PREV}.{"1"}{TXT_EXT}", true);//tex make backup
-                File.Delete(LOG_FILE_TXT);
+
+                string logPrevPath = Path.Combine(logDir, $"{LOG_FILE_PREV}.{"1"}{TXT_EXT}");
+
+                File.Copy(logFilePath, logPrevPath, true);
+                File.Delete(logFilePath);
             }
         }
+        private static void RemoveOldFormatLogs()
+        {
+            if (File.Exists(LOG_FILE_PREV + TXT_EXT)) // old format in root install directory
+                File.Delete(LOG_FILE_PREV + TXT_EXT);
 
+            if (File.Exists(LOG_FILE_TXT))
+                File.Delete(LOG_FILE_TXT);
+        }
         private static void RecursiveCopyLogs(int i, int max)
         {
             if (i < max)
             {
+                string logPrevPath = Path.Combine(logDir, $"{LOG_FILE_PREV}.{i}{TXT_EXT}"); // assumption: logdir already exists
+                string logPrevIncrementedPath = Path.Combine(logDir, $"{LOG_FILE_PREV}.{i + 1}{TXT_EXT}");
+
                 RecursiveCopyLogs(i + 1, max);
-                if (File.Exists($"{LOG_FILE_PREV}.{i}{TXT_EXT}"))
-                    File.Copy($"{LOG_FILE_PREV}.{i}{TXT_EXT}", $"{LOG_FILE_PREV}.{i + 1}{TXT_EXT}", true);
+
+                if (File.Exists(logPrevPath))
+                    File.Copy(logPrevPath, logPrevIncrementedPath, true);
             }
 
         }
@@ -40,18 +57,35 @@ namespace SnakeBite
         {
             for (int i = count - 1; i >= 1; i--)
             {
-                if (File.Exists($"{LOG_FILE_PREV}.{i}{TXT_EXT}"))
-                    Process.Start($"{LOG_FILE_PREV}.{i}{TXT_EXT}");
+                string logPrevPath = Path.Combine(logDir, $"{LOG_FILE_PREV}.{i}{TXT_EXT}");
+                if (File.Exists(logPrevPath))
+                    Process.Start(logPrevPath);
             }
-            if (File.Exists(LOG_FILE_TXT))
-                Process.Start(LOG_FILE_TXT);
+            string logFilePath = Path.Combine(logDir, LOG_FILE_TXT);
+            if (File.Exists(logFilePath))
+                Process.Start(logFilePath);
+        }
+
+        public static void OpenLogDirectory()
+        {
+            if (!Directory.Exists(logDir))
+                Directory.CreateDirectory(logDir);
+            try
+            {
+                Process.Start(logDir);
+            }
+            catch
+            {
+                Debug.LogLine(String.Format("Failed to open log directory: {0}", logDir), Debug.LogLevel.Basic);
+            }
         }
 
         public static void LogLine(string Text, LogLevel LogLevel = LogLevel.All)
         {
             //if (LogLevel == 0) return;
-            FileMode F = File.Exists(LOG_FILE_TXT) ? FileMode.Append : FileMode.Create;
-            using (FileStream s = new FileStream(LOG_FILE_TXT, F))
+            string logFilePath = Path.Combine(logDir, LOG_FILE_TXT);
+            FileMode F = File.Exists(logFilePath) ? FileMode.Append : FileMode.Create;
+            using (FileStream s = new FileStream(logFilePath, F))
             {
                 string logString = $"{Text}\r\n";
                 s.Write(Encoding.UTF8.GetBytes(logString), 0, logString.Length);

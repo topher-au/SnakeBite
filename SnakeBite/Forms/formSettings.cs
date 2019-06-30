@@ -167,8 +167,8 @@ namespace SnakeBite
         }
         */
 
-        private void buttonOpenLog_Click(object sender, EventArgs e) {
-            Debug.OpenLogs(4);
+        private void buttonOpenLogDir_Click(object sender, EventArgs e) {
+            Debug.OpenLogDirectory();
         }
 
         private void picModToggle_Click(object sender, EventArgs e)

@@ -30,6 +30,7 @@
         {
             this.labelNoBackups = new System.Windows.Forms.Label();
             this.groupSettings = new System.Windows.Forms.GroupBox();
+            this.checkBoxSaveRevertPreset = new System.Windows.Forms.CheckBox();
             this.label3 = new System.Windows.Forms.Label();
             this.checkEnableSound = new System.Windows.Forms.CheckBox();
             this.picModToggle = new System.Windows.Forms.PictureBox();
@@ -47,7 +48,6 @@
             this.labelNexusLink = new System.Windows.Forms.LinkLabel();
             this.labelThanks = new System.Windows.Forms.Label();
             this.panel1 = new System.Windows.Forms.Panel();
-            this.checkBoxSaveRevertPreset = new System.Windows.Forms.CheckBox();
             this.groupSettings.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.picModToggle)).BeginInit();
             this.groupBackup.SuspendLayout();
@@ -78,6 +78,20 @@
             this.groupSettings.TabIndex = 5;
             this.groupSettings.TabStop = false;
             this.groupSettings.Text = "Settings";
+            // 
+            // checkBoxSaveRevertPreset
+            // 
+            this.checkBoxSaveRevertPreset.Checked = true;
+            this.checkBoxSaveRevertPreset.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxSaveRevertPreset.Location = new System.Drawing.Point(40, 46);
+            this.checkBoxSaveRevertPreset.Name = "checkBoxSaveRevertPreset";
+            this.checkBoxSaveRevertPreset.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.checkBoxSaveRevertPreset.Size = new System.Drawing.Size(259, 19);
+            this.checkBoxSaveRevertPreset.TabIndex = 11;
+            this.checkBoxSaveRevertPreset.Text = "Save RevertChanges.MGSVPreset";
+            this.checkBoxSaveRevertPreset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.checkBoxSaveRevertPreset.UseVisualStyleBackColor = true;
+            this.checkBoxSaveRevertPreset.CheckedChanged += new System.EventHandler(this.checkBoxSaveRevertPreset_CheckedChanged);
             // 
             // label3
             // 
@@ -144,9 +158,9 @@
             this.buttonOpenLog.Name = "buttonOpenLog";
             this.buttonOpenLog.Size = new System.Drawing.Size(107, 44);
             this.buttonOpenLog.TabIndex = 10;
-            this.buttonOpenLog.Text = "Open Logs";
+            this.buttonOpenLog.Text = "Open Log Directory";
             this.buttonOpenLog.UseVisualStyleBackColor = true;
-            this.buttonOpenLog.Click += new System.EventHandler(this.buttonOpenLog_Click);
+            this.buttonOpenLog.Click += new System.EventHandler(this.buttonOpenLogDir_Click);
             // 
             // label2
             // 
@@ -260,20 +274,6 @@
             this.panel1.Name = "panel1";
             this.panel1.Size = new System.Drawing.Size(368, 473);
             this.panel1.TabIndex = 1;
-            // 
-            // checkBoxSaveRevertPreset
-            // 
-            this.checkBoxSaveRevertPreset.Checked = true;
-            this.checkBoxSaveRevertPreset.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.checkBoxSaveRevertPreset.Location = new System.Drawing.Point(40, 46);
-            this.checkBoxSaveRevertPreset.Name = "checkBoxSaveRevertPreset";
-            this.checkBoxSaveRevertPreset.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.checkBoxSaveRevertPreset.Size = new System.Drawing.Size(259, 19);
-            this.checkBoxSaveRevertPreset.TabIndex = 11;
-            this.checkBoxSaveRevertPreset.Text = "Save RevertChanges.MGSVPreset";
-            this.checkBoxSaveRevertPreset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.checkBoxSaveRevertPreset.UseVisualStyleBackColor = true;
-            this.checkBoxSaveRevertPreset.CheckedChanged += new System.EventHandler(this.checkBoxSaveRevertPreset_CheckedChanged);
             // 
             // formSettings
             // 

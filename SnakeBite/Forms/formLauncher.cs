@@ -261,7 +261,14 @@ namespace SnakeBite
 
         private void labelVersion_DoubleClick(object sender, EventArgs e)
         {
-            Debug.OpenLogs(2);
+            try
+            {
+                Process.Start(GamePaths.SBInstallDir);
+            }
+            catch
+            {
+                Debug.LogLine(String.Format("Failed to open SnakeBite Installation Directory"), Debug.LogLevel.Basic);
+            }
         }
 
         private void labelVersion_TextChanged(object sender, EventArgs e)

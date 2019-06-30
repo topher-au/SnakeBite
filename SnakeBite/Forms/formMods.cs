@@ -360,7 +360,7 @@ namespace SnakeBite
 
         private void menuItemOpenLogs_Click(object sender, EventArgs e)
         {
-            Debug.OpenLogs(2);
+            Debug.OpenLogDirectory();
         }
 
         private void menuItemBrowseMods_Click(object sender, EventArgs e)
