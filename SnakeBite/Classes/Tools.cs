@@ -7,6 +7,7 @@ using ICSharpCode.SharpZipLib.Zip;
 using System.Xml.Serialization;
 using System.Collections;
 using System;
+using System.Threading;
 
 namespace SnakeBite
 {
@@ -257,19 +258,29 @@ namespace SnakeBite
 
         public static void DeleteDirectory(string target_dir)
         {
-
+            //Debug.LogLine("[Cleanup Debug] Removing " + target_dir);
             foreach (string file in Directory.EnumerateFiles(target_dir))
             {
+                //Debug.LogLine("[Cleanup Debug] Setting FileAttributes for " + file);
                 File.SetAttributes(file, FileAttributes.Normal);
+                //Debug.LogLine("[Cleanup Debug] Deleting " + file);
                 File.Delete(file);
             }
-
             foreach (string dir in Directory.EnumerateDirectories(target_dir))
             {
+                //Debug.LogLine("[Cleanup Debug] Deleting " + dir);
                 DeleteDirectory(dir);
             }
 
-            Directory.Delete(target_dir, false);
+            //Debug.LogLine("[Cleanup Debug] Deleting " + target_dir);
+            DirectoryInfo target = new DirectoryInfo(target_dir);
+            if (target.GetFiles().Length == 0)
+                Directory.Delete(target_dir, true);
+            else
+            {
+                Thread.Sleep(50);
+                DeleteDirectory(target_dir);
+            }
         }
 
         public static void DirectoryCopy(string sourceDirName, string destDirName, bool copySubDirs)

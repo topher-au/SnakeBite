@@ -143,7 +143,7 @@ namespace SnakeBite
                     foreach (string gameFile in existingExternalFiles)
                     {
                         string gameFilePath = Path.Combine(GameDir, Tools.ToWinPath(gameFile));
-                        File.Delete(gameFilePath + build_ext);
+                        if (File.Exists(gameFilePath)) File.Delete(gameFilePath + build_ext);
                     }
 
                     foreach (string fileEntryDir in fileEntryDirs)

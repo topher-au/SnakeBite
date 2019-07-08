@@ -772,22 +772,14 @@ namespace SnakeBite
             {
                 foreach (var folder in cleanupFolders)
                 {
-                    if (Directory.Exists(folder)) Tools.DeleteDirectory(folder);
-                }
-                /*
-                bool directoryExists = true;
-                while (directoryExists)
-                {
-                    Thread.Sleep(100);
-                    directoryExists = false;
-                    foreach (var folder in cleanupFolders)
+                    if (Directory.Exists(folder))
                     {
-                        if (Directory.Exists(folder)) directoryExists = true;
+                        Tools.DeleteDirectory(folder);
+
                     }
                 }
-                */
             }
-            catch { }
+            catch (Exception e){ Debug.LogLine("[Mod] Exception occurred while attempting to remove SnakeBite work folders: " + e.Message); }
         }
     }//class ModManager
 }//namespace SnakeBite

@@ -96,12 +96,12 @@
             // label3
             // 
             this.label3.AutoSize = true;
-            this.label3.Location = new System.Drawing.Point(103, 76);
+            this.label3.Location = new System.Drawing.Point(91, 76);
             this.label3.Name = "label3";
-            this.label3.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.label3.Size = new System.Drawing.Size(118, 15);
+            this.label3.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label3.Size = new System.Drawing.Size(130, 15);
             this.label3.TabIndex = 10;
-            this.label3.Text = "Toggle Mods On/Off";
+            this.label3.Text = "Toggle Mods [Off | On]";
             // 
             // checkEnableSound
             // 
