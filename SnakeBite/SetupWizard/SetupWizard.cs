@@ -19,18 +19,21 @@ namespace SnakeBite.SetupWizard
 
         public SetupWizard()
         {
+            Debug.LogLine("[Setup Wizard] Initializing Form");
             InitializeComponent();
             FormClosing += formSetupWizard_Closing;
         }
 
         private void formSetupWizard_Load(object sender, EventArgs e)
         {
+            Debug.LogLine("[Setup Wizard] Form Loaded");
             buttonSkip.Visible = false;
             contentPanel.Controls.Add(introPage);
         }
 
         private void formSetupWizard_Closing(object sender, FormClosingEventArgs e)
         {
+            Debug.LogLine("[Setup Wizard] Form Closing");
             if ((string)Tag == "noclose" && !(displayPage == 5))
                 e.Cancel = true;
         }

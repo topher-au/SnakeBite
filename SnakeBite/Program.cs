@@ -59,11 +59,18 @@ namespace SnakeBite
             while (showSetupWizard)
             {
                 // show setup wizard
-                Debug.LogLine("Showing setup wizard");
-                SetupWizard.SetupWizard setupWizard = new SetupWizard.SetupWizard();
-                var wizResult = setupWizard.ShowDialog();
-                if (wizResult == DialogResult.Cancel) return;
-                if (wizResult == DialogResult.OK) showSetupWizard = false;
+                Debug.LogLine("[Setup] Starting Setup Wizard");
+                try
+                {
+                    SetupWizard.SetupWizard setupWizard = new SetupWizard.SetupWizard();
+                    var wizResult = setupWizard.ShowDialog();
+                    if (wizResult == DialogResult.Cancel) return;
+                    if (wizResult == DialogResult.OK) showSetupWizard = false;
+                }
+                catch (Exception e)
+                {
+                    Debug.LogLine("[Setup] Setup Wizard error: " + e.Message);
+                }
             }
             manager = new SettingsManager(GamePaths.SnakeBiteSettings);
 
