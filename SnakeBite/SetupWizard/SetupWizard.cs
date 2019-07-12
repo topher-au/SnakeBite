@@ -19,21 +19,18 @@ namespace SnakeBite.SetupWizard
 
         public SetupWizard()
         {
-            Debug.LogLine("[Setup Wizard] Initializing Form");
             InitializeComponent();
             FormClosing += formSetupWizard_Closing;
         }
 
         private void formSetupWizard_Load(object sender, EventArgs e)
         {
-            Debug.LogLine("[Setup Wizard] Form Loaded");
             buttonSkip.Visible = false;
             contentPanel.Controls.Add(introPage);
         }
 
         private void formSetupWizard_Closing(object sender, FormClosingEventArgs e)
         {
-            Debug.LogLine("[Setup Wizard] Form Closing");
             if ((string)Tag == "noclose" && !(displayPage == 5))
                 e.Cancel = true;
         }
@@ -105,7 +102,7 @@ namespace SnakeBite.SetupWizard
                             "\n\nAre you sure you want to continue?";
                         }
 
-                        var overWrite = MessageBox.Show(overWriteMessage, "Overwrite Existing Files", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                        var overWrite = MessageBox.Show(overWriteMessage, "Overwrite Existing Files?", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
                         if (overWrite != DialogResult.Yes) return;
                     }
 
@@ -114,6 +111,7 @@ namespace SnakeBite.SetupWizard
                     buttonBack.Visible = false;
                     buttonNext.Enabled = false;
                     createBackupPage.panelProcessing.Visible = true;
+                    Application.UseWaitCursor = true;
 
                     // do backup processing
                     BackgroundWorker backupProcessor = new BackgroundWorker();
@@ -130,6 +128,8 @@ namespace SnakeBite.SetupWizard
 
                     // move to merge dats
                     mergeDatPage.panelProcessing.Visible = false;
+                    Application.UseWaitCursor = false;
+
                     contentPanel.Controls.Clear();
                     contentPanel.Controls.Add(mergeDatPage);
                     buttonNext.Enabled = true;
@@ -143,6 +143,8 @@ namespace SnakeBite.SetupWizard
                     buttonBack.Visible = false;
                     Tag = "noclose";
                     mergeDatPage.panelProcessing.Visible = true;
+                    Application.UseWaitCursor = true;
+
                     BackgroundWorker mergeProcessor = new BackgroundWorker();
                     mergeProcessor.WorkerSupportsCancellation = true;
                     mergeProcessor.DoWork += new DoWorkEventHandler(ModManager.backgroundWorker_MergeAndCleanup);
@@ -156,11 +158,13 @@ namespace SnakeBite.SetupWizard
                         Application.DoEvents();
                         Thread.Sleep(40);
                     }
-
+                    
                     if (setupComplete)
                     {
                         Debug.LogLine("[Setup Wizard] Setup Complete. Snakebite is configured and ready to use.");
                         mergeDatPage.panelProcessing.Visible = false;
+                        Application.UseWaitCursor = false;
+
                         mergeDatPage.labelWelcome.Text = "Setup complete";
                         mergeDatPage.labelWelcomeText.Text = "SnakeBite is configured and ready to use.";
 
@@ -202,6 +206,8 @@ namespace SnakeBite.SetupWizard
         {
             buttonSkip.Visible = false;
             mergeDatPage.panelProcessing.Visible = false;
+            Application.UseWaitCursor = false;
+
             contentPanel.Controls.Clear();
             contentPanel.Controls.Add(mergeDatPage);
             buttonNext.Enabled = true;
@@ -211,12 +217,12 @@ namespace SnakeBite.SetupWizard
 
         private void backupProcessor_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            createBackupPage.labelWorking.Text = "Backing up " + (string)e.UserState;
+            createBackupPage.labelWorking.Text = "Backing up " + (string)e.UserState + ". Please Wait...";
         }
 
         private void mergeProcessor_ProgressChanged(object sender, ProgressChangedEventArgs e)
         {
-            mergeDatPage.labelWorking.Text = (string)e.UserState;
+            mergeDatPage.labelWorking.Text = (string)e.UserState + ". Please Wait...";
         }
 
         private void mergeProcessor_Completed(object sender, RunWorkerCompletedEventArgs e)

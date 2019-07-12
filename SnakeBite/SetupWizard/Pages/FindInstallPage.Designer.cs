@@ -64,10 +64,9 @@
             // 
             // labelWarning
             // 
-            this.labelWarning.ForeColor = System.Drawing.Color.Red;
-            this.labelWarning.Location = new System.Drawing.Point(56, 95);
+            this.labelWarning.Location = new System.Drawing.Point(8, 95);
             this.labelWarning.Name = "labelWarning";
-            this.labelWarning.Size = new System.Drawing.Size(330, 170);
+            this.labelWarning.Size = new System.Drawing.Size(429, 170);
             this.labelWarning.TabIndex = 8;
             this.labelWarning.Text = resources.GetString("labelWarning.Text");
             this.labelWarning.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;

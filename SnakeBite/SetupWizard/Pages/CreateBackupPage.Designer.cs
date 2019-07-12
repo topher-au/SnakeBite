@@ -32,12 +32,10 @@
             this.labelNoInstallNote = new System.Windows.Forms.Label();
             this.panelProcessing = new System.Windows.Forms.Panel();
             this.labelWorking = new System.Windows.Forms.Label();
-            this.pictureWorkingSpiral = new System.Windows.Forms.PictureBox();
             this.labelSelectDir = new System.Windows.Forms.Label();
             this.labelHeader = new System.Windows.Forms.Label();
             this.panelContent.SuspendLayout();
             this.panelProcessing.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureWorkingSpiral)).BeginInit();
             this.SuspendLayout();
             // 
             // panelContent
@@ -56,10 +54,10 @@
             this.labelNoInstallNote.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelNoInstallNote.Location = new System.Drawing.Point(3, 75);
             this.labelNoInstallNote.Name = "labelNoInstallNote";
-            this.labelNoInstallNote.Size = new System.Drawing.Size(434, 68);
+            this.labelNoInstallNote.Size = new System.Drawing.Size(434, 61);
             this.labelNoInstallNote.TabIndex = 8;
-            this.labelNoInstallNote.Text = "Note:\r\nIf you do not create a backup file, you will not be able to use the Toggle" +
-    " feature or restore your game files to their default state.\r\n";
+            this.labelNoInstallNote.Text = "If you do not create backup files, you will not be able to use the \"Toggle Mods\" " +
+    "feature or restore your game files to their original state.\r\n";
             this.labelNoInstallNote.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // panelProcessing
@@ -68,30 +66,20 @@
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
             this.panelProcessing.Controls.Add(this.labelWorking);
-            this.panelProcessing.Controls.Add(this.pictureWorkingSpiral);
-            this.panelProcessing.Location = new System.Drawing.Point(132, 161);
+            this.panelProcessing.Location = new System.Drawing.Point(3, 161);
             this.panelProcessing.Name = "panelProcessing";
-            this.panelProcessing.Size = new System.Drawing.Size(221, 43);
+            this.panelProcessing.Size = new System.Drawing.Size(434, 43);
             this.panelProcessing.TabIndex = 7;
             // 
             // labelWorking
             // 
-            this.labelWorking.AutoSize = true;
-            this.labelWorking.Location = new System.Drawing.Point(43, 14);
+            this.labelWorking.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labelWorking.Location = new System.Drawing.Point(0, 0);
             this.labelWorking.Name = "labelWorking";
-            this.labelWorking.Size = new System.Drawing.Size(107, 15);
+            this.labelWorking.Size = new System.Drawing.Size(434, 43);
             this.labelWorking.TabIndex = 7;
-            this.labelWorking.Text = "Backup in Progress";
-            this.labelWorking.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
-            // 
-            // pictureWorkingSpiral
-            // 
-            this.pictureWorkingSpiral.Image = global::SnakeBite.Properties.Resources.loading_spiral;
-            this.pictureWorkingSpiral.Location = new System.Drawing.Point(3, 5);
-            this.pictureWorkingSpiral.Name = "pictureWorkingSpiral";
-            this.pictureWorkingSpiral.Size = new System.Drawing.Size(32, 32);
-            this.pictureWorkingSpiral.TabIndex = 6;
-            this.pictureWorkingSpiral.TabStop = false;
+            this.labelWorking.Text = "Backup in Progress...";
+            this.labelWorking.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // labelSelectDir
             // 
@@ -123,8 +111,6 @@
             this.panelContent.ResumeLayout(false);
             this.panelContent.PerformLayout();
             this.panelProcessing.ResumeLayout(false);
-            this.panelProcessing.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureWorkingSpiral)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -135,7 +121,6 @@
         private System.Windows.Forms.Label labelSelectDir;
         private System.Windows.Forms.Label labelHeader;
         public System.Windows.Forms.Label labelWorking;
-        private System.Windows.Forms.PictureBox pictureWorkingSpiral;
         public System.Windows.Forms.Panel panelProcessing;
         private System.Windows.Forms.Label labelNoInstallNote;
     }

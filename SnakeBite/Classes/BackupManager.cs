@@ -113,15 +113,18 @@ namespace SnakeBite
             BackgroundWorker backupProcessor = (BackgroundWorker)sender;
 
             object param = Path.GetFileName(ZeroPath); //TODO: append filesize
-            backupProcessor.ReportProgress(0, param);
+            string fileSizeKB = string.Format("{0:n0}", new FileInfo(ZeroPath).Length / 1024);
+            backupProcessor.ReportProgress(0, string.Format("{0:n0}", $"{param} ({fileSizeKB} KB)"));
             File.Copy(ZeroPath, ZeroPath + original_ext, true);
 
             param = Path.GetFileName(OnePath);
-            backupProcessor.ReportProgress(0, param);
+            fileSizeKB = string.Format("{0:n0}", new FileInfo(OnePath).Length / 1024);
+            backupProcessor.ReportProgress(0, string.Format("{0:n0}", $"{param} ({fileSizeKB} KB)"));
             File.Copy(OnePath, OnePath + original_ext, true);
 
             param = Path.GetFileName(chunk0Path);
-            backupProcessor.ReportProgress(0, param);
+            fileSizeKB = string.Format("{0:n0}", new FileInfo(chunk0Path).Length / 1024);
+            backupProcessor.ReportProgress(0, string.Format("{0:n0}", $"{param} ({fileSizeKB} KB)"));
             File.Copy(chunk0Path, chunk0Path + original_ext, true);
         }
 

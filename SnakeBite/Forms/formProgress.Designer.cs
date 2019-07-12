@@ -28,10 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(formProgress));
             this.StatusText = new System.Windows.Forms.Label();
-            this.pictureSpiral = new System.Windows.Forms.PictureBox();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureSpiral)).BeginInit();
             this.SuspendLayout();
             // 
             // StatusText
@@ -45,17 +42,6 @@
             this.StatusText.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.StatusText.UseWaitCursor = true;
             // 
-            // pictureSpiral
-            // 
-            this.pictureSpiral.BackColor = System.Drawing.Color.Transparent;
-            this.pictureSpiral.Image = ((System.Drawing.Image)(resources.GetObject("pictureSpiral.Image")));
-            this.pictureSpiral.Location = new System.Drawing.Point(12, 12);
-            this.pictureSpiral.Name = "pictureSpiral";
-            this.pictureSpiral.Size = new System.Drawing.Size(32, 32);
-            this.pictureSpiral.TabIndex = 1;
-            this.pictureSpiral.TabStop = false;
-            this.pictureSpiral.UseWaitCursor = true;
-            // 
             // formProgress
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 15F);
@@ -64,7 +50,6 @@
             this.BackColor = System.Drawing.Color.LightGray;
             this.ClientSize = new System.Drawing.Size(359, 56);
             this.ControlBox = false;
-            this.Controls.Add(this.pictureSpiral);
             this.Controls.Add(this.StatusText);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedToolWindow;
@@ -75,13 +60,11 @@
             this.Text = "Processing...";
             this.UseWaitCursor = true;
             this.VisibleChanged += new System.EventHandler(this.formProgress_VisibleChanged);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureSpiral)).EndInit();
             this.ResumeLayout(false);
 
         }
 
         #endregion
-        private System.Windows.Forms.PictureBox pictureSpiral;
         public System.Windows.Forms.Label StatusText;
     }
 }

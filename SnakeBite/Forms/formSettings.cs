@@ -76,7 +76,7 @@ namespace SnakeBite
         {
             SetupWizard.SetupWizard setupWizard = new SetupWizard.SetupWizard();
             setupWizard.Tag = "closable";
-            setupWizard.ShowDialog();
+            setupWizard.ShowDialog(Application.OpenForms[0]);
             UpdateModToggle();
             CheckBackupState();
         }

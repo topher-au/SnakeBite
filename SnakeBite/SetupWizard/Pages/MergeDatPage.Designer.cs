@@ -32,12 +32,10 @@
             this.panelContent = new System.Windows.Forms.Panel();
             this.panelProcessing = new System.Windows.Forms.Panel();
             this.labelWorking = new System.Windows.Forms.Label();
-            this.pictureWorkingSpiral = new System.Windows.Forms.PictureBox();
             this.labelWelcomeText = new System.Windows.Forms.Label();
             this.labelWelcome = new System.Windows.Forms.Label();
             this.panelContent.SuspendLayout();
             this.panelProcessing.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureWorkingSpiral)).BeginInit();
             this.SuspendLayout();
             // 
             // panelContent
@@ -53,29 +51,20 @@
             // panelProcessing
             // 
             this.panelProcessing.Controls.Add(this.labelWorking);
-            this.panelProcessing.Controls.Add(this.pictureWorkingSpiral);
-            this.panelProcessing.Location = new System.Drawing.Point(110, 277);
+            this.panelProcessing.Location = new System.Drawing.Point(3, 289);
             this.panelProcessing.Name = "panelProcessing";
-            this.panelProcessing.Size = new System.Drawing.Size(249, 43);
+            this.panelProcessing.Size = new System.Drawing.Size(434, 48);
             this.panelProcessing.TabIndex = 8;
             // 
             // labelWorking
             // 
-            this.labelWorking.AutoSize = true;
-            this.labelWorking.Location = new System.Drawing.Point(43, 14);
+            this.labelWorking.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labelWorking.Location = new System.Drawing.Point(0, 0);
             this.labelWorking.Name = "labelWorking";
-            this.labelWorking.Size = new System.Drawing.Size(199, 15);
+            this.labelWorking.Size = new System.Drawing.Size(434, 48);
             this.labelWorking.TabIndex = 7;
             this.labelWorking.Text = "Working on game files, please wait...";
-            // 
-            // pictureWorkingSpiral
-            // 
-            this.pictureWorkingSpiral.Image = global::SnakeBite.Properties.Resources.loading_spiral;
-            this.pictureWorkingSpiral.Location = new System.Drawing.Point(3, 5);
-            this.pictureWorkingSpiral.Name = "pictureWorkingSpiral";
-            this.pictureWorkingSpiral.Size = new System.Drawing.Size(32, 32);
-            this.pictureWorkingSpiral.TabIndex = 6;
-            this.pictureWorkingSpiral.TabStop = false;
+            this.labelWorking.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // labelWelcomeText
             // 
@@ -106,8 +95,6 @@
             this.panelContent.ResumeLayout(false);
             this.panelContent.PerformLayout();
             this.panelProcessing.ResumeLayout(false);
-            this.panelProcessing.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureWorkingSpiral)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -117,7 +104,6 @@
         private System.Windows.Forms.Panel panelContent;
         public System.Windows.Forms.Panel panelProcessing;
         public System.Windows.Forms.Label labelWorking;
-        private System.Windows.Forms.PictureBox pictureWorkingSpiral;
         public System.Windows.Forms.Label labelWelcomeText;
         public System.Windows.Forms.Label labelWelcome;
     }

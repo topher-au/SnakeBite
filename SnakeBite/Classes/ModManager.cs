@@ -114,7 +114,7 @@ namespace SnakeBite
                 ClearBuildFiles(c7Path, t7Path, ZeroPath, OnePath, SnakeBiteSettings, SavePresetPath);
                 ClearSBGameDir();
                 CleanupFolders();
-                mergeProcessor.ReportProgress(0, "Moving files into new archives");
+                mergeProcessor.ReportProgress(0, "Migrating files to new archives");
                 if (!MoveDatFiles()) //moves vanilla 00 files into 01, excluding foxpatch. 
                 {
                     Debug.LogLine("[DatMerge] Failed to complete archive migration. Cancelling...");
@@ -123,7 +123,7 @@ namespace SnakeBite
                     return;
                 }
 
-                mergeProcessor.ReportProgress(0, "Modfying foxfs in chunk0");
+                mergeProcessor.ReportProgress(0, "Modfying foxfs in chunk0.dat");
                 if (!ModifyFoxfs()) // adds lines to foxfs in chunk0.
                 {
                     Debug.LogLine("[ModifyFoxfs] Failed to complete Foxfs modification. Cancelling...");
@@ -135,7 +135,7 @@ namespace SnakeBite
                 mergeProcessor.ReportProgress(0, "Promoting new archives");
                 PromoteBuildFiles(c7Path, t7Path, ZeroPath, OnePath, chunk0Path); // overwrites existing archives with modified archives
 
-                mergeProcessor.ReportProgress(0, "Cleaning up database");
+                mergeProcessor.ReportProgress(0, "Cleaning database");
                 CleanupDatabase();
             }
             catch (Exception f)

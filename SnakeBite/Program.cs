@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SnakeBite.Forms;
+using System;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
@@ -69,7 +70,7 @@ namespace SnakeBite
                 }
                 catch (Exception e)
                 {
-                    Debug.LogLine("[Setup] Setup Wizard error: " + e.Message);
+                    Debug.LogLine("[Setup] Setup Wizard error: " + e.ToString());
                 }
             }
             manager = new SettingsManager(GamePaths.SnakeBiteSettings);
