@@ -207,7 +207,8 @@ namespace SnakeBite
             if (manager.ValidInstallPath)
             {
                 Process.Start(GamePaths.GameDir + "\\mgsvtpp.exe");
-                ExitLauncher(silent);
+                if (Properties.Settings.Default.CloseSnakeBiteOnLaunch)
+                    ExitLauncher(silent);
             }
             else
             {

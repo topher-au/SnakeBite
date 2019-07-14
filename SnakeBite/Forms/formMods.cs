@@ -247,7 +247,8 @@ namespace SnakeBite
                     try
                     {
                         Process.Start("steam://run/287700/");
-                        Application.Exit();
+                        if (Properties.Settings.Default.CloseSnakeBiteOnLaunch)
+                            Application.Exit();
                     }
                     catch
                     {
@@ -255,7 +256,8 @@ namespace SnakeBite
                         {
                             Debug.LogLine("Failed to launch game through Steam (a bit suspicious tbh). Attempting to run mgsvtpp.exe...", Debug.LogLevel.Basic);
                             Process.Start(GamePaths.GameDir + "\\mgsvtpp.exe");
-                            Application.Exit();
+                            if (Properties.Settings.Default.CloseSnakeBiteOnLaunch)
+                                Application.Exit();
                         }
                         catch
                         {

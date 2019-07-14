@@ -161,7 +161,7 @@ namespace SnakeBite
 
                             catch (Exception e)
                             {
-                                Debug.LogLine("[Uninstall] Could not delete: " + e.Message);
+                                Debug.LogLine("[Uninstall] Could not delete: " + fileEntryDir);
                             }
                         }
                     }

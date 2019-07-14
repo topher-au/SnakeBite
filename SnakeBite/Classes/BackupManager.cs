@@ -1,4 +1,6 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel;
 using System.IO;
 using System.Threading;
 using static SnakeBite.GamePaths;
@@ -40,6 +42,48 @@ namespace SnakeBite
             // delete mod data
             File.Delete(ZeroPath + modded_ext);
             File.Delete(OnePath + modded_ext);
+
+            // delete GameDir data
+            List<string> fileEntryDirs = new List<string>();
+            foreach (string externalFile in new SettingsManager(SnakeBiteSettings).GetModExternalFiles())
+            {
+                string fileModPath = Tools.ToWinPath(externalFile);
+                string sourceFullPath = Path.Combine(GameDir, fileModPath);
+                string fullPathDir = Path.GetDirectoryName(sourceFullPath);
+
+                try
+                {
+                    if (File.Exists(sourceFullPath))
+                    {
+                        File.Delete(sourceFullPath);
+                        if (!fileEntryDirs.Contains(fullPathDir)) fileEntryDirs.Add(fullPathDir);
+                    }
+                }
+                catch
+                {
+                    Debug.LogLine("[Uninstall] Could not delete " + fileModPath);
+                }
+                
+            }
+
+            foreach (string fileEntryDir in fileEntryDirs)
+            {
+                if (Directory.Exists(fileEntryDir))
+                {
+                    try
+                    {
+                        if (Directory.GetFiles(fileEntryDir).Length == 0)
+                        {
+                            Directory.Delete(fileEntryDir);
+                        }
+                    }
+
+                    catch
+                    {
+                        Debug.LogLine("[Uninstall] Could not delete: " + fileEntryDir);
+                    }
+                }
+            }
 
             // restore backups
             bool fileExists = true;

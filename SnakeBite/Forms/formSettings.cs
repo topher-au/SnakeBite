@@ -111,6 +111,7 @@ namespace SnakeBite
             textInstallPath.Text = Properties.Settings.Default.InstallPath;
             checkEnableSound.Checked = Properties.Settings.Default.EnableSound;
             checkBoxSaveRevertPreset.Checked = Properties.Settings.Default.AutosaveRevertPreset;
+            checkBoxCloseOnStart.Checked = Properties.Settings.Default.CloseSnakeBiteOnLaunch;
             //listThemes.SelectedIndex = 0;
             UpdateModToggle();
             CheckBackupState();
@@ -182,6 +183,12 @@ namespace SnakeBite
                 ProgressWindow.Show("Working", "Disabling mods, please wait...", new Action(BackupManager.SwitchToOriginal), log);
             }
             UpdateModToggle();
+        }
+
+        private void checkBoxCloseOnStart_CheckedChanged(object sender, EventArgs e)
+        {
+            Properties.Settings.Default.CloseSnakeBiteOnLaunch = checkBoxCloseOnStart.Checked;
+            Properties.Settings.Default.Save();
         }
     }
 }

@@ -376,9 +376,9 @@ namespace SnakeBite
                     {
                         File.Delete(destFile); // deletes the specified file
                     }
-                    catch (IOException e)
+                    catch
                     {
-                        Console.WriteLine("[Uninstall] Could not delete: " + e.Message);
+                        Console.WriteLine("[Uninstall] Could not delete: " + destFile);
                     }
                 }
                 gameData.GameFileEntries.RemoveAll(file => Tools.CompareHashes(file.FilePath, fileEntry.FilePath)); //remove all mentions of the destFile from snakebite.xml
@@ -392,9 +392,9 @@ namespace SnakeBite
                     {
                         Directory.Delete(fileEntryDir); //attempt to delete the empty directory [NOT RECURSIVE]
                     }
-                    catch (IOException e)
+                    catch
                     {
-                        Console.WriteLine("[Uninstall] Could not delete: " + e.Message);
+                        Console.WriteLine("[Uninstall] Could not delete: " + fileEntryDir);
                     }
                 }
             }//foreach fileEntryDirs
@@ -413,9 +413,9 @@ namespace SnakeBite
                         {
                             File.Delete(destFile); // deletes the specified file
                         }
-                        catch (IOException e)
+                        catch
                         {
-                            Console.WriteLine("[Uninstall] Could not delete: " + e.Message);
+                            Console.WriteLine("[Uninstall] Could not delete: " + destFile);
                         }
                     }
                     gameData.GameQarEntries.RemoveAll(file => Tools.CompareHashes(file.FilePath, qarEntry.FilePath)); //remove all mentions of the deleted texture from snakebite.xml

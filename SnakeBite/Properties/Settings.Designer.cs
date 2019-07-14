@@ -154,5 +154,17 @@ namespace SnakeBite.Properties {
                 this["AutosaveRevertPreset"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool CloseSnakeBiteOnLaunch {
+            get {
+                return ((bool)(this["CloseSnakeBiteOnLaunch"]));
+            }
+            set {
+                this["CloseSnakeBiteOnLaunch"] = value;
+            }
+        }
     }
 }

@@ -190,9 +190,9 @@ namespace makebite
             {
                 if (Directory.Exists(buildDir)) Directory.Delete(buildDir, true);
             }
-            catch (Exception e)
+            catch
             {
-                Debug.LogLine(string.Format("[BuildArchive] preexisting _build directory could not be deleted: {0}", e.Message));
+                Debug.LogLine(string.Format("[BuildArchive] preexisting _build directory could not be deleted: {0}", buildDir));
             }
 
             Directory.CreateDirectory("_build");
@@ -354,7 +354,7 @@ namespace makebite
             }
             catch (Exception e)
             {
-                Debug.LogLine(string.Format("[BuildArchive] _build directory could not be deleted: {0}", e.Message));
+                Debug.LogLine(string.Format("[BuildArchive] _build directory could not be deleted: {0}", e.ToString()));
             }
         }
     }

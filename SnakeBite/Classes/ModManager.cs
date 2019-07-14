@@ -258,7 +258,7 @@ namespace SnakeBite
                 zeroList = GzsLib.ListArchiveContents<QarFile>(ZeroPath);
             } catch (Exception e)
             {
-                Debug.LogLine(String.Format("[Error] GzsLib.ListArchiveContents exception: {0}", e.Message), Debug.LogLevel.Debug);
+                Debug.LogLine(String.Format("[Error] GzsLib.ListArchiveContents exception: {0}", e.ToString()), Debug.LogLevel.Debug);
                 throw e;
             }
 
@@ -311,7 +311,7 @@ namespace SnakeBite
                 if (File.Exists(c7Path)) chunk7List = GzsLib.ListArchiveContents<QarFile>(c7Path);
             } catch (Exception e)
             {
-                Debug.LogLine(String.Format("[Error] GzsLib.ListArchiveContents exception: {0}", e.Message), Debug.LogLevel.Debug);
+                Debug.LogLine(String.Format("[Error] GzsLib.ListArchiveContents exception: {0}", e.ToString()), Debug.LogLevel.Debug);
                 throw e;
             }
 
@@ -558,9 +558,9 @@ namespace SnakeBite
                     {
                         Directory.Delete(fileEntryDir);
                     }
-                    catch (IOException e)
+                    catch
                     {
-                        Console.WriteLine("[Uninstall] Could not delete: " + e.Message);
+                        Console.WriteLine("[Uninstall] Could not delete: " + fileEntryDir);
                     }
                 }
             }
@@ -599,9 +599,9 @@ namespace SnakeBite
                     {
                         Directory.Delete(fileEntryDir);
                     }
-                    catch (IOException e)
+                    catch
                     {
-                        Console.WriteLine("[Uninstall] Could not delete: " + e.Message);
+                        Console.WriteLine("[Uninstall] Could not delete: " + fileEntryDir);
                     }
                 }
             }
@@ -641,7 +641,7 @@ namespace SnakeBite
             }
             catch (IOException e)
             {
-                Console.WriteLine("[Cleanup] Could not delete Game Directory Content: " + e.Message);
+                Console.WriteLine("[Cleanup] Could not delete Game Directory Content: " + e.ToString());
             }
         }
 
@@ -697,9 +697,9 @@ namespace SnakeBite
                 try
                 {
                     File.Delete(fpkName);
-                } catch (IOException e)
+                } catch
                 {
-                    Console.WriteLine("[Uninstall] Could not delete: " + e.Message);
+                    Console.WriteLine("[Uninstall] Could not delete: " + fpkName);
                 }
             }
 
@@ -779,7 +779,7 @@ namespace SnakeBite
                     }
                 }
             }
-            catch (Exception e){ Debug.LogLine("[Mod] Exception occurred while attempting to remove SnakeBite work folders: " + e.Message); }
+            catch (Exception e){ Debug.LogLine("[Mod] Exception occurred while attempting to remove SnakeBite work folders: " + e.ToString()); }
         }
     }//class ModManager
 }//namespace SnakeBite
