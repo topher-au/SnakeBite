@@ -246,29 +246,19 @@ namespace SnakeBite
                     Debug.LogLine("Launching game...", Debug.LogLevel.Basic);
                     try
                     {
-                        Process.Start("steam://run/287700/");
+                        Process.Start(GamePaths.GameDir + "\\mgsvtpp.exe");
                         if (Properties.Settings.Default.CloseSnakeBiteOnLaunch)
                             Application.Exit();
                     }
                     catch
                     {
-                        try
-                        {
-                            Debug.LogLine("Failed to launch game through Steam (a bit suspicious tbh). Attempting to run mgsvtpp.exe...", Debug.LogLevel.Basic);
-                            Process.Start(GamePaths.GameDir + "\\mgsvtpp.exe");
-                            if (Properties.Settings.Default.CloseSnakeBiteOnLaunch)
-                                Application.Exit();
-                        }
-                        catch
-                        {
-                            Debug.LogLine("Failed to run mgsvtpp.exe", Debug.LogLevel.Basic);
-                        }
+                        Debug.LogLine("Failed to run mgsvtpp.exe", Debug.LogLevel.Basic);
                     }
 
                 }
                 else
                 {
-                    MessageBox.Show("Unable to locate MGSVTPP.exe. Please check the Settings and try again.", "Error launching MGSV", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("Unable to locate mgsvtpp.exe. Please check the MGSV install path and try again.", "Error launching MGSV", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
         }
