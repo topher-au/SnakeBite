@@ -56,6 +56,7 @@
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "formProgress";
+            this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Processing...";
             this.UseWaitCursor = true;

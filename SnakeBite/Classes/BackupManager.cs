@@ -156,19 +156,16 @@ namespace SnakeBite
         {
             BackgroundWorker backupProcessor = (BackgroundWorker)sender;
 
-            object param = Path.GetFileName(ZeroPath); //TODO: append filesize
-            string fileSizeKB = string.Format("{0:n0}", new FileInfo(ZeroPath).Length / 1024);
-            backupProcessor.ReportProgress(0, string.Format("{0:n0}", $"{param} ({fileSizeKB} KB)"));
+            object param = Path.GetFileName(ZeroPath);
+            backupProcessor.ReportProgress(0, string.Format("{0:n0}", $"{param} ({Tools.GetFileSizeKB(ZeroPath)} KB)"));
             File.Copy(ZeroPath, ZeroPath + original_ext, true);
 
             param = Path.GetFileName(OnePath);
-            fileSizeKB = string.Format("{0:n0}", new FileInfo(OnePath).Length / 1024);
-            backupProcessor.ReportProgress(0, string.Format("{0:n0}", $"{param} ({fileSizeKB} KB)"));
+            backupProcessor.ReportProgress(0, string.Format("{0:n0}", $"{param} ({Tools.GetFileSizeKB(OnePath)} KB)"));
             File.Copy(OnePath, OnePath + original_ext, true);
 
             param = Path.GetFileName(chunk0Path);
-            fileSizeKB = string.Format("{0:n0}", new FileInfo(chunk0Path).Length / 1024);
-            backupProcessor.ReportProgress(0, string.Format("{0:n0}", $"{param} ({fileSizeKB} KB)"));
+            backupProcessor.ReportProgress(0, string.Format("{0:n0}", $"{param} ({Tools.GetFileSizeKB(chunk0Path)} KB)"));
             File.Copy(chunk0Path, chunk0Path + original_ext, true);
         }
 

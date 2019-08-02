@@ -19,7 +19,8 @@ namespace SnakeBite
             bool success = false;
             Directory.CreateDirectory("_build\\master\\0");
             SettingsManager manager = new SettingsManager(SnakeBiteSettings);
-            Debug.LogLine("[SavePreset] Saving preset file...", Debug.LogLevel.Basic);
+            string presetName = Path.GetFileName(presetFilePath);
+            Debug.LogLine($"[SavePreset] Saving {presetName}...", Debug.LogLevel.Basic);
             try
             {
                 foreach (string gameFile in manager.GetModExternalFiles())
@@ -42,8 +43,13 @@ namespace SnakeBite
                 Debug.LogLine("[SavePreset] Copying to build directory: snakebite.xml", Debug.LogLevel.Basic);
                 File.Copy(SnakeBiteSettings, "_build\\snakebite.xml", true);
 
+                if (presetFilePath == SavePresetPath + build_ext)
+                {
+                    Debug.LogLine($"Note: '{Path.GetFileNameWithoutExtension(presetName)}' can be disabled in the Settings menu to save time during installation and uninstallation.", Debug.LogLevel.Basic);
+                }
+
                 FastZip zipper = new FastZip();
-                Debug.LogLine(string.Format("[SavePreset] Writing {0}", Path.GetFileName(presetFilePath)), Debug.LogLevel.Basic);
+                Debug.LogLine(string.Format("[SavePreset] Writing {0}...", presetName), Debug.LogLevel.Basic);
                 zipper.CreateZip(presetFilePath, "_build", true, "(.*?)");
                 Debug.LogLine("[SavePreset] Write Complete", Debug.LogLevel.Basic);
                 success = true;

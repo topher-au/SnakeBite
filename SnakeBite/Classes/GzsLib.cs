@@ -133,139 +133,154 @@ namespace SnakeBite.GzsTool
         // Extract full archive
         public static List<string> ExtractArchive<T>(string FileName, string OutputPath) where T : ArchiveFile, new()
         {
-            Debug.LogLine(String.Format("[GzsLib] Extracting archive {0} to {1}", FileName, OutputPath));
-
             if (!File.Exists(FileName))
             {
-                Debug.LogLine("[GzsLib] File not found");
+                Debug.LogLine($"[GzsLib] File not found: {FileName}");
                 throw new FileNotFoundException();
             }
-
-            using (FileStream archiveFile = new FileStream(FileName, FileMode.Open))
+            else
             {
-                List<string> outFiles = new List<string>();
-                T archive = new T();
-                archive.Name = Path.GetFileName(FileName);
-                archive.Read(archiveFile);
+                string name = Path.GetFileName(FileName);
+                Debug.LogLine($"[GzsLib] Extracting {name} to {OutputPath} ({Tools.GetFileSizeKB(FileName)} KB)");
 
-                // Extract all files
-                var exportedFiles = archive.ExportFiles(archiveFile);
-                foreach (var v in exportedFiles)
+                using (FileStream archiveFile = new FileStream(FileName, FileMode.Open))
                 {
-                    string outDirectory = Path.Combine(OutputPath, Path.GetDirectoryName(v.FileName));
-                    string outFileName = Path.Combine(OutputPath, v.FileName);
-                    if (!Directory.Exists(outDirectory)) Directory.CreateDirectory(outDirectory);
-                    using (FileStream outStream = new FileStream(outFileName, FileMode.Create))
+                    List<string> outFiles = new List<string>();
+                    T archive = new T();
+                    archive.Name = name;
+                    archive.Read(archiveFile);
+
+                    // Extract all files
+                    var exportedFiles = archive.ExportFiles(archiveFile);
+                    foreach (var v in exportedFiles)
                     {
-                        // copy to output stream
-                        v.DataStream().CopyTo(outStream);
-                        outFiles.Add(v.FileName);
+                        string outDirectory = Path.Combine(OutputPath, Path.GetDirectoryName(v.FileName));
+                        string outFileName = Path.Combine(OutputPath, v.FileName);
+                        if (!Directory.Exists(outDirectory)) Directory.CreateDirectory(outDirectory);
+                        using (FileStream outStream = new FileStream(outFileName, FileMode.Create))
+                        {
+                            // copy to output stream
+                            v.DataStream().CopyTo(outStream);
+                            outFiles.Add(v.FileName);
+                        }
                     }
+                    Debug.LogLine($"[GzsLib] Extracted {outFiles.Count} files from {name}");
+                    return outFiles;
                 }
-                Debug.LogLine(String.Format("[GzsLib] Extracted {0} files", outFiles.Count));
-                return outFiles;
             }
         }
 
         // Extract single file from archive
         public static bool ExtractFile<T>(string SourceArchive, string FilePath, string OutputFile) where T : ArchiveFile, new()
         {
-            Debug.LogLine(String.Format("[GzsLib] Extracting file {1}: {0} -> {2}", FilePath, SourceArchive, OutputFile));
             if (!File.Exists(SourceArchive))
             {
-                Debug.LogLine("[GzsLib] File not found");
+                Debug.LogLine($"[GzsLib] File not found: {SourceArchive}");
                 throw new FileNotFoundException();
             }
-            // Get file hash from path
-            ulong fileHash = Tools.NameToHash(FilePath);
-
-            using (FileStream archiveFile = new FileStream(SourceArchive, FileMode.Open))
+            else
             {
-                T archive = new T();
-                archive.Name = Path.GetFileName(SourceArchive);
-                archive.Read(archiveFile);
+                Debug.LogLine(String.Format("[GzsLib] Extracting file {1}: {0} -> {2}", FilePath, SourceArchive, OutputFile));
+                // Get file hash from path
+                ulong fileHash = Tools.NameToHash(FilePath);
 
-                // Select single file for output
-                var outFile = archive.ExportFiles(archiveFile).FirstOrDefault(entry => Tools.NameToHash(entry.FileName) == fileHash);
-
-                if (outFile != null)
+                using (FileStream archiveFile = new FileStream(SourceArchive, FileMode.Open))
                 {
-                    string path = Path.GetDirectoryName(Path.GetFullPath(OutputFile));
-                    if (!Directory.Exists(path)) Directory.CreateDirectory(path);
-                    using (FileStream outStream = new FileStream(OutputFile, FileMode.Create))
+                    T archive = new T();
+                    archive.Name = Path.GetFileName(SourceArchive);
+                    archive.Read(archiveFile);
+
+                    // Select single file for output
+                    var outFile = archive.ExportFiles(archiveFile).FirstOrDefault(entry => Tools.NameToHash(entry.FileName) == fileHash);
+
+                    if (outFile != null)
                     {
-                        // copy to output stream
-                        outFile.DataStream().CopyTo(outStream);
+                        string path = Path.GetDirectoryName(Path.GetFullPath(OutputFile));
+                        if (!Directory.Exists(path)) Directory.CreateDirectory(path);
+                        using (FileStream outStream = new FileStream(OutputFile, FileMode.Create))
+                        {
+                            // copy to output stream
+                            outFile.DataStream().CopyTo(outStream);
+                        }
+                        return true;
                     }
-                    return true;
-                } else
-                {
-                    // file not found
-                    return false;
+                    else
+                    {
+                        // file not found
+                        return false;
+                    }
                 }
             }
+            
         }
 
         // Extract single file from archive
         public static bool ExtractFileByHash<T>(string SourceArchive, ulong FileHash, string OutputFile) where T : ArchiveFile, new()
         {
-            Debug.LogLine(String.Format("[GzsLib] Extracting file from {1}: hash {0} -> {2}", FileHash, SourceArchive, OutputFile));
             if (!File.Exists(SourceArchive))
             {
-                Debug.LogLine("[GzsLib] File not found");
+                Debug.LogLine($"[GzsLib] File not found: {SourceArchive}");
                 throw new FileNotFoundException();
             }
-
-            // Get file hash from path
-            ulong fileHash = FileHash;
-
-            using (FileStream archiveFile = new FileStream(SourceArchive, FileMode.Open))
+            else
             {
-                T archive = new T();
-                archive.Name = Path.GetFileName(SourceArchive);
-                archive.Read(archiveFile);
+                Debug.LogLine(String.Format("[GzsLib] Extracting file from {1}: hash {0} -> {2}", FileHash, SourceArchive, OutputFile));
+                // Get file hash from path
+                ulong fileHash = FileHash;
 
-                // Select single file for output
-                var outFile = archive.ExportFiles(archiveFile).FirstOrDefault(entry => Tools.NameToHash(entry.FileName) == fileHash);
-
-                if (outFile != null)
+                using (FileStream archiveFile = new FileStream(SourceArchive, FileMode.Open))
                 {
-                    if (!Directory.Exists(Path.GetDirectoryName(OutputFile))) Directory.CreateDirectory(Path.GetDirectoryName(OutputFile));
-                    using (FileStream outStream = new FileStream(OutputFile, FileMode.Create))
+                    T archive = new T();
+                    archive.Name = Path.GetFileName(SourceArchive);
+                    archive.Read(archiveFile);
+
+                    // Select single file for output
+                    var outFile = archive.ExportFiles(archiveFile).FirstOrDefault(entry => Tools.NameToHash(entry.FileName) == fileHash);
+
+                    if (outFile != null)
                     {
-                        // copy to output stream
-                        outFile.DataStream().CopyTo(outStream);
+                        if (!Directory.Exists(Path.GetDirectoryName(OutputFile))) Directory.CreateDirectory(Path.GetDirectoryName(OutputFile));
+                        using (FileStream outStream = new FileStream(OutputFile, FileMode.Create))
+                        {
+                            // copy to output stream
+                            outFile.DataStream().CopyTo(outStream);
+                        }
+                        return true;
                     }
-                    return true;
-                } else
-                {
-                    // file not found
-                    return false;
+                    else
+                    {
+                        // file not found
+                        return false;
+                    }
                 }
             }
+            
         }
 
         // Read file hashes contained within QAR archive
         public static List<GameFile> ListArchiveHashes<T>(string ArchiveName) where T : ArchiveFile, new()
         {
-            Debug.LogLine(String.Format("[GzsLib] Reading archive contents: {0}", ArchiveName));
             if (!File.Exists(ArchiveName))
             {
-                Debug.LogLine("[GzsLib] File not found");
+                Debug.LogLine($"[GzsLib] File not found: {ArchiveName}");
                 throw new FileNotFoundException();
             }
-
-            using (FileStream archiveFile = new FileStream(ArchiveName, FileMode.Open))
+            else
             {
-                List<GameFile> archiveContents = new List<GameFile>();
-                T archive = new T();
-                archive.Name = Path.GetFileName(ArchiveName);
-                archive.Read(archiveFile);
-                foreach (var x in archive.ExportFiles(archiveFile))
+                string name = Path.GetFileName(ArchiveName);
+                Debug.LogLine($"[GzsLib] Reading archive contents: {name} ({Tools.GetFileSizeKB(ArchiveName)} KB)");
+                using (FileStream archiveFile = new FileStream(ArchiveName, FileMode.Open))
                 {
-                    archiveContents.Add(new GameFile() { FilePath = x.FileName, FileHash = Tools.NameToHash(x.FileName), QarFile = archive.Name });
+                    List<GameFile> archiveContents = new List<GameFile>();
+                    T archive = new T();
+                    archive.Name = name;
+                    archive.Read(archiveFile);
+                    foreach (var x in archive.ExportFiles(archiveFile))
+                    {
+                        archiveContents.Add(new GameFile() { FilePath = x.FileName, FileHash = Tools.NameToHash(x.FileName), QarFile = archive.Name });
+                    }
+                    return archiveContents;
                 }
-                return archiveContents;
             }
         }
 
@@ -275,24 +290,27 @@ namespace SnakeBite.GzsTool
         /// </summary>
         public static Dictionary<ulong, GameFile> GetQarGameFiles(string qarPath)
         {
-            Debug.LogLine($"[GzsLib] Reading archive contents: {qarPath}");
             if (!File.Exists(qarPath))
             {
-                Debug.LogLine("[GzsLib] File not found");
+                Debug.LogLine($"[GzsLib] File not found: {qarPath}");
                 throw new FileNotFoundException();
             }
-
-            using (FileStream archiveFile = new FileStream(qarPath, FileMode.Open))
+            else
             {
-                var qarFiles = new Dictionary<ulong, GameFile>();
-                var qarFile = new QarFile();
-                qarFile.Name = Path.GetFileName(qarPath);
-                qarFile.Read(archiveFile);
-                foreach (QarEntry entry in qarFile.Entries)
+                string name = Path.GetFileName(qarPath);
+                Debug.LogLine($"[GzsLib] Reading archive contents: {name}");
+                using (FileStream archiveFile = new FileStream(qarPath, FileMode.Open))
                 {
-                    qarFiles[entry.Hash] = new GameFile() { FilePath = entry.FilePath, FileHash = entry.Hash, QarFile = qarFile.Name };
+                    var qarFiles = new Dictionary<ulong, GameFile>();
+                    var qarFile = new QarFile();
+                    qarFile.Name = name;
+                    qarFile.Read(archiveFile);
+                    foreach (QarEntry entry in qarFile.Entries)
+                    {
+                        qarFiles[entry.Hash] = new GameFile() { FilePath = entry.FilePath, FileHash = entry.Hash, QarFile = qarFile.Name };
+                    }
+                    return qarFiles;
                 }
-                return qarFiles;
             }
         }
 
@@ -305,24 +323,27 @@ namespace SnakeBite.GzsTool
         /// <returns>list of files within archive</returns>
         public static List<string> ListArchiveContents<T>(string ArchiveName) where T : ArchiveFile, new()
         {
-            Debug.LogLine(String.Format("[GzsLib] Reading archive contents: {0}", ArchiveName));
             if (!File.Exists(ArchiveName))
             {
-                Debug.LogLine("[GzsLib] File not found");
+                Debug.LogLine($"[GzsLib] File not found: {ArchiveName}");
                 throw new FileNotFoundException();
             }
-
-            using (FileStream archiveFile = new FileStream(ArchiveName, FileMode.Open))
+            else
             {
-                List<string> archiveContents = new List<string>();
-                T archive = new T();
-                archive.Name = Path.GetFileName(ArchiveName);
-                archive.Read(archiveFile);
-                foreach (var x in archive.ExportFiles(archiveFile))
+                string name = Path.GetFileName(ArchiveName);
+                Debug.LogLine($"[GzsLib] Reading archive contents: {name}");
+                using (FileStream archiveFile = new FileStream(ArchiveName, FileMode.Open))
                 {
-                    archiveContents.Add(x.FileName);
+                    List<string> archiveContents = new List<string>();
+                    T archive = new T();
+                    archive.Name = name;
+                    archive.Read(archiveFile);
+                    foreach (var x in archive.ExportFiles(archiveFile))
+                    {
+                        archiveContents.Add(x.FileName);
+                    }
+                    return archiveContents;
                 }
-                return archiveContents;
             }
         }
 
@@ -435,7 +456,7 @@ namespace SnakeBite.GzsTool
         // Export QAR archive with specified parameters
         public static void WriteQarArchive(string FileName, string SourceDirectory, List<string> Files, uint Flags)
         {
-            Debug.LogLine(String.Format("[GzsLib] Writing QAR archive: {0}", FileName));
+            Debug.LogLine($"[GzsLib] Writing {Path.GetFileName(FileName)}");
             List<QarEntry> qarEntries = new List<QarEntry>();
             foreach (string s in Files)
             {
@@ -455,13 +476,13 @@ namespace SnakeBite.GzsTool
         {
             if (File.Exists(sourcePath))
             {
-                Debug.LogLine(String.Format("[GzsLib] Promoting {0} to {1}", Path.GetFileName(sourcePath), Path.GetFileName(destinationPath)));
+                Debug.LogLine($"[GzsLib] Promoting {Path.GetFileName(sourcePath)} to {Path.GetFileName(destinationPath)} ({Tools.GetFileSizeKB(sourcePath)} KB)");
                 File.Delete(destinationPath);
                 File.Move(sourcePath, destinationPath);
             }
             else
             {
-                Debug.LogLine(String.Format("[GzsLib] {0} not found", Path.GetFileName(sourcePath), Path.GetFileName(destinationPath)));
+                Debug.LogLine($"[GzsLib] {sourcePath} not found");
             }
         }
 

@@ -315,5 +315,16 @@ namespace SnakeBite
                 }
             }
         }
+
+        public static string GetFileSizeKB(params string[] filePaths)
+        {
+            long size = 0;
+            foreach(string filePath in filePaths)
+            {
+                size += new FileInfo(filePath).Length;
+            }
+
+            return string.Format("{0:n0}", size / 1024);
+        }
     }
 }

@@ -26,7 +26,6 @@ namespace SnakeBite
 
             if (Properties.Settings.Default.AutosaveRevertPreset == true)
             {
-                Debug.LogLine("[Install] Saving RevertChanges.MGSVPreset.SB_Build", Debug.LogLevel.Basic);
                 PresetManager.SavePreset(SavePresetPath + build_ext); // creates a backup preset file sb_build
             }
             else
@@ -77,14 +76,12 @@ namespace SnakeBite
 
                 if (hasQarZero)
                 {
-                    Debug.LogLine("[Install] Rebuilding 00.dat", Debug.LogLevel.Basic);
                     zeroFiles = zeroFilesHashSet.ToList();
                     zeroFiles.Sort();
                     GzsLib.WriteQarArchive(ZeroPath + build_ext, "_working0", zeroFiles, GzsLib.zeroFlags);
                 }
                 if (hasFtexs)
                 {
-                    Debug.LogLine("[Install] Rebuilding 01.dat", Debug.LogLevel.Basic);
                     oneFiles.Sort();
                     GzsLib.WriteQarArchive(OnePath + build_ext, "_working1", oneFiles, GzsLib.oneFlags);
                 }
@@ -145,8 +142,9 @@ namespace SnakeBite
 
             foreach (string modFilePath in modFilePaths) 
             {
-                Debug.LogLine($"[Install] Installation started: {modFilePath}", Debug.LogLevel.Basic);
-                Debug.LogLine("[Install] Unzip mod .mgsv", Debug.LogLevel.Basic);
+                Debug.LogLine($"[Install] Installation started: {Path.GetFileName(modFilePath)}", Debug.LogLevel.Basic);
+                
+                Debug.LogLine($"[Install] Unzipping mod .mgsv ({Tools.GetFileSizeKB(modFilePath)} KB)", Debug.LogLevel.Basic);
                 unzipper.ExtractZip(modFilePath, "_extr", "(.*?)");
 
                 Debug.LogLine("[Install] Load mod metadata", Debug.LogLevel.Basic);

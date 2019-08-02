@@ -12,8 +12,8 @@ namespace SnakeBite {
         delegate void WriteCallbackChar(char text);
         delegate void WriteCallbackString(string text);
 
-        private DateTime lastUpdate = new DateTime();
-        private int displayRate = 100;//ms
+        //private DateTime lastUpdate = new DateTime();
+        //private int displayRate = 100;//ms
 
         private LogPage logPage;
 
@@ -23,7 +23,9 @@ namespace SnakeBite {
 
         public override void Write(char value) {                
             logPage.logStringBuilder.Append(value);
+            logPage.UpdateLog();
 
+            /*
             var current = DateTime.Now;
             var delta = (current - lastUpdate).TotalMilliseconds;
             if (delta > displayRate)
@@ -31,11 +33,14 @@ namespace SnakeBite {
                 lastUpdate = current;
                 logPage.UpdateLog();
             }
+            */
         }
 
         public override void Write(string value) {
             logPage.logStringBuilder.Append(value);
+            logPage.UpdateLog();
 
+            /*
             var current = DateTime.Now;
             var delta = (current - lastUpdate).TotalMilliseconds;
             if (delta > displayRate)
@@ -43,6 +48,7 @@ namespace SnakeBite {
                 lastUpdate = current;
                 logPage.UpdateLog();
             }
+            */
         }
 
         public override Encoding Encoding {

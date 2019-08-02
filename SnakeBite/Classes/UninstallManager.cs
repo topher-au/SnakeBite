@@ -30,7 +30,6 @@ namespace SnakeBite
             // backup preset build
             if (Properties.Settings.Default.AutosaveRevertPreset == true)
             {
-                Debug.LogLine("[Uninstall] Saving RevertChanges.MGSVPreset.SB_Build", Debug.LogLevel.Basic);
                 PresetManager.SavePreset(SavePresetPath + build_ext);
             }
             else
@@ -41,7 +40,7 @@ namespace SnakeBite
             GzsLib.LoadDictionaries();
             File.Copy(SnakeBiteSettings, SnakeBiteSettings + build_ext, true);
             List<ModEntry> mods = SBBuildManager.GetInstalledMods();
-            Debug.LogLine("[Uninstall] Skipping RevertChanges.MGSVPreset Save", Debug.LogLevel.Basic);
+
             List<ModEntry> selectedMods = new List<ModEntry>();
             foreach (int index in modIndices)
             {
@@ -54,7 +53,6 @@ namespace SnakeBite
             if (hasQarZero)
             {
                 // if necessary, extracts 00.dat and creates a list of filenames, which is pruned throughout the uninstall process and repacked at the end.
-                Debug.LogLine("[Uninstall] Extracting 00.dat to _working0", Debug.LogLevel.Basic);
                 zeroFiles = GzsLib.ExtractArchive<QarFile>(ZeroPath, "_working0"); 
 
             }
@@ -64,7 +62,6 @@ namespace SnakeBite
             if (hasFtexs)
             {
                 // if necessary, extracts 01.dat and creates a list of filenames similar to zeroFiles. only textures are pruned from the list.
-                Debug.LogLine("[Uninstall] Extracting 01.dat to _working1", Debug.LogLevel.Basic);
                 oneFiles = GzsLib.ExtractArchive<QarFile>(OnePath, "_working1");
             }
 
@@ -82,14 +79,12 @@ namespace SnakeBite
 
                 if(hasQarZero)
                 {
-                    Debug.LogLine("[Uninstall] Rebuilding 00.dat", Debug.LogLevel.Basic);
                     zeroFiles.Sort();
                     GzsLib.WriteQarArchive(ZeroPath + build_ext, "_working0", zeroFiles, GzsLib.zeroFlags);
                 }
 
                 if (hasFtexs)
                 {
-                    Debug.LogLine("[Install] Rebuilding 01.dat", Debug.LogLevel.Basic);
                     oneFiles.Sort();
                     GzsLib.WriteQarArchive(OnePath + build_ext, "_working1", oneFiles, GzsLib.oneFlags);
                 }
