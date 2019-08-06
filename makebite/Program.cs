@@ -1,4 +1,5 @@
-﻿using System;
+﻿using SnakeBite;
+using System;
 using System.Windows.Forms;
 
 namespace makebite
@@ -14,6 +15,16 @@ namespace makebite
             ICSharpCode.SharpZipLib.Zip.ZipConstants.DefaultCodePage = 437;
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            
+            Debug.Clear();
+
+            Debug.LogLine(String.Format(
+                "MakeBite {0}\n" +
+                "{1}\n" +
+                "-------------------------",
+                Tools.GetMBVersion(),
+                Environment.OSVersion.VersionString));
+            
             Application.Run(new formMain());
         }
     }

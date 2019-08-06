@@ -83,6 +83,10 @@ namespace SnakeBite
         public static void LogLine(string Text, LogLevel LogLevel = LogLevel.All)
         {
             //if (LogLevel == 0) return;
+
+            if (!Directory.Exists(logDir))
+                Directory.CreateDirectory(logDir);
+
             string logFilePath = Path.Combine(logDir, LOG_FILE_TXT);
             FileMode F = File.Exists(logFilePath) ? FileMode.Append : FileMode.Create;
             using (FileStream s = new FileStream(logFilePath, F))

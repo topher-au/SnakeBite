@@ -68,20 +68,25 @@ namespace SnakeBite
 
         public static void OpenLogDirectory()
         {
-            string installPath = AppDomain.CurrentDomain.BaseDirectory;
+            if (!Directory.Exists(logDir))
+                Directory.CreateDirectory(logDir);
             try
             {
-                Process.Start(installPath);
+                Process.Start(logDir);
             }
             catch
             {
-                Debug.LogLine(String.Format("Failed to open directory: {0}", installPath), Debug.LogLevel.Basic);
+                Debug.LogLine(String.Format("Failed to open log directory: {0}", logDir), Debug.LogLevel.Basic);
             }
         }
-
+        
         public static void LogLine(string Text, LogLevel LogLevel = LogLevel.All)
         {
             //if (LogLevel == 0) return;
+
+            if (!Directory.Exists(logDir))
+                Directory.CreateDirectory(logDir);
+
             string logFilePath = Path.Combine(logDir, LOG_FILE_TXT);
             FileMode F = File.Exists(logFilePath) ? FileMode.Append : FileMode.Create;
             using (FileStream s = new FileStream(logFilePath, F))

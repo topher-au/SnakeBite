@@ -1,4 +1,5 @@
 ﻿using GzsTool.Core.Utility;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security.Cryptography;
@@ -229,6 +230,11 @@ namespace SnakeBite
             string ext = FilePath.Substring(FilePath.IndexOf(".") + 1);
             if (DatFileExtensions.Contains(ext)) return true;
             return false;
+        }
+
+        internal static Version GetMBVersion()
+        {
+            return System.Reflection.Assembly.GetExecutingAssembly().GetName().Version;
         }
     }
 }
