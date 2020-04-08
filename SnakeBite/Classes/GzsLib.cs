@@ -460,6 +460,7 @@ namespace SnakeBite.GzsTool
             List<QarEntry> qarEntries = new List<QarEntry>();
             foreach (string s in Files)
             {
+                if (s.EndsWith("_unknown")) { continue; }
                 qarEntries.Add(new QarEntry() { FilePath = s, Hash = Tools.NameToHash(s), Compressed = (Path.GetExtension(s).EndsWith(".fpk") || Path.GetExtension(s).EndsWith(".fpkd")) ? true : false });
             }
 

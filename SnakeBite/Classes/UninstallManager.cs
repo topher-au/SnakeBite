@@ -53,7 +53,8 @@ namespace SnakeBite
             if (hasQarZero)
             {
                 // if necessary, extracts 00.dat and creates a list of filenames, which is pruned throughout the uninstall process and repacked at the end.
-                zeroFiles = GzsLib.ExtractArchive<QarFile>(ZeroPath, "_working0"); 
+                zeroFiles = GzsLib.ExtractArchive<QarFile>(ZeroPath, "_working0");
+                zeroFiles.RemoveAll(file => file.EndsWith("_unknown"));
 
             }
 
@@ -63,6 +64,7 @@ namespace SnakeBite
             {
                 // if necessary, extracts 01.dat and creates a list of filenames similar to zeroFiles. only textures are pruned from the list.
                 oneFiles = GzsLib.ExtractArchive<QarFile>(OnePath, "_working1");
+                oneFiles.RemoveAll(file => file.EndsWith("_unknown"));
             }
 
             //end of qar extraction

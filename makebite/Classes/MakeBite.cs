@@ -13,7 +13,7 @@ namespace makebite
 {
     public static class Build
     {
-        public static string MGSVVersionStr = "1.0.15.0";
+        public static string MGSVVersionStr = "1.0.15.1";
 
         static string ExternalDirName = "GameDir";
         static List<string> archiveFolders = new List<string> {

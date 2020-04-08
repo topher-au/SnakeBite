@@ -11,8 +11,8 @@ namespace SnakeBite
     
     public class SettingsManager
     {
-        internal static string vanillaDatHash = "41317C4D473D9A3DB6C1169E5ACDD35849FCF50601FD41F5A171E1055C642093"; //expected original hash for 1.0.15.0
-        internal static Version IntendedGameVersion = new Version(1, 0, 15, 0); // GAMEVERSION
+        internal static string vanillaDatHash = "0E96B2AF0BE0F456CC0BB81A964F9405B6905D4A97F8A9750B6CC2B97B6BE218"; //expected original hash for 1.0.15.1
+        internal static Version IntendedGameVersion = new Version(1, 0, 15, 1); // GAMEVERSION
 
         internal const int MAXZEROSIZE = 495880000; // ballpark estimates of vanilla archive filesizes
         internal const int MINZEROSIZE = 495860000;
@@ -266,7 +266,7 @@ namespace SnakeBite
         public bool IsUpToDate(Version ModVersion) //shouldn't be in settingsmanager
         {
             bool isUpToDate = ModManager.GetMGSVersion() == ModVersion;
-            bool isSpecialCase = ModVersion == new Version(0, 0, 0, 0) || ModVersion == new Version(1, 0, 14, 0); // 1.0.15.0 only affected the exe, so 1.0.14.0 mods are still up to date
+            bool isSpecialCase = ModVersion == new Version(0, 0, 0, 0) || ModVersion == new Version(1, 0, 14, 0) || ModVersion == new Version(1,0,15,1); // 1.0.14.0 and 1.0.15.1 mods are still up to date
             return isUpToDate || isSpecialCase;
         }
 

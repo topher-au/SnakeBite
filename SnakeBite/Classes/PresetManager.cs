@@ -165,7 +165,7 @@ namespace SnakeBite
                                 }
                             }
 
-                            catch (Exception e)
+                            catch
                             {
                                 Debug.LogLine("[Uninstall] Could not delete: " + fileEntryDir);
                             }
@@ -184,7 +184,6 @@ namespace SnakeBite
         {
                 var presetVersion = presetSettings.MGSVersion.AsVersion();
                 var MGSVersion = ModManager.GetMGSVersion();
-
                 return (presetVersion == MGSVersion);
         }
 
