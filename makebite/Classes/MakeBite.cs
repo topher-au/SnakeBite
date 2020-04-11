@@ -185,7 +185,7 @@ namespace makebite
         {
             Debug.LogLine($"[BuildArchive] {SourceDir}.");
             HashingExtended.ReadDictionary();
-            string buildDir = Directory.GetCurrentDirectory() + "\\build";
+            string buildDir = Directory.GetCurrentDirectory() + "\\_build";
             try
             {
                 if (Directory.Exists(buildDir)) Directory.Delete(buildDir, true);

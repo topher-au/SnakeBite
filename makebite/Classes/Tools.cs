@@ -227,7 +227,7 @@ namespace SnakeBite
 
         internal static bool IsValidFile(string FilePath)
         {
-            string ext = FilePath.Substring(FilePath.IndexOf(".") + 1);
+            string ext = Path.GetExtension(FilePath).Substring(1);
             if (DatFileExtensions.Contains(ext)) return true;
             return false;
         }
