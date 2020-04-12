@@ -43,6 +43,15 @@
   !define MUI_STARTMENUPAGE_REGISTRY_ROOT "HKCU" 
   !define MUI_STARTMENUPAGE_REGISTRY_KEY "Software\SnakeBite" 
   !define MUI_STARTMENUPAGE_REGISTRY_VALUENAME "Start Menu Folder"
+    
+  !define SHCNE_ASSOCCHANGED 0x08000000
+  !define SHCNF_IDLIST 0
+ 
+  Function RefreshShellIcons
+    ; By jerome tremblay - april 2003
+    System::Call 'shell32.dll::SHChangeNotify(i, i, i, i) v \
+    (${SHCNE_ASSOCCHANGED}, ${SHCNF_IDLIST}, 0, 0)'
+  FunctionEnd
   
   !insertmacro MUI_PAGE_STARTMENU Application $StartMenuFolder
 
@@ -74,21 +83,48 @@ Section "SnakeBite" SecMain
   File "qar_dictionary.txt"
   File "README.md"
   File "ChangeLog.txt"
-  File "license.txt"
+  File "mgsvfile.ico"
+  File "mgsvpreset.ico"
   
   ;Store installation folder
   WriteRegStr HKCU "Software\SnakeBite" "" $INSTDIR
+  
+  ;Add .mgsv registry additions
+  WriteRegStr HKCR ".mgsv" "" "mgsv_auto_file"
+  WriteRegStr HKCR "mgsv_auto_file" "" ""
+  WriteRegStr HKCR "mgsv_auto_file" "ContentType" "application/x-zip-compressed"
+  WriteRegStr HKCR "mgsv_auto_file" "PercievedType" "compressed"
+  WriteRegStr HKCR "mgsv_auto_file\OpenWithProgids" "" ""
+  WriteRegStr HKCR "mgsv_auto_file\OpenWithProgids" "CompressedFolder" ""
+  WriteRegDWORD HKCR "mgsv_auto_file" "EditFlags" 0
+  WriteRegDWORD HKCR "mgsv_auto_file" "BrowserFlags" 8
+  WriteRegStr HKCR "mgsv_auto_file\DefaultIcon" "" "$INSTDIR\mgsvfile.ico"
+  
+  ;Add .mgsv registry additions
+  WriteRegStr HKCR ".mgsvpreset" "" "mgsvpreset_auto_file"
+  WriteRegStr HKCR "mgsvpreset_auto_file" "" ""
+  WriteRegStr HKCR "mgsvpreset_auto_file" "ContentType" "application/x-zip-compressed"
+  WriteRegStr HKCR "mgsvpreset_auto_file" "PercievedType" "compressed"
+  WriteRegStr HKCR "mgsvpreset_auto_file\OpenWithProgids" "" ""
+  WriteRegStr HKCR "mgsvpreset_auto_file\OpenWithProgids" "CompressedFolder" ""
+  WriteRegDWORD HKCR "mgsvpreset_auto_file" "EditFlags" 0
+  WriteRegDWORD HKCR "mgsvpreset_auto_file" "BrowserFlags" 8
+  WriteRegStr HKCR "mgsvpreset_auto_file\DefaultIcon" "" "$INSTDIR\mgsvpreset.ico"
+  
+  ;Refresh icons
+  Call RefreshShellIcons
   
   ;Create uninstaller
   WriteUninstaller "$INSTDIR\Uninstall.exe"
 
   !insertmacro MUI_STARTMENU_WRITE_BEGIN Application
-    
-    ;Create shortcuts
-    CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
-    CreateShortcut "$SMPROGRAMS\$StartMenuFolder\SnakeBite.lnk" "$INSTDIR\SnakeBite.exe"
-    CreateShortcut "$SMPROGRAMS\$StartMenuFolder\MakeBite.lnk" "$INSTDIR\MakeBite.exe"
-    CreateShortcut "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
+	
+	;Create shortcuts
+	CreateDirectory "$SMPROGRAMS\$StartMenuFolder"
+	CreateShortcut "$SMPROGRAMS\$StartMenuFolder\SnakeBite.lnk" "$INSTDIR\SnakeBite.exe"
+	CreateShortcut "$SMPROGRAMS\$StartMenuFolder\MakeBite.lnk" "$INSTDIR\MakeBite.exe"
+	CreateShortcut "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk" "$INSTDIR\Uninstall.exe"
+	CreateShortCut "$DESKTOP\SnakeBite.lnk" "$INSTDIR\SnakeBite.exe"
   
   !insertmacro MUI_STARTMENU_WRITE_END  
 
@@ -102,7 +138,7 @@ SectionEnd
 
   ;Assign language strings to sections
   !insertmacro MUI_FUNCTION_DESCRIPTION_BEGIN
-    !insertmacro MUI_DESCRIPTION_TEXT ${SecMain} $(DESC_SecMain)
+	!insertmacro MUI_DESCRIPTION_TEXT ${SecMain} $(DESC_SecMain)
   !insertmacro MUI_FUNCTION_DESCRIPTION_END
 
 ;--------------------------------
@@ -119,18 +155,16 @@ Section "Uninstall"
   Delete "$INSTDIR\Zlib.Portable.dll"
   Delete "$INSTDIR\fpk_dictionary.txt"
   Delete "$INSTDIR\qar_dictionary.txt"
-  Delete "$INSTDIR\README.md"
-  Delete "$INSTDIR\ChangeLog.txt"
-  Delete "$INSTDIR\license.txt"
+  Delete "$INSTDIR\sbupdater.exe"
 
   Delete "$INSTDIR\Uninstall.exe"
 
   RMDir "$INSTDIR"
 
  !insertmacro MUI_STARTMENU_GETFOLDER Application $StartMenuFolder
- 
-  Delete "$SMPROGRAMS\$StartMenuFolder\SnakeBite.lnk" 
-  Delete "$SMPROGRAMS\$StartMenuFolder\MakeBite.lnk"    
+  Delete "$DESKTOP\SnakeBite.lnk"
+  Delete "$DESKTOP\MakeBite.lnk"
+  Delete "$SMPROGRAMS\$StartMenuFolder\SnakeBite.lnk"
   Delete "$SMPROGRAMS\$StartMenuFolder\Uninstall.lnk"
   RMDir "$SMPROGRAMS\$StartMenuFolder"
 

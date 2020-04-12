@@ -86,7 +86,7 @@
             this.comboForVersion.FormattingEnabled = true;
             this.comboForVersion.Items.AddRange(new object[] {
             "",
-            Build.MGSVVersionStr});
+            "1.0.15.1"});
             this.comboForVersion.Location = new System.Drawing.Point(348, 55);
             this.comboForVersion.Name = "comboForVersion";
             this.comboForVersion.Size = new System.Drawing.Size(83, 23);
@@ -237,23 +237,25 @@
             // labelToggleHelp
             // 
             this.labelToggleHelp.Cursor = System.Windows.Forms.Cursors.Help;
-            this.labelToggleHelp.ForeColor = System.Drawing.Color.MidnightBlue;
+            this.labelToggleHelp.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelToggleHelp.ForeColor = System.Drawing.Color.Orange;
             this.labelToggleHelp.Location = new System.Drawing.Point(12, 453);
             this.labelToggleHelp.Name = "labelToggleHelp";
-            this.labelToggleHelp.Size = new System.Drawing.Size(98, 19);
+            this.labelToggleHelp.Size = new System.Drawing.Size(113, 19);
             this.labelToggleHelp.TabIndex = 11;
-            this.labelToggleHelp.Text = "Formatting Help";
+            this.labelToggleHelp.Text = "[Formatting Help]";
             this.labelToggleHelp.Click += new System.EventHandler(this.labelToggleHelp_Click);
             // 
             // buttonBuild
             // 
             this.buttonBuild.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonBuild.FlatStyle = System.Windows.Forms.FlatStyle.System;
-            this.buttonBuild.Location = new System.Drawing.Point(481, 449);
+            this.buttonBuild.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.buttonBuild.Location = new System.Drawing.Point(504, 449);
             this.buttonBuild.Name = "buttonBuild";
-            this.buttonBuild.Size = new System.Drawing.Size(134, 23);
+            this.buttonBuild.Size = new System.Drawing.Size(111, 23);
             this.buttonBuild.TabIndex = 10;
-            this.buttonBuild.Text = "Do it (build archive)";
+            this.buttonBuild.Text = "Build Mod";
             this.buttonBuild.UseVisualStyleBackColor = false;
             this.buttonBuild.Click += new System.EventHandler(this.buttonBuild_Click);
             // 
@@ -284,6 +286,7 @@
             // 
             this.buttonSelectPath.Cursor = System.Windows.Forms.Cursors.Hand;
             this.buttonSelectPath.FlatStyle = System.Windows.Forms.FlatStyle.System;
+            this.buttonSelectPath.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.buttonSelectPath.Location = new System.Drawing.Point(582, 20);
             this.buttonSelectPath.Name = "buttonSelectPath";
             this.buttonSelectPath.Size = new System.Drawing.Size(31, 23);
@@ -317,7 +320,7 @@
             this.MaximizeBox = false;
             this.Name = "formMain";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
-            this.Text = "MakeBite";
+            this.Text = "MakeBite Mod Builder";
             this.Load += new System.EventHandler(this.formMain_Load);
             this.groupModInfo.ResumeLayout(false);
             this.groupModInfo.PerformLayout();
