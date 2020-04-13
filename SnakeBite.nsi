@@ -89,27 +89,65 @@ Section "SnakeBite" SecMain
   ;Store installation folder
   WriteRegStr HKCU "Software\SnakeBite" "" $INSTDIR
   
-  ;Add .mgsv registry additions
-  WriteRegStr HKCR ".mgsv" "" "mgsv_auto_file"
-  WriteRegStr HKCR "mgsv_auto_file" "" ""
-  WriteRegStr HKCR "mgsv_auto_file" "ContentType" "application/x-zip-compressed"
-  WriteRegStr HKCR "mgsv_auto_file" "PercievedType" "compressed"
-  WriteRegStr HKCR "mgsv_auto_file\OpenWithProgids" "" ""
-  WriteRegStr HKCR "mgsv_auto_file\OpenWithProgids" "CompressedFolder" ""
-  WriteRegDWORD HKCR "mgsv_auto_file" "EditFlags" 0
-  WriteRegDWORD HKCR "mgsv_auto_file" "BrowserFlags" 8
-  WriteRegStr HKCR "mgsv_auto_file\DefaultIcon" "" "$INSTDIR\mgsvfile.ico"
+  ;;;;; .MGSV
   
-  ;Add .mgsv registry additions
-  WriteRegStr HKCR ".mgsvpreset" "" "mgsvpreset_auto_file"
-  WriteRegStr HKCR "mgsvpreset_auto_file" "" ""
-  WriteRegStr HKCR "mgsvpreset_auto_file" "ContentType" "application/x-zip-compressed"
-  WriteRegStr HKCR "mgsvpreset_auto_file" "PercievedType" "compressed"
-  WriteRegStr HKCR "mgsvpreset_auto_file\OpenWithProgids" "" ""
-  WriteRegStr HKCR "mgsvpreset_auto_file\OpenWithProgids" "CompressedFolder" ""
-  WriteRegDWORD HKCR "mgsvpreset_auto_file" "EditFlags" 0
-  WriteRegDWORD HKCR "mgsvpreset_auto_file" "BrowserFlags" 8
-  WriteRegStr HKCR "mgsvpreset_auto_file\DefaultIcon" "" "$INSTDIR\mgsvpreset.ico"
+  ; Add .mgsv registry additions
+  WriteRegStr HKCR ".mgsv" "" "MGSV Mod File"
+  WriteRegStr HKCR ".mgsv" "Content Type" "application/x-zip-compressed"
+  WriteRegStr HKCR ".mgsv" "DontCompressInPackage" ""
+  WriteRegStr HKCR ".mgsv" "PerceivedType" "compressed"
+  
+  ; CLSID for CompressedFolder
+  WriteRegStr HKCR ".mgsv\CLSID" "" "{E88DCCE0-B7B3-11d1-A9F0-00AA0060FA31}"
+  
+  ; .MGSV Icon
+  WriteRegStr HKCR ".mgsv\DefaultIcon" "" "$INSTDIR\mgsvfile.ico"
+  
+  ; pointless?
+  ;WriteRegExpandStr HKCR ".mgsv" "AppUserModelID" "Microsoft.Windows.Explorer"
+  ;WriteRegDWORD HKCR ".mgsv" "EditFlags" 2097152
+  ;WriteRegExpandStr HKCR ".mgsv" "FriendlyTypeName" "@%SystemRoot%\system32\zipfldr.dll,-10195"
+  
+  ; Finds explorer I guess?
+  ;WriteRegStr HKCR ".mgsv\Shell\find" "" ""
+  ;WriteRegStr HKCR ".mgsv\Shell\find" "LegacyDisable" ""
+  ;WriteRegDWORD HKCR ".mgsv\Shell\find" "SuppressionPolicy" 128
+  ;WriteRegExpandStr HKCR ".mgsv\Shell\find\command" "" "%SystemRoot%\Explorer.exe"
+  ;WriteRegStr HKCR ".mgsv\Shell\find\command" "DelegateExecute" "{a015411a-f97d-4ef3-8425-8a38d022aebc}"
+  
+  ; Open on double-click
+  WriteRegStr HKCR ".mgsv\Shell\Open" "MultiSelectModel" "Document"
+  WriteRegExpandStr HKCR ".mgsv\Shell\Open\Command" "" "%SystemRoot%\Explorer.exe /idlist,%I,%L"
+  WriteRegStr HKCR ".mgsv\Shell\Open\Command" "DelegateExecute" "{11dbb47c-a525-400b-9e80-a54615a090c0}"
+  
+  ; Adds 'Extract All...' to right-click context menu 
+  WriteRegStr HKCR ".mgsv\ShellEx\ContextMenuHandlers\{b8cdcb65-b1bf-4b42-9428-1dfdb7ee92af}" "" "Compressed (zipped) Folder Menu"
+  WriteRegStr HKCR ".mgsv\ShellEx\DropHandler" "" "{ed9d80b9-d157-457b-9192-0e7280313bf0}"
+  WriteRegStr HKCR ".mgsv\ShellEx\StorageHandler" "" "{E88DCCE0-B7B3-11d1-A9F0-00AA0060FA31}"
+  
+  ;;;;;; .MGSVPRESET
+  
+  ; Add .mgsvpreset registry additions
+  WriteRegStr HKCR ".mgsvpreset" "" "MGSV Mod Preset File"
+  WriteRegStr HKCR ".mgsvpreset" "Content Type" "application/x-zip-compressed"
+  WriteRegStr HKCR ".mgsvpreset" "DontCompressInPackage" ""
+  WriteRegStr HKCR ".mgsvpreset" "PerceivedType" "compressed"
+  
+  ; CLSID for CompressedFolder
+  WriteRegStr HKCR ".mgsvpreset\CLSID" "" "{E88DCCE0-B7B3-11d1-A9F0-00AA0060FA31}"
+  
+  ; .MGSVPreset Icon
+  WriteRegStr HKCR ".mgsvpreset\DefaultIcon" "" "$INSTDIR\mgsvpreset.ico"
+    
+  ; Open on double-click
+  WriteRegStr HKCR ".mgsvpreset\Shell\Open" "MultiSelectModel" "Document"
+  WriteRegExpandStr HKCR ".mgsvpreset\Shell\Open\Command" "" "%SystemRoot%\Explorer.exe /idlist,%I,%L"
+  WriteRegStr HKCR ".mgsvpreset\Shell\Open\Command" "DelegateExecute" "{11dbb47c-a525-400b-9e80-a54615a090c0}"
+  
+  ; Adds 'Extract All...' to right-click context menu 
+  WriteRegStr HKCR ".mgsvpreset\ShellEx\ContextMenuHandlers\{b8cdcb65-b1bf-4b42-9428-1dfdb7ee92af}" "" "Compressed (zipped) Folder Menu"
+  WriteRegStr HKCR ".mgsvpreset\ShellEx\DropHandler" "" "{ed9d80b9-d157-457b-9192-0e7280313bf0}"
+  WriteRegStr HKCR ".mgsvpreset\ShellEx\StorageHandler" "" "{E88DCCE0-B7B3-11d1-A9F0-00AA0060FA31}"
   
   ;Refresh icons
   Call RefreshShellIcons
@@ -169,5 +207,9 @@ Section "Uninstall"
   RMDir "$SMPROGRAMS\$StartMenuFolder"
 
   DeleteRegKey /ifempty HKCU "Software\SnakeBite"
+  
+  ; Delete .mgsv registry additions
+  DeleteRegKey /ifempty HKCU ".mgsv"
+  DeleteRegKey /ifempty HKCU ".mgsvpreset"
 
 SectionEnd
