@@ -32,6 +32,7 @@
             this.labelWelcome = new System.Windows.Forms.Label();
             this.labelWelcomeText = new System.Windows.Forms.Label();
             this.panelContent = new System.Windows.Forms.Panel();
+            this.labelPiracyWarning = new System.Windows.Forms.Label();
             this.panelContent.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -41,7 +42,7 @@
             this.labelWelcome.Font = new System.Drawing.Font("Segoe UI", 15.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.labelWelcome.Location = new System.Drawing.Point(3, 0);
             this.labelWelcome.Name = "labelWelcome";
-            this.labelWelcome.Size = new System.Drawing.Size(233, 30);
+            this.labelWelcome.Size = new System.Drawing.Size(234, 30);
             this.labelWelcome.TabIndex = 4;
             this.labelWelcome.Text = "Welcome to SnakeBite";
             // 
@@ -49,18 +50,31 @@
             // 
             this.labelWelcomeText.Location = new System.Drawing.Point(5, 51);
             this.labelWelcomeText.Name = "labelWelcomeText";
-            this.labelWelcomeText.Size = new System.Drawing.Size(429, 256);
+            this.labelWelcomeText.Size = new System.Drawing.Size(429, 132);
             this.labelWelcomeText.TabIndex = 5;
             this.labelWelcomeText.Text = resources.GetString("labelWelcomeText.Text");
             // 
             // panelContent
             // 
+            this.panelContent.Controls.Add(this.labelPiracyWarning);
             this.panelContent.Controls.Add(this.labelWelcomeText);
             this.panelContent.Controls.Add(this.labelWelcome);
             this.panelContent.Location = new System.Drawing.Point(0, 0);
             this.panelContent.Name = "panelContent";
             this.panelContent.Size = new System.Drawing.Size(440, 340);
             this.panelContent.TabIndex = 2;
+            // 
+            // labelPiracyWarning
+            // 
+            this.labelPiracyWarning.ForeColor = System.Drawing.Color.Red;
+            this.labelPiracyWarning.Location = new System.Drawing.Point(5, 198);
+            this.labelPiracyWarning.Name = "labelPiracyWarning";
+            this.labelPiracyWarning.Size = new System.Drawing.Size(429, 95);
+            this.labelPiracyWarning.TabIndex = 6;
+            this.labelPiracyWarning.Text = "Notice:\r\n\r\nSnakeBite is not compatible with pirated copies of MGSV:TPP. \r\nIf you " +
+    "do not own a genuine copy of the game, please consider purchasing it through Ste" +
+    "am before using SnakeBite.";
+            this.labelPiracyWarning.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // IntroPage
             // 
@@ -81,5 +95,6 @@
         private System.Windows.Forms.Label labelWelcome;
         private System.Windows.Forms.Label labelWelcomeText;
         private System.Windows.Forms.Panel panelContent;
+        private System.Windows.Forms.Label labelPiracyWarning;
     }
 }

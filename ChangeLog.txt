@@ -1,0 +1,78 @@
+Changelog
+0.9.1.0
+Unified qar flags to static in GzsLib.
+00.dat work folder changed from _working1 to _working0, likewise 01.dat from _working2 to _working1.
+InstallMod and UninstallMod broken into smaller functions.
+GameData - now priority ordered by qar, indexed by hash, includes chunk5_mgo0/cunk6_gz0. Knocks about 30s off IH install time on my machine.
+Re enabled commented out log window, added lock on write fixed prior issue and after removing logspam (coupled with other snakebite optimisations) I'm happy enough that the feedback it provides is better than the performance it takes.
+Removed some more remnants of sbupdater from project.
+Command line installs all .mgsvs if install path arg is a directory.
+Added -c commandline to skip collision checks
+More user feedback on longer setupwizard processes.
+
+0.9.0.0
+Makebite/Snakebite:
+Aesthetic revamp. New launcher wallpaper and grey/silver window forms. New menubar icon for SnakeBite.
+Numerous design tweaks.
+Enabled file extensions relating to SweetFX/ReShade.
+
+MakeBite:
+1.0.11.0 added MGSV version box.
+"formatting help" tips added.
+
+SnakeBite:
+Added support for multiple installation/uninstallation.
+Added support for "loose" texture files (.ftex/.ftexs files outside of .pftxs files). Loose textures are now stored in 01.dat.
+foxfs.dat in chunk0 is edited on setup to add lines for the following archives: chunk5_mgo0.dat, texture5_mgo0.dat, chunk6_gzs0.dat, texture6_gzs0.dat, a_texture7.dat and a_chunk7.dat
+Textures from /0/01.dat have been relocated to a_texture7.dat. Non-lua files from /0/00.dat have been relocated to a_chunk7.dat. Lua files will remain in 01.dat, due to foxfs.dat limitations.
+Added a Pre-installation window: upon selecting .mgsv file(s) for installation, the preinstall window will allow the user to preview mod descriptions and their conflicts with other mods in the install list.
+Revamped conflict management. The user no longer relies on "Disable Compatibility Check" for conflict resolution.
+Numerous Quality of Life improvements across all window forms.
+
+0.8.6.0
+Snakebite:
+Added -s option to command line to skip CleanupDatabase, should speed up install, but should not be used if you're repeatedly installing/uninstalling stuff.
+
+Makebite/Snakebite:
+Added support for installing files to game directory.
+
+0.8.5.0
+Snakebite:
+Fixed: NameToHash returning 0 for files in root, side effect of which would remove foxpatch.dat from 00.dat when uninstalling a mod that had such a file - thanks Summerfag for narrowing down the issue.
+
+Makebite:
+Fixed: OutOfMemory exception when using makebite on col_common_tpp.fpk - thanks VenomOfAChin for the report.
+
+0.8.4.0
+Version bump for version strings (still need to unify)
+
+All projects
+.net target dropped from v4.5.2 to v4.5 which gives windows 8 coverage by default.
+
+Makebite:
+1.0.7.1 added MGSV version box
+Will use metadata version even if it doesn't exist in version box.
+Packs files in fpkd by extension order:
+{ "fox2", "evf", "parts", "vfxlb", "vfx", "vfxlf", "veh", "frld", "des", "bnd", "tgt", "phsd", "ph", "sim", "clo", "fsd", "sdf", "lua", "lng" }
+Packs files in fpk by alphabetical order.
+
+Snakebite
+Fixed: No longer kills the steam cache verification window, was just on a  timer, now disabled completely and the user must judge when to continue. TODO: bring to front?
+Fixed: Uninstall not handling empty fpk files. Since they weren't removed they'd be marked as System, thus give 'conflicts with system files' error.
+
+Log window remain if ProcessWindow.Show backgroundworker throws exception.
+
+Changes to various messages to be more useful, or to explain around bugs lol
+
+Adjusted Logging during uninstall to be more usefull, and less spammy which should help performance a bit.
+
+Stoped updater check.
+Removed Download mods tab.
+Both relied on tophers server which he brought down.
+
+Changed settings link 'the latest version is here' to point to nexusmods snakebite page, which is better for average user (plus I don't know if topher would want to pull my butchered version of his project lol).
+
+Log now copies to log_pre.txt before it clears
+Added Open Logs button to settings
+
+Updated qar_dictionary to MGSV-QAR-Dictionary-Project 2016-11-08
