@@ -38,7 +38,7 @@ namespace SnakeBite.QuickMod
             } else
             {
                 picCompat.Image = Properties.Resources.close7;
-                labelCompat.Text = "This mod is not compatible";
+                labelCompat.Text = "This mod is not compatible, use Install .MGSV";
                 Compatible = false;
             }
             CompatibilityChanged();

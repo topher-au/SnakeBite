@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows.Forms;
 
 namespace SnakeBite
@@ -14,6 +15,11 @@ namespace SnakeBite
         {
             this.Refresh();
             this.Width = StatusText.Left + StatusText.Width + 32;
+        }
+
+        public void progressWorker_ProgressChanged(object sender, ProgressChangedEventArgs e)
+        {
+            StatusText.Text = (string)e.UserState;
         }
     }
 }

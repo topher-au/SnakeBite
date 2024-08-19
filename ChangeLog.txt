@@ -1,0 +1,146 @@
+Changelog:
+0.9.2.1
+SnakeBite:
+Hotfix custom WMV support.
+SnakeBite/MakeBite:
+Add app config files.
+
+0.9.2.0
+SnakeBite/MakeBite:
+Added custom WMV support.
+
+0.9.1.9
+SnakeBite/MakeBite:
+Gameversion update to 1.0.15.3
+
+0.9.1.8
+SnakeBite/MakeBite:
+Fpk sorting fix.
+FpkType fix.
+Fpk References preserved.
+Fix: Uninstall missing a couple of files, files created by snakebite after install will still remain.
+SnakeBite command line: now defaults to install, and wil process all non parameter args as paths to .mgsv or folder of .mgsvs
+
+0.9.1.7
+SnakeBite/MakeBite:
+Gameversion update to 1.0.15.2
+
+0.9.1.6
+SnakeBite:
+Bugfix (more like a band-aide): "Length cannot be less than 0" exception. Simply removes the _unknown file that causes the error, so the archive can recompile. Doesn't fix the root issue of where the _unknown file stems from.
+New Windows icons for .mgsv and .mgsvpreset files. (Thank you Muffins for the suggestion)
+All .mgsv/.mgsvpreset files should now open as a compressed file without renaming the extension or using "Open With..." if the setup is run as an Admin.
+Updated SnakeBite icon to scale better on different displays. (Icon Courtesy of OldBoss)
+
+Makebite:
+Bugfix for clearing "_build" files while building the mod archives.
+New Windows icon.
+Minor aesthetic tweaks to emphasize the Formatting Help menu and clarify the "Build Mod" button
+
+0.9.1.5
+Incremental update to coordinate with Game Version 1.0.15.1 Update.
+
+0.9.1.4
+SnakeBite: 
+Bugfix: Removed animated processing wheel image from setup to fix an issue that caused the startup wizard to fail.
+Bugfix: Redesigned file cleanup process to fix freezing for some users during the modify foxfs step of the setup wizard.
+Bugfix: Added logic to delete external files when restoring backups via the settings menu
+More exception handling added when uninstalling mods containing external files.
+SnakeBite and Makebite now save up to 3 previous debug logs (instead of only one).
+Added option to keep SnakeBite open after launching the game
+Improved logging interface to display the current process more accurately and with greater detail.
+
+0.9.1.3
+snakebite bugfixes: Loading MGSVPresets will remove any existing GameDir files. 
+Tweaked the folder cleanup process to (hopefully) keep the installer from freezing up.
+Added more exception handling to the setup process for more debug log details
+qar_dictionary update from TinManTex's mgsv-lookup-strings
+
+0.9.1.2
+makebite bugfix: _fpk folders are packed and included into the makebite build
+
+0.9.1.1
+minor bugfixes:
+makebite will no longer allow users to pack an unhashed file/folder if the unhashed file already exists in the makebite directory.
+snakebite's mod form will reset its screen position if the top-left of the form is off the screen.
+
+0.9.1.0
+Unified qar flags to static in GzsLib.
+00.dat work folder changed from _working1 to _working0, likewise 01.dat from _working2 to _working1.
+InstallMod and UninstallMod broken into smaller functions.
+GameData - now priority ordered by qar, indexed by hash, includes chunk5_mgo0/chunk6_gz0. Knocks about 30s off IH install time on my machine.
+Re enabled commented out log window, added lock on write fixed prior issue and after removing logspam (coupled with other snakebite optimisations) I'm happy enough that the feedback it provides is better than the performance it takes.
+Removed some more remnants of sbupdater from project.
+Command line installs all .mgsvs if install path arg is a directory.
+Added -c commandline to skip collision checks
+More user feedback on longer setupwizard processes.
+Some UI changes including a menulist on the main mod page and mod page resizing
+More error handling and file safety
+Added .MGSVPreset capabilities to save and load mod presets
+
+0.9.0.0
+Makebite/Snakebite:
+Aesthetic revamp. New launcher wallpaper and grey/silver window forms. New menubar icon for SnakeBite.
+Numerous design tweaks.
+Enabled file extensions relating to SweetFX/ReShade.
+
+MakeBite:
+1.0.11.0 added MGSV version box.
+"formatting help" tips added.
+
+SnakeBite:
+Added support for multiple installation/uninstallation.
+Added support for "loose" texture files (.ftex/.ftexs files outside of .pftxs files). Loose textures are now stored in 01.dat.
+foxfs.dat in chunk0 is edited on setup to add lines for the following archives: chunk5_mgo0.dat, texture5_mgo0.dat, chunk6_gzs0.dat, texture6_gzs0.dat, a_texture7.dat and a_chunk7.dat
+Textures from /0/01.dat have been relocated to a_texture7.dat. Non-lua files from /0/00.dat have been relocated to a_chunk7.dat. Lua files will remain in 01.dat, due to foxfs.dat limitations.
+Added a Pre-installation window: upon selecting .mgsv file(s) for installation, the preinstall window will allow the user to preview mod descriptions and their conflicts with other mods in the install list.
+Revamped conflict management. The user no longer relies on "Disable Compatibility Check" for conflict resolution.
+Numerous Quality of Life improvements across all window forms.
+
+0.8.6.0
+Snakebite:
+Added -s option to command line to skip CleanupDatabase, should speed up install, but should not be used if you're repeatedly installing/uninstalling stuff.
+
+Makebite/Snakebite:
+Added support for installing files to game directory.
+
+0.8.5.0
+Snakebite:
+Fixed: NameToHash returning 0 for files in root, side effect of which would remove foxpatch.dat from 00.dat when uninstalling a mod that had such a file - thanks Summerfag for narrowing down the issue.
+
+Makebite:
+Fixed: OutOfMemory exception when using makebite on col_common_tpp.fpk - thanks VenomOfAChin for the report.
+
+0.8.4.0
+Version bump for version strings (still need to unify)
+
+All projects
+.net target dropped from v4.5.2 to v4.5 which gives windows 8 coverage by default.
+
+Makebite:
+1.0.7.1 added MGSV version box
+Will use metadata version even if it doesn't exist in version box.
+Packs files in fpkd by extension order:
+{ "fox2", "evf", "parts", "vfxlb", "vfx", "vfxlf", "veh", "frld", "des", "bnd", "tgt", "phsd", "ph", "sim", "clo", "fsd", "sdf", "lua", "lng" }
+Packs files in fpk by alphabetical order.
+
+Snakebite
+Fixed: No longer kills the steam cache verification window, was just on a  timer, now disabled completely and the user must judge when to continue. TODO: bring to front?
+Fixed: Uninstall not handling empty fpk files. Since they weren't removed they'd be marked as System, thus give 'conflicts with system files' error.
+
+Log window remain if ProcessWindow.Show backgroundworker throws exception.
+
+Changes to various messages to be more useful, or to explain around bugs lol
+
+Adjusted Logging during uninstall to be more usefull, and less spammy which should help performance a bit.
+
+Stoped updater check.
+Removed Download mods tab.
+Both relied on tophers server which he brought down.
+
+Changed settings link 'the latest version is here' to point to nexusmods snakebite page, which is better for average user (plus I don't know if topher would want to pull my butchered version of his project lol).
+
+Log now copies to log_pre.txt before it clears
+Added Open Logs button to settings
+
+Updated qar_dictionary to MGSV-QAR-Dictionary-Project 2016-11-08

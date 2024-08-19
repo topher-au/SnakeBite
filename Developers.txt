@@ -1,0 +1,28 @@
+# Developing a new Snakebite/Makebite version
+
+Work for a new version should be done on a seperate development branch than main.
+Try and get some Modders Heaven community members to test build builds for you
+https://discord.gg/3rVFWf2vbj
+
+## Updating for new game version
+A number of variables need to be updated in snakebite when mgsv is updated.
+
+Search for 'GAMEVERSION' and read the notes.
+
+Roughly its:
+Makebite:
+GzsLib - qar flags
+Build - MGSVVersionStr
+
+Snakebite:
+GzsLib - qar flags
+SettingManager - static vars for dat hash, version, dat sizes
+IsUpToDate isSpecialCase - manages whether older mod versions should be let through (for game updates where the dats didn't really change)
+
+## Making an installer build:
+Snakebite uses NSIS create the installer:
+https://nsis.sourceforge.io/Download
+
+The Visual Studion post-build process should copy the required files to (SolutionDir)\installerbuild.
+You can check the "Installer Sections" in Snakebite.nsi to double check the files needed, or just run snakebite.nsi and see if it errors.
+Make sure you've done a release build then right click the snakebite.nsi in that folder and choose 'Compile NISI script'

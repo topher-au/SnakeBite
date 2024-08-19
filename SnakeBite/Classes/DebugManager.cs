@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 
@@ -6,20 +7,91 @@ namespace SnakeBite
 {
     public static class Debug
     {
-        private const string LOG_FILE = "log.txt";
+        public static readonly string logDir = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, "Logs");
+        public const string LOG_FILE_PREV = "log_prev";
+        public const string TXT_EXT = ".txt";
+        public const string LOG_FILE_TXT = "log" + TXT_EXT;
+        public const int MAX_COUNT = 3;
 
         public static void Clear()
         {
-            if (File.Exists(LOG_FILE)) File.Delete(LOG_FILE);
+            RemoveOldFormatLogs();
+            if (!Directory.Exists(logDir))
+                Directory.CreateDirectory(logDir);
+
+            string logFilePath = Path.Combine(logDir, LOG_FILE_TXT);
+            if (File.Exists(logFilePath))
+            {
+                RecursiveCopyLogs(1, MAX_COUNT);
+
+                string logPrevPath = Path.Combine(logDir, $"{LOG_FILE_PREV}.{"1"}{TXT_EXT}");
+
+                File.Copy(logFilePath, logPrevPath, true);
+                File.Delete(logFilePath);
+            }
+        }
+        private static void RemoveOldFormatLogs()
+        {
+            if (File.Exists(LOG_FILE_PREV + TXT_EXT)) // old format in root install directory
+                File.Delete(LOG_FILE_PREV + TXT_EXT);
+
+            if (File.Exists(LOG_FILE_TXT))
+                File.Delete(LOG_FILE_TXT);
+        }
+        private static void RecursiveCopyLogs(int i, int max)
+        {
+            if (i < max)
+            {
+                string logPrevPath = Path.Combine(logDir, $"{LOG_FILE_PREV}.{i}{TXT_EXT}"); // assumption: logdir already exists
+                string logPrevIncrementedPath = Path.Combine(logDir, $"{LOG_FILE_PREV}.{i + 1}{TXT_EXT}");
+
+                RecursiveCopyLogs(i + 1, max);
+
+                if (File.Exists(logPrevPath))
+                    File.Copy(logPrevPath, logPrevIncrementedPath, true);
+            }
+
+        }
+
+        public static void OpenLogs(int count)
+        {
+            for (int i = count - 1; i >= 1; i--)
+            {
+                string logPrevPath = Path.Combine(logDir, $"{LOG_FILE_PREV}.{i}{TXT_EXT}");
+                if (File.Exists(logPrevPath))
+                    Process.Start(logPrevPath);
+            }
+            string logFilePath = Path.Combine(logDir, LOG_FILE_TXT);
+            if (File.Exists(logFilePath))
+                Process.Start(logFilePath);
+        }
+
+        public static void OpenLogDirectory()
+        {
+            if (!Directory.Exists(logDir))
+                Directory.CreateDirectory(logDir);
+            try
+            {
+                Process.Start(logDir);
+            }
+            catch
+            {
+                Debug.LogLine(String.Format("Failed to open log directory: {0}", logDir), Debug.LogLevel.Basic);
+            }
         }
 
         public static void LogLine(string Text, LogLevel LogLevel = LogLevel.All)
         {
             //if (LogLevel == 0) return;
-            FileMode F = File.Exists(LOG_FILE) ? FileMode.Append : FileMode.Create;
-            using (FileStream s = new FileStream(LOG_FILE, F))
+
+            if (!Directory.Exists(logDir))
+                Directory.CreateDirectory(logDir);
+
+            string logFilePath = Path.Combine(logDir, LOG_FILE_TXT);
+            FileMode F = File.Exists(logFilePath) ? FileMode.Append : FileMode.Create;
+            using (FileStream s = new FileStream(logFilePath, F))
             {
-                string logString = String.Format("{0}\n", Text);
+                string logString = $"{Text}\r\n";
                 s.Write(Encoding.UTF8.GetBytes(logString), 0, logString.Length);
                 Console.Write(logString);
             }

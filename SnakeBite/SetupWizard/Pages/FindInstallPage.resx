@@ -118,10 +118,8 @@
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
   <data name="labelWarning.Text" xml:space="preserve">
-    <value>Please Note:
+    <value>If you have modified the game data (specifically 00.dat/01.dat), it is strongly recommended that you reset the game's files to default before continuing.
 
-If you have modified the game data (specifically 00.dat/01.dat) it is strongly recommended that you reset the files to default before continuing.
-
-Click the button below to launch Steam and validate the game data to reset the files.</value>
+Click the button below to launch Steam and validate the game data.</value>
   </data>
 </root>

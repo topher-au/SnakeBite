@@ -28,20 +28,19 @@
         /// </summary>
         private void InitializeComponent()
         {
-            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreateBackupPage));
             this.panelContent = new System.Windows.Forms.Panel();
+            this.labelNoInstallNote = new System.Windows.Forms.Label();
             this.panelProcessing = new System.Windows.Forms.Panel();
             this.labelWorking = new System.Windows.Forms.Label();
-            this.pictureWorkingSpiral = new System.Windows.Forms.PictureBox();
             this.labelSelectDir = new System.Windows.Forms.Label();
             this.labelHeader = new System.Windows.Forms.Label();
             this.panelContent.SuspendLayout();
             this.panelProcessing.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureWorkingSpiral)).BeginInit();
             this.SuspendLayout();
             // 
             // panelContent
             // 
+            this.panelContent.Controls.Add(this.labelNoInstallNote);
             this.panelContent.Controls.Add(this.panelProcessing);
             this.panelContent.Controls.Add(this.labelSelectDir);
             this.panelContent.Controls.Add(this.labelHeader);
@@ -50,40 +49,46 @@
             this.panelContent.Size = new System.Drawing.Size(440, 340);
             this.panelContent.TabIndex = 4;
             // 
+            // labelNoInstallNote
+            // 
+            this.labelNoInstallNote.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelNoInstallNote.Location = new System.Drawing.Point(3, 75);
+            this.labelNoInstallNote.Name = "labelNoInstallNote";
+            this.labelNoInstallNote.Size = new System.Drawing.Size(434, 61);
+            this.labelNoInstallNote.TabIndex = 8;
+            this.labelNoInstallNote.Text = "If you do not create backup files, you will not be able to use the \"Toggle Mods\" " +
+    "feature or restore your game files to their original state.\r\n";
+            this.labelNoInstallNote.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            // 
             // panelProcessing
             // 
+            this.panelProcessing.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.panelProcessing.Controls.Add(this.labelWorking);
-            this.panelProcessing.Controls.Add(this.pictureWorkingSpiral);
-            this.panelProcessing.Location = new System.Drawing.Point(114, 160);
+            this.panelProcessing.Location = new System.Drawing.Point(3, 161);
             this.panelProcessing.Name = "panelProcessing";
-            this.panelProcessing.Size = new System.Drawing.Size(221, 43);
+            this.panelProcessing.Size = new System.Drawing.Size(434, 43);
             this.panelProcessing.TabIndex = 7;
             // 
             // labelWorking
             // 
-            this.labelWorking.AutoSize = true;
-            this.labelWorking.Location = new System.Drawing.Point(43, 14);
+            this.labelWorking.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.labelWorking.Location = new System.Drawing.Point(0, 0);
             this.labelWorking.Name = "labelWorking";
-            this.labelWorking.Size = new System.Drawing.Size(168, 15);
+            this.labelWorking.Size = new System.Drawing.Size(434, 43);
             this.labelWorking.TabIndex = 7;
-            this.labelWorking.Text = "Your backup is being created...";
-            // 
-            // pictureWorkingSpiral
-            // 
-            this.pictureWorkingSpiral.Image = global::SnakeBite.Properties.Resources.loading_spiral;
-            this.pictureWorkingSpiral.Location = new System.Drawing.Point(3, 5);
-            this.pictureWorkingSpiral.Name = "pictureWorkingSpiral";
-            this.pictureWorkingSpiral.Size = new System.Drawing.Size(32, 32);
-            this.pictureWorkingSpiral.TabIndex = 6;
-            this.pictureWorkingSpiral.TabStop = false;
+            this.labelWorking.Text = "Backup in Progress...";
+            this.labelWorking.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // labelSelectDir
             // 
-            this.labelSelectDir.Location = new System.Drawing.Point(5, 51);
+            this.labelSelectDir.Location = new System.Drawing.Point(3, 51);
             this.labelSelectDir.Name = "labelSelectDir";
-            this.labelSelectDir.Size = new System.Drawing.Size(432, 67);
+            this.labelSelectDir.Size = new System.Drawing.Size(434, 24);
             this.labelSelectDir.TabIndex = 5;
-            this.labelSelectDir.Text = resources.GetString("labelSelectDir.Text");
+            this.labelSelectDir.Text = "Next, some game files need to be backed up in case they are required later.";
+            this.labelSelectDir.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // labelHeader
             // 
@@ -106,8 +111,6 @@
             this.panelContent.ResumeLayout(false);
             this.panelContent.PerformLayout();
             this.panelProcessing.ResumeLayout(false);
-            this.panelProcessing.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureWorkingSpiral)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -117,8 +120,8 @@
         private System.Windows.Forms.Panel panelContent;
         private System.Windows.Forms.Label labelSelectDir;
         private System.Windows.Forms.Label labelHeader;
-        private System.Windows.Forms.Label labelWorking;
-        private System.Windows.Forms.PictureBox pictureWorkingSpiral;
+        public System.Windows.Forms.Label labelWorking;
         public System.Windows.Forms.Panel panelProcessing;
+        private System.Windows.Forms.Label labelNoInstallNote;
     }
 }

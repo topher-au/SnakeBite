@@ -28,102 +28,149 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.tabSettings = new System.Windows.Forms.TabPage();
+            this.labelNoBackups = new System.Windows.Forms.Label();
             this.groupSettings = new System.Windows.Forms.GroupBox();
+            this.checkBoxSaveRevertPreset = new System.Windows.Forms.CheckBox();
+            this.label3 = new System.Windows.Forms.Label();
             this.checkEnableSound = new System.Windows.Forms.CheckBox();
-            this.checkConflicts = new System.Windows.Forms.CheckBox();
+            this.picModToggle = new System.Windows.Forms.PictureBox();
             this.groupBackup = new System.Windows.Forms.GroupBox();
+            this.label1 = new System.Windows.Forms.Label();
+            this.buttonOpenLog = new System.Windows.Forms.Button();
             this.label2 = new System.Windows.Forms.Label();
             this.labelSetupWizard = new System.Windows.Forms.Label();
             this.buttonRestoreOriginals = new System.Windows.Forms.Button();
             this.buttonSetupWizard = new System.Windows.Forms.Button();
-            this.groupAbout = new System.Windows.Forms.GroupBox();
-            this.labelGithub = new System.Windows.Forms.LinkLabel();
-            this.labelThanks = new System.Windows.Forms.Label();
             this.groupMGSVDir = new System.Windows.Forms.GroupBox();
             this.buttonFindMGSV = new System.Windows.Forms.Button();
             this.textInstallPath = new System.Windows.Forms.TextBox();
-            this.tabControl = new System.Windows.Forms.TabControl();
-            this.tabThemes = new System.Windows.Forms.TabPage();
-            this.listThemes = new System.Windows.Forms.ListBox();
-            this.buttonSetTheme = new System.Windows.Forms.Button();
-            this.tabSettings.SuspendLayout();
+            this.groupAbout = new System.Windows.Forms.GroupBox();
+            this.labelNexusLink = new System.Windows.Forms.LinkLabel();
+            this.labelThanks = new System.Windows.Forms.Label();
+            this.panel1 = new System.Windows.Forms.Panel();
+            this.checkBoxCloseOnStart = new System.Windows.Forms.CheckBox();
             this.groupSettings.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picModToggle)).BeginInit();
             this.groupBackup.SuspendLayout();
-            this.groupAbout.SuspendLayout();
             this.groupMGSVDir.SuspendLayout();
-            this.tabControl.SuspendLayout();
-            this.tabThemes.SuspendLayout();
+            this.groupAbout.SuspendLayout();
+            this.panel1.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tabSettings
+            // labelNoBackups
             // 
-            this.tabSettings.Controls.Add(this.groupSettings);
-            this.tabSettings.Controls.Add(this.groupBackup);
-            this.tabSettings.Controls.Add(this.groupAbout);
-            this.tabSettings.Controls.Add(this.groupMGSVDir);
-            this.tabSettings.Location = new System.Drawing.Point(4, 24);
-            this.tabSettings.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.tabSettings.Name = "tabSettings";
-            this.tabSettings.Padding = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.tabSettings.Size = new System.Drawing.Size(363, 382);
-            this.tabSettings.TabIndex = 2;
-            this.tabSettings.Text = "Settings";
-            this.tabSettings.UseVisualStyleBackColor = true;
+            this.labelNoBackups.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelNoBackups.Location = new System.Drawing.Point(3, 58);
+            this.labelNoBackups.Name = "labelNoBackups";
+            this.labelNoBackups.Size = new System.Drawing.Size(360, 33);
+            this.labelNoBackups.TabIndex = 6;
+            this.labelNoBackups.Text = "No Backups Detected.\r\nCertain features are unavailable.";
+            this.labelNoBackups.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
             // groupSettings
             // 
+            this.groupSettings.Controls.Add(this.checkBoxCloseOnStart);
+            this.groupSettings.Controls.Add(this.checkBoxSaveRevertPreset);
+            this.groupSettings.Controls.Add(this.label3);
             this.groupSettings.Controls.Add(this.checkEnableSound);
-            this.groupSettings.Controls.Add(this.checkConflicts);
-            this.groupSettings.Location = new System.Drawing.Point(6, 191);
+            this.groupSettings.Controls.Add(this.picModToggle);
+            this.groupSettings.Location = new System.Drawing.Point(3, 263);
             this.groupSettings.Name = "groupSettings";
-            this.groupSettings.Size = new System.Drawing.Size(349, 76);
+            this.groupSettings.Size = new System.Drawing.Size(360, 134);
             this.groupSettings.TabIndex = 5;
             this.groupSettings.TabStop = false;
             this.groupSettings.Text = "Settings";
             // 
-            // checkBox1
+            // checkBoxSaveRevertPreset
             // 
-            this.checkEnableSound.AutoSize = true;
-            this.checkEnableSound.Location = new System.Drawing.Point(12, 48);
-            this.checkEnableSound.Name = "checkBox1";
-            this.checkEnableSound.Size = new System.Drawing.Size(151, 19);
+            this.checkBoxSaveRevertPreset.Checked = true;
+            this.checkBoxSaveRevertPreset.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxSaveRevertPreset.Location = new System.Drawing.Point(40, 44);
+            this.checkBoxSaveRevertPreset.Name = "checkBoxSaveRevertPreset";
+            this.checkBoxSaveRevertPreset.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.checkBoxSaveRevertPreset.Size = new System.Drawing.Size(259, 19);
+            this.checkBoxSaveRevertPreset.TabIndex = 11;
+            this.checkBoxSaveRevertPreset.Text = "Save RevertChanges.MGSVPreset";
+            this.checkBoxSaveRevertPreset.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.checkBoxSaveRevertPreset.UseVisualStyleBackColor = true;
+            this.checkBoxSaveRevertPreset.CheckedChanged += new System.EventHandler(this.checkBoxSaveRevertPreset_CheckedChanged);
+            // 
+            // label3
+            // 
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(90, 102);
+            this.label3.Name = "label3";
+            this.label3.RightToLeft = System.Windows.Forms.RightToLeft.No;
+            this.label3.Size = new System.Drawing.Size(130, 15);
+            this.label3.TabIndex = 10;
+            this.label3.Text = "Toggle Mods [Off | On]";
+            // 
+            // checkEnableSound
+            // 
+            this.checkEnableSound.Location = new System.Drawing.Point(84, 19);
+            this.checkEnableSound.Name = "checkEnableSound";
+            this.checkEnableSound.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.checkEnableSound.Size = new System.Drawing.Size(215, 19);
             this.checkEnableSound.TabIndex = 2;
-            this.checkEnableSound.Text = "Enable launcher sounds";
+            this.checkEnableSound.Text = "Enable Launcher Sounds";
+            this.checkEnableSound.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.checkEnableSound.UseVisualStyleBackColor = true;
             this.checkEnableSound.CheckedChanged += new System.EventHandler(this.checkEnableSound_CheckedChanged);
             // 
-            // checkConflicts
+            // picModToggle
             // 
-            this.checkConflicts.AutoSize = true;
-            this.checkConflicts.Location = new System.Drawing.Point(12, 23);
-            this.checkConflicts.Name = "checkConflicts";
-            this.checkConflicts.Size = new System.Drawing.Size(171, 19);
-            this.checkConflicts.TabIndex = 1;
-            this.checkConflicts.Text = "Disable compatibility check";
-            this.checkConflicts.UseVisualStyleBackColor = true;
-            this.checkConflicts.CheckedChanged += new System.EventHandler(this.checkConflicts_CheckedChanged);
+            this.picModToggle.BackColor = System.Drawing.Color.Transparent;
+            this.picModToggle.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Stretch;
+            this.picModToggle.Image = global::SnakeBite.Properties.Resources.toggledisabled;
+            this.picModToggle.Location = new System.Drawing.Point(245, 95);
+            this.picModToggle.Name = "picModToggle";
+            this.picModToggle.Size = new System.Drawing.Size(92, 36);
+            this.picModToggle.SizeMode = System.Windows.Forms.PictureBoxSizeMode.Zoom;
+            this.picModToggle.TabIndex = 9;
+            this.picModToggle.TabStop = false;
+            this.picModToggle.Click += new System.EventHandler(this.picModToggle_Click);
             // 
             // groupBackup
             // 
+            this.groupBackup.Controls.Add(this.label1);
+            this.groupBackup.Controls.Add(this.buttonOpenLog);
             this.groupBackup.Controls.Add(this.label2);
             this.groupBackup.Controls.Add(this.labelSetupWizard);
             this.groupBackup.Controls.Add(this.buttonRestoreOriginals);
             this.groupBackup.Controls.Add(this.buttonSetupWizard);
-            this.groupBackup.Location = new System.Drawing.Point(6, 65);
+            this.groupBackup.Location = new System.Drawing.Point(3, 92);
             this.groupBackup.Name = "groupBackup";
-            this.groupBackup.Size = new System.Drawing.Size(349, 120);
+            this.groupBackup.Size = new System.Drawing.Size(360, 169);
             this.groupBackup.TabIndex = 4;
             this.groupBackup.TabStop = false;
             this.groupBackup.Text = "Tools";
             // 
+            // label1
+            // 
+            this.label1.Location = new System.Drawing.Point(14, 119);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(207, 44);
+            this.label1.TabIndex = 11;
+            this.label1.Text = "Open SnakeBite\'s Debug Logs";
+            this.label1.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // buttonOpenLog
+            // 
+            this.buttonOpenLog.Location = new System.Drawing.Point(236, 119);
+            this.buttonOpenLog.Name = "buttonOpenLog";
+            this.buttonOpenLog.Size = new System.Drawing.Size(107, 44);
+            this.buttonOpenLog.TabIndex = 10;
+            this.buttonOpenLog.Text = "Open Log Directory";
+            this.buttonOpenLog.UseVisualStyleBackColor = true;
+            this.buttonOpenLog.Click += new System.EventHandler(this.buttonOpenLogDir_Click);
+            // 
             // label2
             // 
-            this.label2.Location = new System.Drawing.Point(14, 69);
+            this.label2.Location = new System.Drawing.Point(6, 69);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(207, 44);
+            this.label2.Size = new System.Drawing.Size(215, 44);
             this.label2.TabIndex = 9;
-            this.label2.Text = "Permanently removes all mods and SnakeBite settings";
+            this.label2.Text = "Permanently remove all mods and SnakeBite settings";
             this.label2.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // labelSetupWizard
@@ -141,7 +188,7 @@
             this.buttonRestoreOriginals.Name = "buttonRestoreOriginals";
             this.buttonRestoreOriginals.Size = new System.Drawing.Size(107, 44);
             this.buttonRestoreOriginals.TabIndex = 7;
-            this.buttonRestoreOriginals.Text = "Restore Original Game Files";
+            this.buttonRestoreOriginals.Text = "Restore Backup Game Files";
             this.buttonRestoreOriginals.UseVisualStyleBackColor = true;
             this.buttonRestoreOriginals.Click += new System.EventHandler(this.buttonRestoreOriginals_Click);
             // 
@@ -155,55 +202,22 @@
             this.buttonSetupWizard.UseVisualStyleBackColor = true;
             this.buttonSetupWizard.Click += new System.EventHandler(this.buttonSetup);
             // 
-            // groupAbout
-            // 
-            this.groupAbout.Controls.Add(this.labelGithub);
-            this.groupAbout.Controls.Add(this.labelThanks);
-            this.groupAbout.Location = new System.Drawing.Point(6, 273);
-            this.groupAbout.Name = "groupAbout";
-            this.groupAbout.Size = new System.Drawing.Size(349, 101);
-            this.groupAbout.TabIndex = 3;
-            this.groupAbout.TabStop = false;
-            // 
-            // labelGithub
-            // 
-            this.labelGithub.AutoSize = true;
-            this.labelGithub.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
-            this.labelGithub.Location = new System.Drawing.Point(27, 36);
-            this.labelGithub.Name = "labelGithub";
-            this.labelGithub.Size = new System.Drawing.Size(299, 15);
-            this.labelGithub.TabIndex = 1;
-            this.labelGithub.TabStop = true;
-            this.labelGithub.Text = "https://www.github.com/topher-au/SnakeBite/releases";
-            this.labelGithub.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkGithub_LinkClicked);
-            // 
-            // labelThanks
-            // 
-            this.labelThanks.AutoSize = true;
-            this.labelThanks.Location = new System.Drawing.Point(15, 19);
-            this.labelThanks.Name = "labelThanks";
-            this.labelThanks.Size = new System.Drawing.Size(325, 75);
-            this.labelThanks.TabIndex = 0;
-            this.labelThanks.Text = "The latest version of SnakeBite is available here:\r\n\r\n\r\nSpecial thanks to Atvaark" +
-    " for GzsTool and emoose and many\r\nmore for all their hard work!";
-            this.labelThanks.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
-            // 
             // groupMGSVDir
             // 
             this.groupMGSVDir.Controls.Add(this.buttonFindMGSV);
             this.groupMGSVDir.Controls.Add(this.textInstallPath);
-            this.groupMGSVDir.Location = new System.Drawing.Point(6, 7);
+            this.groupMGSVDir.Location = new System.Drawing.Point(3, 3);
             this.groupMGSVDir.Name = "groupMGSVDir";
-            this.groupMGSVDir.Size = new System.Drawing.Size(349, 52);
+            this.groupMGSVDir.Size = new System.Drawing.Size(360, 52);
             this.groupMGSVDir.TabIndex = 0;
             this.groupMGSVDir.TabStop = false;
             this.groupMGSVDir.Text = "MGSV Installation";
             // 
             // buttonFindMGSV
             // 
-            this.buttonFindMGSV.Location = new System.Drawing.Point(318, 22);
+            this.buttonFindMGSV.Location = new System.Drawing.Point(322, 20);
             this.buttonFindMGSV.Name = "buttonFindMGSV";
-            this.buttonFindMGSV.Size = new System.Drawing.Size(25, 25);
+            this.buttonFindMGSV.Size = new System.Drawing.Size(32, 25);
             this.buttonFindMGSV.TabIndex = 2;
             this.buttonFindMGSV.Text = "...";
             this.buttonFindMGSV.UseVisualStyleBackColor = true;
@@ -211,59 +225,78 @@
             // 
             // textInstallPath
             // 
-            this.textInstallPath.Location = new System.Drawing.Point(6, 22);
+            this.textInstallPath.Location = new System.Drawing.Point(6, 20);
             this.textInstallPath.Name = "textInstallPath";
             this.textInstallPath.ReadOnly = true;
-            this.textInstallPath.Size = new System.Drawing.Size(306, 23);
+            this.textInstallPath.Size = new System.Drawing.Size(313, 23);
             this.textInstallPath.TabIndex = 1;
             // 
-            // tabControl1
+            // groupAbout
             // 
-            this.tabControl.Controls.Add(this.tabSettings);
-            this.tabControl.Controls.Add(this.tabThemes);
-            this.tabControl.Location = new System.Drawing.Point(12, 12);
-            this.tabControl.Name = "tabControl1";
-            this.tabControl.SelectedIndex = 0;
-            this.tabControl.Size = new System.Drawing.Size(371, 410);
-            this.tabControl.TabIndex = 0;
+            this.groupAbout.Controls.Add(this.labelNexusLink);
+            this.groupAbout.Controls.Add(this.labelThanks);
+            this.groupAbout.Location = new System.Drawing.Point(3, 399);
+            this.groupAbout.Name = "groupAbout";
+            this.groupAbout.Size = new System.Drawing.Size(360, 95);
+            this.groupAbout.TabIndex = 3;
+            this.groupAbout.TabStop = false;
             // 
-            // tabThemes
+            // labelNexusLink
             // 
-            this.tabThemes.Controls.Add(this.buttonSetTheme);
-            this.tabThemes.Controls.Add(this.listThemes);
-            this.tabThemes.Location = new System.Drawing.Point(4, 24);
-            this.tabThemes.Name = "tabThemes";
-            this.tabThemes.Size = new System.Drawing.Size(363, 382);
-            this.tabThemes.TabIndex = 3;
-            this.tabThemes.Text = "Themes";
-            this.tabThemes.UseVisualStyleBackColor = true;
+            this.labelNexusLink.LinkBehavior = System.Windows.Forms.LinkBehavior.HoverUnderline;
+            this.labelNexusLink.Location = new System.Drawing.Point(6, 38);
+            this.labelNexusLink.Name = "labelNexusLink";
+            this.labelNexusLink.Size = new System.Drawing.Size(351, 16);
+            this.labelNexusLink.TabIndex = 1;
+            this.labelNexusLink.TabStop = true;
+            this.labelNexusLink.Text = "www.nexusmods.com/metalgearsolidvtpp/mods/106";
+            this.labelNexusLink.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelNexusLink.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkNexusLink_LinkClicked);
             // 
-            // listThemes
+            // labelThanks
             // 
-            this.listThemes.FormattingEnabled = true;
-            this.listThemes.ItemHeight = 15;
-            this.listThemes.Items.AddRange(new object[] {
-            "Default"});
-            this.listThemes.Location = new System.Drawing.Point(83, 29);
-            this.listThemes.Name = "listThemes";
-            this.listThemes.Size = new System.Drawing.Size(201, 289);
-            this.listThemes.TabIndex = 0;
+            this.labelThanks.Location = new System.Drawing.Point(6, 19);
+            this.labelThanks.Name = "labelThanks";
+            this.labelThanks.Size = new System.Drawing.Size(351, 70);
+            this.labelThanks.TabIndex = 0;
+            this.labelThanks.Text = "The latest version of SnakeBite is available here:\r\n\r\nSpecial thanks to Atvaark f" +
+    "or GzsTool and emoose and many more for all their hard work!";
+            this.labelThanks.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             // 
-            // buttonSetTheme
+            // panel1
             // 
-            this.buttonSetTheme.Location = new System.Drawing.Point(83, 324);
-            this.buttonSetTheme.Name = "buttonSetTheme";
-            this.buttonSetTheme.Size = new System.Drawing.Size(201, 23);
-            this.buttonSetTheme.TabIndex = 1;
-            this.buttonSetTheme.Text = "Set Theme";
-            this.buttonSetTheme.UseVisualStyleBackColor = true;
-            this.buttonSetTheme.Click += new System.EventHandler(this.buttonSetTheme_Click);
+            this.panel1.BackColor = System.Drawing.Color.Silver;
+            this.panel1.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panel1.Controls.Add(this.groupAbout);
+            this.panel1.Controls.Add(this.groupMGSVDir);
+            this.panel1.Controls.Add(this.labelNoBackups);
+            this.panel1.Controls.Add(this.groupBackup);
+            this.panel1.Controls.Add(this.groupSettings);
+            this.panel1.Location = new System.Drawing.Point(12, 12);
+            this.panel1.Name = "panel1";
+            this.panel1.Size = new System.Drawing.Size(368, 499);
+            this.panel1.TabIndex = 1;
+            // 
+            // checkBoxCloseOnStart
+            // 
+            this.checkBoxCloseOnStart.Checked = true;
+            this.checkBoxCloseOnStart.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.checkBoxCloseOnStart.Location = new System.Drawing.Point(35, 69);
+            this.checkBoxCloseOnStart.Name = "checkBoxCloseOnStart";
+            this.checkBoxCloseOnStart.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
+            this.checkBoxCloseOnStart.Size = new System.Drawing.Size(264, 19);
+            this.checkBoxCloseOnStart.TabIndex = 13;
+            this.checkBoxCloseOnStart.Text = "Close SnakeBite On Game Launch";
+            this.checkBoxCloseOnStart.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.checkBoxCloseOnStart.UseVisualStyleBackColor = true;
+            this.checkBoxCloseOnStart.CheckedChanged += new System.EventHandler(this.checkBoxCloseOnStart_CheckedChanged);
             // 
             // formSettings
             // 
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.None;
-            this.ClientSize = new System.Drawing.Size(392, 432);
-            this.Controls.Add(this.tabControl);
+            this.BackColor = System.Drawing.Color.DarkGray;
+            this.ClientSize = new System.Drawing.Size(392, 523);
+            this.Controls.Add(this.panel1);
             this.Font = new System.Drawing.Font("Segoe UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -274,40 +307,40 @@
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "SnakeBite Settings";
             this.Load += new System.EventHandler(this.formSettings_Load);
-            this.tabSettings.ResumeLayout(false);
             this.groupSettings.ResumeLayout(false);
             this.groupSettings.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.picModToggle)).EndInit();
             this.groupBackup.ResumeLayout(false);
-            this.groupAbout.ResumeLayout(false);
-            this.groupAbout.PerformLayout();
             this.groupMGSVDir.ResumeLayout(false);
             this.groupMGSVDir.PerformLayout();
-            this.tabControl.ResumeLayout(false);
-            this.tabThemes.ResumeLayout(false);
+            this.groupAbout.ResumeLayout(false);
+            this.panel1.ResumeLayout(false);
             this.ResumeLayout(false);
 
         }
 
         #endregion
 
-        private System.Windows.Forms.TabPage tabSettings;
+        private System.Windows.Forms.Label labelNoBackups;
+        private System.Windows.Forms.GroupBox groupSettings;
+        private System.Windows.Forms.Label label3;
+        private System.Windows.Forms.CheckBox checkEnableSound;
+        private System.Windows.Forms.PictureBox picModToggle;
         private System.Windows.Forms.GroupBox groupBackup;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.Button buttonOpenLog;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label labelSetupWizard;
         private System.Windows.Forms.Button buttonRestoreOriginals;
         private System.Windows.Forms.Button buttonSetupWizard;
-        private System.Windows.Forms.GroupBox groupAbout;
-        private System.Windows.Forms.LinkLabel labelGithub;
-        private System.Windows.Forms.Label labelThanks;
-        private System.Windows.Forms.CheckBox checkConflicts;
         private System.Windows.Forms.GroupBox groupMGSVDir;
         private System.Windows.Forms.Button buttonFindMGSV;
         private System.Windows.Forms.TextBox textInstallPath;
-        private System.Windows.Forms.TabControl tabControl;
-        private System.Windows.Forms.GroupBox groupSettings;
-        private System.Windows.Forms.CheckBox checkEnableSound;
-        private System.Windows.Forms.TabPage tabThemes;
-        private System.Windows.Forms.ListBox listThemes;
-        private System.Windows.Forms.Button buttonSetTheme;
+        private System.Windows.Forms.GroupBox groupAbout;
+        private System.Windows.Forms.LinkLabel labelNexusLink;
+        private System.Windows.Forms.Label labelThanks;
+        private System.Windows.Forms.Panel panel1;
+        private System.Windows.Forms.CheckBox checkBoxSaveRevertPreset;
+        private System.Windows.Forms.CheckBox checkBoxCloseOnStart;
     }
 }

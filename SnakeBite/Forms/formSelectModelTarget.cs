@@ -31,7 +31,7 @@ namespace SnakeBite
             buttonCancel.Top = groupModelSelect.Top + groupModelSelect.Height + 8;
             buttonConfirm.Top = groupModelSelect.Top + groupModelSelect.Height + 8;
 
-            this.Height = buttonConfirm.Top + buttonConfirm.Height + 48;
+            Height = buttonConfirm.Top + buttonConfirm.Height + 48;
 
             RadioButton r = groupModelSelect.Controls[0] as RadioButton;
             r.Checked = true;
@@ -42,7 +42,7 @@ namespace SnakeBite
         {
             foreach (RadioButton r in groupModelSelect.Controls)
             {
-                if (r.Checked) this.Tag = r.Tag;
+                if (r.Checked) Tag = r.Tag;
             }
         }
     }

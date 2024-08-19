@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using SnakeBite.ModPages;
 
 namespace SnakeBite.QuickMod
 {
@@ -16,6 +17,7 @@ namespace SnakeBite.QuickMod
         private int page = 0;
         private SelectZipPanel wp = new SelectZipPanel();
         private CreateModPanel cm = new CreateModPanel();
+        LogPage log = new LogPage();
 
         public formQuickMod()
         {
@@ -70,7 +72,7 @@ namespace SnakeBite.QuickMod
                     if (Directory.Exists("_temp")) Directory.Delete("_temp", true);
                     Methods.ExtractFiles(wp.textZipFile.Text, "_temp");
                     Methods.GenerateMgsv(exportFileName, cm.textModName.Text, "_temp");
-                    if (ModManager.CheckConflicts(exportFileName))
+                    if (PreinstallManager.CheckConflicts(exportFileName))
                     {
                         DoInstall(exportFileName);
                         
@@ -93,7 +95,9 @@ namespace SnakeBite.QuickMod
 
         private void DoInstall(string OutputFile)
         {
-            ProgressWindow.Show("Installing Mod", String.Format("Installing {0}, please wait...", cm.textModName.Text), new Action((MethodInvoker)delegate { ModManager.InstallMod(OutputFile); }));
+            List<string> InstallFileList = new List<string>();
+            InstallFileList.Add(OutputFile);
+            ProgressWindow.Show("Installing Mod", String.Format("Installing {0}, please wait...", cm.textModName.Text), new Action((MethodInvoker)delegate { InstallManager.InstallMods(InstallFileList); }), log);
         }
 
         private void buttonNext_Click(object sender, EventArgs e)
